@@ -1274,6 +1274,7 @@ body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl{backgr
 /* «أسئلة التحدي» and «شرح مختصر» sit together in ONE hidden panel on the left: a tab on the left edge opens and closes it; opening it pushes the lab aside, so it never covers the phone (Moaz 2026-11-10) */
 .cc-qhandle{display:none}
 @media (min-width:1020px){
+  body.side.cc-has-feed .wrap{padding-inline:0}      /* both side panels sit flush against the screen edges, no cream gap (Moaz 2026-11-10) */
   body.side.cc-has-feed{--qd:14px}      /* closed: a thin gutter for the tab, so the tab never covers the lab */
   body.side.cc-has-feed.cc-q-open{--qd:calc(var(--qw,331px) + 38px)}      /* open: the panel plus the gutter that holds the tab */
   body.side.cc-has-feed .wrap{grid-template-columns:var(--fw) minmax(0,1fr) var(--qd);transition:grid-template-columns 340ms var(--ease)}
@@ -1281,11 +1282,11 @@ body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl{backgr
   body.side.cc-has-feed .overlay{padding-inline-end:calc(var(--qd) + 44px)}
   body.side.cc-has-feed .qpanel{grid-column:3;min-width:0;width:var(--qw,331px);justify-self:end;border-radius:0 var(--r-l) var(--r-l) 0;box-shadow:0 0 0 1px var(--line)}
   body.side.cc-has-feed:not(.cc-q-open) .qpanel{visibility:hidden;pointer-events:none}
-  .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:46;align-items:center;gap:10px;padding:16px 8px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
+  .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:36;align-items:center;gap:10px;padding:16px 8px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
     background:var(--navy);color:#fff;font-weight:800;font-size:calc(var(--t) * 1.02);line-height:1;box-shadow:0 12px 26px -10px rgba(10,22,40,.6);transition:left 340ms var(--ease),background-color 200ms}
   .cc-qhandle:hover{background:#162B4D}
   .cc-qhandle svg{width:18px;height:18px;fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 340ms var(--ease)}
-  body.cc-q-open .cc-qhandle{left:calc(24px + var(--qw,331px) + 2px)}
+  body.cc-q-open .cc-qhandle{left:calc(var(--qw,331px) + 2px)}
   body.cc-q-open .cc-qhandle svg{transform:rotate(180deg)}
 }
 
@@ -2461,8 +2462,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1h0: 'اكتب أمر تخمين كلمة المرور في [[term]] **شاشة الأوامر** على الحاسوب، وانظر إلى نتيجة **كلمة المرور الصحيحة**.',
     q1: 'ما كلمة السر التي تفتح الهاتف؟', q1h: 'انظر إلى [[term]] **شاشة الأوامر** على جهاز الهاكر: الحاسوب يكتب كلمة السر هناك باللون الأخضر.',
-    q2: 'من آخر شخص اتصل به صاحب الهاتف؟', q2h: 'افتح تطبيق [[app_phone]] «**الاتصالات**» في الهاتف، وابحث في «الاتصالات الأخيرة» عن آخر اتصال صادر.',
-    q3: 'مع من لعب صاحب الهاتف كرة القدم الأسبوع الماضي؟', q3h: 'افتح تطبيق [[app_chats]] «**المحادثات**» واقرأ المحادثة التي يتكلم فيها صاحب الهاتف عن كرة القدم.',
+    q2: 'من آخر شخص اتصل به صاحب الهاتف؟', q2h: 'افتح تطبيق «**الاتصالات**» [[app_phone]] في الهاتف، وابحث عن آخر اتصال.',
+    q3: 'مع من لعب صاحب الهاتف كرة القدم الأسبوع الماضي؟', q3h: 'افتح تطبيق «**المحادثات**» [[app_chats]] واقرأ المحادثة التي يتكلم فيها صاحب الهاتف عن كرة القدم.',
     q4: 'كم سنة يحتاج الحاسوب ليصل إلى كلمة السر الأصعب؟',
     q4h: 'جرّب كلمة السر الأصعب (6 خانات من أرقام وأحرف) بالأمر، ثم اقرأ الوقت المتوقع في نتيجة [[term]] **شاشة الأوامر**.',
     p6b_h: 'وقت الاستكشاف!',
@@ -2498,7 +2499,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     tt_p: 'هيا نرى مدى قوة كلمة السر التي اخترتها! سننتقل إلى شاشة الأوامر لنعرف كم من الوقت يحتاج الحاسوب لتخمينها.',
     /* task lines */
     t_manual: 'جرّب حظك: حاول أن تخمّن **كلمة سر** الهاتف بتجربة **ثلاث** كلمات مرور مختلفة.',
-    t_cmd: 'حان دور الحاسوب! اكتب في **شاشة الأوامر** الأمر `guess password 4` الذي يخمّن كلمة سر مكونة من **أربعة أرقام**، ثم اضغط **Enter**',
+    t_cmd: 'اكتب الأمر `guess password 4` في **شاشة الأوامر** [[term]] ليخمّن الحاسوب **كلمة المرور الصحيحة**',
     t_enter: 'وجد الحاسوب **كلمة السر الصحيحة**! اكتبها على **الهاتف** لتفتحه.',
     t_browse: 'تم **اختراق** الهاتف! **استكشف الهاتف** وأجب عن **أسئلة التحدي**.',
     t_done: 'مهمة رائعة! اكتشفت مدى **أمان الهاتف**، وعرفت كيف تجعل **كلمة السر أقوى**. أجب عن **السؤال الأخير** لتنهي الدرس.',
@@ -3580,7 +3581,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     }, 420);
   }
   var TERM = String(CC.t('cs_title'));
-  var OPEN_TXT = (M && M.openTerminal) || 'افتح **تطبيق شاشة الأوامر** عن طريق الضغط على الرمز [[term]] في الشريط على يسار الشاشة.';
+  var OPEN_TXT = (M && M.openTerminal) || 'افتح **تطبيق شاشة الأوامر** عن طريق الضغط على [[term]] على يسار شاشة الحاسوب.';
   var SPOT_T = 'ابدأ هنا', SPOT_B = 'افتح ' + TERM + ' للتحكم بالحاسوب';      /* the label beside the glowing dock icon */
   var IC = {
     term: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#0E1F39"/><rect x="1" y="1" width="46" height="46" rx="10" fill="none" stroke="#2C4670" stroke-width="2"/><path d="M12 17l8 7-8 7" fill="none" stroke="#FCAD0F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
