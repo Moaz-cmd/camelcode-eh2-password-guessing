@@ -1185,8 +1185,8 @@ body.cc-has-feed .q-task{display:none!important}
 .cc-qbot-img{left:0;right:0;bottom:0;height:100%}
 .cc-qbot-say,.cc-qbot[data-pose="yes"] .cc-qbot-say{background:none;color:#000;padding:4px 6px}
 
-/* the phone (Moaz 2026-11-09): no «طوارئ» key (its place stays empty so 0 stays centred), no bar under the lock screen, a clear banner when an app cannot be opened */
-.key[data-k="sos"]{visibility:hidden;pointer-events:none}
+/* the phone (Moaz 2026-11-09): «طوارئ» is back but not clickable, no bar under the lock screen, a clear banner when an app cannot be opened */
+.key[data-k="sos"]{pointer-events:none;cursor:default;font-size:3.7cqw!important;font-weight:700}      /* «طوارئ» is shown again but is not clickable (Moaz 2026-11-10) */
 .pscreen:has(.v-lock.show) .hbar{display:none}
 .cc-pna{position:absolute;left:50%;top:50%;z-index:30;transform:translate(-50%,-50%) scale(.94);width:78%;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 14px 18px;border-radius:20px;background:var(--navy);color:#fff;text-align:center;font-weight:800;font-size:15px;line-height:1.55;box-shadow:0 18px 40px -10px rgba(0,0,0,.65),0 0 0 3px var(--gold);opacity:0;pointer-events:none;transition:opacity 180ms var(--ease),transform 240ms var(--ease)}
 .cc-pna.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
@@ -1197,19 +1197,6 @@ body.cc-has-feed .q-task{display:none!important}
 
 /* «شرح مختصر» lives in the instruction panel now, not in the questions panel */
 #refBtn{display:none!important}
-.cc-refbtn{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:7px 14px;border-radius:var(--r-pill);background:rgba(255,255,255,.12);color:#fff;font-weight:700;font-size:calc(var(--t) * .88);line-height:1.2}
-.cc-refbtn:hover{background:rgba(255,255,255,.2)}
-.cc-refbtn svg{width:16px;height:16px;fill:none;stroke:var(--gold);stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.cc-ref{display:none;flex:1 1 auto;min-height:0;overflow-y:auto;padding:16px 18px 10px;color:#fff;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.2) transparent}
-.cc-ref-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-.cc-ref-h b{font-family:var(--f-display);font-size:20px;font-weight:700;white-space:nowrap}
-.cc-ref-h button{white-space:nowrap;padding:6px 12px;border-radius:var(--r-pill);background:var(--gold);color:var(--navy);font-weight:800;font-size:calc(var(--t) * .88)}
-.cc-ref .dr-b{padding:0;overflow:visible;color:#fff;line-height:1.9}
-.cc-ref .dr-b *{color:inherit}
-.cc-ref .dr-b h4,.cc-ref .dr-b .dr-h,.cc-ref .dr-b b{color:var(--gold)}
-.cc-ref code,.cc-ref .tok{display:inline-block;white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-size:.9em;padding:1px 8px;margin:0 2px;border-radius:8px;background:rgba(255,255,255,.14);color:var(--gold)}
-.cc-feed.show-ref .cc-ref{display:block}
-.cc-feed.show-ref .cc-steps,.cc-feed.show-ref .cc-cur,.cc-feed.show-ref .cc-coach,.cc-feed.show-ref .cc-feed-nav{display:none}
 
 /* wide window: the assistant at the bottom of the instruction panel, the steps flow upward like a chat (newest above him), the questions in a drawer */
 @media (min-width:1020px){
@@ -1304,6 +1291,92 @@ body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl{backgr
 
 /* no shield icon beside the ethics line «نتدرب هنا...» (Moaz 2026-11-10) */
 .ethics span::before{display:none!important;content:none!important}
+
+
+/* ===== «خطوة بخطوة» (Moaz 2026-11-10): the instruction panel is a light, premium panel like the questions panel was: a tab bar with a gold underline
+   («خطوة بخطوة» | «شرح مختصر»), soft cards, and the assistant on a cream footer. «شرح مختصر» is no longer a tab of the questions panel. ===== */
+.qpanel .q-h .q-tab:nth-child(n+2),.qpanel .q-tab[data-tab="ref"],.qpanel .q-ref{display:none!important}
+.cc-feed{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line),0 24px 60px -28px rgba(14,31,57,.35)}
+.cc-tabs{display:flex;flex:none;order:0;padding:0;background:var(--surface);border-bottom:1px solid var(--line)}
+.cc-tab{position:relative;flex:1 1 0;border:0;border-radius:0;padding:15px 8px 13px;font-size:17px;font-weight:700;line-height:1.3;color:var(--ink2);background:transparent;border-bottom:3px solid transparent;transition:color 200ms,border-color 200ms}
+.cc-tab:hover{color:var(--ink)}
+.cc-tab.on{color:var(--ink);border-bottom-color:var(--gold)}
+.cc-tab.dot::after{content:"";position:absolute;top:13px;inset-inline-end:16px;width:9px;height:9px;border-radius:50%;background:#E5484D;box-shadow:0 0 0 2px var(--surface)}
+/* the assistant's footer */
+.cc-feed-h{background:radial-gradient(200px 150px at 80% 100%,rgba(252,173,15,.22),transparent 70%),linear-gradient(180deg,#fff 0%,#FFF6E2 100%);border-top:1px solid var(--line)}
+.cc-feed-hd b{display:none}
+.cc-feed-n{color:var(--ink2)}
+.cc-feed-n span{color:var(--ink)}
+.cc-track i{background:#E8E2D8}
+.cc-track i.done{background:#8DC63F}
+.cc-track i.now{background:var(--gold)}
+/* earlier steps: quiet, with a green check */
+.cc-step{color:var(--ink2);opacity:.8}
+.cc-step:hover{background:#F6F2EC;opacity:1}
+.cc-step.open{background:#F1ECE5;opacity:1;color:var(--ink)}
+.cc-step .cc-num{background:#EFE9DF;color:var(--ink)}
+.cc-step .cc-txt code,.cc-step .cc-txt .tok{background:var(--navy);color:var(--gold)}
+/* the current step: a warm card, its tail pointing at the assistant */
+.cc-cur{background:#FFF3D1;color:var(--navy);border:1px solid rgba(252,173,15,.55);box-shadow:0 14px 30px -18px rgba(14,31,57,.4)}
+.cc-cur::before{background:#FFF3D1;border-right:1px solid rgba(252,173,15,.55);border-bottom:1px solid rgba(252,173,15,.55)}
+body.side .cc-feed .cc-cur::before{border-top:0;border-left:0}
+/* supporting instructions: a white card above it */
+body.side .cc-feed .cc-coach,.cc-coach{background:#fff;color:var(--ink);border:1px solid var(--line);box-shadow:var(--sh-1)}
+body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl,.cc-coach .cc-fb,.cc-coach .cc-expl{background:transparent;border:0;padding:0;color:var(--ink)}
+/* «شرح مختصر» inside the panel */
+.cc-ref{display:none;flex:1 1 auto;min-height:0;overflow-y:auto;padding:6px 20px 16px;color:var(--ink);scrollbar-width:thin;scrollbar-color:#D9D2C6 transparent}
+.cc-ref .dr-b{padding:0;overflow:visible;line-height:1.9}
+.cc-feed[data-tab="ref"] .cc-ref{display:block;order:1}
+.cc-feed[data-tab="ref"] .cc-steps,.cc-feed[data-tab="ref"] .cc-cur,.cc-feed[data-tab="ref"] .cc-coach{display:none}
+
+
+/* ===== the phone (Moaz 2026-11-10) ===== */
+/* the lock screen fills the whole screen: icon, title, dots and keys scale with the screen (container units), the keypad takes all the height that was left empty */
+.pscreen{container-type:size}
+.v-lock .lk-top{margin-top:11cqh}
+.v-lock .lk-ic{width:9.5cqw;height:9.5cqw}
+.v-lock .lk-title{font-size:5.4cqw;margin-top:2.2cqh}
+.v-lock .dots{gap:5.2cqw;margin-top:2.6cqh;height:auto}
+.v-lock .dots i{width:4.6cqw;height:4.6cqw;border-width:2px}
+.v-lock .lk-msg{font-size:3.7cqw;min-height:4.4cqh;margin-top:1cqh}
+.v-lock .keys{flex:1 1 0;min-height:0;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,minmax(0,1fr));gap:1.8cqh 0;justify-items:center;align-items:center;margin-top:.8cqh;padding:.6cqh 9cqw 9.4cqh}
+.v-lock .key{height:100%;width:auto;aspect-ratio:1 / 1;max-width:100%;font-size:8.4cqw}
+.v-lock .key small{font-size:2.6cqw;height:auto}
+
+/* the back button of every phone app looks like a real phone's navigation bar button: a bold chevron and the word «رجوع» in the system blue, no box (the arrow points right, the way back in Arabic) */
+.phone .app-h>b:first-child{display:inline-flex;align-items:center;gap:3px;font-size:0!important;padding:7px 10px 7px 6px;margin-inline-start:-6px;border-radius:12px;background:transparent;color:#2A62C9;cursor:pointer;transition:background-color 140ms}
+.phone .app-h>b:first-child:hover,.phone .app-h>b:first-child:active{background:rgba(42,98,201,.12)}
+.phone .app-h>b:first-child::before{content:"";width:11px;height:11px;border:solid #2A62C9;border-width:3.2px 3.2px 0 0;transform:rotate(45deg);margin-inline-end:2px}
+.phone .app-h>b:first-child::after{content:"رجوع";font-size:16px;font-weight:700;line-height:1;color:#2A62C9}
+
+/* ===== the instruction panel is navy again, as in the old design, with the instructions in white cards (Moaz 2026-11-10); the tabs «خطوة بخطوة» | «شرح مختصر» stay ===== */
+.cc-feed{background:var(--navy);color:#fff;box-shadow:none}
+.cc-tabs{background:var(--navy);border-bottom:1px solid rgba(255,255,255,.12)}
+.cc-tab{color:#B8C4D6}
+.cc-tab:hover{color:#fff}
+.cc-tab.on{color:#fff;border-bottom-color:var(--gold)}
+.cc-tab.dot::after{box-shadow:0 0 0 2px var(--navy)}
+.cc-feed-h{background:radial-gradient(180px 140px at 80% 100%,rgba(252,173,15,.16),transparent 70%);border-top:1px solid rgba(255,255,255,.08)}
+.cc-feed-n{color:#B8C4D6}
+.cc-feed-n span{color:#fff}
+.cc-track i{background:rgba(255,255,255,.16)}
+.cc-track i.done{background:#8DC63F}
+.cc-track i.now{background:var(--gold)}
+.cc-step{color:#E6ECF5;opacity:.6}
+.cc-step:hover{background:rgba(255,255,255,.05);opacity:.9}
+.cc-step.open{background:rgba(255,255,255,.10);opacity:1;color:#fff}
+.cc-step .cc-num{background:rgba(255,255,255,.12);color:#fff}
+.cc-step .cc-txt code,.cc-step .cc-txt .tok{background:rgba(255,255,255,.12);color:var(--gold)}
+.cc-cur{background:#fff;border:0;box-shadow:0 14px 30px -14px rgba(0,0,0,.55)}
+.cc-cur::before,body.side .cc-feed .cc-cur::before{background:#fff;border:0}
+body.side .cc-feed .cc-coach,.cc-coach{background:#fff;color:var(--navy);border:0;box-shadow:0 14px 30px -14px rgba(0,0,0,.55)}
+.cc-ref{color:#fff;padding:14px 14px 12px;scrollbar-color:rgba(255,255,255,.2) transparent}
+.cc-ref .cc-ref-b{background:#fff;color:var(--ink);border-radius:var(--r-m);padding:12px 18px 16px;box-shadow:0 14px 30px -14px rgba(0,0,0,.55)}
+
+/* the phone glows while an arrow points at it (the start of the lab, the step that says to type the password on it) */
+.phone.cc-attn{animation:ccattn 1.5s ease-in-out infinite}
+@keyframes ccattn{0%,100%{box-shadow:0 0 0 5px rgba(252,173,15,.6),0 0 22px 4px rgba(252,173,15,.45)}50%{box-shadow:0 0 0 11px rgba(252,173,15,.9),0 0 54px 14px rgba(252,173,15,.75)}}
+@media (prefers-reduced-motion:reduce){.phone.cc-attn{animation:none;box-shadow:0 0 0 9px rgba(252,173,15,.85),0 0 40px 10px rgba(252,173,15,.6)}}
 
 </style><!--/cc-skin-->
 </head>
@@ -2413,7 +2486,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
     cele_i: 'أهم ما تعلمته في هذا الدرس:',
     cele_1: 'الحاسوب يجرّب كلمات السر واحدة تلو الأخرى بسرعة كبيرة حتى يجد الصحيحة، وهذا أسرع بكثير من تجربتها بأيدينا.',
-    cele_2: 'تعلّمت أوامر اختراق كلمات المرور! `guess password 4` يخمّن كلمة سر من 4 خانات كلها أرقام، و`guess password 6 Aa0` يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة.',
+    cele_2: 'تعلّمت أوامر اختراق كلمات المرور! `guess password 4` يخمّن كلمة سر مكونة من 4 أرقام، و`guess password 6 Aa0` يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة.',
     cele_3: 'كلما زادت **خانات** كلمة السر وتنوّعت (أرقام وأحرف)، صار تخمينها أصعب واحتاج الحاسوب **وقتاً أطول بكثير**. هذا سرّ **كلمة السر القوية** التي يجب أن نستخدمها.',
     cele_b: 'متابعة',
     /* notes app: first line is the title (all fictional) */
@@ -2425,7 +2498,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     tt_p: 'هيا نرى مدى قوة كلمة السر التي اخترتها! سننتقل إلى شاشة الأوامر لنعرف كم من الوقت يحتاج الحاسوب لتخمينها.',
     /* task lines */
     t_manual: 'جرّب حظك: حاول أن تخمّن **كلمة سر** الهاتف بتجربة **ثلاث** كلمات مرور مختلفة.',
-    t_cmd: 'حان دور الحاسوب! اكتب في **شاشة الأوامر** الأمر `guess password 4` الذي يخمّن كلمة سر من **أربع خانات** كلها أرقام، ثم اضغط **Enter**',
+    t_cmd: 'حان دور الحاسوب! اكتب في **شاشة الأوامر** الأمر `guess password 4` الذي يخمّن كلمة سر مكونة من **أربعة أرقام**، ثم اضغط **Enter**',
     t_enter: 'وجد الحاسوب **كلمة السر الصحيحة**! اكتبها على **الهاتف** لتفتحه.',
     t_browse: 'تم **اختراق** الهاتف! **استكشف الهاتف** وأجب عن **أسئلة التحدي**.',
     t_done: 'مهمة رائعة! اكتشفت مدى **أمان الهاتف**، وعرفت كيف تجعل **كلمة السر أقوى**. أجب عن **السؤال الأخير** لتنهي الدرس.',
@@ -2472,7 +2545,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     p3_h: 'كيف يساعد الحاسوب الهاكر؟',
     p3: 'الحاسوب سريع جداً، يستطيع تجربة مئات وآلاف كلمات السر في وقت قصير.\n\nفي هذا الدرس ستكتب بنفسك أمراً يجعل الحاسوب يخمّن كلمة السر الصحيحة لهذا الهاتف.',
     p4_h: 'تعرّف على شاشة الأوامر',
-    p4: 'شاشة الأوامر هي المكان الذي نكتب فيه أوامر للحاسوب لينفذها. سنكتب: `guess password 4`\n\n`guess` تعني «خمّن»، و`password` هي كلمة السر التي نريد تخمينها، و`4` هو عدد خانات كلمة السر (مثلاً `3367` فيها أربع خانات). اكتب الأمر كما هو، ثم اضغط `Enter`.',
+    p4: 'شاشة الأوامر هي المكان الذي نكتب فيه أوامر للحاسوب لينفذها. سنكتب: `guess password 4`\n\n`guess` تعني «خمّن»، و`password` هي كلمة السر التي نريد تخمينها، و`4` هو عدد خانات كلمة السر (مثلاً `3367` فيها أربع خانات).',
     p6_h: 'وجدناها!',
     p6: 'أحسنت! وجدت كلمة السر باستخدام شاشة الأوامر.',
     pr_best: 'رائع! اخترت كلمة السر الأصعب على الهاكر.',
@@ -2643,6 +2716,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
       await CC.say('p1b'); if (!ok()) return;
       L.task(CC.t('t_manual')); counter();
       CC.emit('step', { id: 'manual' });
+      (function pointStart() { if (CC.pointAt) CC.pointAt(P.el); else setTimeout(pointStart, 80); })();      /* at the start: an arrow and a glow point at the phone, the step says to try it (the skin script loads right after this one) */
       guideKeys();
       await CC.waitFor('manual'); if (!ok()) return;
       if (CC.guide) CC.guide.hide();
@@ -2658,6 +2732,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
          or a command typed in the terminal) end it. Awaited just before the command stage, so the terminal works the whole time. */
       counter();
       CC.emit('step', { id: 'manual' });
+      (function pointStart() { if (CC.pointAt) CC.pointAt(P.el); else setTimeout(pointStart, 80); })();      /* at the start: an arrow and a glow point at the phone, the step says to try it (the skin script loads right after this one) */
       var manualDone = CC.waitFor('manual');
     }
 
@@ -2711,7 +2786,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
       st.armed = true; st.example = ghost;
       var again = false;
       while (true) {
-        L.task(CC.t(taskKey, vars)); L.expl(again ? '' : CC.t('e_idle')); again = false; L.value(''); L.enable(true);
+        L.task(CC.t(taskKey, vars)); L.expl(''); again = false; L.value(''); L.enable(true);
         if (self || taskKey === 't_cmd') L.ghost(ghost); else L.ghost(null);
         guideCmd();
         var cmd = st.early || await CC.waitFor('run'); st.early = null; if (!ok()) return null;
@@ -2734,7 +2809,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
     }
 
     /* ---- stage: crack the phone ---- */
-    if (!self) { await manualDone; if (!ok()) return; L.expl(CC.t('e_idle')); st.phase = 'cmd'; }
+    if (!self) { await manualDone; if (!ok()) return; st.phase = 'cmd'; }
     CC.emit('step', { id: 'command' });
     var res = await commandStage('t_cmd', 'guess password 4', true); if (!res || !ok()) return;
     st.found = true; st.phase = 'enter'; L.task(CC.t('t_enter'));
@@ -3014,9 +3089,9 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   if (!wrap || typeof CC.panelTask !== 'function') return;
   var CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 5 5 9-10"/></svg>';
   var feed = document.createElement('aside');
-  feed.className = 'cc-feed'; feed.setAttribute('aria-label', 'خطوات المهمة');
+  feed.className = 'cc-feed'; feed.setAttribute('aria-label', 'خطوة بخطوة');
   feed.innerHTML =
-    '<div class="cc-feed-h"><span class="cc-feed-bot" aria-hidden="true"></span><div class="cc-feed-hd"><b>خطوات المهمة</b><div class="cc-track" aria-hidden="true"></div><small class="cc-feed-n"></small></div></div>' +
+    '<div class="cc-feed-h"><span class="cc-feed-bot" aria-hidden="true"></span><div class="cc-feed-hd"><b>خطوة بخطوة</b><div class="cc-track" aria-hidden="true"></div><small class="cc-feed-n"></small></div></div>' +
     '<div class="cc-cur" aria-live="polite"><span class="cc-say"></span><div class="cc-cur-in"><span class="cc-num"><i></i></span><div class="cc-txt"></div></div></div>' +
     '<div class="cc-coach" hidden aria-live="polite"><div class="cc-fbs"></div><div class="cc-expl"></div><div class="cs-act cc-acts"></div></div>' +
     '<ol class="cc-steps"></ol>' +
@@ -3433,6 +3508,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     else if (name === 'key') keyClick(c, out, t);
     else if (name === 'correct') { note(c, out, 659.3, t, 0.16, 'triangle', 0.22); note(c, out, 987.8, t + 0.11, 0.22, 'triangle', 0.22); }
     else if (name === 'try') { note(c, out, 392, t, 0.16, 'sine', 0.16); note(c, out, 329.6, t + 0.12, 0.22, 'sine', 0.14); }
+    else if (name === 'ping') { note(c, out, 784, t, 0.12, 'sine', 0.14); note(c, out, 1174.7, t + 0.09, 0.2, 'sine', 0.12); }      /* a new step arrived while another tab is open */
     else if (name === 'hint') { note(c, out, 1046.5, t, 0.14, 'sine', 0.12); note(c, out, 1568, t + 0.05, 0.12, 'sine', 0.05); }
     else if (name === 'done') {
       [523.3, 659.3, 784, 1046.5].forEach(function (f, i) { note(c, out, f, t + i * 0.12, 0.35, 'triangle', 0.3); });
@@ -3504,7 +3580,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     }, 420);
   }
   var TERM = String(CC.t('cs_title'));
-  var OPEN_TXT = (M && M.openTerminal) || 'شغّل **تطبيق شاشة الأوامر**: اضغط على أيقونتها [[term]] في الشريط على يسار الشاشة.';
+  var OPEN_TXT = (M && M.openTerminal) || 'افتح **تطبيق شاشة الأوامر** عن طريق الضغط على الرمز [[term]] في الشريط على يسار الشاشة.';
   var SPOT_T = 'ابدأ هنا', SPOT_B = 'افتح ' + TERM + ' للتحكم بالحاسوب';      /* the label beside the glowing dock icon */
   var IC = {
     term: '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#0E1F39"/><rect x="1" y="1" width="46" height="46" rx="10" fill="none" stroke="#2C4670" stroke-width="2"/><path d="M12 17l8 7-8 7" fill="none" stroke="#FCAD0F" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><path d="M24 32h12" stroke="#fff" stroke-width="4" stroke-linecap="round"/></svg>',
@@ -3592,8 +3668,17 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   }
   /* close (red) or send to the background (yellow, keep: the dot stays). Either way the terminal keeps what it shows and a
      running command goes on; it comes back from the dock. */
+  /* closing with the red button really closes the terminal: what it showed (results, errors, chips, the progress bar) and what was typed are forgotten, like a real
+     terminal. Minimising (yellow) keeps everything. A command that is still running cannot be closed: the window is minimised instead and a short note says why. */
+  function wipeTerm(l) {
+    var inp = $('#cmd', l);
+    if (inp && inp.disabled) return false;
+    try { var L = CC.L; L.clearLog(); L.clearChips(); L.progress(0, 0); L.value(''); L.err(''); } catch (e) { }
+    return true;
+  }
   function closeTerm(keep) {
     var l = lapEl(); if (!l || l.classList.contains('cc-closed')) return;
+    if (!keep && !wipeTerm(l)) { keep = true; if (CC.toast) CC.toast('الأمر ما زال يعمل، لذلك صُغّرت النافذة ولم تُغلق.', 2600); }
     l.classList.add('cc-closed'); hideCmdTip(true);
     if (OS.last && !OS.guide && typeof gHideF === 'function') { OS.guide = OS.last; gHideF.call(CC.guide); }      /* the ring on the command box goes with the window and returns when it opens */
     var ic = $('.cc-app[data-app="term"]', l);
@@ -3804,38 +3889,23 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         var inset = parseFloat(getComputedStyle(di).left) / Math.max(1, parseFloat(getComputedStyle(deck).width)); if (!isFinite(inset)) inset = 0.045;
         var A = { x: dk.left + inset * dk.width - sr.left, y: dk.top - sr.top }, B = { x: lr.left + 1 - sr.left, y: lr.bottom - sr.top }, W = 0;
         var ex = function (y) { return A.x + (y - A.y) / Math.max(1, B.y - A.y) * (B.x - A.x); };
-        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 25;   /* the metal tip ends 1 px inside the base's left edge, in its middle; the wire leaves from its collar */
+        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 18;   /* the plug at the end of the wire touches the middle of the base's left edge; there is no grey side wall any more (Moaz 2026-11-10) */
         var prr = pr.right - sr.left, pb = pr.bottom - sr.top, cx = (pr.left + pr.right) / 2 - sr.left;
-        if (sx - prr < 30) return;
-        var E = pb + 24, yB = Math.max(pb + 62, (lr.bottom - sr.top) + 34), mx = prr + Math.max(14, (sx - prr) * 0.42);
+        if (sx - prr < 16) return;
+        var E = pb + 17, yB = Math.max(pb + 46, (lr.bottom - sr.top) + 30), xs = prr + Math.max(8, (sx - prr) * 0.5);
+        var rx1 = Math.max(6, Math.min(30, sx - xs - 2)), ry1 = 38, rx2 = Math.min(44, Math.max(18, xs - cx - 20)), ry2 = 30, rx3 = rx2, ry3 = ry2, K = 0.55;
         var d = 'M' + sx + ',' + sy +
-          ' C' + (sx - 46) + ',' + sy + ' ' + (mx + 54) + ',' + (yB - 6) + ' ' + mx + ',' + yB +
-          ' C' + (mx - 70) + ',' + (yB + 4) + ' ' + cx + ',' + (yB + 8) + ' ' + cx + ',' + (E + 38);
-        d += ' L' + cx + ',' + E;
+          ' L' + (xs + rx1) + ',' + sy +
+          ' C' + (xs + rx1 - K * rx1) + ',' + sy + ' ' + xs + ',' + (sy + ry1 - K * ry1) + ' ' + xs + ',' + (sy + ry1) +
+          ' L' + xs + ',' + (yB - ry2) +
+          ' C' + xs + ',' + (yB - ry2 + K * ry2) + ' ' + (xs - rx2 + K * rx2) + ',' + yB + ' ' + (xs - rx2) + ',' + yB +
+          ' L' + (cx + rx3) + ',' + yB +
+          ' C' + (cx + rx3 - K * rx3) + ',' + yB + ' ' + cx + ',' + (yB - ry3 + K * ry3) + ' ' + cx + ',' + (yB - ry3) +
+          ' L' + cx + ',' + E;
         s.querySelectorAll('path.wire').forEach(function (p) { p.setAttribute('d', d); });
-        rects.forEach(function (r) { r.parentNode.removeChild(r); });
-        /* USB-C plug in local coordinates, pointing right: strain-relief boot, housing, metal tip with its slot (tip end at x = 16) */
-        /* a realistic USB-C plug, seen from above, in local coordinates pointing right (tip end at x = 12): the flared strain relief with its ribs, the rubber overmold,
-           the metal collar and the shiny steel shell (a straight-sided plate with a dark seam and the contact opening at its end) */
-        var NS = 'http://www.w3.org/2000/svg';
-        var plug = function (tx, ty, rot) {
-          var g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'cc-usbc'); g.setAttribute('transform', 'translate(' + tx + ',' + ty + ') rotate(' + rot + ')');
-          g.innerHTML =
-            '<path d="M-14,-2.7 C-12,-2.9 -10,-3.6 -8.5,-4.6 L-8.5,4.6 C-10,3.6 -12,2.9 -14,2.7 Z" fill="#2a3140" stroke="#151b27" stroke-width="1" stroke-linejoin="round"/>' +
-            '<path d="M-12.2,-2.6 V2.6 M-10.4,-3.1 V3.1" stroke="#151b27" stroke-width=".8" fill="none" opacity=".7"/>' +
-            '<rect x="-8.5" y="-6" width="10.8" height="12" rx="3.6" fill="#404a5e" stroke="#151b27" stroke-width="1"/>' +
-            '<rect x="-6.6" y="-4.7" width="7" height="2.2" rx="1.1" fill="rgba(255,255,255,.2)"/>' +
-            '<rect x="2.3" y="-4.9" width="1.8" height="9.8" rx=".6" fill="#8d97a8" stroke="#5d6778" stroke-width=".7"/>' +
-            '<rect x="4" y="-4.3" width="8" height="8.6" rx="1.3" fill="#E4E8EE" stroke="#7d8798" stroke-width="1"/>' +
-            '<rect x="4.9" y="-3.5" width="6.2" height="1.7" rx=".8" fill="rgba(255,255,255,.9)"/>' +
-            '<rect x="9.4" y="-2.7" width="2.4" height="5.4" rx=".9" fill="#2b323f"/>' +
-            '<path d="M4.6,.2 H9" stroke="#9aa4b4" stroke-width=".7"/>';
-          s.appendChild(g);
-        };
-        plug(wallX - 11, sy, 0);               /* into the middle of the laptop base's left edge */
-        plug(cx, pb - 1 + 11, -90);            /* up into the bottom of the phone */
+        rects[0].setAttribute('x', sx); rects[0].setAttribute('y', sy - 6.2); rects[0].setAttribute('width', 18); rects[0].setAttribute('height', 12.4);
+        rects[1].setAttribute('x', sx + 3); rects[1].setAttribute('y', sy - 4.8); rects[1].setAttribute('width', 11); rects[1].setAttribute('height', 2.2);
       } catch (e) { /* the cable stays where the engine drew it */ }
-      try { Array.prototype.slice.call(CC.cable.svg.children).forEach(function (r) { if (r.tagName === 'rect') r.parentNode.removeChild(r); }); } catch (e2) { }      /* the engine's own plug rectangles go (stacked layouts keep its route); the metal tips are groups */
     };
     CC.cable.seated = true;
     if (CC.L && CC.P && CC.P.cable && CC.L.el && CC.P.el) CC.cable.draw(CC.L.el, CC.P.el, document.getElementById('stage'));
@@ -3853,8 +3923,12 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       arrow.style.top = Math.round(((kr.top + kr.bottom) / 2 - wr.top) * k) + 'px';
     }
     CC.pointAt = function (el) {
-      clearInterval(tick); tick = null; target = el || null;
+      clearInterval(tick); tick = null;
+      if (target && target.classList) target.classList.remove('cc-attn');
+      target = el || null;
       if (!el) { if (arrow && arrow.parentNode) arrow.parentNode.removeChild(arrow); arrow = null; return; }
+      if (el.classList) el.classList.add('cc-attn');
+      return;      /* no arrow any more (Moaz 2026-11-10): only the glow around the device */
       if (!wrapEl) return;
       if (!arrow) {
         arrow = document.createElement('div'); arrow.className = 'cc-arrow'; arrow.setAttribute('aria-hidden', 'true');
@@ -3862,6 +3936,8 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       }
       wrapEl.appendChild(arrow); place(); tick = setInterval(place, 400);
     };
+    /* the first key the student presses on the phone ends the pointing (he understood) */
+    document.addEventListener('pointerdown', function (ev) { if (target && ev.target.closest && ev.target.closest('.phone .key')) CC.pointAt(null); }, true);
     var emit0 = CC.emit;
     CC.emit = function (ev, data) { if (ev === 'step' && CC.pointAt) CC.pointAt(null); return emit0 && emit0.apply(this, arguments); };
   })();
@@ -3882,6 +3958,36 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       void b.offsetWidth; b.classList.add('show');
       clearTimeout(naTimer); naTimer = setTimeout(function () { b.classList.remove('show'); }, Math.max(2600, ms || 0));
     };
+  })();
+
+  /* «خطوة بخطوة» is the name of the instruction panel (Moaz 2026-11-10); «شرح مختصر» is its second tab (the short explanation, a copy of the drawer text made when
+     the tab opens). A red dot on «خطوة بخطوة» shows a new step while the other tab is open. */
+  (function () {
+    var steps = $('.cc-steps', feed); if (!steps) return;
+    var bar = document.createElement('div'); bar.className = 'cc-tabs'; bar.setAttribute('role', 'tablist');
+    var DEF = [['steps', 'خطوة بخطوة'], ['ref', CC.t('ref_title')]], btns = {};
+    DEF.forEach(function (d) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'cc-tab'; b.setAttribute('role', 'tab'); b.textContent = d[1];
+      b.onclick = function () { setTab(d[0]); }; bar.appendChild(b); btns[d[0]] = b;
+    });
+    feed.insertBefore(bar, feed.firstChild);
+    var ref = document.createElement('div'); ref.className = 'cc-ref'; ref.innerHTML = '<div class="cc-ref-b"></div>';
+    feed.insertBefore(ref, steps);
+    function setTab(n) {
+      if (n === 'ref') {
+        var src = $('#drawer .dr-b'), dst = $('.cc-ref-b', ref); dst.innerHTML = '';
+        if (src) { var cp = src.cloneNode(true); dst.appendChild(cp); fixMarks(cp); }
+        ref.scrollTop = 0;
+      }
+      feed.setAttribute('data-tab', n);
+      Object.keys(btns).forEach(function (k) { btns[k].classList.toggle('on', k === n); btns[k].setAttribute('aria-selected', k === n ? 'true' : 'false'); });
+      if (n === 'steps') btns.steps.classList.remove('dot');
+    }
+    setTab('steps');
+    var pt0 = CC.panelTab;
+    CC.panelTab = function (name) { if (name === 'ref') { setTab('ref'); name = 'q'; } return pt0 ? pt0.call(CC, name) : undefined; };
+    var curT = $('.cc-cur .cc-txt', feed);
+    if (curT) new MutationObserver(function () { if (feed.getAttribute('data-tab') !== 'steps') { btns.steps.classList.add('dot'); play('ping'); } }).observe(curT, { childList: true, subtree: true, characterData: true });
   })();
 
   /* the questions panel (with its two tabs «أسئلة التحدي» and «شرح مختصر») is a hidden panel on the left edge: a tab opens and closes it, and it opens by itself,
