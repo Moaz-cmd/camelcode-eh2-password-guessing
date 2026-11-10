@@ -1278,6 +1278,30 @@ body.side .cc-feed .cc-cur::before{inset-inline-start:61px}
 @keyframes ccrip{0%,56%{opacity:0;transform:scale(.3)}60%{opacity:.9;transform:scale(.5)}80%{opacity:0;transform:scale(1.4)}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.cc-app.cue::before{animation:none;opacity:0}}
 
+/* the white current step always sits right above the assistant; the supporting instructions (feedback, hints) appear ABOVE it in another colour (gold), earlier steps above those, faded (Moaz 2026-11-10) */
+body.side .cc-feed .cc-steps{order:1}
+body.side .cc-feed .cc-coach{order:2;margin:0 14px 10px;padding:12px 14px;background:rgba(252,173,15,.16);border:1px solid rgba(252,173,15,.5);border-radius:var(--r-m);color:#FFE8B5}
+body.side .cc-feed .cc-cur{order:3}
+body.side .cc-feed .cc-coach .cc-fb{background:transparent;border:0;padding:0;color:#FFE8B5}
+
+/* «أسئلة التحدي» and «شرح مختصر» sit together in ONE hidden panel on the left: a tab on the left edge opens and closes it; opening it pushes the lab aside, so it never covers the phone (Moaz 2026-11-10) */
+.cc-qhandle{display:none}
+@media (min-width:1020px){
+  body.side.cc-has-feed{--qd:0px}
+  body.side.cc-has-feed.cc-q-open{--qd:var(--qw,331px)}
+  body.side.cc-has-feed .wrap{grid-template-columns:var(--fw) minmax(0,1fr) var(--qd);transition:grid-template-columns 340ms var(--ease)}
+  body.side.cc-has-feed .laptop{max-width:min(calc(100 * var(--vw) - var(--fw) - var(--qd) - 430px),calc((100 * var(--vh) - 280px) / .74))}
+  body.side.cc-has-feed .overlay{padding-inline-end:calc(var(--qd) + 44px)}
+  body.side.cc-has-feed .qpanel{grid-column:3;min-width:0;width:auto;border-radius:0 var(--r-l) var(--r-l) 0;box-shadow:0 0 0 1px var(--line)}
+  body.side.cc-has-feed:not(.cc-q-open) .qpanel{visibility:hidden;pointer-events:none}
+  .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:46;align-items:center;gap:10px;padding:18px 11px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
+    background:var(--navy);color:#fff;font-weight:800;font-size:calc(var(--t) * 1.02);line-height:1;box-shadow:0 12px 26px -10px rgba(10,22,40,.6);transition:left 340ms var(--ease),background-color 200ms}
+  .cc-qhandle:hover{background:#162B4D}
+  .cc-qhandle svg{width:18px;height:18px;fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 340ms var(--ease)}
+  body.cc-q-open .cc-qhandle{left:calc(24px + var(--qw,331px))}
+  body.cc-q-open .cc-qhandle svg{transform:rotate(180deg)}
+}
+
 </style><!--/cc-skin-->
 </head>
 <body class="side">
@@ -2386,7 +2410,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
     cele_i: 'أهم ما تعلمته في هذا الدرس:',
     cele_1: 'الحاسوب يجرّب كلمات السر واحدة تلو الأخرى بسرعة كبيرة حتى يجد الصحيحة، وهذا أسرع بكثير من تجربتها بأيدينا.',
-    cele_2: 'تعلّمت أوامر اختراق كلمات المرور! `guess password 4 0` يخمّن كلمة سر من 4 خانات كلها أرقام، و`guess password 6 Aa0` يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة.',
+    cele_2: 'تعلّمت أوامر اختراق كلمات المرور! `guess password 4` يخمّن كلمة سر من 4 خانات كلها أرقام، و`guess password 6 Aa0` يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة.',
     cele_3: 'كلما زادت **خانات** كلمة السر وتنوّعت (أرقام وأحرف)، صار تخمينها أصعب واحتاج الحاسوب **وقتاً أطول بكثير**. هذا سرّ **كلمة السر القوية** التي يجب أن نستخدمها.',
     cele_b: 'متابعة',
     /* notes app: first line is the title (all fictional) */
@@ -2398,7 +2422,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     tt_p: 'هيا نرى مدى قوة كلمة السر التي اخترتها! سننتقل إلى شاشة الأوامر لنعرف كم من الوقت يحتاج الحاسوب لتخمينها.',
     /* task lines */
     t_manual: 'جرّب حظك: حاول أن تخمّن **كلمة سر** الهاتف بتجربة **ثلاث** كلمات مرور مختلفة.',
-    t_cmd: 'حان دور الحاسوب! اكتب في **شاشة الأوامر** الأمر `guess password 4 0` الذي يخمّن كلمة سر من **أربع خانات** كلها أرقام، ثم اضغط **Enter**',
+    t_cmd: 'حان دور الحاسوب! اكتب في **شاشة الأوامر** الأمر `guess password 4` الذي يخمّن كلمة سر من **أربع خانات** كلها أرقام، ثم اضغط **Enter**',
     t_enter: 'وجد الحاسوب **كلمة السر الصحيحة**! اكتبها على **الهاتف** لتفتحه.',
     t_browse: 'تم **اختراق** الهاتف! **استكشف الهاتف** وأجب عن **أسئلة التحدي**.',
     t_done: 'مهمة رائعة! اكتشفت مدى **أمان الهاتف**، وعرفت كيف تجعل **كلمة السر أقوى**. أجب عن **السؤال الأخير** لتنهي الدرس.',
@@ -2415,7 +2439,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     r_cap: 'أجرينا {n} محاولة من أصل {total}.',
     r_est: 'الوقت المتوقع للوصول إلى كلمة السر: {est}.',
     r_capnone: 'أوقفنا العرض ولم تظهر كلمة السر بعد، لأن عدد الخانات أو ما تتكون منه كلمة المرور لا يطابق هذا الهاتف.',
-    r_hint4: 'جرّب الأمر الأقصر: `guess password 4 0`',
+    r_hint4: 'جرّب الأمر الأقصر: `guess password 4`',
     r_left2: 'كلمة السر غير صحيحة! جرّب كلمة سر أخرى - تبقى لك محاولتان.',
     r_left1: 'كلمة السر غير صحيحة! جرّب كلمة سر أخرى - تبقى لك محاولة واحدة.',
     r_pwnote: 'ليست هذه الكلمة. انظر إلى السطر الأخضر في شاشة الأوامر.',
@@ -2434,7 +2458,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     m_what: 'الكلمة `{w}` غير صحيحة. بعد `guess` اكتب `password`',
     m_lenfirst: 'الأمر غير مكتمل: عدد الخانات غير موجود. اكتب `{n}` بعد `password` قبل `{w}`',
     m_parts: 'الصيغة الصحيحة: `{ex}`\n• `guess` تعني «خمّن»\n• `password` تعني كلمة السر المراد تخمينها\n• `{len}` هو عدد خانات كلمة السر\n• `{opts}` تعني أن كلمة السر تتكون من {optsd}',
-    m_extra: 'في الأمر كلمات زائدة. الأمر أربعة أجزاء فقط',
+    m_extra: 'في الأمر كلمات زائدة. الأمر {parts} أجزاء فقط',
     /* lesson popups (P), typed letter by letter */
     p1_h: 'أهلاً بك في مختبر كاملكود!',
     p1: 'كل يوم نستخدم أجهزة مثل الهاتف واللابتوب والحاسوب، وكلها تحميها كلمة المرور (Password). كلمة المرور تحرس أسرار صاحب الجهاز، مثل الصور والمحادثات، فمن لا يعرفها لا يستطيع فتح الجهاز.',
@@ -2445,7 +2469,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     p3_h: 'كيف يساعد الحاسوب الهاكر؟',
     p3: 'الحاسوب سريع جداً، يستطيع تجربة مئات وآلاف كلمات السر في وقت قصير.\n\nفي هذا الدرس ستكتب بنفسك أمراً يجعل الحاسوب يخمّن كلمة السر الصحيحة لهذا الهاتف.',
     p4_h: 'تعرّف على شاشة الأوامر',
-    p4: 'شاشة الأوامر هي المكان الذي نكتب فيه أوامر للحاسوب لينفذها. سنكتب: `guess password 4 0`\n\n`guess` تعني «خمّن»، و`password` هي كلمة السر التي نريد تخمينها، و`4` هو عدد خانات كلمة السر (مثلاً `3367` فيها أربع خانات)، و`0` يعني أن كلمة السر أرقام فقط. اكتب الأمر كما هو، ثم اضغط `Enter`.',
+    p4: 'شاشة الأوامر هي المكان الذي نكتب فيه أوامر للحاسوب لينفذها. سنكتب: `guess password 4`\n\n`guess` تعني «خمّن»، و`password` هي كلمة السر التي نريد تخمينها، و`4` هو عدد خانات كلمة السر (مثلاً `3367` فيها أربع خانات). اكتب الأمر كما هو، ثم اضغط `Enter`.',
     p6_h: 'وجدناها!',
     p6: 'أحسنت! وجدت كلمة السر باستخدام شاشة الأوامر.',
     pr_best: 'رائع! اخترت كلمة السر الأصعب على الهاكر.',
@@ -2457,7 +2481,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     w5: 'هذا شريط التقدّم: يبيّن كم كلمة سر جرّبها الحاسوب على الهاتف، وكم بقي حتى ينتهي.', w6: 'زر «؟» يعرّفك على أجزاء الدرس وطريقة استخدامها.',
     /* instructor reference panel (condensed from the popups) */
     r1_h: 'الملخص', r1: 'أنت الآن هاكر، وأمامك هاتف ضحية مقفل بكلمة سر من **أربع خانات**. سنحاول اختراق الهاتف عن طريق استخدام **الحاسوب (جهاز الهاكر)** في عملية **تخمين كلمة السر**. يتم التحكم بالهاتف عن طريق **سلك** يربطه بالحاسوب (جهاز الهاكر)',
-    r2_h: 'الأمر `guess password 4 0`', r2: '- `guess` تعني «خمّن».\n- `password` هي كلمة السر.\n- `4` هو عدد خانات كلمة السر، مثلاً `3367` عبارة عن أربع خانات.\n- `0` تعني أن كلمة السر تتكون من أرقام فقط.',
+    r2_h: 'الأمر `guess password 4`', r2: '- `guess` تعني «خمّن».\n- `password` هي كلمة السر.\n- `4` هو عدد خانات كلمة السر، مثلاً `3367` عبارة عن أربع خانات.',
     r3_h: 'النتيجة المتوقعة', r3: 'يتم تجربة جميع كلمات السر الممكنة بدءاً من `0000`، `0001`، `0002` وحتى `9999`، ويتوقف الحاسوب عند أول كلمة سر صحيحة.\n\nبعد ذلك اكتب كلمة السر التي وجدها الحاسوب على الهاتف ليُفتح.',
     r4_h: 'الأمر `guess password 6 Aa0`', r4: 'يُستخدم لتخمين كلمة سر أطول وأكثر تنوعاً.\n\n- `guess password` تعني تخمين كلمة السر.\n- `6` تعني أن كلمة السر مكونة من 6 خانات.\n- `0` تعني أن كلمة السر من الممكن أن تحتوي على أرقام.\n- `a` تعني أنها من الممكن أن تحتوي على أحرف صغيرة.\n- `A` تعني أنها من الممكن أن تحتوي على أحرف كبيرة.\n\nترتيب الخيارات لا يهم (`Aa0` أو `0aA`).\n\nكلما زاد عدد الخانات وتكونت كلمة السر من أرقام وأحرف ورموز زاد عدد الاحتمالات.',
     r5_h: 'كيف تحمي نفسك؟', r5: 'اختر كلمة سر طويلة فيها أحرف صغيرة وكبيرة وأرقام ورموز، مثل: `A4s&w2mJ`',
@@ -2505,14 +2529,14 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     return CC.t('o_pre') + ' ' + parts.join(' و') + (parts.length === 1 ? ' فقط' : '');
   }
 
-  /* the short help under every command mistake: the correct command and what each part means, matching the command of the current phase (4 0 first, then 6 Aa0) */ function partsMsg(ex) { var t = (ex || 'guess password 4 0').split(' '), o = t[3] || '0'; return CC.t('m_parts', { ex: ex || 'guess password 4 0', len: t[2] || '4', opts: o, optsd: describeOpts(o).replace(CC.t('o_pre') + ' ', '') }); }
+  /* the short help under every command mistake: the correct command and what each part means, matching the command of the current phase (4 0 first, then 6 Aa0) */ function partsMsg(ex) { ex = ex || 'guess password 4'; var t = ex.split(' '), o = t[3] || '0', s = CC.t('m_parts', { ex: ex, len: t[2] || '4', opts: o, optsd: describeOpts(o).replace(CC.t('o_pre') + ' ', '') }); return t[3] ? s : s.replace(/\n[^\n]*$/, ''); }
 
   /* [LAB] ================= COMMAND GRAMMAR (one specific message per mistake) ================= */
   function parse(raw, cx) {
     cx = cx || {};
-    var ex = cx.ex || 'guess password 4 0', n = cx.n || 4;
+    var ex = cx.ex || 'guess password 4', n = cx.n || 4;
     var lenx = (ex.split(' ')[2]) || '4';
-    var v = function (o) { o.ex = ex; o.n = n; o.lenx = lenx; o.optsay = /[aA]/.test(ex.split(' ')[3] || '') ? 'الخيارات المتاحة `0` و`a` و`A`' : 'الخيار المتاح `0`'; return o; };
+    var v = function (o) { o.ex = ex; o.n = n; o.lenx = lenx; o.parts = ex.split(' ').length === 3 ? 'ثلاثة' : 'أربعة'; o.optsay = /[aA]/.test(ex.split(' ')[3] || '') ? 'الخيارات المتاحة `0` و`a` و`A`' : 'هذا الأمر لا يحتاج إلى خيارات'; return o; };
     var tk = raw.trim().split(/\s+/).filter(Boolean);
     if (!tk.length) return null;
     var w = tk[0];
@@ -2531,12 +2555,11 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     if (!/^\d+$/.test(tk[2])) return { err: CC.t('m_nan', v({ w: tk[2] })) };
     var len = parseInt(tk[2], 10);
     if (len !== 4 && len !== 6) return { err: CC.t('m_len', v({ w: tk[2] })) };
-    if (tk.length === 3) return { err: CC.t('m_noopts', v({})) };
     if (tk.length > 4) return { err: CC.t('m_extra', v({})) };
-    var opts = tk[3];
+    var implicit = tk.length === 3, opts = implicit ? '0' : tk[3];      /* no option = digits only */
     if (!/^[0aA]+$/.test(opts) || /(.).*\1/.test(opts)) return { err: CC.t('m_opts', v({ w: opts })) };
     var alpha = (opts.indexOf('0') >= 0 ? CC.ALPHA.d : '') + (opts.indexOf('a') >= 0 ? CC.ALPHA.a : '') + (opts.indexOf('A') >= 0 ? CC.ALPHA.A : '');
-    return { raw: tk.join(' '), len: len, opts: opts, alpha: alpha, total: Math.pow(alpha.length, len) };
+    return { raw: tk.join(' '), len: len, opts: opts, implicit: implicit, alpha: alpha, total: Math.pow(alpha.length, len) };
   }
 
   /* [FLOW] ================= FLOW: keep this structure in every lab, change only the [LAB] parts ================= */
@@ -2605,7 +2628,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
     P.showLock('digits', 4); L.task(CC.t('t_manual'));          /* both modes start by guessing by hand on the phone */
     CC.emit('step', { id: 'start' });
     if (self) { L.el.classList.add('off'); }
-    else { cableOn(); L.enable(true); st.armed = true; st.example = 'guess password 4 0'; }   /* instructor-led: nothing locked or greyed out, the terminal works from the start */
+    else { cableOn(); L.enable(true); st.armed = true; st.example = 'guess password 4'; }   /* instructor-led: nothing locked or greyed out, the terminal works from the start */
 
     /* ---- self-paced intro layers ---- */
     if (self) {
@@ -2640,7 +2663,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
       st.running = true;
       L.enable(false); L.err(''); L.clearLog(); L.progress(0, cmd.total);
       var chips = [['guess', CC.t('tk_guess')], ['password', CC.t('tk_password')], [String(cmd.len), CC.t('tk_len')]];
-      chips.push([cmd.opts, describeOpts(cmd.opts)]);
+      if (!cmd.implicit) chips.push([cmd.opts, describeOpts(cmd.opts)]);
       if (!(await L.chips(chips, g, self ? 1050 : 0))) return null;
       L.add(CC.t('r_start', { total: CC.fmt(cmd.total) }), 'dim');
       var hit = (st.pw.length === cmd.len) ? CC.indexOf(st.pw, cmd.alpha) : null;
@@ -2710,7 +2733,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
     /* ---- stage: crack the phone ---- */
     if (!self) { await manualDone; if (!ok()) return; L.expl(CC.t('e_idle')); st.phase = 'cmd'; }
     CC.emit('step', { id: 'command' });
-    var res = await commandStage('t_cmd', 'guess password 4 0', true); if (!res || !ok()) return;
+    var res = await commandStage('t_cmd', 'guess password 4', true); if (!res || !ok()) return;
     st.found = true; st.phase = 'enter'; L.task(CC.t('t_enter'));
     CC.Q.items[0].hint = CC.t('q1h'); var q1hint = document.querySelector('.qrow[data-id="q1"] .qhint'); if (q1hint) q1hint.textContent = CC.t('q1h');   /* now the hint points at the green line the computer wrote */
     await CC.say('p6'); if (!ok()) return;
@@ -2738,8 +2761,8 @@ L.progress(0, 0); L.enable(false); L.expl('');
     CC.Q.reveal('q4');                                  /* question 4 appears with the thinking popup */
     await CC.popup(CC.t('pk_h'), CC.t('pk_p')); if (!ok()) return;
     var OPT3 = [
-      { pw: DYN ? DYN.o1 : '2630', kind: 'digits', len: 4, cmd: 'guess password 4 0', sub: CC.t('pk_o1') },
-      { pw: DYN ? DYN.o2 : '481927', kind: 'digits', len: 6, cmd: 'guess password 6 0', sub: CC.t('pk_o2') },
+      { pw: DYN ? DYN.o1 : '2630', kind: 'digits', len: 4, cmd: 'guess password 4', sub: CC.t('pk_o1') },
+      { pw: DYN ? DYN.o2 : '481927', kind: 'digits', len: 6, cmd: 'guess password 6', sub: CC.t('pk_o2') },
       { pw: LAST, kind: 'text', len: 6, cmd: 'guess password 6 Aa0', sub: CC.t('pk_o3') }
     ];
     var tried = {};
@@ -3776,19 +3799,12 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         if (!(pr.right <= dk.left + 4)) return;                                   /* side by side only */
         var rects = s.querySelectorAll('rect');
         var inset = parseFloat(getComputedStyle(di).left) / Math.max(1, parseFloat(getComputedStyle(deck).width)); if (!isFinite(inset)) inset = 0.045;
-        var A = { x: dk.left + inset * dk.width - sr.left, y: dk.top - sr.top }, B = { x: lr.left + 1 - sr.left, y: lr.bottom - sr.top }, W = 9;
+        var A = { x: dk.left + inset * dk.width - sr.left, y: dk.top - sr.top }, B = { x: lr.left + 1 - sr.left, y: lr.bottom - sr.top }, W = 0;
         var ex = function (y) { return A.x + (y - A.y) / Math.max(1, B.y - A.y) * (B.x - A.x); };
-        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX + 1;   /* the plug ends 1 px inside the side wall, in its middle */
+        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 15;   /* the metal tip ends 1 px inside the base's left edge, in its middle; the wire leaves from its collar */
         var prr = pr.right - sr.left, pb = pr.bottom - sr.top, cx = (pr.left + pr.right) / 2 - sr.left;
         if (sx - prr < 30) return;
-        /* the laptop's thin left side wall */
-        if (!s.querySelector('.cc-side')) {
-          var face = document.createElementNS('http://www.w3.org/2000/svg', 'polygon'); face.setAttribute('class', 'cc-side');
-          face.setAttribute('fill', '#AEB5C1'); face.setAttribute('stroke', '#818998'); face.setAttribute('stroke-width', '0.8'); s.insertBefore(face, s.firstChild);
-        }
-        s.querySelector('.cc-side').setAttribute('points', A.x + ',' + A.y + ' ' + (A.x - W) + ',' + (A.y + 5) + ' ' + (B.x - W) + ',' + (B.y - 3) + ' ' + (B.x - W + 3) + ',' + B.y + ' ' + B.x + ',' + B.y);
-        /* a flowing cable (Moaz 2026-11-09): out of the laptop's USB-C plug, one soft curve down and under the phone, then up into the phone's USB-C plug */
-        var E = pb - 1, yB = Math.max(pb + 62, (lr.bottom - sr.top) + 34), mx = prr + Math.max(14, (sx - prr) * 0.42);
+        var E = pb + 14, yB = Math.max(pb + 62, (lr.bottom - sr.top) + 34), mx = prr + Math.max(14, (sx - prr) * 0.42);
         var d = 'M' + sx + ',' + sy +
           ' C' + (sx - 46) + ',' + sy + ' ' + (mx + 54) + ',' + (yB - 6) + ' ' + mx + ',' + yB +
           ' C' + (mx - 70) + ',' + (yB + 4) + ' ' + cx + ',' + (yB + 8) + ' ' + cx + ',' + (E + 38);
@@ -3796,19 +3812,20 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         s.querySelectorAll('path.wire').forEach(function (p) { p.setAttribute('d', d); });
         rects.forEach(function (r) { r.parentNode.removeChild(r); });
         /* USB-C plug in local coordinates, pointing right: strain-relief boot, housing, metal tip with its slot (tip end at x = 16) */
+        /* a USB-C metal tip in local coordinates, pointing right (tip end at x = 11): a thin collar, then the silver tip with its dark slot */
         var NS = 'http://www.w3.org/2000/svg';
-        var plug = function (tx, ty, rot, noTip) {
+        var plug = function (tx, ty, rot) {
           var g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'cc-usbc'); g.setAttribute('transform', 'translate(' + tx + ',' + ty + ') rotate(' + rot + ')');
-          g.innerHTML = '<path d="M-17,-3.4 L-7,-6.4 L-7,6.4 L-17,3.4 Z" fill="#262d3b" stroke="#151b27" stroke-width="1" stroke-linejoin="round"/>' +
-            '<rect x="-7" y="-6.4" width="15" height="12.8" rx="4" fill="#3a4458" stroke="#151b27" stroke-width="1"/>' +
-            '<rect x="-4" y="-4.8" width="9" height="2.2" rx="1.1" fill="rgba(255,255,255,.22)"/>' +
-            (noTip ? '' : '<rect x="8" y="-4.6" width="8" height="9.2" rx="2.8" fill="#d3d8e0" stroke="#7f8797" stroke-width="1"/>' +
-            '<rect x="10.4" y="-3.2" width="4.2" height="6.4" rx="1.6" fill="#39414f"/>');
+          g.innerHTML = '<rect x="-5" y="-3.6" width="6" height="7.2" rx="2" fill="#6B7587" stroke="#3f4858" stroke-width="1"/>' +
+            '<rect x="0" y="-4.6" width="11.4" height="9.2" rx="3.4" fill="#E2E6EC" stroke="#7f8797" stroke-width="1"/>' +
+            '<rect x="2.3" y="-3.2" width="7" height="2" rx="1" fill="rgba(255,255,255,.85)"/>' +
+            '<rect x="3.2" y="-1.4" width="5.4" height="2.8" rx="1.4" fill="#39414f"/>';
           s.appendChild(g);
         };
-        /* no plugs, no ports (Moaz 2026-11-10): the wire simply goes into the laptop's side wall and the phone's bottom edge */
+        plug(wallX - 10.4, sy, 0);               /* into the middle of the laptop base's left edge */
+        plug(cx, pb - 1 + 10.4, -90);            /* up into the bottom of the phone */
       } catch (e) { /* the cable stays where the engine drew it */ }
-      try { CC.cable.svg.querySelectorAll('rect').forEach(function (r) { r.parentNode.removeChild(r); }); } catch (e2) { }      /* the engine's own plug rectangles go too (stacked layouts keep its route, but no plugs) */
+      try { Array.prototype.slice.call(CC.cable.svg.children).forEach(function (r) { if (r.tagName === 'rect') r.parentNode.removeChild(r); }); } catch (e2) { }      /* the engine's own plug rectangles go (stacked layouts keep its route); the metal tips are groups */
     };
     CC.cable.seated = true;
     if (CC.L && CC.P && CC.P.cable && CC.L.el && CC.P.el) CC.cable.draw(CC.L.el, CC.P.el, document.getElementById('stage'));
@@ -3857,12 +3874,18 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     };
   })();
 
-  /* the questions panel stays on the left with its own two tabs, «أسئلة التحدي» and «شرح مختصر» (Moaz 2026-11-10). It switches to the questions by itself when a step
-     says to answer them or when a new question appears after start-up */
+  /* the questions panel (with its two tabs «أسئلة التحدي» and «شرح مختصر») is a hidden panel on the left edge: a tab opens and closes it, and it opens by itself,
+     on the questions tab, when a step says to answer them or when a new question appears after start-up (Moaz 2026-11-10) */
   (function () {
-    var qp = $('#qpanel'), curT = $('.cc-cur .cc-txt', feed);
-    if (!qp) return;
-    var toQ = function () { if (CC.panelTab) CC.panelTab('q'); };
+    var wrapEl = $('.wrap'), qp = $('#qpanel'), curT = $('.cc-cur .cc-txt', feed);
+    if (!wrapEl || !qp) return;
+    var h = document.createElement('button'); h.type = 'button'; h.className = 'cc-qhandle'; h.setAttribute('aria-expanded', 'false');
+    h.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg><span></span>';
+    $('span', h).textContent = CC.t('q_h');
+    wrapEl.appendChild(h);
+    function setOpen(on) { document.body.classList.toggle('cc-q-open', on); h.setAttribute('aria-expanded', on ? 'true' : 'false'); }
+    h.onclick = function () { setOpen(!document.body.classList.contains('cc-q-open')); };
+    var toQ = function () { if (CC.panelTab) CC.panelTab('q'); setOpen(true); };
     if (curT) new MutationObserver(function () { var t = curT.textContent; if (t.indexOf(CC.t('q_h')) !== -1 || /أجب/.test(t)) toQ(); }).observe(curT, { childList: true, subtree: true, characterData: true });
     var t0 = Date.now();
     new MutationObserver(function (ms) {
