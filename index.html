@@ -3510,14 +3510,15 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       o.connect(g); g.connect(out); o.start(t0); o.stop(t0 + p[2] + 0.02);
     });
   }
-  function play(name) {
+  function play(name, arg) {
     if (!soundOn()) return;
     var c = ctx(); if (!c) return;
     var out = c.createGain(); out.gain.value = 0.5; out.connect(c.destination);
     var t = c.currentTime + 0.01;
     if (name === 'tap') note(c, out, 880, t, 0.06, 'sine', 0.10);
     else if (name === 'phone') { note(c, out, 1320, t, 0.035, 'sine', 0.07); note(c, out, 1980, t, 0.025, 'sine', 0.025); }
-    else if (name === 'key') keyClick(c, out, t);
+    else if (name === 'key') keyClick(c, out, t, arg);
+    else if (name === 'pad') padTap(c, out, t);
     else if (name === 'correct') { note(c, out, 659.3, t, 0.16, 'triangle', 0.22); note(c, out, 987.8, t + 0.11, 0.22, 'triangle', 0.22); }
     else if (name === 'try') { note(c, out, 392, t, 0.16, 'sine', 0.16); note(c, out, 329.6, t + 0.12, 0.22, 'sine', 0.14); }
     else if (name === 'ping') { bell(c, out, 1318.5, t, 0.16); bell(c, out, 1760, t + 0.17, 0.2); }      /* a new step arrived while another tab is open */
@@ -3527,19 +3528,41 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       note(c, out, 1318.5, t + 0.5, 0.9, 'sine', 0.14); note(c, out, 784, t + 0.5, 0.9, 'triangle', 0.18);
     }
   }
-  /* one keyboard key: a very short burst of filtered noise plus a tiny low knock, a little different each time */
-  function keyClick(c, out, t) {
+  /* a short burst of noise, shaped like a click (made once, reused) */
+  function noiseBuf(c) {
     if (!SND.noise) {
-      var n = c.createBuffer(1, Math.round(c.sampleRate * 0.05), c.sampleRate), d = n.getChannelData(0);
-      for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3);
+      var n = c.createBuffer(1, Math.round(c.sampleRate * 0.06), c.sampleRate), d = n.getChannelData(0);
+      for (var i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 2.6);
       SND.noise = n;
     }
+    return SND.noise;
+  }
+  function click(c, out, t, ftype, freq, q, vol, rate) {
     var s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
-    s.buffer = SND.noise; s.playbackRate.value = 0.85 + Math.random() * 0.3;
-    f.type = 'bandpass'; f.frequency.value = 2600 + Math.random() * 900; f.Q.value = 0.9;
-    g.gain.value = 0.32;
+    s.buffer = noiseBuf(c); s.playbackRate.value = rate;
+    f.type = ftype; f.frequency.value = freq; f.Q.value = q; g.gain.value = vol;
     s.connect(f); f.connect(g); g.connect(out); s.start(t);
-    note(c, out, 150 + Math.random() * 30, t, 0.03, 'sine', 0.08);
+  }
+  function thump(c, out, t, f0, f1, len, vol) {
+    var o = c.createOscillator(), g = c.createGain();
+    o.type = 'sine'; o.frequency.setValueAtTime(f0, t); o.frequency.exponentialRampToValueAtTime(f1, t + len);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + 0.004); g.gain.exponentialRampToValueAtTime(0.0001, t + len);
+    o.connect(g); g.connect(out); o.start(t); o.stop(t + len + 0.02);
+  }
+  /* a laptop keyboard key: the press («clack»: a sharp click plus a soft body thump) and, a moment later, the release (a tiny lighter click);
+     Enter and space are deeper and heavier, Backspace sits between; every key differs a little */
+  function keyClick(c, out, t, kind) {
+    var big = kind === 'Enter' || kind === ' ', mid = kind === 'Backspace', r = Math.random();
+    click(c, out, t, 'bandpass', (big ? 1500 : mid ? 1900 : 2300) + r * 700, 1.1, big ? 0.5 : 0.4, (big ? 0.7 : 0.9) + r * 0.25);
+    thump(c, out, t, big ? 190 : 230, big ? 85 : 110, big ? 0.07 : 0.05, big ? 0.22 : 0.15);
+    click(c, out, t + (big ? 0.085 : 0.065), 'highpass', 3800, 0.7, 0.13, 1.5 + r * 0.3);
+  }
+  /* a phone key press (the passcode pad and the on-screen keyboard): a soft, round «tok» like a real phone's key sound */
+  function padTap(c, out, t) {
+    var r = Math.random();
+    click(c, out, t, 'highpass', 2600, 0.7, 0.2, 1.6);
+    thump(c, out, t, 760 + r * 60, 430, 0.075, 0.2);
+    thump(c, out, t, 1500 + r * 120, 1100, 0.04, 0.05);
   }
   CC.sound = play;
   var reactNoSound = react;
@@ -3552,7 +3575,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
      and moving around it (apps, back, home bar, chats, notes, photos, lock field) gives a light glassy tick. */
   document.addEventListener('click', function (e) {
     var tg = e.target;
-    if (tg.closest('.phone .key, .phone .kk')) play('key');
+    if (tg.closest('.phone .key, .phone .kk')) play('pad');
     else if (tg.closest('.phone .app, .phone .app-h b, .phone .crow, .phone .nrow, .phone .hbar, .phone .gal > *, .phone .tabs > *, .phone .pfield, .phone .rc')) play('phone');
     else if (tg.closest('.cc-app, .cc-feed-nav button, .cc-calc-k button, .cc-win-x, .cc-win-min')) play('tap');
   }, true);
@@ -3561,7 +3584,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
     var tg = e.target;
     if (!(tg && tg.closest && tg.closest('.lscreen .cs')) || tg.disabled) return;
-    if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') play('key');
+    if (e.key.length === 1 || e.key === 'Backspace' || e.key === 'Enter') play('key', e.key);
   }, true);
 
   /* ---------- 5. the hacker's laptop is a CamelCode computer ----------
@@ -3999,7 +4022,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     var pt0 = CC.panelTab;
     CC.panelTab = function (name) { if (name === 'ref') { setTab('ref'); name = 'q'; } return pt0 ? pt0.call(CC, name) : undefined; };
     var curT = $('.cc-cur .cc-txt', feed);
-    if (curT) new MutationObserver(function () { if (feed.getAttribute('data-tab') !== 'steps') { btns.steps.classList.add('dot'); play('ping'); } }).observe(curT, { childList: true, subtree: true, characterData: true });
+    if (curT) new MutationObserver(function () { if (feed.getAttribute('data-tab') !== 'steps') { btns.steps.classList.add('dot'); var nowT = Date.now(); if (nowT - (SND.lastMut || 0) > 900) play('ping'); SND.lastMut = nowT; } }).observe(curT, { childList: true, subtree: true, characterData: true });
   })();
 
   /* the questions panel (with its two tabs «أسئلة التحدي» and «شرح مختصر») is a hidden panel on the left edge: a tab opens and closes it, and it opens by itself,
