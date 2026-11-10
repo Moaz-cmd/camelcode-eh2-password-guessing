@@ -3783,7 +3783,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         var inset = parseFloat(getComputedStyle(di).left) / Math.max(1, parseFloat(getComputedStyle(deck).width)); if (!isFinite(inset)) inset = 0.045;
         var A = { x: dk.left + inset * dk.width - sr.left, y: dk.top - sr.top }, B = { x: lr.left + 1 - sr.left, y: lr.bottom - sr.top }, W = 9;
         var ex = function (y) { return A.x + (y - A.y) / Math.max(1, B.y - A.y) * (B.x - A.x); };
-        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 31;   /* the plug ends 1 px inside the side wall, in its middle */
+        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 24;   /* the plug ends 1 px inside the side wall, in its middle */
         var prr = pr.right - sr.left, pb = pr.bottom - sr.top, cx = (pr.left + pr.right) / 2 - sr.left;
         if (sx - prr < 30) return;
         /* the laptop's thin left side wall */
@@ -3802,16 +3802,16 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         rects.forEach(function (r) { r.parentNode.removeChild(r); });
         /* USB-C plug in local coordinates, pointing right: strain-relief boot, housing, metal tip with its slot (tip end at x = 16) */
         var NS = 'http://www.w3.org/2000/svg';
-        var plug = function (tx, ty, rot) {
+        var plug = function (tx, ty, rot, noTip) {
           var g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'cc-usbc'); g.setAttribute('transform', 'translate(' + tx + ',' + ty + ') rotate(' + rot + ')');
           g.innerHTML = '<path d="M-17,-3.4 L-7,-6.4 L-7,6.4 L-17,3.4 Z" fill="#262d3b" stroke="#151b27" stroke-width="1" stroke-linejoin="round"/>' +
             '<rect x="-7" y="-6.4" width="15" height="12.8" rx="4" fill="#3a4458" stroke="#151b27" stroke-width="1"/>' +
             '<rect x="-4" y="-4.8" width="9" height="2.2" rx="1.1" fill="rgba(255,255,255,.22)"/>' +
-            '<rect x="8" y="-4.6" width="8" height="9.2" rx="2.8" fill="#d3d8e0" stroke="#7f8797" stroke-width="1"/>' +
-            '<rect x="10.4" y="-3.2" width="4.2" height="6.4" rx="1.6" fill="#39414f"/>';
+            (noTip ? '' : '<rect x="8" y="-4.6" width="8" height="9.2" rx="2.8" fill="#d3d8e0" stroke="#7f8797" stroke-width="1"/>' +
+            '<rect x="10.4" y="-3.2" width="4.2" height="6.4" rx="1.6" fill="#39414f"/>');
           s.appendChild(g);
         };
-        plug(wallX + 1 - 16, sy, 0);            /* into the middle of the laptop's side wall */
+        plug(wallX + 1 - 8, sy, 0, true);       /* the laptop end: just the plug housing against the middle of the side wall, no visible port or metal tip */
         plug(cx, pb - 1 + 16, -90);             /* up into the bottom of the phone */
       } catch (e) { /* the cable stays where the engine drew it */ }
     };
