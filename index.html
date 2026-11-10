@@ -1278,27 +1278,27 @@ body.side .cc-feed .cc-cur::before{inset-inline-start:61px}
 @keyframes ccrip{0%,56%{opacity:0;transform:scale(.3)}60%{opacity:.9;transform:scale(.5)}80%{opacity:0;transform:scale(1.4)}100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.cc-app.cue::before{animation:none;opacity:0}}
 
-/* the white current step always sits right above the assistant; the supporting instructions (feedback, hints) appear ABOVE it in another colour (gold), earlier steps above those, faded (Moaz 2026-11-10) */
+/* the white current step always sits right above the assistant; the supporting instructions (feedback, hints) appear ABOVE it, white like the main one, earlier steps above those, faded (Moaz 2026-11-10) */
 body.side .cc-feed .cc-steps{order:1}
-body.side .cc-feed .cc-coach{order:2;margin:0 14px 10px;padding:12px 14px;background:rgba(252,173,15,.16);border:1px solid rgba(252,173,15,.5);border-radius:var(--r-m);color:#FFE8B5}
+body.side .cc-feed .cc-coach{order:2;margin:0 14px 10px;padding:12px 16px;background:#fff;border:0;border-radius:var(--r-m);color:var(--navy);font-weight:700;box-shadow:0 14px 30px -14px rgba(0,0,0,.55)}
 body.side .cc-feed .cc-cur{order:3}
-body.side .cc-feed .cc-coach .cc-fb{background:transparent;border:0;padding:0;color:#FFE8B5}
+body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl{background:transparent;border:0;padding:0;color:var(--navy)}
 
 /* «أسئلة التحدي» and «شرح مختصر» sit together in ONE hidden panel on the left: a tab on the left edge opens and closes it; opening it pushes the lab aside, so it never covers the phone (Moaz 2026-11-10) */
 .cc-qhandle{display:none}
 @media (min-width:1020px){
-  body.side.cc-has-feed{--qd:0px}
-  body.side.cc-has-feed.cc-q-open{--qd:var(--qw,331px)}
+  body.side.cc-has-feed{--qd:14px}      /* closed: a thin gutter for the tab, so the tab never covers the lab */
+  body.side.cc-has-feed.cc-q-open{--qd:calc(var(--qw,331px) + 38px)}      /* open: the panel plus the gutter that holds the tab */
   body.side.cc-has-feed .wrap{grid-template-columns:var(--fw) minmax(0,1fr) var(--qd);transition:grid-template-columns 340ms var(--ease)}
   body.side.cc-has-feed .laptop{max-width:min(calc(100 * var(--vw) - var(--fw) - var(--qd) - 430px),calc((100 * var(--vh) - 280px) / .74))}
   body.side.cc-has-feed .overlay{padding-inline-end:calc(var(--qd) + 44px)}
-  body.side.cc-has-feed .qpanel{grid-column:3;min-width:0;width:auto;border-radius:0 var(--r-l) var(--r-l) 0;box-shadow:0 0 0 1px var(--line)}
+  body.side.cc-has-feed .qpanel{grid-column:3;min-width:0;width:var(--qw,331px);justify-self:end;border-radius:0 var(--r-l) var(--r-l) 0;box-shadow:0 0 0 1px var(--line)}
   body.side.cc-has-feed:not(.cc-q-open) .qpanel{visibility:hidden;pointer-events:none}
-  .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:46;align-items:center;gap:10px;padding:18px 11px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
+  .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:46;align-items:center;gap:10px;padding:16px 8px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
     background:var(--navy);color:#fff;font-weight:800;font-size:calc(var(--t) * 1.02);line-height:1;box-shadow:0 12px 26px -10px rgba(10,22,40,.6);transition:left 340ms var(--ease),background-color 200ms}
   .cc-qhandle:hover{background:#162B4D}
   .cc-qhandle svg{width:18px;height:18px;fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 340ms var(--ease)}
-  body.cc-q-open .cc-qhandle{left:calc(24px + var(--qw,331px))}
+  body.cc-q-open .cc-qhandle{left:calc(24px + var(--qw,331px) + 2px)}
   body.cc-q-open .cc-qhandle svg{transform:rotate(180deg)}
 }
 
@@ -3801,10 +3801,10 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         var inset = parseFloat(getComputedStyle(di).left) / Math.max(1, parseFloat(getComputedStyle(deck).width)); if (!isFinite(inset)) inset = 0.045;
         var A = { x: dk.left + inset * dk.width - sr.left, y: dk.top - sr.top }, B = { x: lr.left + 1 - sr.left, y: lr.bottom - sr.top }, W = 0;
         var ex = function (y) { return A.x + (y - A.y) / Math.max(1, B.y - A.y) * (B.x - A.x); };
-        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 15;   /* the metal tip ends 1 px inside the base's left edge, in its middle; the wire leaves from its collar */
+        var sy = A.y + (B.y - A.y) * 0.5, wallX = ex(sy) - W + 1, sx = wallX - 25;   /* the metal tip ends 1 px inside the base's left edge, in its middle; the wire leaves from its collar */
         var prr = pr.right - sr.left, pb = pr.bottom - sr.top, cx = (pr.left + pr.right) / 2 - sr.left;
         if (sx - prr < 30) return;
-        var E = pb + 14, yB = Math.max(pb + 62, (lr.bottom - sr.top) + 34), mx = prr + Math.max(14, (sx - prr) * 0.42);
+        var E = pb + 24, yB = Math.max(pb + 62, (lr.bottom - sr.top) + 34), mx = prr + Math.max(14, (sx - prr) * 0.42);
         var d = 'M' + sx + ',' + sy +
           ' C' + (sx - 46) + ',' + sy + ' ' + (mx + 54) + ',' + (yB - 6) + ' ' + mx + ',' + yB +
           ' C' + (mx - 70) + ',' + (yB + 4) + ' ' + cx + ',' + (yB + 8) + ' ' + cx + ',' + (E + 38);
@@ -3812,18 +3812,25 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
         s.querySelectorAll('path.wire').forEach(function (p) { p.setAttribute('d', d); });
         rects.forEach(function (r) { r.parentNode.removeChild(r); });
         /* USB-C plug in local coordinates, pointing right: strain-relief boot, housing, metal tip with its slot (tip end at x = 16) */
-        /* a USB-C metal tip in local coordinates, pointing right (tip end at x = 11): a thin collar, then the silver tip with its dark slot */
+        /* a realistic USB-C plug, seen from above, in local coordinates pointing right (tip end at x = 12): the flared strain relief with its ribs, the rubber overmold,
+           the metal collar and the shiny steel shell (a straight-sided plate with a dark seam and the contact opening at its end) */
         var NS = 'http://www.w3.org/2000/svg';
         var plug = function (tx, ty, rot) {
           var g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'cc-usbc'); g.setAttribute('transform', 'translate(' + tx + ',' + ty + ') rotate(' + rot + ')');
-          g.innerHTML = '<rect x="-5" y="-3.6" width="6" height="7.2" rx="2" fill="#6B7587" stroke="#3f4858" stroke-width="1"/>' +
-            '<rect x="0" y="-4.6" width="11.4" height="9.2" rx="3.4" fill="#E2E6EC" stroke="#7f8797" stroke-width="1"/>' +
-            '<rect x="2.3" y="-3.2" width="7" height="2" rx="1" fill="rgba(255,255,255,.85)"/>' +
-            '<rect x="3.2" y="-1.4" width="5.4" height="2.8" rx="1.4" fill="#39414f"/>';
+          g.innerHTML =
+            '<path d="M-14,-2.7 C-12,-2.9 -10,-3.6 -8.5,-4.6 L-8.5,4.6 C-10,3.6 -12,2.9 -14,2.7 Z" fill="#2a3140" stroke="#151b27" stroke-width="1" stroke-linejoin="round"/>' +
+            '<path d="M-12.2,-2.6 V2.6 M-10.4,-3.1 V3.1" stroke="#151b27" stroke-width=".8" fill="none" opacity=".7"/>' +
+            '<rect x="-8.5" y="-6" width="10.8" height="12" rx="3.6" fill="#404a5e" stroke="#151b27" stroke-width="1"/>' +
+            '<rect x="-6.6" y="-4.7" width="7" height="2.2" rx="1.1" fill="rgba(255,255,255,.2)"/>' +
+            '<rect x="2.3" y="-4.9" width="1.8" height="9.8" rx=".6" fill="#8d97a8" stroke="#5d6778" stroke-width=".7"/>' +
+            '<rect x="4" y="-4.3" width="8" height="8.6" rx="1.3" fill="#E4E8EE" stroke="#7d8798" stroke-width="1"/>' +
+            '<rect x="4.9" y="-3.5" width="6.2" height="1.7" rx=".8" fill="rgba(255,255,255,.9)"/>' +
+            '<rect x="9.4" y="-2.7" width="2.4" height="5.4" rx=".9" fill="#2b323f"/>' +
+            '<path d="M4.6,.2 H9" stroke="#9aa4b4" stroke-width=".7"/>';
           s.appendChild(g);
         };
-        plug(wallX - 10.4, sy, 0);               /* into the middle of the laptop base's left edge */
-        plug(cx, pb - 1 + 10.4, -90);            /* up into the bottom of the phone */
+        plug(wallX - 11, sy, 0);               /* into the middle of the laptop base's left edge */
+        plug(cx, pb - 1 + 11, -90);            /* up into the bottom of the phone */
       } catch (e) { /* the cable stays where the engine drew it */ }
       try { Array.prototype.slice.call(CC.cable.svg.children).forEach(function (r) { if (r.tagName === 'rect') r.parentNode.removeChild(r); }); } catch (e2) { }      /* the engine's own plug rectangles go (stacked layouts keep its route); the metal tips are groups */
     };
