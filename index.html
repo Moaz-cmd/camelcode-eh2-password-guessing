@@ -1224,22 +1224,11 @@ body.cc-has-feed .q-task{display:none!important}
   body.side .cc-step.enter{transform:translateY(14px)}
   body.side .cc-cur.enter{animation-name:ccbubbleup}
 
-  /* the questions: hidden behind a drawer on the left edge; opening it pushes the lab aside (nothing is covered) */
-  body.side.cc-has-feed{--qd:0px}
-  body.side.cc-has-feed.cc-q-open{--qd:var(--qw,331px)}
-  body.side.cc-has-feed .wrap{grid-template-columns:var(--fw) minmax(0,1fr) var(--qd);transition:grid-template-columns 340ms var(--ease)}
-  body.side.cc-has-feed .laptop{max-width:min(calc(100 * var(--vw) - var(--fw) - var(--qd) - 430px),calc((100 * var(--vh) - 280px) / .74))}
-  body.side.cc-has-feed .overlay{padding-inline-end:calc(var(--qd) + 44px)}
-  body.side.cc-has-feed .qpanel{grid-column:3;min-width:0;width:auto;border-radius:0 var(--r-l) var(--r-l) 0;box-shadow:0 0 0 1px var(--line)}
-  body.side.cc-has-feed:not(.cc-q-open) .qpanel{visibility:hidden;pointer-events:none}
-  .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:46;align-items:center;gap:10px;padding:18px 11px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
-    background:var(--navy);color:#fff;font-weight:800;font-size:calc(var(--t) * 1.02);line-height:1;box-shadow:0 12px 26px -10px rgba(10,22,40,.6);transition:left 340ms var(--ease),background-color 200ms}
-  .cc-qhandle:hover{background:#162B4D}
-  .cc-qhandle svg{width:18px;height:18px;fill:none;stroke:var(--gold);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;transition:transform 340ms var(--ease)}
-  body.cc-q-open .cc-qhandle{left:calc(24px + var(--qw,331px))}
-  body.cc-q-open .cc-qhandle svg{transform:rotate(180deg)}
+  /* the lab takes the whole width: the questions now live in the instruction panel, as a tab */
+  body.side.cc-has-feed .wrap{grid-template-columns:var(--fw) minmax(0,1fr)}
+  body.side.cc-has-feed .laptop{max-width:min(calc(100 * var(--vw) - var(--fw) - 430px),calc((100 * var(--vh) - 280px) / .74))}
+  body.side.cc-has-feed .overlay{padding-inline-end:44px}
 }
-@media (max-width:1019px){.cc-qhandle{display:none}}
 @keyframes ccbubbleup{0%{opacity:0;transform:translateY(8px) scale(.97)}100%{opacity:1;transform:none}}
 
 /* lesson popups: the text is laid out in its final shape before it is typed (see brand-addon.js), so nothing jumps; justified with an even last line */
@@ -1251,7 +1240,8 @@ body.cc-has-feed .q-task{display:none!important}
 /* rounder corners where it feels right: cards, bubbles, fields, buttons, the laptop and phone shells */
 .cc-cur,.cc-coach,.cc-step,.qrow,.qfb,.qhint{border-radius:var(--r-m)}
 .tag,.cc-tip,.cc-bubble,.cc-cmdtip{border-radius:var(--r-m)}
-.btn,.ibtn,.qin input,.inwrap input{border-radius:var(--r-s)}
+.btn,.ibtn,.qin input{border-radius:var(--r-s)}
+.inwrap input,.cs .inwrap,.cs .ghost{border-radius:0}      /* the terminal prompt keeps its straight underline */
 .lid,.lbase{border-radius:18px 18px 0 0}
 .cs{border-radius:14px}
 
@@ -1267,6 +1257,31 @@ body.cc-has-feed .q-task{display:none!important}
 @media (prefers-reduced-motion:reduce){.gd-ring,.gd-ring::before,.cc-app.cue svg{animation:none!important}}
 /* the Continue button keeps its place while the text is typed, so the card does not grow at the end */
 .pc-foot .btn[style*="display: none"],.pc-foot .btn[style*="display:none"]{display:inline-block!important;visibility:hidden}
+
+/* ===== one panel, three tabs (Moaz 2026-11-10): «الخطوات» | «شرح مختصر» | «أسئلة التحدي» ===== */
+.cc-tabs{display:flex;gap:6px;padding:12px 14px 6px;flex:none;order:0;background:var(--navy)}
+.cc-tab{position:relative;flex:1 1 0;min-width:0;padding:9px 6px;border-radius:var(--r-pill);background:rgba(255,255,255,.08);color:#C9D4E6;font-weight:700;font-size:calc(var(--t) * .86);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:background-color 200ms,color 200ms}
+.cc-tab:hover{background:rgba(255,255,255,.16);color:#fff}
+.cc-tab.on{background:var(--gold);color:var(--navy)}
+.cc-tab.dot::after{content:"";position:absolute;top:6px;inset-inline-end:8px;width:9px;height:9px;border-radius:50%;background:#FF6B6B;box-shadow:0 0 0 2px var(--navy)}
+.cc-feed .cc-ref,.cc-feed .qpanel{display:none}
+.cc-feed[data-tab="ref"] .cc-ref{display:block;order:1}
+.cc-feed[data-tab="ref"] .cc-steps,.cc-feed[data-tab="ref"] .cc-cur,.cc-feed[data-tab="ref"] .cc-coach,.cc-feed[data-tab="ref"] .cc-feed-nav,
+.cc-feed[data-tab="q"] .cc-steps,.cc-feed[data-tab="q"] .cc-cur,.cc-feed[data-tab="q"] .cc-coach,.cc-feed[data-tab="q"] .cc-feed-nav{display:none}
+body.side .cc-feed[data-tab="q"] .qpanel,.cc-feed[data-tab="q"] .qpanel{display:block;order:1;flex:1 1 auto;min-height:0;overflow-y:auto;position:static;max-height:none;contain:none;margin:6px 14px 12px;width:auto;border:0;border-radius:var(--r-m);box-shadow:none}
+.cc-feed .qpanel .q-h{display:none}
+.cc-feed .cc-refbtn{display:none}
+body.side .cc-feed .cc-ref{order:1}
+/* the reaction card of a question now opens toward the lab (to the left of the panel), its tail on the right */
+.cc-qbot.rev{transform:translate(calc(-100% + 14px),0) scale(.94);transform-origin:100% 50%;padding:8px 8px 8px 14px}
+.cc-qbot.rev.show{transform:translateX(-100%)}
+.cc-qbot.rev .cc-qbot-arr{left:auto;right:-9px;transform:rotate(225deg)}
+.cc-qbot.rev{flex-direction:row-reverse}
+@media (prefers-reduced-motion:reduce){.cc-qbot.rev,.cc-qbot.rev.show{transform:translateX(-100%)}}
+/* the questions keep their own dark text on white inside the dark panel; the three tab labels fit on one line each */
+.cc-feed .qpanel{color:var(--ink,#0E1F39)}
+.cc-tabs{gap:4px;padding-inline:12px}
+.cc-tab{font-size:12.5px;padding:9px 2px;text-overflow:clip}
 
 </style><!--/cc-skin-->
 </head>
@@ -3724,11 +3739,12 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       var wr = wrapEl.getBoundingClientRect(), pr = qp.getBoundingClientRect(), rr = row.getBoundingClientRect();
       var qin = row.querySelector('.qin'), at = qin ? qin.getBoundingClientRect().top - 10 : rr.top + 34;      /* beside the answer box, never on the question text or its number */
       var top = Math.max(pr.top + 4, Math.min(at - 12, pr.bottom - 90));
-      bot.style.left = Math.round((pr.right + 8 - wr.left) * k) + 'px';      /* outside the panel, against its right edge */
+      bot.classList.add('rev');
+      bot.style.left = Math.round((pr.left - 8 - wr.left) * k) + 'px';      /* outside the panel, against its lab-side edge */
       bot.style.top = Math.round((top - wr.top) * k) + 'px';
       bot.style.maxWidth = '290px';
       /* the card's speech tail points at the answer field of this question */
-      var ib = (row.querySelector('input') || qin || row).getBoundingClientRect(), cardLeft = pr.right + 8, fromX = ib.right, midY = (ib.top + ib.bottom) / 2;      /* the answer field itself, not the row with the buttons */
+      var ib = (row.querySelector('input') || qin || row).getBoundingClientRect(), cardLeft = pr.left - 8, fromX = ib.left, midY = (ib.top + ib.bottom) / 2;      /* the answer field itself, not the row with the buttons */
       arrEl.style.top = Math.round((midY - top) * k) + 'px';
       bot.setAttribute('data-pose', pose); sayEl.textContent = LINES[pose] || '';
       clearTimeout(timer); bot.classList.remove('show'); void bot.offsetWidth; bot.classList.add('show');
@@ -3846,42 +3862,49 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     };
   })();
 
-  /* «شرح مختصر» inside the instruction panel (Moaz 2026-11-10): a button under the tracker swaps the steps for the short explanation and back */
+  /* one panel, three tabs (Moaz 2026-11-10): the instruction panel holds «الخطوات», «شرح مختصر» and «أسئلة التحدي». The questions panel element moves into it (same element,
+     so everything that reads #qpanel keeps working); the short explanation is a copy of the drawer text, made when its tab is opened */
   (function () {
-    var hd = $('.cc-feed-hd', feed); if (!hd) return;
-    var btn = document.createElement('button'); btn.type = 'button'; btn.className = 'cc-refbtn';
-    btn.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M9 9h5M9 13h5"/></svg><span></span>';
-    $('span', btn).textContent = CC.t('ref_title');
-    hd.appendChild(btn);
-    var ref = document.createElement('div'); ref.className = 'cc-ref';
-    ref.innerHTML = '<div class="cc-ref-h"><b></b><button type="button"></button></div><div class="cc-ref-b"></div>';
-    $('b', ref).textContent = CC.t('ref_title'); $('.cc-ref-h button', ref).textContent = 'العودة إلى الخطوات';
-    feed.insertBefore(ref, $('.cc-steps', feed));
-    function setRef(on) {
-      if (on) {
+    var qp = $('#qpanel'), steps = $('.cc-steps', feed); if (!steps) return;
+    var bar = document.createElement('div'); bar.className = 'cc-tabs'; bar.setAttribute('role', 'tablist');
+    var DEF = [['steps', 'الخطوات'], ['ref', CC.t('ref_title')], ['q', CC.t('q_h')]], btns = {};
+    DEF.forEach(function (d) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'cc-tab'; b.setAttribute('role', 'tab'); b.textContent = d[1];
+      b.onclick = function () { setTab(d[0]); }; bar.appendChild(b); btns[d[0]] = b;
+    });
+    feed.insertBefore(bar, feed.firstChild);
+    var ref = document.createElement('div'); ref.className = 'cc-ref'; ref.innerHTML = '<div class="cc-ref-b"></div>';
+    feed.insertBefore(ref, steps);
+    if (qp) feed.insertBefore(qp, steps);
+    function setTab(n) {
+      if (n === 'ref') {
         var src = $('#drawer .dr-b'), dst = $('.cc-ref-b', ref); dst.innerHTML = '';
         if (src) { var cp = src.cloneNode(true); dst.appendChild(cp); fixMarks(cp); }
         ref.scrollTop = 0;
       }
-      feed.classList.toggle('show-ref', on); btn.classList.toggle('on', on);
+      feed.setAttribute('data-tab', n);
+      Object.keys(btns).forEach(function (k) { btns[k].classList.toggle('on', k === n); btns[k].setAttribute('aria-selected', k === n ? 'true' : 'false'); });
+      if (n === 'steps') btns.steps.classList.remove('dot');
     }
-    btn.onclick = function () { setRef(!feed.classList.contains('show-ref')); };
-    $('.cc-ref-h button', ref).onclick = function () { setRef(false); };
+    setTab('steps');
+    CC.feedTab = setTab;
     var pt0 = CC.panelTab;
-    CC.panelTab = function (name) { if (name === 'ref') { setRef(true); name = 'q'; } return pt0 ? pt0.call(CC, name) : undefined; };
-  })();
-
-  /* the questions drawer (Moaz 2026-11-10): «أسئلة التحدي» hides behind a panel on the left edge; a tab opens and closes it, and it opens by itself when the step says to answer the questions */
-  (function () {
-    var wrapEl = $('.wrap'), qp = $('#qpanel'); if (!wrapEl || !qp) return;
-    var h = document.createElement('button'); h.type = 'button'; h.className = 'cc-qhandle'; h.setAttribute('aria-expanded', 'false');
-    h.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg><span></span>';
-    $('span', h).textContent = CC.t('q_h');
-    wrapEl.appendChild(h);
-    function setOpen(on) { document.body.classList.toggle('cc-q-open', on); h.setAttribute('aria-expanded', on ? 'true' : 'false'); }
-    h.onclick = function () { setOpen(!document.body.classList.contains('cc-q-open')); };
+    CC.panelTab = function (name) { if (name === 'ref') { setTab('ref'); name = 'q'; } return pt0 ? pt0.call(CC, name) : undefined; };
+    /* a new step while another tab is open: a red dot on «الخطوات»; a step that names the questions opens that tab */
     var curT = $('.cc-cur .cc-txt', feed);
-    if (curT) new MutationObserver(function () { if (curT.textContent.indexOf(CC.t('q_h')) !== -1) setOpen(true); }).observe(curT, { childList: true, subtree: true, characterData: true });
+    if (curT) new MutationObserver(function () {
+      var t = curT.textContent;
+      if (t.indexOf(CC.t('q_h')) !== -1 || /أجب/.test(t)) setTab('q');      /* «أجب عن الأسئلة» opens the questions */
+      else if (feed.getAttribute('data-tab') !== 'steps') btns.steps.classList.add('dot');
+    }).observe(curT, { childList: true, subtree: true, characterData: true });
+    /* a question that appears later (a lab whose questions start hidden) opens the questions tab by itself; the questions shown at start-up do not */
+    if (qp) {
+      var t0 = Date.now();
+      new MutationObserver(function (ms) {
+        if (Date.now() - t0 < 2500) return;
+        ms.forEach(function (m) { var r = m.target; if (r.nodeType === 1 && r.classList.contains('qrow') && r.classList.contains('qnew')) setTab('q'); });
+      }).observe(qp, { attributes: true, attributeFilter: ['class'], subtree: true });
+    }
   })();
 
   /* smooth typing in the lesson popups (Moaz 2026-11-10): the whole text is laid out first (so the box never grows and justified lines never reflow),
