@@ -703,7 +703,7 @@ button,input{transition:background-color var(--t-fast) var(--ease),border-color 
 .pcard{background:var(--surface);border-radius:20px;box-shadow:var(--sh-2);padding:26px 28px 24px;position:relative}
 .pc-ic{background:var(--gold);border-radius:var(--r-s)}
 .pc-ic svg{stroke:var(--navy)!important}
-.pc-body{text-align:start;text-wrap:pretty}
+.pc-body{text-align:justify;text-justify:inter-word;text-wrap:pretty}
 .pc-body ul,.pc-body ol{text-align:start}
 .pc-head b{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.3}
 .pc-body{color:var(--ink2)}
@@ -1222,7 +1222,7 @@ body.cc-has-feed .q-task{display:none!important}
 @keyframes ccbubbleup{0%{opacity:0;transform:translateY(8px) scale(.97)}100%{opacity:1;transform:none}}
 
 /* lesson popups: the text is laid out in its final shape before it is typed (see brand-addon.js), so nothing jumps; justified with an even last line */
-.pc-body{text-align:start;hyphens:none;text-wrap:pretty}     /* right-aligned, not justified: even word spacing (Moaz 2026-11-12) */
+.pc-body{text-align:justify;text-justify:inter-word;hyphens:none;text-wrap:pretty}     /* justified: every line reaches the column edge (Moaz 2026-11-12, after trying right-aligned) */
 .pc-body p{margin:0 0 12px}
 .pcard{border-radius:var(--r-l)}
 .pcard .btn{border-radius:var(--r-m)}
