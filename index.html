@@ -641,8 +641,9 @@ button,input{transition:background-color var(--t-fast) var(--ease),border-color 
 .phone{background:#1B2130;box-shadow:inset 0 0 0 2px #2D3546,inset 0 0 0 4px #0A0D12,0 26px 44px -20px rgba(10,22,40,.55)}
 .pscreen{background:linear-gradient(170deg,#2A4A7E 0%,#1A3159 50%,#0E1F39 100%)}
 .pscreen::before{background:radial-gradient(240px 200px at 18% 14%,rgba(255,255,255,.12),transparent 65%)}
-.key{background:rgba(255,255,255,.13);backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;font-family:var(--f-ui);font-weight:500}
-.key:active{background:rgba(255,255,255,.34)}
+.key{background:#3B5279;backdrop-filter:none;-webkit-backdrop-filter:none;box-shadow:none;font-family:var(--f-ui);font-weight:500}     /* solid (the colour the 13% white key had), so the wallpaper chevrons stay behind the keys (Moaz 2026-11-12) */
+.key:active{background:#6B7D99}
+.key.ghostk{background:transparent}
 .lk-hi{font-weight:600;letter-spacing:0}
 .lk-title{font-weight:600}
 .wg,.dock{backdrop-filter:none;-webkit-backdrop-filter:none}
@@ -702,7 +703,7 @@ button,input{transition:background-color var(--t-fast) var(--ease),border-color 
 .pcard{background:var(--surface);border-radius:20px;box-shadow:var(--sh-2);padding:26px 28px 24px;position:relative}
 .pc-ic{background:var(--gold);border-radius:var(--r-s)}
 .pc-ic svg{stroke:var(--navy)!important}
-.pc-body{text-align:justify;text-justify:inter-word;text-wrap:pretty}
+.pc-body{text-align:start;text-wrap:pretty}
 .pc-body ul,.pc-body ol{text-align:start}
 .pc-head b{font-family:var(--f-display);font-weight:700;font-size:24px;line-height:1.3}
 .pc-body{color:var(--ink2)}
@@ -1221,7 +1222,7 @@ body.cc-has-feed .q-task{display:none!important}
 @keyframes ccbubbleup{0%{opacity:0;transform:translateY(8px) scale(.97)}100%{opacity:1;transform:none}}
 
 /* lesson popups: the text is laid out in its final shape before it is typed (see brand-addon.js), so nothing jumps; justified with an even last line */
-.pc-body{text-align:justify;text-justify:inter-word;hyphens:none;text-wrap:pretty}
+.pc-body{text-align:start;hyphens:none;text-wrap:pretty}     /* right-aligned, not justified: even word spacing (Moaz 2026-11-12) */
 .pc-body p{margin:0 0 12px}
 .pcard{border-radius:var(--r-l)}
 .pcard .btn{border-radius:var(--r-m)}
