@@ -3431,7 +3431,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       });
     })(curTxt);
     if (!units.length) return;
-    var per = Math.max(24, Math.min(45, 2800 / Math.max(1, chars))), ui = 0, ci = 0;
+    var per = Math.max(38, Math.min(60, 4500 / Math.max(1, chars))), ui = 0, ci = 0;   /* slower (Moaz 2026-11-12): 38 to 60 ms a letter, was 24 to 45 */
     typing = { units: units, timer: null };
     cur.classList.add('typing'); cur.setAttribute('aria-busy', 'true');
     /* while a popup or the walkthrough is open the step stays empty; if one opens part-way, the typing starts again from the
