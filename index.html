@@ -1119,6 +1119,7 @@ body.cc-has-feed .q-task{display:none!important}
 .cc-bubble::before{content:"";position:absolute;left:-8px;top:50%;width:18px;height:18px;margin-top:-9px;background:#1B2231;border-radius:3px;transform:rotate(45deg)}
 .cc-bubble.over{max-width:none;box-sizing:border-box}
 .cc-bubble.over::before{display:none}
+.cc-bubble.above::before{left:50%;top:auto;bottom:-8px;margin:0 0 0 -9px}     /* above a monitor-like target: tail points down at it (Moaz 2026-11-12) */
 .cc-bubble.out{animation:ccbubout 240ms var(--ease) both}
 @keyframes ccbub{0%{opacity:0;transform:translate(-18px,-50%) scale(.9)}100%{opacity:1;transform:translate(0,-50%)}}
 @keyframes ccbubout{0%{opacity:1;transform:translate(0,-50%)}100%{opacity:0;transform:translate(-8px,-50%)}}
@@ -1381,9 +1382,9 @@ body.side .cc-feed .cc-coach,.cc-coach{background:#fff;color:var(--navy);border:
 .cc-ref .cc-ref-b{background:#fff;color:var(--ink);border-radius:var(--r-m);padding:12px 18px 16px;box-shadow:0 14px 30px -14px rgba(0,0,0,.55)}
 
 /* the phone glows while an arrow points at it (the start of the lab, the step that says to type the password on it) */
-.phone.cc-attn{animation:ccattn 1.5s ease-in-out infinite}
+.phone.cc-attn,.pc-bezel.cc-attn{animation:ccattn 1.5s ease-in-out infinite}
 @keyframes ccattn{0%,100%{box-shadow:0 0 0 5px rgba(252,173,15,.6),0 0 22px 4px rgba(252,173,15,.45)}50%{box-shadow:0 0 0 11px rgba(252,173,15,.9),0 0 54px 14px rgba(252,173,15,.75)}}
-@media (prefers-reduced-motion:reduce){.phone.cc-attn{animation:none;box-shadow:0 0 0 9px rgba(252,173,15,.85),0 0 40px 10px rgba(252,173,15,.6)}}
+@media (prefers-reduced-motion:reduce){.phone.cc-attn,.pc-bezel.cc-attn{animation:none;box-shadow:0 0 0 9px rgba(252,173,15,.85),0 0 40px 10px rgba(252,173,15,.6)}}
 
 /* ---------- the EH2 lab 1 standard (Farhan's version, 2026-11-10): flat page, bouncing guides, golden spacing, scroll hint, centred footer ---------- */
 /* #4: the «أسئلة التحدي» title is already on the side handle, so drop it from the panel top */
@@ -3510,20 +3511,28 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
      beside the phone (stacked layout) it sits over the top of the phone instead. */
   var notifT = null;
   function dropBubble() { clearTimeout(notifT); var b = $('#stage .cc-bubble'); if (b) b.remove(); }
-  CC.comment = function (txt, persist) {   /* persist: stays until the student starts typing on the phone (Farhan 2026-11-10) */
+  /* the target device the bubble and the glow belong to: the phone, the computer's monitor (EH1 lab 1), or any other target (Moaz 2026-11-12: every lab) */
+  function targetDev() { return $('#stage .phone') || $('#stage .pc-bezel') || $('#stage .dev:not(#laptop)'); }
+  CC.targetDev = targetDev;
+  CC.comment = function (txt, persist) {   /* persist: stays until the student first acts on the target (a phone key, a click on the monitor) or the next step (Farhan 2026-11-10) */
     if (!txt) { dropBubble(); return; }                       /* CC.comment('') clears it at once */
-    var st = $('#stage'), ph = $('.phone'); if (!st || !ph) return;
+    var st = $('#stage'), ph = targetDev(); if (!st || !ph) return;
     var old = $('.cc-bubble', st); if (old) old.remove();
     clearTimeout(notifT);
     var k = st.clientWidth / Math.max(1, st.getBoundingClientRect().width);          /* screen px -> page px (the page is zoomed) */
     var sr = st.getBoundingClientRect(), pr = ph.getBoundingClientRect();
     var side = (sr.right - pr.right) * k > 260;
-    var n = document.createElement('div'); n.className = 'cc-bubble' + (side ? '' : ' over') + (persist ? ' persist' : ''); n.setAttribute('role', 'status');
+    /* a target that is not the phone (the monitor): the bubble needs a clear gap before the laptop, else it sits above the device, tail down */
+    var lpE = $('#laptop'), above = false;
+    if (!ph.classList.contains('phone') && lpE) { var lr0 = lpE.getBoundingClientRect(); if (lr0.left >= pr.right - 2 && (lr0.left - pr.right) * k < 280) { side = false; above = true; } }
+    var n = document.createElement('div'); n.className = 'cc-bubble' + (above ? ' above' : side ? '' : ' over') + (persist ? ' persist' : ''); n.setAttribute('role', 'status');
     n.textContent = txt;
-    if (side) { n.style.left = Math.round((pr.right - sr.left) * k + 14) + 'px'; n.style.top = Math.round((pr.top - sr.top) * k + pr.height * k * 0.26) + 'px'; }
+    function placeAbove(p, s0, kk) { n.style.left = Math.round((p.left - s0.left) * kk + (p.width * kk - n.offsetWidth) / 2) + 'px'; n.style.top = Math.round((p.top - s0.top) * kk - n.offsetHeight - 44) + 'px'; }
+    if (above) { st.appendChild(n); placeAbove(pr, sr, k); }
+    else if (side) { n.style.left = Math.round((pr.right - sr.left) * k + 14) + 'px'; n.style.top = Math.round((pr.top - sr.top) * k + pr.height * k * 0.26) + 'px'; }
     else { n.style.left = Math.round((pr.left - sr.left) * k + 14) + 'px'; n.style.width = Math.round(pr.width * k - 28) + 'px'; n.style.top = Math.round((pr.top - sr.top) * k + 78) + 'px'; }
     st.appendChild(n); play('try');
-    (function reflow(){ if(!n.isConnected) return; var sr2=st.getBoundingClientRect(), pr2=ph.getBoundingClientRect(), k2=st.clientWidth/Math.max(1,sr2.width); if(n.classList.contains('over')){ n.style.left=Math.round((pr2.left-sr2.left)*k2+14)+'px'; n.style.top=Math.round((pr2.top-sr2.top)*k2+78)+'px'; } else { n.style.left=Math.round((pr2.right-sr2.left)*k2+14)+'px'; n.style.top=Math.round((pr2.top-sr2.top)*k2+pr2.height*k2*0.26)+'px'; } requestAnimationFrame(reflow); })();
+    (function reflow(){ if(!n.isConnected) return; var sr2=st.getBoundingClientRect(), pr2=ph.getBoundingClientRect(), k2=st.clientWidth/Math.max(1,sr2.width); if(n.classList.contains('above')){ placeAbove(pr2, sr2, k2); } else if(n.classList.contains('over')){ n.style.left=Math.round((pr2.left-sr2.left)*k2+14)+'px'; n.style.top=Math.round((pr2.top-sr2.top)*k2+78)+'px'; } else { n.style.left=Math.round((pr2.right-sr2.left)*k2+14)+'px'; n.style.top=Math.round((pr2.top-sr2.top)*k2+pr2.height*k2*0.26)+'px'; } requestAnimationFrame(reflow); })();
     if (persist) { notifT = null; } else { notifT = setTimeout(function () { n.classList.add('out'); setTimeout(function () { n.remove(); }, 260); }, 5000); }     /* follows the phone; gone after five seconds (Farhan 2026-11-10) */
   };
 
@@ -3766,7 +3775,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     { id: 'files', label: 'الملفات' }, { id: 'set', label: 'الإعدادات' }
   ];
   var WIN = {
-    notes: '<div class="cc-note"><b>مهامي في أكاديمية كاملكود</b><ul><li class="ok">أنهيت أول تحدٍّ في البرمجة</li><li class="ok">صمّمت شعار فريقي</li><li>أختبر أمان الهاتف الذي أعطتني إياه كاملكود</li></ul><p>تذكّر: نختبر فقط الأجهزة التي نملك إذناً باختبارها.</p></div>',
+    notes: '<div class="cc-note"><b>مهامي في أكاديمية كاملكود</b><ul><li class="ok">أنهيت أول تحدٍّ في البرمجة</li><li class="ok">صمّمت شعار فريقي</li><li>أبني أول روبوت لي</li></ul><p>تذكّر: نختبر فقط الأجهزة التي نملك إذناً باختبارها.</p></div>',
     files: '<ul class="cc-files"><li><i></i>مشاريع البرمجة<small>4 ملفات</small></li><li><i></i>صور أكاديمية كاملكود<small>12 صورة</small></li><li><i></i>شهاداتي<small>3 ملفات</small></li><li><i></i>أدوات الهاكر<small>ملف واحد</small></li></ul><p class="cc-win-note">هذه الملفات للعرض فقط في هذا المختبر.</p>',
     set: '<div class="cc-locked"><span></span><p>إعدادات هذا الحاسوب مقفلة أثناء التدريب.</p></div>',
     calc: '<div class="cc-calc"><div class="cc-calc-d" dir="ltr">0</div><div class="cc-calc-k" dir="ltr">' +
@@ -4109,7 +4118,13 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       wrapEl.appendChild(arrow); place(); tick = setInterval(place, 400);
     };
     /* the first key the student presses on the phone ends the pointing (he understood) */
-    document.addEventListener('pointerdown', function (ev) { if (target && ev.target.closest && ev.target.closest('.phone .key')) CC.pointAt(null); }, true);
+    /* the first time the student acts on the glowing device (a phone key, a click on the monitor) ends the pointing and a persistent start bubble (he understood) */
+    document.addEventListener('pointerdown', function (ev) {
+      if (!ev.target.closest) return;
+      var onKey = ev.target.closest('.phone .key'), onDev = target && target.contains && target.contains(ev.target) && !target.classList.contains('phone');
+      if (target && (onKey || onDev)) CC.pointAt(null);
+      if ((onKey || onDev) || (!$('.phone') && ev.target.closest('#stage .pc-bezel'))) { var pb = $('#stage .cc-bubble.persist'); if (pb) pb.remove(); }
+    }, true);
     var emit0 = CC.emit;
     CC.emit = function (ev, data) { if (ev === 'step' && CC.pointAt) CC.pointAt(null); return emit0 && emit0.apply(this, arguments); };
   })();
@@ -4245,7 +4260,8 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
 
   /* the lab may have set its first instruction before this script ran */
   var first = $('.q-task .pl-task');
-  if (first && first.textContent.trim()) {
+  if (first && first.textContent.trim() && CC.lastTask) route(String(CC.lastTask));   /* the raw text keeps its bold words, icons and step key (ordinals) */
+  else if (first && first.textContent.trim()) {
     /* rebuild the source text: code chips back to backticks so CC.rich renders them the same way */
     var src = '';
     first.childNodes.forEach(function (n) { src += n.nodeType === 3 ? n.textContent : (n.tagName === 'CODE' ? '`' + n.textContent + '`' : n.tagName === 'STRONG' ? '**' + n.textContent + '**' : n.textContent); });
