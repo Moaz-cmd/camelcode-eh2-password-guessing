@@ -3469,7 +3469,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
      base pose: hello on the first step, point for a new step, type while a command runs, win at the end;
      reactions (yes, oops, think, shield) show for a few seconds, then he goes back to the base pose. */
   var bot = $('.cc-feed-bot', feed), say = $('.cc-say', feed);
-  var SAY = { yes: 'رائع! أحسنت', oops: 'اقتربت! جرّب مرة أخرى', think: 'فكّر معي...', type: 'الحاسوب يعمل الآن...', win: 'أنت هاكر أخلاقي حقيقي!', shield: 'تذكّر: نختبر فقط ما نملك إذناً به' };
+  var SAY = { yes: 'رائع! أحسنت', oops: 'اقتربت! جرّب مرة أخرى', think: 'فكّر معي...', type: 'الحاسوب يعمل الآن...', win: '',   /* no caption at the end: the last step and the assistant only (Moaz 2026-11-12) */ shield: 'تذكّر: نختبر فقط ما نملك إذناً به' };
   var base = 'hello', shown = '', back = null;
   function show(p, line) {
     if (p !== shown) {
