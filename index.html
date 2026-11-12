@@ -1475,13 +1475,22 @@ body.cc-one-dev .laptop.cc-os .lscreen .cs{left:calc(50% + .7cqw)}
 
 /* a glowing box on a word in the terminal that the step talks about, such as the current folder in the prompt (Moaz 2026-11-12):
    the lab adds .cc-hl (EH1 lab 1: `Desktop` at the display step). It pulses four times, then a still gold frame stays until the step ends. */
-.cs .cc-hl{display:inline-block;padding:0 .35em;margin:0 .1em;border-radius:6px;outline:2px solid #FCAD0F;outline-offset:1px;background:rgba(252,173,15,.16);animation:cchl 1.1s ease-in-out 4}
-@keyframes cchl{0%,100%{box-shadow:0 0 0 0 rgba(252,173,15,0)}50%{box-shadow:0 0 0 5px rgba(252,173,15,.45),0 0 18px 4px rgba(252,173,15,.55)}}
+.cs .cc-hl{position:relative;z-index:3;border-radius:6px;color:#FFE08A!important;background:rgba(252,173,15,.2);box-shadow:0 0 12px 5px rgba(252,173,15,.35);text-shadow:0 0 6px rgba(252,173,15,.95),0 0 14px rgba(252,173,15,.7);animation:cchl 1.3s ease-in-out 4}     /* a soft spotlight glow on the word, no frame (Moaz 2026-11-12) */
+@keyframes cchl{0%,100%{box-shadow:0 0 10px 4px rgba(252,173,15,.3)}50%{box-shadow:0 0 20px 9px rgba(252,173,15,.55);text-shadow:0 0 8px #FCAD0F,0 0 20px rgba(252,173,15,.9)}}
 @media (prefers-reduced-motion:reduce){.cs .cc-hl{animation:none}}
 /* the same banner on a computer screen (a folder or file the questions ask about): sized to the screen (Moaz 2026-11-12) */
 .pc-screen .cc-pna{width:86%;gap:2cqw;padding:5cqw 4cqw 6cqw}
 .pc-screen .cc-pna span{font-size:max(15px,5.6cqw);line-height:1.5}
 .pc-screen .cc-pna svg{width:max(34px,11cqw);height:max(34px,11cqw)}
+/* one device: the laptop is about 1.6x wider, and these guides are sized in its width, so bring them back to their two-device size (Moaz 2026-11-12) */
+body.cc-one-dev .cc-app.cue .cc-tip{gap:.2cqw;left:calc(100% + .8cqw);max-width:17cqw;padding:.7cqw 1.1cqw .75cqw;border-radius:.8cqw}
+body.cc-one-dev .cc-app.cue .cc-tip::before{left:-.35cqw;width:.7cqw;height:.7cqw;margin-top:-.35cqw}
+body.cc-one-dev .cc-tip b{font-size:max(12px,1.35cqw)}
+body.cc-one-dev .cc-tip em{font-size:max(11.5px,1.15cqw)}
+body.cc-one-dev .cc-cmdtip{max-width:23cqw;padding:.65cqw 1.1cqw;font-size:max(12px,1.2cqw)}
+
+/* the English term after the lab name in the title: plain, normal weight, in brackets (Moaz 2026-11-12) */
+.cc-title .cc-en-plain{font-family:var(--f-ui);font-weight:500;unicode-bidi:isolate;color:inherit}
 
 </style><!--/cc-skin-->
 </head>
@@ -3165,7 +3174,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
 
   /* ---------- 1. title in the top bar ---------- */
   /* no icon beside the title (Moaz 2026-11-09). A title «course and stage: lab name» shows the part before the colon
-     lighter and the lab name bold, in one line; an English term in brackets becomes a code chip. */
+     lighter and the lab name bold, in one line; an English term in brackets stays plain text «(Terminal)» in normal weight (Moaz 2026-11-12). */
   /* the lab's own icon before the title (lab-settings "mission.icon"), drawn for CamelCode, never a stock glyph in a box.
      key = a password key: a navy bow with a gold «*» (a hidden password character) and gold teeth */
   var MARKS = {
@@ -3187,7 +3196,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     if (hm) {
       var host = h1.lastChild.nodeType === 1 ? h1.lastChild : h1;
       host.textContent = hm[1] + ' ';
-      var en = document.createElement('span'); en.className = 'cc-en'; en.setAttribute('dir', 'ltr'); en.textContent = hm[2];
+      var en = document.createElement('span'); en.className = 'cc-en-plain'; en.setAttribute('dir', 'ltr'); en.textContent = '(' + hm[2] + ')';   /* plain text in brackets, normal weight, not a code chip (Moaz 2026-11-12) */
       host.appendChild(en);
     }
     t.appendChild(h1);
