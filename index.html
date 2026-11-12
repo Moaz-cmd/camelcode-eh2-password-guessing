@@ -3410,7 +3410,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     curNum.textContent = steps.length;
     fillTxt(curTxt, txt, steps.length - 1);
     cur.classList.remove('enter'); void cur.offsetWidth; cur.classList.add('enter');
-    typeIn();
+    if (M && key && key === M.doneKey) finishTyping(); else typeIn();   /* the last step («أنهيت») shows at once, no typing (Moaz 2026-11-12) */
     view = -1;
     render(); scrollTo(-1);
   }
