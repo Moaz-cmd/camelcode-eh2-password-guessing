@@ -3898,7 +3898,8 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
      terminal. Minimising (yellow) keeps everything. A command that is still running cannot be closed: the window is minimised instead and a short note says why. */
   function wipeTerm(l) {
     var inp = $('#cmd', l);
-    if (inp && inp.disabled) return false;
+    var edOpen = !!($('.cs .ed', l) && CC.Editor); if (edOpen) CC.Editor.close();   /* the text editor is not a running command: closing the terminal closes it (Moaz 2026-11-12) */
+    if (inp && inp.disabled && !edOpen) return false;
     try { var L = CC.L; L.clearLog(); L.clearChips(); L.progress(0, 0); L.value(''); L.err(''); } catch (e) { }
     return true;
   }
