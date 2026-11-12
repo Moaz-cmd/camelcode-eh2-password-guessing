@@ -1491,6 +1491,12 @@ body.cc-one-dev .cc-cmdtip{max-width:23cqw;padding:.65cqw 1.1cqw;font-size:max(1
 
 /* the English term after the lab name in the title: plain, normal weight, in brackets (Moaz 2026-11-12) */
 .cc-title .cc-en-plain{font-family:var(--f-ui);font-weight:500;unicode-bidi:isolate;color:inherit}
+/* one device: the «ابدأ هنا» label sits ABOVE the terminal icon (tail down), so it never covers the windows on the desktop (Moaz 2026-11-12) */
+body.cc-one-dev .cc-app.cue .cc-tip{left:50%;top:auto;bottom:calc(100% + 1cqw);transform:translateX(-50%);text-align:center;align-items:center;width:max-content;max-width:10.6cqw}
+body.cc-one-dev .cc-app.cue .cc-tip em{white-space:normal}
+body.cc-one-dev .cc-app.cue .cc-tip::before{left:50%;top:auto;bottom:-.35cqw;margin:0 0 0 -.35cqw}     /* the tail in the middle, on the icon's centre (Moaz 2026-11-12) */
+body.cc-one-dev .cc-tip{animation:ccTipAboveBounce 1.5s ease-in-out infinite!important}
+@keyframes ccTipAboveBounce{0%,100%{transform:translateX(-50%)}50%{transform:translate(-50%,-5px)}}
 
 </style><!--/cc-skin-->
 </head>
@@ -4317,7 +4323,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
 /* ---------- the EH2 lab 1 standard (Farhan 2026-11-10) ----------
    the footer (ethics line) stays centred between the two devices; the two side panels are equal and the stage is phi^2 times one of them */
 /* any target (phone, computer, browser): the device in the stage that is not the laptop */
-(function fc(){try{var ph=document.querySelector('#stage .phone')||document.querySelector('#stage .dev:not(#laptop)'),lp=document.getElementById('laptop'),f=document.querySelector('.ethics');if(ph&&lp&&f&&document.body.classList.contains('cc-has-feed')){var Z=(window.CC&&CC.Z)||1,pr=ph.getBoundingClientRect(),lr=lp.getBoundingClientRect(),a=Math.min(pr.left,lr.left),b=Math.max(pr.right,lr.right);f.style.left=(((a+b)/2)/Z)+'px';f.style.maxWidth=(Math.max(220,b-a-16)/Z)+'px';}}catch(e){}requestAnimationFrame(fc);})();
+(function fc(){try{var lp=document.getElementById('laptop'),ph=document.querySelector('#stage .phone')||document.querySelector('#stage .dev:not(#laptop)')||lp,f=document.querySelector('.ethics');if(ph&&lp&&f&&document.body.classList.contains('cc-has-feed')){var Z=(window.CC&&CC.Z)||1,pr=ph.getBoundingClientRect(),lr=lp.getBoundingClientRect(),a=Math.min(pr.left,lr.left),b=Math.max(pr.right,lr.right);f.style.left=(((a+b)/2)/Z)+'px';f.style.maxWidth=(Math.max(220,b-a-16)/Z)+'px';}}catch(e){}requestAnimationFrame(fc);})();
 (function(){
   /* exact golden layout (Farhan 2026-11-10, made exact by Moaz 2026-11-11), three-column layout only:
      questions open:   instructions = questions column (panel + its 38px tab gutter) = P, stage = phi^2 * P
