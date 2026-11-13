@@ -1477,9 +1477,9 @@ body.side.cc-one-dev .laptop,body.side.cc-has-feed.cc-one-dev .laptop{max-width:
 .cc-embedded .pc-screen{position:absolute;top:4cqw;bottom:1.4cqw;left:11.2cqw;right:calc(50% + .7cqw);width:auto;height:auto;aspect-ratio:auto;background:none;border:0;border-radius:0;box-shadow:none;overflow:hidden;pointer-events:auto}
 .laptop.cc-os.cc-one .lscreen .cs{left:calc(50% + .7cqw)}
 body.cc-one-dev .laptop.cc-os .lscreen .cs{left:calc(50% + .7cqw)}
-.cc-embedded .dk-icons{grid-template-columns:repeat(4,1fr);padding:1.6cqw 1.6cqw 1cqw;gap:1.6cqw .4cqw}
-.cc-embedded .dk-i{font-size:max(11px,4.1cqw);padding:1cqw .4cqw}
-.cc-embedded .dk-i .ic svg,.cc-embedded .dk-i .ic img{width:15cqw;height:15cqw}
+.cc-embedded .dk-icons{--cell:22cqw;grid-template-columns:repeat(auto-fill,minmax(calc(var(--cell) * var(--dkz,1)),1fr));padding:1.6cqw 1.6cqw 1cqw;gap:1.6cqw .4cqw}
+.cc-embedded .dk-i{font-size:calc(max(11px,4.1cqw) * var(--dkz,1));padding:calc(1cqw * var(--dkz,1)) .4cqw}
+.cc-embedded .dk-i .ic svg,.cc-embedded .dk-i .ic img{width:calc(15cqw * var(--dkz,1));height:calc(15cqw * var(--dkz,1))}
 
 /* a glowing box on a word in the terminal that the step talks about, such as the current folder in the prompt (Moaz 2026-11-12):
    the lab adds .cc-hl (EH1 lab 1: `Desktop` at the display step). It pulses four times, then a still gold frame stays until the step ends. */
@@ -1509,13 +1509,20 @@ body.cc-one-dev .cc-tip{animation:ccTipAboveBounce 1.5s ease-in-out infinite!imp
    half and the terminal takes the right half (both move smoothly) */
 .cc-embedded .pc-screen{transition:right .45s cubic-bezier(.4,0,.2,1)}
 body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .pc-screen{right:1.4cqw}
-body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-icons{grid-template-columns:repeat(8,1fr)}
-body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i{font-size:max(11px,2.1cqw)}
-body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic svg,body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic img{width:7.6cqw;height:7.6cqw}
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-icons{--cell:11.5cqw}     /* as many columns as fit; smaller icons give more columns (Moaz 2026-11-13) */
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i{font-size:calc(max(11px,2.1cqw) * var(--dkz,1))}
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic svg,body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic img{width:calc(7.6cqw * var(--dkz,1));height:calc(7.6cqw * var(--dkz,1))}
 /* the answer box on its own row, «تحقق» and «تلميح» always side by side under it (Moaz 2026-11-13, every lab; also in styles.css) */
 .qin{flex-wrap:wrap!important;align-items:center}
 .qin .btn,.qin .qhintb{flex:none;white-space:nowrap}
 .qin input{flex:1 1 100%!important;min-width:0}
+
+.laptop.cc-noanim .cc-embedded .pc-screen,.laptop.cc-noanim .lscreen .cs{transition:none!important;animation:none!important}     /* first frame after load or restart: no slide */
+/* an empty place on the computer's desktop for the guide to point at (EH1 lab 1: the right-click step) */
+.rc-spot{position:absolute;left:50%;bottom:16%;width:12cqw;height:8cqw;margin-left:-6cqw;pointer-events:none;border-radius:10px}
+
+/* a step keeps the line breaks written in its text (Moaz 2026-11-13) */
+.cc-txt{white-space:pre-line}
 
 </style><!--/cc-skin-->
 </head>
@@ -3869,6 +3876,8 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       '</div></div>'
   };
   function lapEl() { return $('#laptop'); }
+  /* the desktop inside the laptop changed width (terminal opened or closed): fit its icons again when the slide ends */
+  function refitDesk() { [0, 520].forEach(function (ms) { setTimeout(function () { if (CC.P && CC.P.refresh && document.body.classList.contains('cc-one-dev')) CC.P.refresh(); }, ms); }); }
   function isClosed() { var l = lapEl(); return !!(l && l.classList.contains('cc-closed') && !l.classList.contains('cc-peek')); }
   function front(w) { var l = lapEl(); if (!l) return; l.querySelectorAll('.cc-front').forEach(function (x) { x.classList.remove('cc-front'); }); if (w) w.classList.add('cc-front'); var n = $('.cc-mb-app', l); if (n) n.textContent = w && w.getAttribute('data-name') || ''; }
   function calc(win) {
@@ -3922,7 +3931,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     var l = lapEl(); if (!l) return;
     var cs = $('.cs', l);
     if (l.classList.contains('cc-closed')) {
-      l.classList.remove('cc-closed', 'cc-peek'); l.classList.add('cc-opening');
+      l.classList.remove('cc-closed', 'cc-peek'); l.classList.add('cc-opening'); refitDesk();
       setTimeout(function () { l.classList.remove('cc-opening'); }, 360);
       var ic = $('.cc-app[data-app="term"]', l); if (ic) { ic.classList.remove('cue'); ic.classList.add('run'); }
       if (OS.pending) { var p = OS.pending; OS.pending = null; push(p); }
@@ -3947,7 +3956,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   function closeTerm(keep) {
     var l = lapEl(); if (!l || l.classList.contains('cc-closed')) return;
     if (!keep && !wipeTerm(l)) { keep = true; if (CC.toast) CC.toast('الأمر ما زال يعمل، لذلك صُغّرت النافذة ولم تُغلق.', 2600); }
-    l.classList.add('cc-closed'); hideCmdTip(true);
+    l.classList.add('cc-closed'); hideCmdTip(true); refitDesk();
     if (OS.last && !OS.guide && typeof gHideF === 'function') { OS.guide = OS.last; gHideF.call(CC.guide); }      /* the ring on the command box goes with the window and returns when it opens */
     var ic = $('.cc-app[data-app="term"]', l);
     if (ic) {
@@ -3962,7 +3971,9 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     var scr = $('.lscreen', l); if (!scr) return;
     l.__ccOS = true; OS.pending = null;
     bindLaptop(l);
-    l.classList.add('cc-os', 'cc-closed');
+    l.classList.add('cc-os', 'cc-closed', 'cc-noanim');     /* the first closed state shows at once: no slide of the desktop on load or restart (Moaz 2026-11-13) */
+    requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(function () { l.classList.remove('cc-noanim'); }, 60); }); });
+    setTimeout(function () { l.classList.remove('cc-noanim'); }, 1200);     /* also when the page is in a background tab (no frames drawn) */
     var cs = $('.cs', l); if (cs) cs.setAttribute('data-name', TERM);
     var bar = cs && $('.cs-bar', cs);
     if (bar) {
@@ -4392,6 +4403,24 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   new MutationObserver(run).observe(document.body,{attributes:true,attributeFilter:['class']});
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(run);
   setTimeout(run,300);setTimeout(run,900);
+})();
+
+/* ---------- a click anywhere on a popup skips it (Moaz 2026-11-13) ----------
+   Lesson popups, the box animation and the congratulations card: a click that is not on a button finishes the typing and goes on,
+   as «متابعة» does. A popup with choices (no «متابعة») waits for an answer, and buttons inside a card work as before. */
+(function () {
+  document.addEventListener('click', function (e) {
+    var ov = e.target.closest && e.target.closest('.overlay');
+    if (!ov || e.target.closest('button, a, input, textarea, select, .qopt')) return;
+    var b = ov.querySelector('.bx-go') || ov.querySelector('.pc-foot .btn.gold');
+    if (!b) return;
+    var body = ov.querySelector('.pc-body'); if (body && !b.onclick) body.click();          /* still typing: show the whole text */
+    (function go(n) {
+      if (!b.isConnected) return;
+      if (b.onclick && b.style.display !== 'none') { b.click(); return; }
+      if (n < 60) setTimeout(function () { go(n + 1); }, 50);
+    })(0);
+  });
 })();
 
 </script><!--/cc-addon-->
