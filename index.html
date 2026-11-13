@@ -1483,8 +1483,9 @@ body.cc-one-dev .laptop.cc-os .lscreen .cs{left:calc(50% + .7cqw)}
 
 /* a glowing box on a word in the terminal that the step talks about, such as the current folder in the prompt (Moaz 2026-11-12):
    the lab adds .cc-hl (EH1 lab 1: `Desktop` at the display step). It pulses four times, then a still gold frame stays until the step ends. */
-.cs .cc-hl{position:relative;z-index:3;border-radius:5px;color:#FFE08A!important;background:rgba(252,173,15,.22);box-shadow:0 0 10px 4px rgba(252,173,15,.35);text-shadow:0 0 6px rgba(252,173,15,.95),0 0 14px rgba(252,173,15,.7);animation:cchl 1.3s ease-in-out 4}     /* a spotlight on the word (Moaz 2026-11-13: no ring, it was clipped and looked odd) */
-@keyframes cchl{0%,100%{box-shadow:0 0 10px 4px rgba(252,173,15,.3)}50%{box-shadow:0 0 22px 10px rgba(252,173,15,.55);text-shadow:0 0 8px #FCAD0F,0 0 20px rgba(252,173,15,.9)}}
+.cs .cc-hl{position:relative;display:inline-block;z-index:3}     /* a circle around the word (Moaz 2026-11-13): an oval drawn on top, the text is unchanged */
+.cs .cc-hl::after{content:"";position:absolute;left:-9px;right:-9px;top:-5px;bottom:-5px;border:2px solid #FFC94A;border-radius:50%;pointer-events:none;box-shadow:0 0 8px 2px rgba(252,173,15,.75),inset 0 0 6px 1px rgba(252,173,15,.45);animation:cchl 1.2s ease-in-out infinite}     /* a glowing circle (Moaz 2026-11-13); it pulses until the step ends */
+@keyframes cchl{0%,100%{box-shadow:0 0 8px 2px rgba(252,173,15,.7),inset 0 0 6px 1px rgba(252,173,15,.4)}50%{box-shadow:0 0 16px 5px rgba(252,173,15,.95),inset 0 0 9px 2px rgba(252,173,15,.6)}}
 .prompt.dyn:has(.cc-hl),.cs-in:has(.cc-hl){overflow:visible}     /* the prompt clips its content; not while the spotlight is on */
 @media (prefers-reduced-motion:reduce){.cs .cc-hl{animation:none}}
 /* the same banner on a computer screen (a folder or file the questions ask about): sized to the screen (Moaz 2026-11-12) */
@@ -1528,6 +1529,8 @@ body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic svg,body.
 
 /* a step keeps the line breaks written in its text (Moaz 2026-11-13) */
 .cc-txt{white-space:pre-line}
+.prompt.dyn .pp.cc-hl{overflow:visible}     /* the folder name shortens with «…» and hides overflow; not while the circle is on */
+@media (prefers-reduced-motion:reduce){.cs .cc-hl::after{animation:none}}
 
 </style><!--/cc-skin-->
 </head>
@@ -3959,7 +3962,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     var inp = $('#cmd', l);
     var edOpen = !!($('.cs .ed', l) && CC.Editor); if (edOpen) CC.Editor.close();   /* the text editor is not a running command: closing the terminal closes it (Moaz 2026-11-12) */
     if (inp && inp.disabled && !edOpen) return false;
-    try { var L = CC.L; L.clearLog(); L.clearChips(); L.progress(0, 0); L.value(''); L.err(''); } catch (e) { }
+    try { var L = CC.L; L.clearLog(); L.clearChips(); L.progress(0, 0); L.value(''); L.err(''); if (L.clearHistory) L.clearHistory(); if (L.onWipe) L.onWipe(); } catch (e) { }   /* a real close forgets everything: screen, ↑ history, and (L.onWipe, the lab) the current folder (Moaz 2026-11-13) */
     return true;
   }
   function closeTerm(keep) {
