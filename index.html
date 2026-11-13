@@ -4405,21 +4405,16 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   setTimeout(run,300);setTimeout(run,900);
 })();
 
-/* ---------- a click anywhere on a popup skips it (Moaz 2026-11-13) ----------
-   Lesson popups, the box animation and the congratulations card: a click that is not on a button finishes the typing and goes on,
-   as «متابعة» does. A popup with choices (no «متابعة») waits for an answer, and buttons inside a card work as before. */
+/* ---------- a click anywhere on a popup jumps to its end (Moaz 2026-11-13) ----------
+   Lesson popups: the whole text at once; the box animation: its last scene. «متابعة» is still needed to go on. */
 (function () {
   document.addEventListener('click', function (e) {
     var ov = e.target.closest && e.target.closest('.overlay');
     if (!ov || e.target.closest('button, a, input, textarea, select, .qopt')) return;
-    var b = ov.querySelector('.bx-go') || ov.querySelector('.pc-foot .btn.gold');
-    if (!b) return;
-    var body = ov.querySelector('.pc-body'); if (body && !b.onclick) body.click();          /* still typing: show the whole text */
-    (function go(n) {
-      if (!b.isConnected) return;
-      if (b.onclick && b.style.display !== 'none') { b.click(); return; }
-      if (n < 60) setTimeout(function () { go(n + 1); }, 50);
-    })(0);
+    /* a click never closes the card: it only jumps to its end, where «متابعة» (and «شاهد مرة أخرى») wait (Moaz 2026-11-13) */
+    var bx = ov.querySelector('.bx-card'); if (bx && bx.__skip) { bx.__skip(); return; }
+    var b = ov.querySelector('.pc-foot .btn.gold'), body = ov.querySelector('.pc-body');
+    if (b && body && !b.onclick && !e.target.closest('.pc-body')) body.click();     /* still typing: show the whole text at once */
   });
 })();
 
