@@ -1483,8 +1483,9 @@ body.cc-one-dev .laptop.cc-os .lscreen .cs{left:calc(50% + .7cqw)}
 
 /* a glowing box on a word in the terminal that the step talks about, such as the current folder in the prompt (Moaz 2026-11-12):
    the lab adds .cc-hl (EH1 lab 1: `Desktop` at the display step). It pulses four times, then a still gold frame stays until the step ends. */
-.cs .cc-hl{position:relative;z-index:3;border-radius:6px;color:#FFE08A!important;background:rgba(252,173,15,.2);box-shadow:0 0 12px 5px rgba(252,173,15,.35);text-shadow:0 0 6px rgba(252,173,15,.95),0 0 14px rgba(252,173,15,.7);animation:cchl 1.3s ease-in-out 4}     /* a soft spotlight glow on the word, no frame (Moaz 2026-11-12) */
-@keyframes cchl{0%,100%{box-shadow:0 0 10px 4px rgba(252,173,15,.3)}50%{box-shadow:0 0 20px 9px rgba(252,173,15,.55);text-shadow:0 0 8px #FCAD0F,0 0 20px rgba(252,173,15,.9)}}
+.cs .cc-hl{position:relative;z-index:3;border-radius:5px;color:#FFE08A!important;background:rgba(252,173,15,.22);box-shadow:0 0 10px 4px rgba(252,173,15,.35);text-shadow:0 0 6px rgba(252,173,15,.95),0 0 14px rgba(252,173,15,.7);animation:cchl 1.3s ease-in-out 4}     /* a spotlight on the word (Moaz 2026-11-13: no ring, it was clipped and looked odd) */
+@keyframes cchl{0%,100%{box-shadow:0 0 10px 4px rgba(252,173,15,.3)}50%{box-shadow:0 0 22px 10px rgba(252,173,15,.55);text-shadow:0 0 8px #FCAD0F,0 0 20px rgba(252,173,15,.9)}}
+.prompt.dyn:has(.cc-hl),.cs-in:has(.cc-hl){overflow:visible}     /* the prompt clips its content; not while the spotlight is on */
 @media (prefers-reduced-motion:reduce){.cs .cc-hl{animation:none}}
 /* the same banner on a computer screen (a folder or file the questions ask about): sized to the screen (Moaz 2026-11-12) */
 .pc-screen .cc-pna{width:86%;gap:2cqw;padding:5cqw 4cqw 6cqw}
@@ -1507,7 +1508,11 @@ body.cc-one-dev .cc-tip{animation:ccTipAboveBounce 1.5s ease-in-out infinite!imp
 @keyframes ccTipAboveBounce{0%,100%{transform:translateX(-50%)}50%{transform:translate(-50%,-5px)}}
 /* one device (Moaz 2026-11-13): while the terminal is closed the desktop takes the whole screen; when it opens, the desktop shrinks to the left
    half and the terminal takes the right half (both move smoothly) */
-.cc-embedded .pc-screen{transition:right .45s cubic-bezier(.4,0,.2,1)}
+/* (Moaz 2026-11-13) no width slide: the grid re-laid itself out on every frame and the icons jumped. The desktop takes its new size at once
+   and fades in with a slight zoom (.cc-relayout, set by brand-addon.js when the terminal opens or closes) */
+.laptop.cc-relayout .cc-embedded .pc-screen{animation:ccrelay .32s cubic-bezier(.2,.7,.3,1) both}
+@keyframes ccrelay{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.laptop.cc-relayout .cc-embedded .pc-screen{animation:none}}
 body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .pc-screen{right:1.4cqw}
 body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-icons{--cell:11.5cqw}     /* as many columns as fit; smaller icons give more columns (Moaz 2026-11-13) */
 body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i{font-size:calc(max(11px,2.1cqw) * var(--dkz,1))}
@@ -3877,7 +3882,11 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   };
   function lapEl() { return $('#laptop'); }
   /* the desktop inside the laptop changed width (terminal opened or closed): fit its icons again when the slide ends */
-  function refitDesk() { [0, 520].forEach(function (ms) { setTimeout(function () { if (CC.P && CC.P.refresh && document.body.classList.contains('cc-one-dev')) CC.P.refresh(); }, ms); }); }
+  function refitDesk() {
+    if (!document.body.classList.contains('cc-one-dev')) return;
+    if (CC.P && CC.P.refresh) CC.P.refresh();                       /* the icons take their new size and columns at once... */
+    var l = lapEl(); if (l) { l.classList.remove('cc-relayout'); void l.offsetWidth; l.classList.add('cc-relayout'); clearTimeout(l.__rl); l.__rl = setTimeout(function () { l.classList.remove('cc-relayout'); }, 400); }   /* ...and the desktop fades in once (Moaz 2026-11-13) */
+  }
   function isClosed() { var l = lapEl(); return !!(l && l.classList.contains('cc-closed') && !l.classList.contains('cc-peek')); }
   function front(w) { var l = lapEl(); if (!l) return; l.querySelectorAll('.cc-front').forEach(function (x) { x.classList.remove('cc-front'); }); if (w) w.classList.add('cc-front'); var n = $('.cc-mb-app', l); if (n) n.textContent = w && w.getAttribute('data-name') || ''; }
   function calc(win) {
