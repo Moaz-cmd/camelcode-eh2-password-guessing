@@ -1722,6 +1722,7 @@ body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl{backgr
   body.side.cc-has-feed .qpanel{grid-column:3;min-width:0;width:var(--qw,331px);justify-self:end;border-radius:0 var(--r-l) var(--r-l) 0;box-shadow:0 0 0 1px var(--line)}
   body.side.cc-has-feed:not(.cc-q-open) .qpanel{visibility:hidden;pointer-events:none}
   body.side.cc-has-feed .qpanel{padding-top:20px}      /* space above question 1, under the top bar (Moaz 2026-11-13, every lab) */
+  body.side.cc-has-feed .qrow{border-top:0;border-radius:0}      /* seamless questions: no line or rounded frame above each question (Moaz 2026-11-13, every lab) */
   .cc-qhandle{display:flex;position:absolute;left:0;top:96px;z-index:36;align-items:center;gap:10px;padding:16px 8px;writing-mode:vertical-rl;border-radius:0 var(--r-m) var(--r-m) 0;
     background:var(--navy);color:#fff;font-weight:800;font-size:calc(var(--t) * 1.02);line-height:1;box-shadow:0 12px 26px -10px rgba(10,22,40,.6);transition:left 340ms var(--ease),background-color 200ms}
   .cc-qhandle:hover{background:#162B4D}
