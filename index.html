@@ -1122,6 +1122,14 @@ body.cc-has-feed .q-task{display:none!important}
 .cc-bubble.over::before{display:none}
 .cc-bubble.above::before{left:50%;top:auto;bottom:-8px;margin:0 0 0 -9px}     /* above a monitor-like target: tail points down at it (Moaz 2026-11-12) */
 .cc-bubble.out{animation:ccbubout 240ms var(--ease) both}
+/* a sign anchored under an element (CC.comment(txt, persist, { at })): gold like «ابدأ هنا», navy text, tail up at the anchor, gentle up-down bounce (Moaz 2026-11-12) */
+.cc-bubble.at{max-width:none;width:max-content;white-space:nowrap;background:var(--gold,#FCAD0F);color:var(--navy,#0E1F39);font-weight:800;font-size:16px;padding:9px 18px;border-radius:12px;box-shadow:0 10px 22px -10px rgba(14,31,57,.55);transform:none;animation:ccbub-at 280ms var(--ease) both,ccBubAtBounce 1.5s 280ms ease-in-out infinite}
+.cc-bubble.at::before{left:var(--tx,50%);top:-7px;margin:0 0 0 -8px;width:16px;height:16px;background:var(--gold,#FCAD0F);border-radius:2px}
+.cc-bubble.at.out{animation:ccbubout-at 240ms var(--ease) both}
+@keyframes ccbub-at{0%{opacity:0;transform:translateY(8px) scale(.94)}100%{opacity:1;transform:none}}
+@keyframes ccbubout-at{0%{opacity:1;transform:none}100%{opacity:0;transform:translateY(6px)}}
+@keyframes ccBubAtBounce{0%,100%{transform:none}50%{transform:translateY(5px)}}
+@media (prefers-reduced-motion:reduce){.cc-bubble.at{animation:ccbub-at 150ms both}}
 @keyframes ccbub{0%{opacity:0;transform:translate(-18px,-50%) scale(.9)}100%{opacity:1;transform:translate(0,-50%)}}
 @keyframes ccbubout{0%{opacity:1;transform:translate(0,-50%)}100%{opacity:0;transform:translate(-8px,-50%)}}
 @keyframes ccBubBounce{0%,100%{transform:translate(0,-50%)}50%{transform:translate(7px,-50%)}}
@@ -1497,6 +1505,17 @@ body.cc-one-dev .cc-app.cue .cc-tip em{white-space:normal}
 body.cc-one-dev .cc-app.cue .cc-tip::before{left:50%;top:auto;bottom:-.35cqw;margin:0 0 0 -.35cqw}     /* the tail in the middle, on the icon's centre (Moaz 2026-11-12) */
 body.cc-one-dev .cc-tip{animation:ccTipAboveBounce 1.5s ease-in-out infinite!important}
 @keyframes ccTipAboveBounce{0%,100%{transform:translateX(-50%)}50%{transform:translate(-50%,-5px)}}
+/* one device (Moaz 2026-11-13): while the terminal is closed the desktop takes the whole screen; when it opens, the desktop shrinks to the left
+   half and the terminal takes the right half (both move smoothly) */
+.cc-embedded .pc-screen{transition:right .45s cubic-bezier(.4,0,.2,1)}
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .pc-screen{right:1.4cqw}
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-icons{grid-template-columns:repeat(8,1fr)}
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i{font-size:max(11px,2.1cqw)}
+body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic svg,body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic img{width:7.6cqw;height:7.6cqw}
+/* the answer box on its own row, «تحقق» and «تلميح» always side by side under it (Moaz 2026-11-13, every lab; also in styles.css) */
+.qin{flex-wrap:wrap!important;align-items:center}
+.qin .btn,.qin .qhintb{flex:none;white-space:nowrap}
+.qin input{flex:1 1 100%!important;min-width:0}
 
 </style><!--/cc-skin-->
 </head>
@@ -3335,7 +3354,9 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   var run = 0, gen = 0;
   if (typeof CC.restart === 'function') {
     var restartF = CC.restart;
-    CC.restart = function () { run++; return restartF.apply(this, arguments); };
+    /* the old run's steps go at once (2026-11-12): a lab that opens with popups or a walkthrough (EH1 lab 2 self-paced) showed the finished
+       list, «أنهيت المهمة!» included, until its first new step */
+    CC.restart = function () { run++; gen = run; clear(); return restartF.apply(this, arguments); };
   }
 
   /* ---------- the mission tracker: the lab's stages (lab-settings.json "mission", injected as window.CC_MISSION) ---------- */
@@ -3558,11 +3579,31 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
   /* the target device the bubble and the glow belong to: the phone, the computer's monitor (EH1 lab 1), or any other target (Moaz 2026-11-12: every lab) */
   function targetDev() { return $('#stage .phone') || $('#stage .pc-bezel') || $('#stage .dev:not(#laptop)'); }
   CC.targetDev = targetDev;
-  CC.comment = function (txt, persist) {   /* persist: stays until the student first acts on the target (a phone key, a click on the monitor) or the next step (Farhan 2026-11-10) */
+  CC.comment = function (txt, persist, opts) {   /* persist: stays until the student first acts on the target (a phone key, a click on the monitor) or the next step (Farhan 2026-11-10) */
     if (!txt) { dropBubble(); return; }                       /* CC.comment('') clears it at once */
     var st = $('#stage'), ph = targetDev(); if (!st || !ph) return;
     var old = $('.cc-bubble', st); if (old) old.remove();
     clearTimeout(notifT);
+    /* opts.at: a function that returns the screen rectangle of what the sign points at (EH1 lab 2: the next page in the site's menu, inside the frame).
+       A gold sign with navy text sits just under it, centred, its tail pointing up, and follows it (Moaz 2026-11-12: a proper sign, not a band over the browser). */
+    if (opts && typeof opts.at === 'function') {
+      var sg = document.createElement('div'); sg.className = 'cc-bubble at' + (persist ? ' persist' : ''); sg.setAttribute('role', 'status'); sg.textContent = txt;
+      st.appendChild(sg); play('try');
+      (function follow() {
+        if (!sg.isConnected) return;
+        var r = null; try { r = opts.at(); } catch (e) { r = null; }
+        var s0 = st.getBoundingClientRect(), kk = st.clientWidth / Math.max(1, s0.width);
+        if (r && r.width) {
+          sg.style.visibility = '';
+          var x = Math.round((r.left - s0.left) * kk + (r.width * kk - sg.offsetWidth) / 2), maxX = st.clientWidth - sg.offsetWidth - 8;
+          sg.style.left = Math.max(8, Math.min(maxX, x)) + 'px'; sg.style.top = Math.round((r.top + r.height - s0.top) * kk + 14) + 'px';   /* top + height: the anchor may be a plain rectangle with no bottom */
+          sg.style.setProperty('--tx', Math.round((r.left - s0.left) * kk + r.width * kk / 2 - parseFloat(sg.style.left)) + 'px');   /* the tail stays under the anchor when the sign is pushed in from an edge */
+        } else sg.style.visibility = 'hidden';
+        requestAnimationFrame(follow);
+      })();
+      if (!persist) notifT = setTimeout(function () { sg.classList.add('out'); setTimeout(function () { sg.remove(); }, 260); }, 5000);
+      return;
+    }
     var k = st.clientWidth / Math.max(1, st.getBoundingClientRect().width);          /* screen px -> page px (the page is zoomed) */
     var sr = st.getBoundingClientRect(), pr = ph.getBoundingClientRect();
     var side = (sr.right - pr.right) * k > 260;
@@ -4169,7 +4210,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
       if (!ev.target.closest) return;
       var onKey = ev.target.closest('.phone .key'), onDev = target && target.contains && target.contains(ev.target) && !target.classList.contains('phone');
       if (target && (onKey || onDev)) CC.pointAt(null);
-      if ((onKey || onDev) || (!$('.phone') && ev.target.closest('#stage .pc-bezel'))) { var pb = $('#stage .cc-bubble.persist'); if (pb) pb.remove(); }
+      if ((onKey || onDev) || (!$('.phone') && ev.target.closest('#stage .pc-bezel'))) { var pb = $('#stage .cc-bubble.persist:not(.at)'); if (pb) pb.remove(); }   /* an anchored sign (opts.at) is ended by the lab itself */
     }, true);
     var emit0 = CC.emit;
     CC.emit = function (ev, data) { if (ev === 'step' && CC.pointAt) CC.pointAt(null); return emit0 && emit0.apply(this, arguments); };
@@ -4324,7 +4365,8 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
 /* ---------- the EH2 lab 1 standard (Farhan 2026-11-10) ----------
    the footer (ethics line) stays centred between the two devices; the two side panels are equal and the stage is phi^2 times one of them */
 /* any target (phone, computer, browser): the device in the stage that is not the laptop */
-(function fc(){try{var lp=document.getElementById('laptop'),ph=document.querySelector('#stage .phone')||document.querySelector('#stage .dev:not(#laptop)')||lp,f=document.querySelector('.ethics');if(ph&&lp&&f&&document.body.classList.contains('cc-has-feed')){var Z=(window.CC&&CC.Z)||1,pr=ph.getBoundingClientRect(),lr=lp.getBoundingClientRect(),a=Math.min(pr.left,lr.left),b=Math.max(pr.right,lr.right);f.style.left=(((a+b)/2)/Z)+'px';f.style.maxWidth=(Math.max(220,b-a-16)/Z)+'px';}}catch(e){}requestAnimationFrame(fc);})();
+/* the ethics line centres between the devices; with only one (EH1 lab 2: the browser, no laptop) under that one (2026-11-12) */
+(function fc(){try{var ph=document.querySelector('#stage .phone')||document.querySelector('#stage .dev:not(#laptop)')||document.getElementById('laptop'),lp=document.getElementById('laptop')||ph,f=document.querySelector('.ethics');if(ph&&lp&&f&&document.body.classList.contains('cc-has-feed')){var Z=(window.CC&&CC.Z)||1,pr=ph.getBoundingClientRect(),lr=lp.getBoundingClientRect(),a=Math.min(pr.left,lr.left),b=Math.max(pr.right,lr.right);f.style.left=(((a+b)/2)/Z)+'px';f.style.maxWidth=(Math.max(220,b-a-16)/Z)+'px';}}catch(e){}requestAnimationFrame(fc);})();
 (function(){
   /* exact golden layout (Farhan 2026-11-10, made exact by Moaz 2026-11-11), three-column layout only:
      questions open:   instructions = questions column (panel + its 38px tab gutter) = P, stage = phi^2 * P
