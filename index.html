@@ -1525,12 +1525,22 @@ body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .dk-i .ic svg,body.
 
 .laptop.cc-noanim .cc-embedded .pc-screen,.laptop.cc-noanim .lscreen .cs{transition:none!important;animation:none!important}     /* first frame after load or restart: no slide */
 /* an empty place on the computer's desktop for the guide to point at (EH1 lab 1: the right-click step) */
-.rc-spot{position:absolute;left:50%;bottom:16%;width:12cqw;height:8cqw;margin-left:-6cqw;pointer-events:none;border-radius:10px}
+.rc-spot{position:absolute;left:50%;bottom:30%;width:12cqw;height:8cqw;margin-left:-6cqw;pointer-events:none;border-radius:10px}
 
 /* a step keeps the line breaks written in its text (Moaz 2026-11-13) */
 .cc-txt{white-space:pre-line}
 .prompt.dyn .pp.cc-hl{overflow:visible}     /* the folder name shortens with «…» and hides overflow; not while the circle is on */
 @media (prefers-reduced-motion:reduce){.cs .cc-hl::after{animation:none}}
+/* the «سؤال جديد» badge bounces until the student clicks into the answer box (Moaz 2026-11-13, every lab) */
+body .qrow.qnew .qtxt::before{animation:ccqnewbounce 1s cubic-bezier(.3,0,.4,1) infinite}
+@keyframes ccqnewbounce{0%,100%{transform:translateY(0)}35%{transform:translateY(-6px)}55%{transform:translateY(0)}70%{transform:translateY(-2px)}}
+@media (prefers-reduced-motion:reduce){body .qrow.qnew .qtxt::before{animation:none}}
+
+/* confetti in the instruction panel at the end of the lab (celebrateFeed, Moaz 2026-11-13) */
+.cc-fconf{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:30}
+.cc-fconf i{position:absolute;top:-14px;width:8px;height:13px;border-radius:2px;opacity:.95;animation:ccfconf 2.6s cubic-bezier(.3,.1,.6,1) forwards}
+@keyframes ccfconf{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(105vh) rotate(540deg);opacity:.9}}
+@media (prefers-reduced-motion:reduce){.cc-fconf{display:none}}
 
 </style><!--/cc-skin-->
 </head>
@@ -2643,8 +2653,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     d_y1: 'سنة', d_y2: 'سنتان', d_y3: 'سنوات',
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
     cele_i: 'أهم ما تعلمته في هذا الدرس:',
-    cele_1: 'الحاسوب يجرّب كلمات السر واحدة تلو الأخرى بسرعة كبيرة حتى يجد الصحيحة، وهذا أسرع بكثير من تجربتها بأيدينا.',
-    cele_2: 'تعلّمت أوامر اختراق كلمات المرور! `guess password 4` يخمّن كلمة سر مكونة من 4 أرقام، و`guess password 6 Aa0` يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة.',
+    cele_1: 'الحاسوب يجرّب كلمات السر واحدة تلو الأخرى بسرعة كبيرة حتى يجد الصحيحة، وهذا **أسرع بكثير** من تجربتها بأيدينا.',
+    cele_2: 'تعلّمت **أوامر اختراق كلمات المرور**! `guess password 4` يخمّن كلمة سر مكونة من 4 أرقام، و`guess password 6 Aa0` يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة.',
     cele_3: 'كلما زادت **خانات** كلمة السر وتنوّعت (أرقام وأحرف)، صار تخمينها أصعب واحتاج الحاسوب **وقتاً أطول بكثير**. هذا سرّ **كلمة السر القوية** التي يجب أن نستخدمها.',
     cele_b: 'متابعة',
     /* notes app: first line is the title (all fictional) */
@@ -2713,11 +2723,11 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     w3: 'هنا تكتب الأمر للحاسوب في شاشة الأوامر، ثم تضغط Enter لينفذه. اقرأ التلميح ليساعدك في كتابة الأوامر.',
     w5: 'هذا شريط التقدّم: يبيّن كم كلمة سر جرّبها الحاسوب على الهاتف، وكم بقي حتى ينتهي.', w6: 'زر «؟» يعرّفك على أجزاء الدرس وطريقة استخدامها.',
     /* instructor reference panel (condensed from the popups) */
-    r1_h: 'الملخص', r1: 'أنت الآن الهاكر، وأمامك هاتف شخص تريد اختراقه عن طريق تخمين كلمة السر الخاصة به. سيتم ربط الهاتف بالحاسوب (جهاز الهاكر) باستخدام سلكٍ يمكّنه من التحكّم بالهاتف، ومهمّتك الآن هي إعطاء أمرٍ للحاسوب ليساعدك في تخمين كلمة السر وتجربة الاحتمالات بشكلٍ تلقائيّ وسريع حتى ينجح في فتحه.',
-    r2_h: 'الأمر `guess password 4`', r2: '- `guess` تعني «خمّن».\n- `password` هي كلمة السر.\n- `4` هو عدد خانات كلمة السر، مثلاً `3367` عبارة عن أربع خانات.',
-    r3_h: 'النتيجة المتوقعة', r3: 'يتم تجربة جميع كلمات السر الممكنة بدءاً من `0000`، `0001`، `0002` وحتى `9999`، ويتوقف الحاسوب عند أول كلمة سر صحيحة.\n\nبعد ذلك اكتب كلمة السر التي وجدها الحاسوب على الهاتف ليُفتح.',
-    r4_h: 'الأمر `guess password 6 Aa0`', r4: 'يُستخدم لتخمين كلمة سر أطول وأكثر تنوعاً.\n\n- `guess password` تعني تخمين كلمة السر.\n- `6` تعني أن كلمة السر مكونة من 6 خانات.\n- `0` تعني أن كلمة السر من الممكن أن تحتوي على أرقام.\n- `a` تعني أنها من الممكن أن تحتوي على أحرف صغيرة.\n- `A` تعني أنها من الممكن أن تحتوي على أحرف كبيرة.\n\nترتيب الخيارات لا يهم (`Aa0` أو `0aA`).\n\nكلما زاد عدد الخانات وتكونت كلمة السر من أرقام وأحرف ورموز زاد عدد الاحتمالات.',
-    r5_h: 'كيف تحمي نفسك؟', r5: 'اختر كلمة سر طويلة فيها أحرف صغيرة وكبيرة وأرقام ورموز، مثل: `A4s&w2mJ`',
+    r1_h: 'السيناريو', r1: 'أنت الآن الهاكر، وأمامك هاتف شخص تريد اختراقه عن طريق **تخمين كلمة السر** الخاصة به. سيتم ربط الهاتف بالحاسوب (جهاز الهاكر) باستخدام سلكٍ يمكّنه من التحكّم بالهاتف، ومهمّتك الآن هي إعطاء أمرٍ للحاسوب ليساعدك في تخمين **كلمة السر** وتجربة الاحتمالات بشكلٍ تلقائيّ وسريع حتى ينجح في فتحه.',
+    r2_h: 'الأمر `guess password 4`', r2: '- `guess` تعني «**خمّن**».\n- `password` هي **كلمة السر**.\n- `4` هو **عدد خانات كلمة السر**، مثلاً `3367` عبارة عن أربع خانات.',
+    r3_h: 'النتيجة المتوقعة', r3: 'يتم تجربة جميع كلمات السر الممكنة بدءاً من `0000`، `0001`، `0002` وحتى `9999`، ويتوقف الحاسوب عند **أول كلمة سر صحيحة**.\n\nبعد ذلك اكتب **كلمة السر** التي وجدها الحاسوب على الهاتف ليُفتح.',
+    r4_h: 'الأمر `guess password 6 Aa0`', r4: 'يُستخدم لتخمين كلمة سر **أطول وأكثر تنوعاً**.\n\n- `guess password` تعني **تخمين كلمة السر**.\n- `6` تعني أن **كلمة السر** مكونة من 6 خانات.\n- `0` تعني أن كلمة السر من الممكن أن تحتوي على أرقام.\n- `a` تعني أنها من الممكن أن تحتوي على أحرف صغيرة.\n- `A` تعني أنها من الممكن أن تحتوي على أحرف كبيرة.\n\nترتيب الخيارات لا يهم (`Aa0` أو `0aA`).\n\nكلما زاد عدد الخانات وتكونت كلمة السر من أرقام وأحرف ورموز زاد عدد الاحتمالات.',
+    r5_h: 'كيف تحمي نفسك؟', r5: 'اختر **كلمة سر طويلة** فيها **أحرف صغيرة وكبيرة وأرقام ورموز**، مثل: `A4s&w2mJ`',
     r6_h: 'تنبيه', r6: 'نتدرب هنا في مختبر كاملكود الآمن والمعزول. لا تجرّب هذه الأدوات أو الطرق على أشخاص أو أجهزة حقيقية أبداً، فهذا نشاط غير قانوني ويؤذي الآخرين.'
   });
 
@@ -3196,7 +3206,7 @@ L.progress(0, 0); L.enable(false); L.expl('');
 
 
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_manual","t_cmd"]},{"label":"افتح الهاتف","keys":["t_enter"]},{"label":"استكشف الهاتف","keys":["t_browse"]},{"label":"اختبر كلمة سر أقوى","keys":["t_pick2","t_test"]}],"doneKey":"t_done","doneLabel":"أنهيت المهمة!","coach":["fb_best","fb_hint","fb_all","r_hint4","r_again"],"ordinals":["t_manual","open","t_cmd","t_enter"],"cmdTip":"اكتب الأمر هنا ليبدأ الحاسوب في عملية تخمين كلمة المرور"};
+window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_manual","t_cmd"]},{"label":"افتح الهاتف","keys":["t_enter"]},{"label":"استكشف الهاتف","keys":["t_browse"]},{"label":"اختبر كلمة سر أقوى","keys":["t_pick2","t_test"]}],"doneKey":"t_done","doneLabel":"أكملت المهمة","coach":["fb_best","fb_hint","fb_all","r_hint4","r_again"],"ordinals":["t_manual","open","t_cmd","t_enter"],"cmdTip":"اكتب الأمر هنا ليبدأ الحاسوب في عملية تخمين كلمة المرور"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
@@ -3399,7 +3409,7 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     var s = Math.max(0, stage), segs = track.children;
     for (var i = 0; i < segs.length; i++) { segs[i].className = i < s || stage >= STAGES.length ? 'done' : i === s ? 'now' : ''; }
     count.innerHTML = '';
-    if (stage >= STAGES.length) { count.textContent = (M && M.doneLabel) || 'أنهيت المهمة!'; return; }
+    if (stage >= STAGES.length) { count.textContent = (M && M.doneLabel) || 'أكملت المهمة'; return; }
     count.appendChild(document.createTextNode('الخطوة ' + (s + 1) + ' من ' + STAGES.length));
     var b = document.createElement('span'); b.textContent = STAGES[s].label; count.appendChild(b);
   }
@@ -3529,9 +3539,32 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
     pushStep(txt);
     if (gen !== g0) resetPose();
     if (steps.length === before) return;
-    if (txt === CC.t('t_done')) setBase('win');
+    var isDone = txt === CC.t('t_done') || (M && M.doneKey && txt === CC.t(M.doneKey));
+    if (isDone) { setBase('win'); celebrateFeed(); }
     else setBase(steps.length === 1 ? 'hello' : 'point');
   };
+  /* the end of the lab in the instruction panel (Moaz 2026-11-13, every lab): the earlier steps are thrown out of the panel one after
+     another, confetti falls through it, and the last step pops. Plays once; reduced motion shows the last step only. */
+  function celebrateFeed() {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    [].slice.call(list.querySelectorAll('.cc-step')).forEach(function (li, i) {
+      if (!li.animate) return;
+      var dir = i % 2 ? 1 : -1, dx = dir * (120 + Math.random() * 160), dy = -(180 + Math.random() * 220), rot = dir * (25 + Math.random() * 45);
+      li.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg) scale(.6)', opacity: 0 }],
+        { duration: 900, delay: 150 + i * 110, easing: 'cubic-bezier(.55,-.25,.75,.55)', fill: 'forwards' });
+    });
+    var box = document.createElement('div'); box.className = 'cc-fconf'; box.setAttribute('aria-hidden', 'true');
+    var cols = ['#FCAD0F', '#FFFFFF', '#5BC8FF', '#8DC63F', '#F39B22'];
+    for (var k = 0; k < 40; k++) {
+      var c = document.createElement('i');
+      c.style.left = (Math.random() * 100) + '%'; c.style.background = cols[k % cols.length];
+      c.style.animationDelay = (0.2 + Math.random() * 1.2) + 's'; c.style.animationDuration = (2 + Math.random() * 1.6) + 's';
+      c.style.transform = 'rotate(' + Math.round(Math.random() * 180) + 'deg)';
+      box.appendChild(c);
+    }
+    feed.appendChild(box); setTimeout(function () { box.remove(); }, 5200);
+    if (cur.animate) cur.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1.06)' }, { transform: 'none' }], { duration: 650, delay: 350, easing: 'ease-out' });
+  }
 
   /* the laptop's parts, bound again for every new laptop (decorate): the command box (locked while a command runs: type),
      the log (a found password is a yes, a wrong command an oops; the lab's own feedback lines move to the note card),
