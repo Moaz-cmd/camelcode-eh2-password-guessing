@@ -4712,7 +4712,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
   function clearFb() { if (fbs.firstChild) { dropFb(); syncNote(); } }
   function syncNote() {
     var l = lapEl(), ex = l && $('#expl', l), ac = l && $('#act', l);
-    var t = ex && !OS.pending ? ex.textContent.trim() : '';          /* not while the step is still «open the terminal» */
+    var t = ex && !OS.pending && !PLAIN ? ex.textContent.trim() : '';          /* not while the step is still «open the terminal»; never in a challenge («الحاسوب يجرّب...», «أداة كاشف تجرّب...»: Moaz 2026-11-14) */
     if (t !== lastExpl) { lastExpl = t; if (t) dropFb(); }
     if (exM.__t !== t) { exM.__t = t; if (CC.rich && t) CC.rich(exM, t); else exM.textContent = t; }   /* **bold** and `code` chips, like the steps (Moaz 2026-11-12) */
     exM.hidden = !t;
@@ -4903,7 +4903,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
       shown = p; feed.setAttribute('data-pose', p);
       bot.classList.remove('pop'); void bot.offsetWidth; bot.classList.add('pop');
     }
-    say.textContent = line || '';
+    say.textContent = PLAIN ? '' : (line || '');     /* a challenge: the assistant keeps its poses but says nothing («أحسنت», «الحاسوب يعمل الآن»...) (Moaz 2026-11-14) */
   }
   function setBase(p) { base = p; if (!back) show(p, p === 'type' ? SAY.type : p === 'win' ? SAY.win : ''); }
   function react(p, ms) {
@@ -5516,7 +5516,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
     var br = WEB && $('.cc-brw', l);
     if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); }   /* the lab's files on the desktop (labs with a terminal) */
     if (br) {
-      if (!PLAIN) l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* a challenge (mission.plain) starts with the browser open: no «افتح المتصفح» step or cue (Moaz 2026-11-14) */
+      l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* the browser starts closed in every lab, challenges too (Moaz 2026-11-14: never open by default) */
       var strip = $('.br-strip', br);
       if (strip && !$('.cc-win-ctl', strip)) {
         strip.insertAdjacentHTML('afterbegin', ctlHtml(WEB_L));
@@ -5540,7 +5540,6 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
     dock.innerHTML = apps.map(function (a) { return '<button type="button" class="cc-app" data-app="' + a.id + '" aria-label="' + a.label + '">' + IC[a.id] + '<span>' + a.label + '</span>' + (a.id === 'term' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + SPOT_B + '</em></i>' : a.id === 'web' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>افتح المتصفح لتصل إلى موقع المتجر</em></i>' : '') + '</button>'; }).join('');
     dock.addEventListener('click', function (e) { var b = e.target.closest('.cc-app'); if (b) openWin(b.getAttribute('data-app')); });
     scr.appendChild(dock);
-    if (br && PLAIN) { OS.webOpened = true; var wic = dockIc(l, 'web'); if (wic) wic.classList.add('run'); front(br); }
     if (cs) cs.addEventListener('mousedown', function () { front(cs); });
   }
   var stageEl = $('#stage');
@@ -5584,7 +5583,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
   function route(txt) {
     if (!txt) return;
     decorate(lapEl());                 /* the lab may have built a new laptop a moment ago (restart) */
-    if (WEB && !OS.webOpened && $('#laptop .cc-brw')) {      /* the browser was never opened: «open the browser» comes first, the lab's step follows when it opens */
+    if (!PLAIN && WEB && !OS.webOpened && $('#laptop .cc-brw')) {      /* the browser was never opened: «open the browser» comes first, the lab's step follows when it opens (not in a challenge: its two instructions only, no cue) */
       OS.webPending = txt;
       push(OPEN_WEB_TXT);
       var wi = $('#laptop .cc-app[data-app="web"]');

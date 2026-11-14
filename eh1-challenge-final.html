@@ -4144,7 +4144,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 /* EH1 final challenge: the fictional website of «أكاديمية كاملكود للتكنولوجيا» (camelcode.academy), a technology academy for kids.
    The look is camelcode.shop's (Moaz 2026-11-14: same colours and design, different content): its CSS, header, hero, cards and footer
    are copied from labs/eh1/04-hidden-pages/site.js; every text, picture, name and page is the academy's own (all invented, male names).
-   Public pages (menu): /home, /courses, /about, /contact. Hidden pages (only Kashif finds them): /teachers, /exams, /login.
+   Public pages (menu): /home, /courses, /about, /contact. Hidden pages (only Kashif finds them): /teachers, /projects, /login.
    /login is a login form; the right email and password swap it for the staff panel, in place. CC.siteReset() rebuilds the pages (every start).
    Everything is static: no animation, no input field except the login form the lab uses, no dates. Pictures are drawn with SVG. */
 (function () {
@@ -4360,8 +4360,8 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     /* ---------- hidden pages: not in the menu, not linked anywhere ---------- */
     pages['/teachers'] = { title: 'المدربون والقاعات | ' + A.name, html: priv('المدربون والقاعات', 'توزيع المدربين والقاعات على الدورات لهذا الفصل.',
       table(['المدرب', 'الدورة', 'القاعة'], [['سامي حسن', 'البرمجة بلغة بايثون', 5], ['مازن علي', 'الذكاء الاصطناعي', 3], ['طارق يوسف', 'الروبوتات', 7], ['عمر خالد', 'تصميم المواقع', 2]])) };
-    pages['/exams'] = { title: 'مواعيد الاختبارات | ' + A.name, html: priv('مواعيد الاختبارات النهائية', 'لا تُنشر للطلاب قبل الأسبوع الأخير من الدورة.',
-      table(['الدورة', 'يوم الاختبار', 'القاعة'], [['البرمجة بلغة بايثون', 'الثلاثاء', 5], ['الذكاء الاصطناعي', 'الأحد', 3], ['الروبوتات', 'الخميس', 7], ['تصميم المواقع', 'الاثنين', 2]])) };
+    pages['/projects'] = { title: 'عرض المشاريع | ' + A.name, html: priv('مواعيد عرض المشاريع', 'اليوم الذي يعرض فيه طلاب كل دورة مشاريعهم النهائية. لا تُنشر للطلاب قبل الأسبوع الأخير من الدورة.',
+      table(['الدورة', 'يوم عرض المشاريع', 'القاعة'], [['البرمجة بلغة بايثون', 'الثلاثاء', 5], ['الذكاء الاصطناعي', 'الأحد', 3], ['الروبوتات', 'الخميس', 7], ['تصميم المواقع', 'الاثنين', 2]])) };
     pages['/login'] = { title: 'دخول الموظفين | ' + A.name, html: page('', loginHtml('')) };
     return pages;
   }
@@ -4415,7 +4415,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما هو اسم مسؤول الأنشطة في الأكاديمية؟', q1h: 'افتح صفحة «**من نحن**» في قائمة الموقع، وابحث في **فريق الإدارة** عن **مسؤول الأنشطة**.',     /* Moaz 2026-11-14: question 1 comes from a public page */
-    q2: 'في أي يوم اختبار دورة الذكاء الاصطناعي؟', q2h: 'اكتشف **الصفحات المخفية** في الموقع، ثم افتح الصفحة التي تخص **الاختبارات**.',
+    q2: 'في أي يوم عرض المشاريع لدورة الذكاء الاصطناعي؟', q2h: 'اكتشف **الصفحات المخفية** في الموقع، ثم افتح الصفحة التي تخص **المشاريع**.',
     q3: 'ما البريد الإلكتروني لمسؤول التسجيل؟', q3h: 'افتح صفحة «**تواصل**» في قائمة الموقع، وابحث عن بريد **مسؤول التسجيل**.',
     q4: 'ما كلمة المرور التي وجدتها أداة برق؟', q4h: 'شغّل **أداة برق** على **صفحة دخول الموظفين** التي وجدتها أداة كاشف، مع بريد **مسؤول التسجيل** و**ملف كلمات المرور**.',
     q5: 'في أي شهر يبدأ معسكر الأمن السيبراني؟', q5h: 'سجّل الدخول إلى **صفحة دخول الموظفين** بالبريد الإلكتروني وكلمة المرور، ثم اقرأ **الرسائل الداخلية**.',
@@ -4485,7 +4485,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
   /* [LAB] ================= THE TOOLS' LISTS (all fictional) ================= */
   /* Kashif's list: lab 4's 101 common page names plus the academy's own (7 of them exist on camelcode.academy) */
-  var PAGES = ['home', 'about', 'contact', 'products', 'courses', 'cart', 'search', 'login', 'register', 'account', 'profile', 'admin', 'panel', 'dashboard', 'employees', 'staff', 'users', 'customers', 'orders', 'sales', 'reports', 'invoices', 'payments', 'backup', 'files', 'uploads', 'images', 'photos', 'videos', 'downloads', 'data', 'logs', 'config', 'settings', 'test', 'dev', 'old', 'new', 'private', 'secret', 'hidden', 'api', 'help', 'faq', 'blog', 'news', 'support', 'shop', 'store', 'games', 'devices', 'accessories', 'offers', 'deals', 'gift', 'cards', 'wishlist', 'checkout', 'shipping', 'delivery', 'returns', 'terms', 'privacy', 'policy', 'careers', 'jobs', 'team', 'teachers', 'partners', 'press', 'events', 'forum', 'community', 'reviews', 'feedback', 'newsletter', 'subscribe', 'download', 'install', 'setup', 'update', 'upgrade', 'billing', 'receipts', 'stock', 'inventory', 'exams', 'suppliers', 'prices', 'budget', 'finance', 'salary', 'payroll', 'manager', 'owner', 'internal', 'staging', 'demo', 'temp', 'tmp', 'archive', 'docs', 'tools', 'system'];
+  var PAGES = ['home', 'about', 'contact', 'products', 'courses', 'cart', 'search', 'login', 'register', 'account', 'profile', 'admin', 'panel', 'dashboard', 'employees', 'staff', 'users', 'customers', 'orders', 'sales', 'reports', 'invoices', 'payments', 'backup', 'files', 'uploads', 'images', 'photos', 'videos', 'downloads', 'data', 'logs', 'config', 'settings', 'test', 'dev', 'old', 'new', 'private', 'secret', 'hidden', 'api', 'help', 'faq', 'blog', 'news', 'support', 'shop', 'store', 'games', 'devices', 'accessories', 'offers', 'deals', 'gift', 'cards', 'wishlist', 'checkout', 'shipping', 'delivery', 'returns', 'terms', 'privacy', 'policy', 'careers', 'jobs', 'team', 'teachers', 'partners', 'press', 'events', 'forum', 'community', 'reviews', 'feedback', 'newsletter', 'subscribe', 'download', 'install', 'setup', 'update', 'upgrade', 'billing', 'receipts', 'stock', 'inventory', 'projects', 'suppliers', 'prices', 'budget', 'finance', 'salary', 'payroll', 'manager', 'owner', 'internal', 'staging', 'demo', 'temp', 'tmp', 'archive', 'docs', 'tools', 'system'];
   /* Barq's list: lab 5's leaked common passwords, filled up to 2,000; the real one goes at entry 818 (self-paced) */
   var BASE_WORDS = [
     '123456', '123456789', 'qwerty', 'password', '111111', '12345678', 'abc123', '1234567', 'password1', '12345',
@@ -4936,7 +4936,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
   function clearFb() { if (fbs.firstChild) { dropFb(); syncNote(); } }
   function syncNote() {
     var l = lapEl(), ex = l && $('#expl', l), ac = l && $('#act', l);
-    var t = ex && !OS.pending ? ex.textContent.trim() : '';          /* not while the step is still «open the terminal» */
+    var t = ex && !OS.pending && !PLAIN ? ex.textContent.trim() : '';          /* not while the step is still «open the terminal»; never in a challenge («الحاسوب يجرّب...», «أداة كاشف تجرّب...»: Moaz 2026-11-14) */
     if (t !== lastExpl) { lastExpl = t; if (t) dropFb(); }
     if (exM.__t !== t) { exM.__t = t; if (CC.rich && t) CC.rich(exM, t); else exM.textContent = t; }   /* **bold** and `code` chips, like the steps (Moaz 2026-11-12) */
     exM.hidden = !t;
@@ -5127,7 +5127,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
       shown = p; feed.setAttribute('data-pose', p);
       bot.classList.remove('pop'); void bot.offsetWidth; bot.classList.add('pop');
     }
-    say.textContent = line || '';
+    say.textContent = PLAIN ? '' : (line || '');     /* a challenge: the assistant keeps its poses but says nothing («أحسنت», «الحاسوب يعمل الآن»...) (Moaz 2026-11-14) */
   }
   function setBase(p) { base = p; if (!back) show(p, p === 'type' ? SAY.type : p === 'win' ? SAY.win : ''); }
   function react(p, ms) {
