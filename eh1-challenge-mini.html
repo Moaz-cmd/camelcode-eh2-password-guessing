@@ -1954,7 +1954,7 @@ body.cc-one-dev .cc-tip{animation:ccTipAboveBounce 1.5s ease-in-out infinite!imp
    half and the terminal takes the right half (both move smoothly) */
 /* (Moaz 2026-11-13) no width slide: the grid re-laid itself out on every frame and the icons jumped. The desktop takes its new size at once
    and fades in with a slight zoom (.cc-relayout, set by brand-addon.js when the terminal opens or closes) */
-.laptop.cc-relayout .cc-embedded .pc-screen{animation:ccrelay .32s cubic-bezier(.2,.7,.3,1) both}
+.laptop.cc-relayout .cc-embedded .pc-screen{animation:none}      /* no fade or zoom when the terminal opens or closes: the folders stay in view (Moaz 2026-11-14, every lab) */
 @keyframes ccrelay{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.laptop.cc-relayout .cc-embedded .pc-screen{animation:none}}
 body.cc-one-dev .laptop.cc-closed:not(.cc-peek) .cc-embedded .pc-screen{right:1.4cqw}
