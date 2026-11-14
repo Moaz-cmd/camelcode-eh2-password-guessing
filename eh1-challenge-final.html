@@ -2989,9 +2989,9 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     tk_enter: 'انتقل إلى مجلد', tk_dest: 'المجلد الذي ننتقل إليه', tk_parent: 'المجلد السابق', tk_back: 'ارجع إلى المجلد السابق',
     tk_show: 'اعرض النص داخل ملف', tk_rfile: 'الملف الذي نقرؤه',
     tk_create: 'أنشئ ملفاً جديداً', tk_cfile: 'اسم الملف الجديد', tk_count: 'عدد الملفات',
-    hb_display: 'يعرض محتويات مجلد', hb_display1: 'يعرض محتويات المجلد الحالي',
-    hb_enter: 'ينقلك إلى مجلد آخر', hb_back: 'يعيدك خطوة للخلف إلى المجلد السابق',
-    hb_read: 'يعرض النص المكتوب داخل ملف', hb_create: 'ينشئ ملفاً جديداً فارغاً', hb_create2: 'ينشئ 10 ملفات جديدة مرقّمة',
+    hb_display: 'يعرض محتويات مجلد', hb_display1: 'يعرض محتويات المجلد الحالي', hb_display2: 'يعرض محتويات المجلد Documents',
+    hb_enter: 'ينقلك إلى مجلد آخر', hb_enter1: 'ينقلك إلى المجلد Documents', hb_back: 'يعيدك خطوة للخلف إلى المجلد السابق',
+    hb_read: 'يعرض النص المكتوب داخل ملف', hb_read1: 'يعرض النص داخل الملف report.txt', hb_create: 'ينشئ ملفاً جديداً فارغاً', hb_create1: 'ينشئ الملف plan.txt', hb_create2: 'ينشئ 10 ملفات جديدة مرقّمة باسم file: file1.txt، file2.txt ...',
     hb_clear: 'يمسح ما كُتب على شاشة الأوامر'
   };
   Object.keys(D).forEach(function (k) { if (CC.S.ar[k] == null) CC.S.ar[k] = D[k]; });
@@ -3011,8 +3011,9 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     var T = { cmds: ['display', 'enter', 'back', 'read', 'create'], linux: { ls: 'display', cd: 'enter', cat: 'read', touch: 'create' } };
 
     T.help = function (box) {
-      [['display', 'hb_display', [['display', 'hb_display1']]], ['enter', 'hb_enter', []], ['back', 'hb_back', []], ['read', 'hb_read', []],
-       ['create', 'hb_create', [['create file.txt 10', 'hb_create2']]], ['clear', 'hb_clear', []]].forEach(function (c) {
+      /* exactly the terminal lab's help, examples included (Moaz 2026-11-14: nothing left out in the other labs) */
+      [['display', 'hb_display', [['display', 'hb_display1'], ['display Documents', 'hb_display2']]], ['enter', 'hb_enter', [['enter Documents', 'hb_enter1']]], ['back', 'hb_back', []],
+       ['read', 'hb_read', [['read report.txt', 'hb_read1']]], ['create', 'hb_create', [['create plan.txt', 'hb_create1'], ['create file.txt 10', 'hb_create2']]], ['clear', 'hb_clear', []]].forEach(function (c) {
         var bl = CC.el('div', 'hl-b'), d = CC.el('div', 'hl-d'), cn = CC.el('span', 'hl-c');
         cn.textContent = c[0]; d.appendChild(cn); d.appendChild(document.createTextNode(CC.t(c[1]))); bl.appendChild(d);
         c[2].forEach(function (x) {
@@ -4140,7 +4141,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
   };
 })();
 
-/* EH1 final challenge: the fictional website of «أكاديمية كاملكود للتقنية» (camelcode.academy), a technology academy for kids.
+/* EH1 final challenge: the fictional website of «أكاديمية كاملكود للتكنولوجيا» (camelcode.academy), a technology academy for kids.
    The look is camelcode.shop's (Moaz 2026-11-14: same colours and design, different content): its CSS, header, hero, cards and footer
    are copied from labs/eh1/04-hidden-pages/site.js; every text, picture, name and page is the academy's own (all invented, male names).
    Public pages (menu): /home, /courses, /about, /contact. Hidden pages (only Kashif finds them): /teachers, /exams, /staff-login.
@@ -4151,7 +4152,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
   var CC = window.CC;
 
   var A = CC.academy = {
-    name: 'أكاديمية كاملكود للتقنية', host: 'camelcode.academy',
+    name: 'أكاديمية كاملكود للتكنولوجيا', host: 'camelcode.academy',
     email: 'info@camelcode.academy', staffEmail: 'khaled@camelcode.academy', staff: 'خالد سالم', director: 'عبدالله راشد',
     phone: '+974 5550 7788', address: 'شارع المعرفة، الدوحة',
     realPassword: 'galaxy2024'   /* the lab sets it each start (instructor-led picks a new one) */
@@ -4214,7 +4215,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
   var buildingArt = '<svg class="scene" viewBox="0 0 400 260" aria-hidden="true"><defs><linearGradient id="ak1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1F39"/><stop offset="1" stop-color="#295AA6"/></linearGradient></defs>' +
     '<rect width="400" height="260" fill="url(#ak1)"/><circle cx="60" cy="40" r="16" fill="#fde68a" opacity=".9"/><rect y="214" width="400" height="46" fill="#14284A"/><rect y="214" width="400" height="5" fill="#3B5279"/>' +
     '<rect x="70" y="70" width="260" height="146" fill="#E7EEE9"/><rect x="60" y="60" width="280" height="16" rx="3" fill="#D0DBD3"/>' +
-    '<rect x="84" y="80" width="232" height="32" rx="6" fill="#0E1F39" stroke="#FCAD0F" stroke-width="3"/><text x="200" y="102" text-anchor="middle" font-size="14" textLength="200" lengthAdjust="spacingAndGlyphs" font-weight="800" fill="#FCAD0F" font-family="Montserrat Arabic,Tajawal,sans-serif">أكاديمية كاملكود للتقنية</text>' +
+    '<rect x="84" y="80" width="232" height="32" rx="6" fill="#0E1F39" stroke="#FCAD0F" stroke-width="3"/><text x="200" y="102" text-anchor="middle" font-size="14" textLength="200" lengthAdjust="spacingAndGlyphs" font-weight="800" fill="#FCAD0F" font-family="Montserrat Arabic,Tajawal,sans-serif">أكاديمية كاملكود للتكنولوجيا</text>' +
     [0, 1, 2, 3].map(function (i) { return '<rect x="' + (88 + i * 62) + '" y="124" width="40" height="30" rx="3" fill="#9bdcf5" stroke="#8D99AD" stroke-width="2"/>'; }).join('') +
     '<rect x="176" y="166" width="48" height="50" rx="3" fill="#0E1F39"/><rect x="182" y="172" width="16" height="44" fill="#295AA6"/><rect x="202" y="172" width="16" height="44" fill="#295AA6"/>' +
     '<rect x="88" y="170" width="40" height="30" rx="3" fill="#9bdcf5" stroke="#8D99AD" stroke-width="2"/><rect x="272" y="170" width="40" height="30" rx="3" fill="#9bdcf5" stroke="#8D99AD" stroke-width="2"/>' +
@@ -4334,17 +4335,17 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
   function build() {
     var pages = {};
     pages['/home'] = { title: A.name + ' | الرئيسية', html: page('/home',
-      '<section class="hero"><div class="w"><div class="tx"><h1>تعلّم التقنية <em>بطريقة ممتعة</em></h1><p>دورات في البرمجة والذكاء الاصطناعي والروبوتات وتصميم المواقع، في مجموعات صغيرة مع مدربين متخصصين.</p><a class="btn" href="/courses">تصفّح الدورات</a><a class="btn o" href="/about">تعرّف علينا</a></div>' + heroArt + '</div></section>' +
+      '<section class="hero"><div class="w"><div class="tx"><h1>تعلّم التكنولوجيا <em>بطريقة ممتعة</em></h1><p>دورات في البرمجة والذكاء الاصطناعي والروبوتات وتصميم المواقع، في مجموعات صغيرة مع مدربين متخصصين.</p><a class="btn" href="/courses">تصفّح الدورات</a><a class="btn o" href="/about">تعرّف علينا</a></div>' + heroArt + '</div></section>' +
       '<section class="sec"><h2>اختر مجالك</h2><p class="lead">أربعة مجالات تناسب أعماراً مختلفة.</p><div class="cats">' +
       '<a class="cat" href="/courses">' + I.code + '<span>البرمجة<small>من 10 سنوات</small></span></a><a class="cat" href="/courses">' + I.chip + '<span>الذكاء الاصطناعي<small>من 12 سنة</small></span></a>' +
       '<a class="cat" href="/courses">' + I.robot + '<span>الروبوتات<small>من 9 سنوات</small></span></a><a class="cat" href="/courses">' + I.web + '<span>تصميم المواقع<small>من 11 سنة</small></span></a></div></section>' +
       '<section class="sec" style="padding-top:0"><h2>أبرز الدورات</h2><p class="lead">الدورات الأكثر طلباً هذا الفصل.</p>' + grid([COURSES[0], COURSES[2]]) + '</section>' +
-      '<section class="sec" style="padding-top:0"><div class="feat"><div>' + I.users + '<span><b>مجموعات صغيرة</b>اهتمام بكل طالب</span></div><div>' + I.bulb + '<span><b>التعلم بالتجربة</b>كل درس ينتهي بمشروع</span></div><div>' + I.award + '<span><b>شهادة إتمام</b>في نهاية كل دورة</span></div><div>' + I.star + '<span><b>مدربون متخصصون</b>خبرة في التعليم والتقنية</span></div></div></section>' +
-      '<section class="sec txt" style="padding-top:0"><h2>عن الأكاديمية</h2><p>بدأت ' + A.name + ' بقاعة واحدة وعشرة طلاب، وأصبحت اليوم مكاناً يتعلّم فيه الطلاب التقنية بأيديهم. <a class="more" href="/about">اقرأ قصتنا ←</a></p></section>') };
+      '<section class="sec" style="padding-top:0"><div class="feat"><div>' + I.users + '<span><b>مجموعات صغيرة</b>اهتمام بكل طالب</span></div><div>' + I.bulb + '<span><b>التعلم بالتجربة</b>كل درس ينتهي بمشروع</span></div><div>' + I.award + '<span><b>شهادة إتمام</b>في نهاية كل دورة</span></div><div>' + I.star + '<span><b>مدربون متخصصون</b>خبرة في التعليم والتكنولوجيا</span></div></div></section>' +
+      '<section class="sec txt" style="padding-top:0"><h2>عن الأكاديمية</h2><p>بدأت ' + A.name + ' بقاعة واحدة وعشرة طلاب، وأصبحت اليوم مكاناً يتعلّم فيه الطلاب التكنولوجيا بأيديهم. <a class="more" href="/about">اقرأ قصتنا ←</a></p></section>') };
     pages['/courses'] = { title: 'الدورات | ' + A.name, html: page('/courses',
       '<section class="sec"><h2>الدورات</h2><p class="lead">كل الدورات حضورية في مبنى الأكاديمية.</p>' + grid(COURSES) + '</section>') };
     pages['/about'] = { title: 'من نحن | ' + A.name, html: page('/about',
-      '<section class="sec"><div class="story"><div class="txt"><h2>قصتنا</h2><p>بدأت ' + A.name + ' بقاعة واحدة وعشرة طلاب يحبون البرمجة، وكبرت لتصبح أكاديمية فيها أربع دورات وعشرات الطلاب كل فصل.</p><p>نؤمن أن كل طالب يستطيع أن يبني شيئاً بالتقنية: لعبة، أو روبوتاً، أو موقعاً، إذا تعلّم بالتجربة.</p></div><div class="pic">' + buildingArt + '</div></div>' +
+      '<section class="sec"><div class="story"><div class="txt"><h2>قصتنا</h2><p>بدأت ' + A.name + ' بقاعة واحدة وعشرة طلاب يحبون البرمجة، وكبرت لتصبح أكاديمية فيها أربع دورات وعشرات الطلاب كل فصل.</p><p>نؤمن أن كل طالب يستطيع أن يبني شيئاً بالتكنولوجيا: لعبة، أو روبوتاً، أو موقعاً، إذا تعلّم بالتجربة.</p></div><div class="pic">' + buildingArt + '</div></div>' +
       '<div class="vals"><div>' + I.bulb + '<b>التعلم بالتجربة</b><span>كل درس ينتهي بمشروع صغير يأخذه الطالب معه.</span></div><div>' + I.users + '<b>مجموعات صغيرة</b><span>لا يزيد عدد الطلاب في القاعة على اثني عشر.</span></div><div>' + I.award + '<b>شهادة إتمام</b><span>يحصل عليها الطالب في نهاية كل دورة.</span></div></div></section>' +
       '<section class="sec" style="padding-top:0"><h2>فريق الإدارة</h2><p class="lead">الأشخاص الذين يديرون الأكاديمية.</p><div class="team">' +
       '<div class="mem"><div class="av">' + avatar('#3b2a1c', '#295AA6', '#e0ac80') + '</div><h3>' + A.director + '</h3><span>مدير الأكاديمية</span></div>' +
@@ -4515,9 +4516,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     return D({
       'notes.txt': F('مهام اليوم\nمراجعة درس الرياضيات\nتجهيز حقيبة النادي'),
       'pages-files': D({ 'pages.txt': F(PAGES.join('\n')) }),
-      'password-files': D({ 'passwords.txt': F(words.join('\n')) }),
-      homework: D({ 'math.txt': F('واجب الرياضيات\nتمارين الكسور صفحة 22'), 'science.txt': F('واجب العلوم\nرسم دورة الماء في الطبيعة') }),
-      photos: D({})
+      'password-files': D({ 'passwords.txt': F(words.join('\n')) })   /* only the two tool folders (Moaz 2026-11-14: homework and photos removed) */
     });
   }
   CC.fsSeed = seed(wordList(SELF_PW, SELF_AT));
@@ -4545,7 +4544,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
     var fs = CC.newFS();
     CC.labFS = fs;                                                      /* the laptop desktop shows the top folder's folders and files */
-    CC.deskDirLock = 'افتح هذا المجلد باستخدام شاشة الأوامر.';           /* the folders show on the desktop but open only with the terminal (as in the mini challenge) */
+    CC.deskDirLock = null;                                              /* a folder on the desktop opens and lists what is inside (Moaz 2026-11-14: no «افتح هذا المجلد باستخدام شاشة الأوامر» message) */
     var st = { phase: 1, armed: true, busy: false };
     CC.free = true;
 
