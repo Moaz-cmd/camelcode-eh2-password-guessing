@@ -4430,11 +4430,11 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     /* help: the file commands, then the two tools with the lesson's examples */
     h_t: 'الأوامر المتاحة:',
     h_k: 'أداة كاشف (kashif) تكتشف صفحات الموقع عن طريق تجربة كل أسماء الصفحات الموجودة في الملف الذي يُعطى لها',
-    h_ka: 'الصيغة: kashif ثم اسم الموقع ثم ملف أسماء الصفحات',
-    h_kx: 'مثلاً: kashif camelcode.shop pages.txt',
-    h_b: 'أداة برق (barq) تجرّب كلمات المرور الموجودة في ملف على حساب بريد إلكتروني محدد، حتى تجد الصحيحة أو تنتهي القائمة',
-    h_ba: 'الصيغة: barq ثم صفحة الدخول ثم البريد الإلكتروني ثم ملف كلمات المرور',
-    h_bx: 'مثلاً: barq camelcode.shop/admin ali@camelcode.shop passwords.txt',
+    h_ka: 'الصيغة: kashif website pages.txt',     /* Moaz 2026-11-14: a general form with placeholders, not the lesson's example */
+    h_kx: 'حيث نستبدل website بالموقع الذي نريد اختراقه، وpages.txt بالملف الذي يحتوي أسماء الصفحات',
+    h_b: 'أداة برق (barq) تجرّب كلمات المرور الموجودة في ملف على حساب محدد، حتى تجد كلمة المرور الصحيحة',
+    h_ba: 'الصيغة: barq website/admin example@gmail.com passwords.txt',
+    h_bx: 'حيث نستبدل website/admin بعنوان صفحة تسجيل الدخول الخاصة بالموقع، وexample@gmail.com بالبريد الإلكتروني لحساب الضحية، وpasswords.txt بالملف الذي يحتوي قائمة كلمات المرور',
     /* tool output */
     k_start: 'جارٍ البحث عن صفحات الموقع {site} باستخدام ملف الصفحات {file}',
     k_sum: 'قائمة الصفحات الموجودة في الموقع',
