@@ -2092,6 +2092,11 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
 body.cc-plain .qrow.qnew,body.cc-plain .qrow.qnew .qtxt::before,body.cc-plain .cc-attn,body.cc-plain .cc-app.cue,body.cc-plain .cc-app.cue svg{animation:none!important}
 body.cc-plain .q-tab[data-tab="ref"],body.cc-plain .cc-tabs{display:none!important}
 body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!important}
+/* every remaining guiding effect is off in a challenge (Moaz 2026-11-14: «remove all guiding animations from any challenge», every challenge and future ones): the «سؤال جديد» character (the «مرّر للأسفل» pill on the website stays, Moaz 2026-11-14), the address-bar and page-part labels, a glowing code line or link, the yellow spotlight on new files, the highlighted desktop item, the gold ring on the typing line, a pulsing button, the flashing address bar */
+body.cc-plain .cc-qbot-new,body.cc-plain .br-parts,body.cc-plain .rc-spot,body.cc-plain .wk-spot{display:none!important}
+body.cc-plain .inwrap.cue,body.cc-plain .cs-act .btn,body.cc-plain .cc-acts .btn,body.cc-plain .br-omni.urlflash,body.cc-plain .br-code .ln.glow,body.cc-plain .laptop.glow .lid{animation:none!important;outline:none!important}
+body.cc-plain .dk-i.spot,body.cc-plain .fm-i.spot,body.cc-plain .dk-i.hl,body.cc-plain .fm-i.hl{animation:none!important;background:none!important;box-shadow:none!important}
+body.cc-plain .br-omni.urlflash{background:inherit!important;box-shadow:none!important}body.cc-plain .br-code .ln.glow{background:none!important;box-shadow:none!important}body.cc-plain .laptop.glow .lid{box-shadow:0 30px 44px -24px rgba(0,0,0,.65)!important}
 
 /* after `create`: a yellow spotlight on the new file(s) on the desktop or in the folder window for a few seconds (Moaz 2026-11-14) */
 .dk-i.spot,.fm-i.spot{position:relative;z-index:2;background:rgba(252,173,15,.38);box-shadow:inset 0 0 0 2px #FFC94A,0 0 14px 4px rgba(252,173,15,.6);animation:ccspot 1.2s ease-in-out 3}
