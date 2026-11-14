@@ -2100,6 +2100,8 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 /* «شرح الأمر»: the parts of a typed command sit in a green frame with a centered headline (Moaz 2026-11-14, every lab; first tried in EH1 lab 1) */
 .cs .cs-chips:not(:empty){position:relative;margin:calc(var(--t,13px) * .9) 10px 8px!important;border:1.5px solid #8DC63F;border-radius:12px;padding-top:calc(var(--t,13px) * 1.1)!important;padding-bottom:8px!important;background:#0A1426}
 .cs .cs-chips:not(:empty)::before{content:'شرح الأمر';position:absolute;top:0;left:50%;transform:translate(-50%,-55%);padding:0 8px;background:#0A1426;color:#8DC63F;font-family:var(--f-ui);font-weight:700;font-size:calc(var(--t,13px) * .85);line-height:1.3;direction:rtl;white-space:nowrap}
+/* the «شرح الأمر» box is as wide as its command parts (never empty space), centred in the terminal; a long command fills the width (Moaz 2026-11-14, every lab) */
+.cs .cs-chips:not(:empty),body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-chips:not(:empty){box-sizing:border-box;width:fit-content;min-width:9em;max-width:calc(100% - 20px);margin-left:auto!important;margin-right:auto!important;justify-content:center;padding-left:14px!important;padding-right:14px!important}
 
 </style><!--/cc-skin-->
 </head>
