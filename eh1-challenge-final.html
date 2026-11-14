@@ -4487,7 +4487,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     cele_i: 'أهم ما قمت به:',
     cele_1: 'تنقّلت بين **المجلدات** في شاشة الأوامر باستخدام الأوامر `display` و`enter` و`back` لتصل إلى **ملفات الأدوات**.',
     cele_2: 'استخدمت **أداة كاشف** لتكتشف **الصفحات المخفية** في موقع جديد، ومنها **صفحة دخول الموظفين**.',
-    cele_3: 'اخترت **البريد الإلكتروني** الصحيح، واستخدمت **أداة برق** لتجد **كلمة المرور** وتدخل إلى **لوحة الموظفين**.',
+    cele_3: 'وجدت **البريد الإلكتروني** الصحيح، واستخدمت **أداة برق** لتجد **كلمة المرور** للحساب وتدخل إلى **لوحة الموظفين**.',     /* Moaz 2026-11-14 */
     cele_b: 'متابعة',
     w1: 'من هنا تختار طريقتك في التعلم: «تعلم ذاتي» أو «تعلم بإشراف مدرب».', w2: 'هذا موقع الأكاديمية في المتصفح.',
     w3: 'هنا تكتب الأمر في شاشة الأوامر ثم تضغط Enter. اكتب help لعرض قائمة الأوامر.', w6: 'زر «؟» يعرّفك على أجزاء الدرس.'
@@ -4739,8 +4739,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
         }
         if (pg.split('/')[0] !== HOST) return { err: CC.t('m_b_site', { w: pg.split('/')[0] }) };
         if (pg !== LOGIN) return { err: CC.t('m_b_page', { w: pg }) };
-        if (!isMail(em)) return { err: CC.t('m_b_noatmail') };
-        if (em !== A.staffEmail && em !== A.email) return { err: CC.t('m_b_wrongmail', { w: args[1] }) };
+        /* any input in the email place runs the tool (Moaz 2026-11-14); only the registration officer's email finds the password, anything else runs the whole list and finds nothing */
         if (/[^\w.\-\/]/.test(fl)) return { err: CC.t('m_b_sym') };
         if (!fileAt(fl)) return { err: CC.t('m_b_file', { w: fl }) };
         if (!(await barq(em, fl))) return { err: '' };
