@@ -4414,7 +4414,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
-    q1: 'ما هو سعر دورة الروبوتات؟', q1h: 'افتح صفحة «**الدورات**» في قائمة الموقع، وابحث عن سعر دورة **الروبوتات**.',     /* Moaz 2026-11-14: question 1 comes from a public page */
+    q1: 'ما هو اسم مسؤول الأنشطة في الأكاديمية؟', q1h: 'افتح صفحة «**من نحن**» في قائمة الموقع، وابحث في **فريق الإدارة** عن **مسؤول الأنشطة**.',     /* Moaz 2026-11-14: question 1 comes from a public page */
     q2: 'في أي يوم اختبار دورة الذكاء الاصطناعي؟', q2h: 'اكتشف **الصفحات المخفية** في الموقع، ثم افتح الصفحة التي تخص **الاختبارات**.',
     q3: 'ما البريد الإلكتروني لمسؤول التسجيل؟', q3h: 'افتح صفحة «**تواصل**» في قائمة الموقع، وابحث عن بريد **مسؤول التسجيل**.',
     q4: 'ما كلمة المرور التي وجدتها أداة برق؟', q4h: 'شغّل **أداة برق** على **صفحة دخول الموظفين** التي وجدتها أداة كاشف، مع بريد **مسؤول التسجيل** و**ملف كلمات المرور**.',
@@ -4549,7 +4549,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     CC.free = true;
 
     CC.Q.init([
-      { id: 'q1', q: iso(CC.t('q1')), answers: ['1050', '1,050', '1050 ر.ق', '1,050 ر.ق'], check: function (v) { return CC.numMatch(v, 1050); }, hint: iso(CC.t('q1h')) },
+      { id: 'q1', q: iso(CC.t('q1')), answers: ['ناصر محمد', 'ناصر'], hint: iso(CC.t('q1h')) },
       { id: 'q2', q: iso(CC.t('q2')), answers: ['الأحد', 'الاحد', 'يوم الأحد', 'يوم الاحد', 'أحد', 'احد'], hint: iso(CC.t('q2h')) },
       { id: 'q3', q: iso(CC.t('q3')), answers: [A.staffEmail], check: function (v) { return String(v).trim().toLowerCase() === A.staffEmail; }, hint: iso(CC.t('q3h')), gate: false, hidden: true },
       { id: 'q4', q: iso(CC.t('q4')), answers: [pw], hint: iso(CC.t('q4h')), gate: false, hidden: true },
