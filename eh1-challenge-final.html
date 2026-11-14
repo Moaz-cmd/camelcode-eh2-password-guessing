@@ -4152,7 +4152,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
   var A = CC.academy = {
     name: 'أكاديمية كاملكود للتقنية', host: 'camelcode.academy',
-    email: 'info@camelcode.academy', staffEmail: 'fahad@camelcode.academy', staff: 'فهد سالم', director: 'عبدالله راشد',
+    email: 'info@camelcode.academy', staffEmail: 'khaled@camelcode.academy', staff: 'خالد سالم', director: 'عبدالله راشد',
     phone: '+974 5550 7788', address: 'شارع المعرفة، الدوحة',
     realPassword: 'galaxy2024'   /* the lab sets it each start (instructor-led picks a new one) */
   };
@@ -4214,7 +4214,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
   var buildingArt = '<svg class="scene" viewBox="0 0 400 260" aria-hidden="true"><defs><linearGradient id="ak1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0E1F39"/><stop offset="1" stop-color="#295AA6"/></linearGradient></defs>' +
     '<rect width="400" height="260" fill="url(#ak1)"/><circle cx="60" cy="40" r="16" fill="#fde68a" opacity=".9"/><rect y="214" width="400" height="46" fill="#14284A"/><rect y="214" width="400" height="5" fill="#3B5279"/>' +
     '<rect x="70" y="70" width="260" height="146" fill="#E7EEE9"/><rect x="60" y="60" width="280" height="16" rx="3" fill="#D0DBD3"/>' +
-    '<rect x="120" y="82" width="160" height="28" rx="6" fill="#0E1F39" stroke="#FCAD0F" stroke-width="3"/><text x="200" y="102" text-anchor="middle" font-size="15" font-weight="800" fill="#FCAD0F" font-family="Montserrat Arabic,Tajawal,sans-serif">أكاديمية كاملكود للتقنية</text>' +
+    '<rect x="84" y="80" width="232" height="32" rx="6" fill="#0E1F39" stroke="#FCAD0F" stroke-width="3"/><text x="200" y="102" text-anchor="middle" font-size="14" textLength="200" lengthAdjust="spacingAndGlyphs" font-weight="800" fill="#FCAD0F" font-family="Montserrat Arabic,Tajawal,sans-serif">أكاديمية كاملكود للتقنية</text>' +
     [0, 1, 2, 3].map(function (i) { return '<rect x="' + (88 + i * 62) + '" y="124" width="40" height="30" rx="3" fill="#9bdcf5" stroke="#8D99AD" stroke-width="2"/>'; }).join('') +
     '<rect x="176" y="166" width="48" height="50" rx="3" fill="#0E1F39"/><rect x="182" y="172" width="16" height="44" fill="#295AA6"/><rect x="202" y="172" width="16" height="44" fill="#295AA6"/>' +
     '<rect x="88" y="170" width="40" height="30" rx="3" fill="#9bdcf5" stroke="#8D99AD" stroke-width="2"/><rect x="272" y="170" width="40" height="30" rx="3" fill="#9bdcf5" stroke="#8D99AD" stroke-width="2"/>' +
@@ -4227,10 +4227,10 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
   /* ---------- the courses (static facts only) ---------- */
   var COURSES = [
-    { n: 'البرمجة بلغة بايثون', a: '10 إلى 14 سنة', w: '8 أسابيع', p: '650', art: pyArt },
-    { n: 'الذكاء الاصطناعي', a: '12 إلى 16 سنة', w: '6 أسابيع', p: '700', art: aiArt },
-    { n: 'الروبوتات', a: '9 إلى 13 سنة', w: '10 أسابيع', p: '800', art: robotArt },
-    { n: 'تصميم المواقع', a: '11 إلى 15 سنة', w: '6 أسابيع', p: '550', art: webArt }
+    { n: 'البرمجة بلغة بايثون', a: '10 إلى 14 سنة', w: '3 أسابيع', p: '650', art: pyArt },
+    { n: 'الذكاء الاصطناعي', a: '12 إلى 16 سنة', w: 'أسبوعان', p: '700', art: aiArt },
+    { n: 'الروبوتات', a: '9 إلى 13 سنة', w: '3 أسابيع', p: '800', art: robotArt },
+    { n: 'تصميم المواقع', a: '11 إلى 15 سنة', w: 'أسبوع واحد', p: '550', art: webArt }
   ];
   function card(c) {
     return '<article class="pc">' + c.art + '<div class="pb"><h3>' + c.n + '</h3><div class="tg"><span>' + c.a + '</span><span>' + c.w + '</span></div>' +
@@ -4312,7 +4312,8 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     '@media(max-width:900px){.story,.two{grid-template-columns:1fr}nav a{padding:6px 10px;font-size:.95rem}}@media(max-width:560px){.info{grid-template-columns:1fr}.tb th,.tb td{padding:9px 6px;font-size:.88rem}.kp{grid-template-columns:1fr 1fr}}',
     '@media(max-width:700px){.hero h1{font-size:1.9rem}.ft .cols{grid-template-columns:1fr}.hero .heroart{display:none}.hd .w{justify-content:flex-start;gap:6px}.logo{justify-content:flex-start}nav{width:100%;justify-content:space-between;gap:2px}nav a{padding:6px 7px;font-size:.88rem;white-space:nowrap}}'
   ].join('\n') + '\n' + [
-    '.tg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.tg span{background:var(--sage2);color:var(--navy);border-radius:99px;padding:0 12px;font-size:.85rem;font-weight:700}',
+    '.tg{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 10px}.tg span{background:var(--sage2);color:var(--navy);border-radius:99px;padding:0 12px;font-size:.85rem;font-weight:700}' +
+    '.cats,.feat{grid-template-columns:repeat(2,1fr)}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));max-width:620px;margin:0 auto}.grid .pc{max-width:none}@media(max-width:560px){.cats,.feat{grid-template-columns:1fr}.grid{grid-template-columns:minmax(0,320px);justify-content:center}}.pr{gap:8px}.pr span{white-space:nowrap}.av2{font-size:.78rem;padding:0 10px}',     /* the green badge and the price stay on one line (Moaz 2026-11-14) */
     '.msg{border-inline-start:4px solid var(--gold);padding:10px 14px;margin:0 0 10px;background:#fff;border-radius:0 12px 12px 0;color:var(--mut);border-top:1.5px solid var(--line);border-bottom:1.5px solid var(--line);border-inline-end:1.5px solid var(--line)}.msg b{color:var(--navy)}'
   ].join('\n');
 
@@ -4337,7 +4338,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       '<section class="sec"><h2>اختر مجالك</h2><p class="lead">أربعة مجالات تناسب أعماراً مختلفة.</p><div class="cats">' +
       '<a class="cat" href="/courses">' + I.code + '<span>البرمجة<small>من 10 سنوات</small></span></a><a class="cat" href="/courses">' + I.chip + '<span>الذكاء الاصطناعي<small>من 12 سنة</small></span></a>' +
       '<a class="cat" href="/courses">' + I.robot + '<span>الروبوتات<small>من 9 سنوات</small></span></a><a class="cat" href="/courses">' + I.web + '<span>تصميم المواقع<small>من 11 سنة</small></span></a></div></section>' +
-      '<section class="sec" style="padding-top:0"><h2>أبرز الدورات</h2><p class="lead">الدورات الأكثر طلباً هذا الفصل.</p>' + grid([COURSES[0], COURSES[2], COURSES[1]]) + '</section>' +
+      '<section class="sec" style="padding-top:0"><h2>أبرز الدورات</h2><p class="lead">الدورات الأكثر طلباً هذا الفصل.</p>' + grid([COURSES[0], COURSES[2]]) + '</section>' +
       '<section class="sec" style="padding-top:0"><div class="feat"><div>' + I.users + '<span><b>مجموعات صغيرة</b>اهتمام بكل طالب</span></div><div>' + I.bulb + '<span><b>التعلم بالتجربة</b>كل درس ينتهي بمشروع</span></div><div>' + I.award + '<span><b>شهادة إتمام</b>في نهاية كل دورة</span></div><div>' + I.star + '<span><b>مدربون متخصصون</b>خبرة في التعليم والتقنية</span></div></div></section>' +
       '<section class="sec txt" style="padding-top:0"><h2>عن الأكاديمية</h2><p>بدأت ' + A.name + ' بقاعة واحدة وعشرة طلاب، وأصبحت اليوم مكاناً يتعلّم فيه الطلاب التقنية بأيديهم. <a class="more" href="/about">اقرأ قصتنا ←</a></p></section>') };
     pages['/courses'] = { title: 'الدورات | ' + A.name, html: page('/courses',
@@ -4351,7 +4352,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       '<div class="mem"><div class="av">' + avatar('#5a3a22', '#14b8a6', '#e8b890') + '</div><h3>ناصر محمد</h3><span>مسؤول الأنشطة</span></div></div></section>') };
     pages['/contact'] = { title: 'تواصل | ' + A.name, html: page('/contact',
       '<section class="sec"><h2>تواصل معنا</h2><p class="lead">يسعدنا الرد على أسئلتك عن الدورات والتسجيل.</p>' +
-      '<div class="info"><div>' + I.mail + '<span><b>للاستفسارات العامة</b><bdi dir="ltr">' + A.email + '</bdi></span></div><div>' + I.mail + '<span><b>التسجيل في الدورات (' + A.staff + '، مسؤول التسجيل)</b><bdi dir="ltr">' + A.staffEmail + '</bdi></span></div>' +
+      '<div class="info"><div>' + I.mail + '<span><b>للاستفسارات العامة</b><bdi dir="ltr">' + A.email + '</bdi></span></div><div>' + I.mail + '<span><b>للتسجيل في الدورات</b><bdi dir="ltr">' + A.staffEmail + '</bdi></span></div>' +
       '<div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + A.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + A.address + '</span></div></div>' +
       '<div class="two ct"><div class="pnl"><h3>أوقات الدوام</h3><table class="hrs"><tr><td>من الأحد إلى الخميس</td><td>من 3 عصراً إلى 8 مساءً</td></tr><tr><td>السبت</td><td>من 9 صباحاً إلى 1 ظهراً</td></tr></table></div>' +
       '<div class="pnl"><h3>كيف تصل إلينا</h3><p>الأكاديمية في ' + A.address + '، في المبنى الأبيض المقابل للحديقة العامة، والمدخل من الباب الأزرق.</p></div></div></section>') };
