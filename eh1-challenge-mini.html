@@ -2036,6 +2036,7 @@ body.cc-web .stage:has(.laptop.off) .br-win{animation:none;outline:0}
 .cc-dkf span{white-space:nowrap;text-align:center}      /* the whole file name on one line (Moaz 2026-11-14: passwords.txt was cut) */
 .cc-win-file{width:40cqw}
 .cc-win-file .cc-win-b{max-height:30cqw;overflow:auto;padding:1.4cqw 2cqw}
+.cc-dgrid{display:flex;flex-wrap:wrap;gap:1.2cqw;direction:ltr;min-height:8cqw}.cc-dfi{display:flex;flex-direction:column;align-items:center;gap:.4cqw;width:10cqw;padding:.6cqw;border:0;border-radius:1cqw;background:none;cursor:pointer;color:var(--navy);font:600 max(10px,1.3cqw)/1.3 var(--f-ui,inherit)}.cc-dfi:hover{background:rgba(14,31,57,.08)}.cc-dfi svg{width:5cqw;height:5cqw;filter:drop-shadow(0 .2cqw .4cqw rgba(14,31,57,.35))}.cc-dfi span{white-space:nowrap}      /* a folder window: its folders and files as icons (Moaz 2026-11-14) */
 .cc-ftxt{margin:0;font:500 max(11px,1.45cqw)/1.6 ui-monospace,Consolas,monospace;direction:ltr;text-align:left;white-space:pre-wrap;color:var(--navy)}
 
 /* ---------- the app bar (dock) at the BOTTOM of the laptop screen, in a row (Moaz 2026-11-13, every lab with the laptop desktop) ----------
@@ -2102,6 +2103,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 .cs .cs-chips:not(:empty)::before{content:'شرح الأمر';position:absolute;top:0;left:50%;transform:translate(-50%,-55%);padding:0 8px;background:#0A1426;color:#8DC63F;font-family:var(--f-ui);font-weight:700;font-size:calc(var(--t,13px) * .85);line-height:1.3;direction:rtl;white-space:nowrap}
 /* the «شرح الأمر» box is as wide as its command parts (never empty space), centred in the terminal; a long command fills the width (Moaz 2026-11-14, every lab) */
 .cs .cs-chips:not(:empty),body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-chips:not(:empty){box-sizing:border-box;width:fit-content;min-width:9em;max-width:calc(100% - 20px);margin-left:auto!important;margin-right:auto!important;justify-content:center;padding-left:14px!important;padding-right:14px!important}
+body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle svg,body.cc-q-noanim .qpanel{transition:none!important;animation:none!important}      /* a challenge opens its questions panel at once (Moaz 2026-11-14) */
 
 </style><!--/cc-skin-->
 </head>
@@ -5337,7 +5339,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
   var WIN = {
     notes: '<div class="cc-note"><b>مهامي في أكاديمية كاملكود</b><ul><li class="ok">أنهيت أول تحدٍّ في البرمجة</li><li class="ok">صمّمت شعار فريقي</li><li>أبني أول روبوت لي</li></ul><p>تذكّر: نختبر فقط الأجهزة التي نملك إذناً باختبارها.</p></div>',
     files: '<ul class="cc-files"><li><i></i>مشاريع البرمجة<small>4 ملفات</small></li><li><i></i>صور أكاديمية كاملكود<small>12 صورة</small></li><li><i></i>شهاداتي<small>3 ملفات</small></li><li><i></i>أدوات الهاكر<small>ملف واحد</small></li></ul>',
-    set: '<div class="cc-locked"><span></span><p>إعدادات هذا الحاسوب مقفلة أثناء التدريب.</p></div>',
+    set: '<div class="cc-locked"><span></span><p>إعدادات هذا الحاسوب مقفلة أثناء ' + (PLAIN ? 'التحدي' : 'التدريب') + '.</p></div>',
     calc: '<div class="cc-calc"><div class="cc-calc-d" dir="ltr">0</div><div class="cc-calc-k" dir="ltr">' +
       ['C', '÷', '×', '−', '7', '8', '9', '+', '4', '5', '6', '=', '1', '2', '3', '0', '.'].map(function (k) { return '<button type="button" data-k="' + k + '"' + (k === '=' ? ' class="eq"' : /[÷×−+C]/.test(k) ? ' class="op"' : k === '0' ? ' class="z"' : '') + '>' + k + '</button>'; }).join('') +
       '</div></div>'
@@ -5397,15 +5399,37 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
       b.onclick = function () {
         if (!e.dir) { openFileWin(e.name); return; }
         if (CC.deskDirLock) { if (CC.toast) CC.toast(CC.deskDirLock); return; }
-        var kids = (CC.labFS ? CC.labFS.list('/' + e.name, false) : []).map(function (k) { return k.name + (k.dir ? '/' : ''); });
-        openFileWin(e.name, kids.join('\n'));
+        openDirWin('/' + e.name);
       };
       box.appendChild(b);
     });
   }
-  function openFileWin(name, text) {
+  /* a folder opens in a window that shows its folders and files as icons, like the desktop; a file opens to read, a folder opens inside (Moaz 2026-11-14) */
+  function openDirWin(path) {
+    var l = lapEl(), wins = l && $('.cc-wins', l), fs = CC.labFS; if (!wins || !fs) return;
+    var name = path.split('/').pop() || path, id = 'dir-' + path, w = $('.cc-win[data-app="' + id + '"]', wins);
+    if (!w) {
+      w = document.createElement('div'); w.className = 'cc-win cc-win-file cc-win-dir'; w.setAttribute('data-app', id); w.setAttribute('data-name', name);
+      w.innerHTML = '<div class="cc-win-bar">' + ctlHtml(name) + '<b></b></div><div class="cc-win-b"><div class="cc-dgrid"></div></div>';
+      $('b', w).textContent = name;
+      $('.cc-win-x', w).onclick = function (ev) { ev.stopPropagation(); w.remove(); frontTop(l); };
+      $('.cc-win-min', w).onclick = function (ev) { ev.stopPropagation(); w.remove(); frontTop(l); };
+      w.addEventListener('mousedown', function () { front(w); });
+      wins.appendChild(w);
+    }
+    var grid = $('.cc-dgrid', w), all = fs.list(path, false);
+    grid.innerHTML = '';
+    all.filter(function (k) { return k.dir; }).concat(all.filter(function (k) { return !k.dir; })).forEach(function (k) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'cc-dfi'; b.setAttribute('data-file', k.name);
+      b.innerHTML = (k.dir ? DIR_IC : FILE_IC) + '<span></span>'; $('span', b).textContent = k.name;
+      b.onclick = function () { if (k.dir) openDirWin(path + '/' + k.name); else openFileWin(k.name, null, path + '/' + k.name); };
+      grid.appendChild(b);
+    });
+    front(w);
+  }
+  function openFileWin(name, text, path) {
     var l = lapEl(), wins = l && $('.cc-wins', l); if (!wins) return;
-    var id = 'file-' + name, w = $('.cc-win[data-app="' + id + '"]', wins);
+    var id = 'file-' + (path || name), w = $('.cc-win[data-app="' + id + '"]', wins);
     if (!w) {
       w = document.createElement('div'); w.className = 'cc-win cc-win-file'; w.setAttribute('data-app', id); w.setAttribute('data-name', name);
       w.innerHTML = '<div class="cc-win-bar">' + ctlHtml(name) + '<b></b></div><div class="cc-win-b"><pre class="cc-ftxt"></pre></div>';
@@ -5415,10 +5439,10 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
       w.addEventListener('mousedown', function () { front(w); });
       wins.appendChild(w);
     }
-    var t = text != null ? text : CC.labFS && CC.labFS.read('/' + name); $('.cc-ftxt', w).textContent = t == null ? '' : t;
+    var t = text != null ? text : CC.labFS && CC.labFS.read(path || '/' + name); $('.cc-ftxt', w).textContent = t == null ? '' : t;
     front(w);
   }
-  setInterval(function () { var l = lapEl(); if (l && WEB) deskFiles(l); }, 700);
+  setInterval(function () { var l = lapEl(); if (l && WEB) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
   /* ---- the browser app (body.cc-web) ---- */
   function webIc(l) { return dockIc(l, 'web'); }
   function openWeb() {
@@ -5514,7 +5538,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
     setTimeout(function () { l.classList.remove('cc-noanim'); }, 1200);     /* also when the page is in a background tab (no frames drawn) */
     var cs = $('.cs', l); if (cs) cs.setAttribute('data-name', TERM);
     var br = WEB && $('.cc-brw', l);
-    if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); }   /* the lab's files on the desktop (labs with a terminal) */
+    if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
     if (br) {
       l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* the browser starts closed in every lab, challenges too (Moaz 2026-11-14: never open by default) */
       var strip = $('.br-strip', br);
@@ -5915,6 +5939,11 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
     wrapEl.appendChild(h);
     function setOpen(on) { document.body.classList.toggle('cc-q-open', on); h.setAttribute('aria-expanded', on ? 'true' : 'false'); }
     h.onclick = function () { setOpen(!document.body.classList.contains('cc-q-open')); };
+    if (PLAIN) {   /* a challenge: the questions panel is open from the first moment, with no slide (Moaz 2026-11-14, every challenge) */
+      document.body.classList.add('cc-q-noanim'); setOpen(true);
+      requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(function () { document.body.classList.remove('cc-q-noanim'); }, 60); }); });
+      setTimeout(function () { document.body.classList.remove('cc-q-noanim'); }, 1200);
+    }
     h.addEventListener('mouseenter', function(){ setOpen(true); });   /* hover opens and keeps it open; click the tab to close (Farhan 2026-11-10) */
     qp.addEventListener('mouseenter', function(){ setOpen(true); });
     var toQ = function () { if (CC.panelTab) CC.panelTab('q'); setOpen(true); };
