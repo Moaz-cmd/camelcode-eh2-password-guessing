@@ -4472,6 +4472,16 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     m_b_wrongmail: 'لم يتم العثور على حساب بالبريد `{w}`. ابحث عن البريد الإلكتروني في صفحة «تواصل».',
     m_b_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الملف كما يظهر في `display`.',
     m_b_file: 'لم يتم العثور على `{w}`؛ يجب أن يكون اسم ملف كلمات مرور. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
+    /* a barq command with fewer than three parts: say what was typed, what is missing, and any word that is not understood (Moaz 2026-11-14: never the same generic line) */
+    bs_head: 'الأمر غير مكتمل: ',
+    bs_alone: 'كتبت `barq` وحده، ولم تحدد {miss}.',
+    bs_wrote: 'كتبت {got}، لكن لم تحدد {miss}.',
+    bs_none: 'لم تحدد {miss}.',
+    bs_unk: 'لم أفهم `{w}`: ليس عنوان صفحة دخول، ولا بريداً إلكترونياً، ولا اسم ملف.',
+    bs_site: '`{w}` اسم موقع فقط؛ اكتب صفحة الدخول هكذا: اسم الموقع ثم `/` ثم اسم الصفحة.',
+    bs_p_page: 'صفحة الدخول `{w}`', bs_p_mail: 'البريد الإلكتروني `{w}`', bs_p_file: 'ملف كلمات المرور `{w}`',
+    bs_n_page: 'صفحة الدخول', bs_n_mail: 'البريد الإلكتروني', bs_n_file: 'ملف كلمات المرور',
+    bs_form: 'الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     /* congratulations */
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
@@ -4662,6 +4672,26 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     }
 
     /* ---- one typed line: { err } for a mistake, { info } for a command that ran ---- */
+    /* a barq command with fewer than three parts (Moaz 2026-11-14): what was typed, what is missing, and each word that is not understood */
+    function barqShort(args) {
+      var got = [], miss = [], notes = [], has = {};
+      var isFileW = function (x) { if (/.txt$/i.test(x)) return true; try { var w = fs.walk(fs.resolve(x)); return !!(w.node && w.node.type === 'file'); } catch (e) { return false; } };
+      args.forEach(function (a) {
+        if (isPage(a)) { has.page = 1; got.push(CC.t('bs_p_page', { w: a })); }
+        else if (isMail(a)) { has.mail = 1; got.push(CC.t('bs_p_mail', { w: a })); }
+        else if (isFileW(a)) { has.file = 1; got.push(CC.t('bs_p_file', { w: a })); }
+        else if (a === HOST || /^[w-]+(.[w-]+)+$/.test(a)) notes.push(CC.t('bs_site', { w: a }));
+        else notes.push(CC.t('bs_unk', { w: a }));
+      });
+      if (!has.page) miss.push(CC.t('bs_n_page'));
+      if (!has.mail) miss.push(CC.t('bs_n_mail'));
+      if (!has.file) miss.push(CC.t('bs_n_file'));
+      var m = miss.join(' ولا '), s;
+      if (!args.length) s = CC.t('bs_alone', { miss: m });
+      else if (got.length) s = CC.t('bs_wrote', { got: got.join(' و'), miss: m });
+      else s = CC.t('bs_none', { miss: m });
+      return CC.t('bs_head') + (notes.length ? notes.join(' ') + ' ' : '') + s + ' ' + CC.t('bs_form');     /* a word that is not understood comes first */
+    }
     async function run(raw) {
       var tk = raw.trim().split(/\s+/), c = tk[0], args = tk.slice(1), i;
       var viaLinux = !!LINUX[c]; if (viaLinux) c = LINUX[c];
@@ -4699,21 +4729,9 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       if (c === 'barq') {
         /* the same checks, in the same order, as lab 5; the challenge adds a path to the list and the general email (which runs and finds nothing) */
         for (i = 0; i < args.length; i++) if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_b_opt', { w: args[i] }) };
-        if (!args.length) return { err: CC.t('m_b_none') };
         if (args.length > 3) return { err: CC.t('m_b_extra') };
         for (i = 0; i < args.length; i++) if (/^https?:/i.test(args[i]) || args[i].indexOf('://') >= 0) return { err: CC.t('m_b_sym') };
-        if (args.length === 1) {
-          if (isPage(args[0])) return { err: CC.t('m_b_nofileemail') };
-          if (isMail(args[0])) return { err: CC.t('m_b_nopagefile') };
-          return { err: CC.t('m_b_none') };
-        }
-        if (args.length === 2) {
-          var hasPage = args.some(isPage), hasMail = args.some(isMail);
-          if (hasPage && hasMail) return { err: CC.t('m_b_nofile') };
-          if (hasPage) return { err: CC.t('m_b_noemail') };
-          if (hasMail) return { err: CC.t('m_b_nosite') };
-          return { err: CC.t('m_b_none') };
-        }
+        if (args.length < 3) return { err: barqShort(args) };     /* what was typed and what is missing (Moaz 2026-11-14) */
         var pg = args[0].replace(/\/+$/, ''), em = args[1].toLowerCase(), fl = args[2];
         if (!isPage(pg)) {
           if (args.some(isPage)) return { err: CC.t('m_b_swap') };
