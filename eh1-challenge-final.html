@@ -4449,7 +4449,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     m_k_none: 'الأمر غير مكتمل: لم تحدد الموقع ولا ملف الصفحات. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_nofile: 'الأمر غير مكتمل: لم تحدد ملف الصفحات. تحتاج أداة كاشف إلى الملف الذي يحتوي أسماء الصفحات. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_nosite: 'الأمر غير مكتمل: لم تحدد الموقع. تحتاج أداة كاشف إلى معرفة أي موقع تفحص. الصيغة الصحيحة: `kashif website pages.txt`',
-    m_k_one: 'لم أفهم الاسم `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_one: 'لم أجد الموقع `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_swap: 'ترتيب الأمر غير صحيح: اكتب اسم الموقع أولاً ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.academy`.',
     m_k_file: 'لم يتم العثور على الملف `{w}`. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
@@ -5740,7 +5740,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
     var br = WEB && $('.cc-brw', l);
     if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); }   /* the lab's files on the desktop (labs with a terminal) */
     if (br) {
-      if (!PLAIN) l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* a challenge (mission.plain) starts with the browser open: no «افتح المتصفح» step or cue (Moaz 2026-11-14) */
+      l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* the browser starts closed in every lab, challenges too (Moaz 2026-11-14: never open by default) */
       var strip = $('.br-strip', br);
       if (strip && !$('.cc-win-ctl', strip)) {
         strip.insertAdjacentHTML('afterbegin', ctlHtml(WEB_L));
@@ -5764,7 +5764,6 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
     dock.innerHTML = apps.map(function (a) { return '<button type="button" class="cc-app" data-app="' + a.id + '" aria-label="' + a.label + '">' + IC[a.id] + '<span>' + a.label + '</span>' + (a.id === 'term' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + SPOT_B + '</em></i>' : a.id === 'web' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>افتح المتصفح لتصل إلى موقع المتجر</em></i>' : '') + '</button>'; }).join('');
     dock.addEventListener('click', function (e) { var b = e.target.closest('.cc-app'); if (b) openWin(b.getAttribute('data-app')); });
     scr.appendChild(dock);
-    if (br && PLAIN) { OS.webOpened = true; var wic = dockIc(l, 'web'); if (wic) wic.classList.add('run'); front(br); }
     if (cs) cs.addEventListener('mousedown', function () { front(cs); });
   }
   var stageEl = $('#stage');
@@ -5808,7 +5807,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
   function route(txt) {
     if (!txt) return;
     decorate(lapEl());                 /* the lab may have built a new laptop a moment ago (restart) */
-    if (WEB && !OS.webOpened && $('#laptop .cc-brw')) {      /* the browser was never opened: «open the browser» comes first, the lab's step follows when it opens */
+    if (!PLAIN && WEB && !OS.webOpened && $('#laptop .cc-brw')) {      /* the browser was never opened: «open the browser» comes first, the lab's step follows when it opens (not in a challenge: its two instructions only, no cue) */
       OS.webPending = txt;
       push(OPEN_WEB_TXT);
       var wi = $('#laptop .cc-app[data-app="web"]');
