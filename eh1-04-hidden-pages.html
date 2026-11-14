@@ -936,6 +936,24 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 @keyframes brNoteOut{to{opacity:0;transform:translate(-50%,-10px)}}
 @media (prefers-reduced-motion:reduce){.br-note,.br-note.out{animation:none}}
 
+/* the website's «scroll down» hint (Moaz 2026-11-14, like «شرح مختصر»): bottom centre of the page while there is more below */
+.br-shint{position:absolute;left:50%;bottom:14px;z-index:6;transform:translateX(-50%);display:none;align-items:center;gap:6px;direction:rtl;padding:5px 14px;border-radius:999px;background:#FCAD0F;color:#0E1F39;font:800 .8em var(--f-ui,'Montserrat Arabic',Tajawal,sans-serif);box-shadow:0 8px 18px -6px rgba(0,0,0,.55);pointer-events:none;white-space:nowrap}
+.br-shint.show{display:flex;animation:brShint 1.3s ease-in-out infinite}
+.br-shint svg{width:1.2em;height:1.2em}
+@keyframes brShint{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(5px)}}
+/* labels under the address bar (Moaz 2026-11-14): «اسم الموقع» under camelcode.shop, «اسم الصفحة» under /home, an arrow up to each part */
+.br-parts{position:absolute;inset:0 0 auto 0;height:0;z-index:7;pointer-events:none}
+.br-part{position:absolute;top:9px;direction:rtl;white-space:nowrap;padding:2px 8px;border-radius:99px;background:#0E1F39;color:#fff;border:2px solid #FCAD0F;font:700 .62em var(--f-ui,'Montserrat Arabic',Tajawal,sans-serif);box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
+.br-part::before{content:"";position:absolute;left:50%;top:-8px;margin-left:-6px;border:6px solid transparent;border-top:0;border-bottom:7px solid #FCAD0F}
+.br-parts.in .br-part{animation:brPartIn .5s cubic-bezier(.3,1.4,.5,1) both,brPartBob 1.4s ease-in-out .95s infinite}
+.br-parts.in .br-part.page{animation-delay:.35s,.95s}
+@keyframes brPartIn{from{opacity:0;transform:translateY(-8px) scale(.85)}to{opacity:1;transform:none}}
+@keyframes brPartBob{0%,100%{transform:none}50%{transform:translateY(4px)}}
+.br-hostframe{position:absolute;top:50%;height:1.55em;transform:translateY(-50%);border:2px solid #0E1F39;border-radius:6px;box-shadow:0 0 0 2px rgba(252,173,15,.55);pointer-events:none;z-index:2}
+.br-hostframe.in{ .45s ease-out both}
+@keyframes brFrameIn{from{opacity:0;transform:translateY(-50%) scale(1.15)}to{opacity:1;transform:translateY(-50%)}}
+@media (prefers-reduced-motion:reduce){.br-shint.show,.br-parts.in .br-part,.br-hostframe.in{animation:none}}
+
 </style>
 <style id="cc-skin">
 :root{
@@ -1267,7 +1285,7 @@ body.cc-has-feed .q-task{display:none!important}
 .cc-num{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;font-weight:800;font-size:16px;margin-top:1px}
 .cc-num i{font-style:normal}
 .cc-num svg{width:18px;height:18px}
-.cc-txt code,.cc-txt .tok{display:inline-block;white-space:nowrap;direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-size:.9em;font-weight:600;line-height:1.5;padding:1px 8px;margin:0 2px;border-radius:7px;background:rgba(255,255,255,.12);color:var(--gold)}
+.cc-txt code,.cc-txt .tok{display:inline-block;max-width:100%;box-sizing:border-box;white-space:normal;overflow-wrap:anywhere;direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-size:.9em;font-weight:600;line-height:1.5;padding:1px 8px;margin:0 2px;border-radius:7px;background:rgba(255,255,255,.12);color:var(--gold)}
 .cc-cur .cc-txt code,.cc-cur .cc-txt .tok{background:var(--navy);color:var(--gold)}
 
 /* earlier steps: newest first, faded, two lines, a check; click to read again */
@@ -1964,7 +1982,12 @@ body .qrow.qnew .qtxt::before{animation:ccqnewbounce 1s cubic-bezier(.3,0,.4,1) 
 /* confetti in the instruction panel at the end of the lab (celebrateFeed, Moaz 2026-11-13) */
 .cc-fconf{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:30}
 .cc-fconf i{position:absolute;top:-14px;width:8px;height:13px;border-radius:2px;opacity:.95;animation:ccfconf 2.6s cubic-bezier(.3,.1,.6,1) forwards}
-@keyframes ccfconf{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(105vh) rotate(540deg);opacity:.9}}
+@keyframes ccfconf{0%{transform:translateY(0) rotate(0);opacity:.95}85%{opacity:.9}100%{transform:translateY(105vh) rotate(540deg);opacity:0}}
+/* the steps' explosion (Moaz 2026-11-14): a flash and gold shards from each step, removed when they finish */
+.cc-fboom{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:31}
+.cc-fboom i{position:absolute;width:9px;height:9px;border-radius:2px}
+.cc-fboom b{position:absolute;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,#fff 0,#FCAD0F 35%,rgba(252,173,15,0) 70%)}
+@media (prefers-reduced-motion:reduce){.cc-fboom{display:none}}
 @media (prefers-reduced-motion:reduce){.cc-fconf{display:none}}
 
 /* ---------- website labs (body.cc-web, Moaz 2026-11-13, every browser lab): the hacker's laptop is the only device and fills the stage. Its desktop has
@@ -2007,10 +2030,10 @@ body.cc-web .stage:has(.laptop.off) .br-win{animation:none;outline:0}
 
 /* the lab's files on the laptop desktop of a website lab (Moaz 2026-11-13): icons at the top right, under the windows */
 .cc-dkfiles{position:absolute;top:5cqw;right:2.4cqw;z-index:1;display:flex;flex-direction:column;align-items:center;gap:1.6cqw}
-.cc-dkf{display:flex;flex-direction:column;align-items:center;gap:.5cqw;width:10cqw;padding:.6cqw;border:0;border-radius:1cqw;background:none;color:#fff;cursor:pointer;font:600 max(10px,1.35cqw)/1.3 var(--f-ui,inherit);direction:ltr;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.cc-dkf{display:flex;flex-direction:column;align-items:center;gap:.5cqw;min-width:10cqw;width:auto;padding:.6cqw;border:0;border-radius:1cqw;background:none;color:#fff;cursor:pointer;font:600 max(10px,1.35cqw)/1.3 var(--f-ui,inherit);direction:ltr;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .cc-dkf:hover{background:rgba(255,255,255,.12)}
 .cc-dkf svg{width:5.4cqw;height:5.4cqw;filter:drop-shadow(0 .4cqw .6cqw rgba(0,0,0,.35))}
-.cc-dkf span{max-width:100%;overflow-wrap:anywhere;text-align:center}
+.cc-dkf span{white-space:nowrap;text-align:center}      /* the whole file name on one line (Moaz 2026-11-14: passwords.txt was cut) */
 .cc-win-file{width:40cqw}
 .cc-win-file .cc-win-b{max-height:30cqw;overflow:auto;padding:1.4cqw 2cqw}
 .cc-ftxt{margin:0;font:500 max(11px,1.45cqw)/1.6 ui-monospace,Consolas,monospace;direction:ltr;text-align:left;white-space:pre-wrap;color:var(--navy)}
@@ -2048,6 +2071,11 @@ body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-chi
 body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk{flex:1 1 0;min-width:0;max-width:max-content}
 body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk small{white-space:normal;text-align:center;overflow-wrap:anywhere}
 body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis}
+/* the parts of a command sit close together from the start of the line, each description right under its own word; the row is as wide as
+   the command needs, never spread over the whole terminal (Moaz 2026-11-14, every lab) */
+.cs .cs-chips,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-chips{justify-content:flex-start;align-items:flex-start;gap:6px clamp(10px,1.6cqw,18px)}
+.cs .cs-chips .tk,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk{flex:0 1 auto;min-width:0;max-width:max-content}
+.cs .cs-chips .tk small{white-space:normal;max-width:14em;text-wrap:balance;overflow-wrap:anywhere}
 /* smaller app icons in the dock (Moaz 2026-11-13, every lab): the windows get the room back; the cue ring and pointer follow the smaller icon */
 .cc-dock{gap:.6cqw;padding:.45cqw .8cqw .4cqw;bottom:.55cqw}
 .cc-app{width:6cqw;gap:.25cqw}
@@ -2058,6 +2086,20 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
 .cc-app.cue::before{left:3cqw!important;top:1.8cqw!important;width:4.4cqw!important;height:4.4cqw!important;margin:-2.2cqw 0 0 -2.2cqw!important}
 .cc-app.cue::after{left:4.1cqw;top:1cqw;width:2.2cqw;height:2.6cqw}
 .cc-app.cue span{margin-top:.6cqw}
+
+/* mission.plain (Moaz 2026-11-14, every challenge lab): nothing that guides the student, and no «شرح مختصر» tab; the animations that only make the lab smoother stay */
+body.cc-plain .qrow.qnew,body.cc-plain .qrow.qnew .qtxt::before,body.cc-plain .cc-attn,body.cc-plain .cc-app.cue,body.cc-plain .cc-app.cue svg{animation:none!important}
+body.cc-plain .q-tab[data-tab="ref"],body.cc-plain .cc-tabs{display:none!important}
+body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!important}
+
+/* after `create`: a yellow spotlight on the new file(s) on the desktop or in the folder window for a few seconds (Moaz 2026-11-14) */
+.dk-i.spot,.fm-i.spot{position:relative;z-index:2;background:rgba(252,173,15,.38);box-shadow:inset 0 0 0 2px #FFC94A,0 0 14px 4px rgba(252,173,15,.6);animation:ccspot 1.2s ease-in-out 3}
+@keyframes ccspot{0%,100%{box-shadow:inset 0 0 0 2px #FFC94A,0 0 8px 2px rgba(252,173,15,.45)}50%{box-shadow:inset 0 0 0 2px #FFC94A,0 0 20px 7px rgba(252,173,15,.8)}}
+@media (prefers-reduced-motion:reduce){.dk-i.spot,.fm-i.spot{animation:none}}
+
+/* «شرح الأمر»: the parts of a typed command sit in a green frame with a centered headline (Moaz 2026-11-14, every lab; first tried in EH1 lab 1) */
+.cs .cs-chips:not(:empty){position:relative;margin:calc(var(--t,13px) * .9) 10px 8px!important;border:1.5px solid #8DC63F;border-radius:12px;padding-top:calc(var(--t,13px) * 1.1)!important;padding-bottom:8px!important;background:#0A1426}
+.cs .cs-chips:not(:empty)::before{content:'شرح الأمر';position:absolute;top:0;left:50%;transform:translate(-50%,-55%);padding:0 8px;background:#0A1426;color:#8DC63F;font-family:var(--f-ui);font-weight:700;font-size:calc(var(--t,13px) * .85);line-height:1.3;direction:rtl;white-space:nowrap}
 
 </style><!--/cc-skin-->
 </head>
@@ -2815,6 +2857,13 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
       if (!CC.fsRootName && (p === '~' || p.indexOf('~/') === 0)) { p = p.slice(1); base = parts(home); }
       else if (p.charAt(0) === '/') base = parts(home);
       else base = parts(F.cwd);
+      /* a full path from the top folder (Documents/trip/plan.txt) works from any folder (Moaz 2026-11-14, every lab): the labs teach it as «المسار الكامل».
+         When the path's first folder is not in the current folder but is in the top folder, the path starts at the top folder. */
+      var first = parts(p)[0];
+      if (base.length > top && first && first !== '.' && first !== '..' && p.charAt(0) !== '/' && p.charAt(0) !== '~') {
+        var here = F.walk('/' + base.join('/')), atTop = F.walk('/' + parts(home).concat([first]).join('/'));
+        if (here.node && here.node.kids && !here.node.kids[first] && atTop.node) base = parts(home);
+      }
       parts(p).forEach(function (s) {
         if (s === '.') return;
         if (s === '..') { if (base.length > top) base.pop(); } else base.push(s);
@@ -2916,21 +2965,21 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     m_extra: 'الأمر فيه كلمات زائدة. الأمر `{c}` يأخذ {what}، وأسماء الملفات في هذا التدريب لا تحتوي على مسافات. الصيغة الصحيحة: `{ex}`',
     w_display: 'مساراً واحداً على الأكثر', w_one: 'اسماً واحداً فقط', w_create: 'اسم ملف واحد، وبعده عدد الملفات إن أردت',
     m_need_enter: 'الأمر غير مكتمل: لم تحدد المجلد الذي تريد الانتقال إليه. اكتب اسم المجلد بعد `enter`، مثل `enter Documents`. وللعودة إلى المجلد السابق اكتب الأمر `back`.',
-    m_need_show: 'الأمر غير مكتمل: لم تحدد الملف الذي تريد قراءته. اكتب اسم الملف بعد `read`، مثل `read report.txt`. اعرض الملفات أولاً بالأمر `display`.',
+    m_need_show: 'الأمر غير مكتمل: لم تحدد الملف الذي تريد قراءته. اكتب اسم الملف بعد `read`، مثل `read report.txt`. اعرض الملفات أولاً باستخدام الأمر `display`.',
     m_need_create: 'الأمر غير مكتمل: لم تحدد اسم الملف الذي تريد إنشاءه. اكتب الاسم بعد `create`، مثل `create plan.txt`.',
     m_badopt: 'الخيار `{w}` غير موجود. الأمر `display` لا يحتاج إلى خيارات، اكتب `display` أو `display Documents`.',
     m_nooptcmd: 'الأمر `{c}` لا يحتاج إلى خيارات، والخيار `{w}` غير مفهوم. الصيغة الصحيحة: `{ex}`',
     m_top: 'أنت الآن في `Desktop` وهو المجلد الرئيسي، ولا يوجد مجلد سابق للرجوع إليه. لعرض ما بداخله اكتب `display`.',
     m_nf: 'لم يتم العثور على `{w}`. تأكد من الاسم، واعرض محتويات المجلد باستخدام الأمر `display` لترى الأسماء الصحيحة.',
-    m_nf_s: 'لم يتم العثور على `{w}`. هل تقصد `{s}`؟ تأكد من الاسم بالأمر `display`.',
+    m_nf_s: 'لم يتم العثور على `{w}`. هل تقصد `{s}`؟ تأكد من الاسم باستخدام الأمر `display`.',
     m_case: 'لم يتم العثور على `{w}`. أسماء الملفات والمجلدات تتأثر بحالة الأحرف (كبيرة أو صغيرة)، والاسم الصحيح هو `{real}`.',
     m_thrufile: '`{w}` ملف وليس مجلداً، لذلك لا يمكن المرور من خلاله في المسار.',
-    m_notdir: '`{w}` ملف وليس مجلداً، ولا يمكن الدخول إليه بالأمر `enter`. لقراءته استخدم `read {w}`.',
+    m_notdir: '`{w}` ملف وليس مجلداً، ولا يمكن الدخول إليه باستخدام الأمر `enter`. لقراءته استخدم `read {w}`.',
     m_dispfile: '`{w}` ملف وليس مجلداً، والأمر `display` يعرض محتويات المجلدات فقط. لقراءته استخدم `read {w}`.',
-    m_isdir_show: '`{w}` مجلد وليس ملفاً، ولا يمكن قراءته بالأمر `read`. للدخول إليه استخدم `enter {w}`، ولعرض محتواه استخدم `display {w}`.',
+    m_isdir_show: '`{w}` مجلد وليس ملفاً، ولا يمكن قراءته باستخدام الأمر `read`. للدخول إليه استخدم `enter {w}`، ولعرض محتواه استخدم `display {w}`.',
     m_isdir_create: '`{w}` مجلد موجود بهذا الاسم، ولا يمكن إنشاء ملف بالاسم نفسه. اختر اسماً آخر.',
     m_bin: '`{w}` ملف {kind} وليس نصاً، ولا يمكن عرضه أو تعديله بهذا الأمر.', k_image: 'صورة', k_sound: 'صوت',
-    m_nofolder: 'لا يمكن إنشاء الملف لأن المجلد `{w}` غير موجود. اختر مجلداً موجوداً واعرضه بالأمر `display`.',
+    m_nofolder: 'لا يمكن إنشاء الملف لأن المجلد `{w}` غير موجود. اختر مجلداً موجوداً واعرضه باستخدام الأمر `display`.',
     m_count: 'العدد `{w}` غير صحيح. اكتب بعد اسم الملف عدداً من 1 إلى 20، مثل `create file.txt 10`.',
     m_count_big: 'هذا عدد كبير من الملفات. اكتب عدداً من 1 إلى 20، مثل `create file.txt 10`.',
     m_back_args: 'الأمر `back` لا يحتاج إلى أي كلمة بعده. اكتب `back` وحده للعودة إلى المجلد السابق.',
@@ -3102,8 +3151,9 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
   var D = { src_hid: 'لا يظهر في الصفحة', ctx_back: 'رجوع', ctx_fwd: 'تقدم', ctx_reload: 'إعادة التحميل', ctx_copy: 'نسخ', ctx_save: 'حفظ باسم...', ctx_src: 'عرض مصدر الصفحة (View page source)', ctx_insp: 'فحص (Inspect)' };
   Object.keys(D).forEach(function (k) { if (CC.S.ar[k] == null) CC.S.ar[k] = D[k]; });
 
-  /* the site's zoom: the lab's S.zoom, else 80% in a browser card, 50% in the browser app of the hacker's laptop (smaller window, Moaz 2026-11-13: «too zoomed in») */
-  function zoomOf() { var S = CC.site || {}; return S.zoom || (document.body.classList.contains('cc-web') ? 0.5 : 0.8); }
+  /* the site's zoom: the lab's S.zoom, else 80% in a browser card. In the browser app of the hacker's laptop the site is at 100% and fills the browser window,
+     laying itself out for the window's width (Moaz 2026-11-14: «take the full size of the browser window instead of being zoomed out») */
+  function zoomOf() { var S = CC.site || {}; return S.zoom || (document.body.classList.contains('cc-web') ? 1 : 0.8); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
   CC.targets.browser = function () {
@@ -3219,6 +3269,7 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
         sec.style.color = entry.host === S.host ? '#5f6368' : '#d93025';
         backB.disabled = idx <= 0; fwdB.disabled = idx >= hist.length - 1;
         if (tabSel !== 'page' && entry.host === S.host && S.pages[entry.path] && S.pages[entry.path].src) buildSource(entry.path);   /* the code follows the page */
+        partsDraw();
         if (P.onPage) P.onPage(entry.path, entry);
       });
     }
@@ -3291,18 +3342,29 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
         d.documentElement.style.zoom = cmp ? String(S.cmpZoom || zoomOf()) : '';
       }
     }
-    /* in the laptop's browser app (Moaz 2026-11-13): 70% while the browser is the only window, 50% while the terminal shares the desktop. It is a scale of the whole
-       page (not CSS zoom), so the site keeps exactly the same layout and components in both and only gets smaller; it changes as the terminal opens or closes.
-       A lab's own S.zoom keeps the old fixed zoom. */
-    function fitScale() {
-      if ((S && S.zoom) || !document.body.classList.contains('cc-web')) return 0;
-      var w = view.clientWidth; if (!w) return 0;
-      return w > 800 ? 0.7 : 0.5;
+    /* the laptop's browser app used to scale the whole page down (70% alone, 50% beside the terminal). Since 2026-11-14 (Moaz) the site is drawn at full size
+       and adapts to the window instead, so no scale: kept as a hook (return a number below 1 to scale the page down again). */
+    /* a lab can still ask for it: CC.site.fitScale (EH1 lab 3 methodology: 0.7, Moaz 2026-11-14 «don't zoom in the website, make it normal») */
+    /* it may also be a function of the browser window's width, so the site can be a little smaller beside the terminal (EH1 labs 4 and 5: 80% alone, 70% beside the terminal, Moaz 2026-11-14 «not so zoomed in, not so zoomed out») */
+    function fitScale() { var f = CC.site && CC.site.fitScale; if (typeof f === 'function') f = f(view.clientWidth); return f || 0; }
+    if (window.ResizeObserver) new ResizeObserver(function () { applyZoom(); shintUpd(); partsDraw(); }).observe(view);
+    /* «scroll down» hint on the website (Moaz 2026-11-14, like the one of «شرح مختصر»): a bouncing gold pill at the bottom of the page while the page
+       has more below; it goes once the page is scrolled to its end */
+    var shint = el('div', 'br-shint'); shint.setAttribute('aria-hidden', 'true');
+    shint.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><span>' + esc(CC.t('br_scroll') === 'br_scroll' ? 'مرّر للأسفل لرؤية باقي الصفحة' : CC.t('br_scroll')) + '</span>';
+    view.appendChild(shint);
+    function shintUpd() {
+      var d = f.contentDocument, se = d && (d.scrollingElement || d.documentElement), on = false;
+      if (se && document.body.classList.contains('cc-web') && view.getAttribute('data-mode') === 'page') on = se.scrollHeight - se.clientHeight > 24 && se.scrollTop + se.clientHeight < se.scrollHeight - 24;
+      shint.classList.toggle('show', on);
     }
-    if (window.ResizeObserver) new ResizeObserver(function () { applyZoom(); }).observe(view);
+    f.addEventListener('load', function () {
+      shintUpd(); setTimeout(shintUpd, 300);
+      try { f.contentWindow.addEventListener('scroll', shintUpd, { passive: true }); f.contentWindow.addEventListener('resize', shintUpd); } catch (e) { }
+    });
     function setMode() {
       view.setAttribute('data-mode', tabSel === 'page' ? 'page' : 'cmp');           /* the code is always beside the page */
-      applyZoom();
+      applyZoom(); shintUpd(); partsDraw();
     }
     function hideCtx() { ctxEl.hidden = true; }
     function closeSrc() {
@@ -3534,6 +3596,44 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     urlEl.addEventListener('focus', function () { setTimeout(function () { if (ghost && S && document.activeElement === urlEl) { urlEl.value = S.host + '/'; try { urlEl.setSelectionRange(urlEl.value.length, urlEl.value.length); } catch (x) { } } ghostDraw(); }, 0); });   /* after the bar's own focus handler (which writes the address back) */
     urlEl.addEventListener('input', ghostDraw);
     urlEl.addEventListener('blur', function () { setTimeout(ghostDraw, 0); });
+    /* labels under the address bar (Moaz 2026-11-14): «اسم الموقع» under camelcode.shop and «اسم الصفحة» under the page part (/home), each with a little
+       arrow up to its part. A guide animation for the steps that ask the student to look at the address: P.urlParts(true) / P.urlParts(false). They follow the address. */
+    var partsOn = false, partsEl = null, frameEl = null, frame2El = null;          /* frames around camelcode.shop and around the page name inside the address bar (Moaz 2026-11-14) */
+    function partsDraw() {
+      if (!partsEl) return;
+      var on = partsOn && !!S && view.getAttribute('data-mode') === 'page' && document.activeElement !== urlEl;
+      partsEl.style.display = on ? '' : 'none'; if (frameEl) frameEl.style.display = frame2El.style.display = on ? '' : 'none'; if (!on) return;
+      var r = urlEl.getBoundingClientRect(), vr = view.getBoundingClientRect(); if (!r.width) return;
+      var cs = getComputedStyle(urlEl), k = r.width / Math.max(1, urlEl.offsetWidth);
+      meas = meas || document.createElement('canvas').getContext('2d'); meas.font = cs.font;
+      var v = urlEl.value || '', host = v.toLowerCase().indexOf(S.host) === 0 ? v.slice(0, S.host.length) : S.host, page = v.slice(host.length) || '/';
+      var x0 = (r.left - vr.left) / k + (parseFloat(cs.paddingLeft) || 0) - urlEl.scrollLeft, wh = meas.measureText(host).width, wp = meas.measureText(page).width;
+      /* small labels, each centred under its own part with its arrow in the middle (Moaz 2026-11-14); only if they would touch, they move apart evenly */
+      var a = partsEl.children[0], b = partsEl.children[1], aw = a.offsetWidth, bw = b.offsetWidth;
+      var cA = x0 + wh / 2, cB = x0 + wh + wp / 2, aL = cA - aw / 2, bL = cB - bw / 2, gap = aL + aw + 4 - bL;
+      if (gap > 0) { aL -= gap / 2; bL += gap / 2; }
+      a.style.left = aL + 'px'; b.style.left = bL + 'px';
+      if (frameEl) {
+        var om = $('.br-omni', root), orr = om.getBoundingClientRect(), fx = (r.left - orr.left) / k + (parseFloat(cs.paddingLeft) || 0) - urlEl.scrollLeft;
+        frameEl.style.left = (fx - 3) + 'px'; frameEl.style.width = (wh + 4) + 'px';
+        frame2El.style.left = (fx + wh + 3) + 'px'; frame2El.style.width = (wp + 4) + 'px';
+      }
+    }
+    P.urlParts = function (on) {
+      partsOn = !!on;
+      if (on && !partsEl) {
+        partsEl = el('div', 'br-parts'); partsEl.setAttribute('aria-hidden', 'true');
+        partsEl.innerHTML = '<span class="br-part site">' + esc(CC.t('br_site') === 'br_site' ? 'اسم الموقع' : CC.t('br_site')) + '</span><span class="br-part page">' + esc(CC.t('br_page') === 'br_page' ? 'اسم الصفحة' : CC.t('br_page')) + '</span>';
+        view.appendChild(partsEl);
+        frameEl = el('span', 'br-hostframe'); frameEl.setAttribute('aria-hidden', 'true'); $('.br-omni', root).appendChild(frameEl);
+        frame2El = el('span', 'br-hostframe page'); frame2El.setAttribute('aria-hidden', 'true'); $('.br-omni', root).appendChild(frame2El);
+      }
+      [frameEl, frame2El].forEach(function (fe) { if (!fe) return; fe.classList.remove('in'); void fe.offsetWidth; if (on) fe.classList.add('in'); });
+      if (partsEl) { partsEl.classList.remove('in'); void partsEl.offsetWidth; if (on) partsEl.classList.add('in'); }
+      partsDraw();
+    };
+    urlEl.addEventListener('focus', function () { setTimeout(partsDraw, 0); });
+    urlEl.addEventListener('blur', function () { setTimeout(partsDraw, 0); });
     /* the page name in the address bar (the part after camelcode.shop/), for the guide to point at instead of the middle of the bar (Moaz 2026-11-13).
        A stand-in object with the rectangle of that text; with nothing typed after the slash it is a small spot right after it. */
     var meas = null;
@@ -4352,14 +4452,15 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
   pages['/customers'] = { title: 'الزبائن | ' + SHOP.name, html: priv('الزبائن', 'أسماء زبائن المتجر والمدينة التي يسكن فيها كل زبون.',
     table(['الاسم', 'المدينة'], SHOP.customers)) };
   /* /admin is a login page (nobody here has the password: any attempt shows the error) */
-  pages['/admin'] = { title: 'تسجيل دخول الإدارة | ' + SHOP.name, html: page('',
-    '<div class="box"><h1>تسجيل دخول الإدارة</h1><p class="s">هذه الصفحة لمدير المتجر فقط.</p><form method="post" action="/admin"><label for="u">اسم المستخدم</label><input id="u" name="username" autocomplete="off" required><label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">دخول</button></form>{{error}}</div>') };
+  pages['/admin'] = { title: 'صفحة دخول الإدارة | ' + SHOP.name, html: page('',
+    '<div class="box"><h1>صفحة دخول الإدارة</h1><p class="s">هذه الصفحة لمدير المتجر فقط.</p><form method="post" action="/admin"><label for="u">اسم المستخدم</label><input id="u" name="username" autocomplete="off" required><label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div>') };
 
   /* an address that does not exist */
-  var NOT_FOUND = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0 0 12px;font-size:34px;font-weight:700">الصفحة غير موجودة</h1><p style="margin:0;font-size:20px;color:#5f6368">لم يتم العثور على الصفحة المطلوبة.</p></div>';   /* a plain white page like a normal browser, the text in the middle (Moaz 2026-11-13) */   /* a plain white page, like a normal browser: no menu, no button */
+  var NOT_FOUND = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0;font-size:34px;font-weight:700">الصفحة غير موجودة</h1></div>';   /* a plain white page like a normal browser, the text in the middle (Moaz 2026-11-13) */   /* a plain white page, like a normal browser: no menu, no button */
 
   /* ---------- what the browser target uses ---------- */
   CC.site = {
+    fitScale: function (w) { return w > 800 ? 0.8 : 0.7; },     /* the site laid out like a desktop page and drawn at 80% (70% beside the terminal): not too zoomed in, not too zoomed out (Moaz 2026-11-14) */
     host: SHOP.host, start: '/home', css: CSS, pages: pages,
     notFound: NOT_FOUND, notFoundTitle: 'الصفحة غير موجودة | ' + SHOP.name,
     error: '<p class="err">اسم المستخدم أو كلمة السر غير صحيحة</p>',
@@ -4397,18 +4498,18 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     tk_display: 'اعرض الملفات الموجودة', tk_read: 'اقرأ نص الملف', tk_file: 'الملف المطلوب', tk_clear: 'امسح الشاشة',
     tk_kashif: 'اسم الأداة', tk_site: 'اسم الموقع', tk_list: 'اسم الملف الذي يحتوي أسماء الصفحات',     /* Moaz 2026-11-13 */
     /* task lines */
-    t_home: 'أنت الآن في **الصفحة الرئيسية**، لاحظ **اسم الصفحة** (`/home`) عند شريط العنوان بعد عنوان الموقع.',     /* Moaz 2026-11-13: the step after «افتح المتصفح» */
-    t_click1: 'اضغط على صفحة «المنتجات» في قائمة الموقع، ثم انظر كيف يتغيّر اسم الصفحة في شريط العنوان.',     /* «المنتجات» only, no «تواصل» step (Moaz 2026-11-13) */
+    t_home: 'أنت الآن في **الصفحة الرئيسية**، لاحظ **اسم الصفحة** (`/home`) في عنوان الموقع بعد `camelcode.shop`.',     /* Moaz 2026-11-13: the step after «افتح المتصفح» */
+    t_click1: 'اضغط على صفحة «المنتجات» في قائمة الموقع، ثم انظر كيف يتغيّر اسم الصفحة في عنوان الموقع.',     /* «المنتجات» only, no «تواصل» step (Moaz 2026-11-13) */
     t_see1: 'لاحظ كيف تغيّر الجزء الأخير في العنوان من `camelcode.shop/home` إلى `camelcode.shop/products` لأن **الصفحة تغيّرت**.',     /* Moaz 2026-11-13 */
-    t_ways: 'هذه كانت **الطريقة الأولى** للوصول إلى **الصفحات العامة** عن طريق **الضغط على روابط** داخل الموقع، ولكن **الصفحات المخفية** لا يمكن الوصول إليها إلا عن طريق **كتابة اسم الصفحة يدوياً** في شريط العنوان.',     /* Moaz 2026-11-13 */
-    t_try: 'لنحاول أن نصل إلى **صفحات مخفية** داخل الموقع.\nاكتب في شريط العنوان `camelcode.shop/admin` ثم اضغط `Enter` لنرى إذا كانت الصفحة موجودة. بعد ذلك جرّب أسماء ثانية تعتقد أنها أسماء لصفحات مخفية، سيكون لديك **ثلاث محاولات**.',     /* Moaz 2026-11-13: admin first, three tries in one step */
-    t_luck: 'محاولة تخمين أسماء الصفحات المخفية **يدوياً** في الموقع تعتمد على **الحظ**، ولا يمكن للهاكر الاعتماد عليها.\nلنحاول أن نستخدم **أداة** تعمل على اكتشاف صفحات الموقع بشكل **سريع وأوتوماتيكي**.',     /* Moaz 2026-11-13 */
+    t_ways: 'هذه كانت **الطريقة الأولى** للوصول إلى **الصفحات العامة** عن طريق **الضغط على روابط** داخل الموقع، ولكن **الصفحات المخفية** لا يمكن الوصول إليها إلا عن طريق **كتابة اسم الصفحة يدوياً** في عنوان الموقع.',     /* Moaz 2026-11-13 */
+    t_try: 'لنحاول أن نصل إلى **صفحات مخفية** داخل الموقع.\nاكتب في عنوان الموقع `camelcode.shop/employees` ثم اضغط `Enter` لنرى إذا كانت الصفحة موجودة. بعد ذلك جرّب أسماء ثانية تعتقد أنها أسماء لصفحات مخفية، سيكون لديك **ثلاث محاولات**.',     /* Moaz 2026-11-13: admin first, three tries in one step */
+    t_luck: 'محاولة اكتشاف أسماء الصفحات المخفية **يدوياً** في الموقع تعتمد على **التخمين العشوائي**، ولا يمكن للهاكر الاعتماد عليها.\nلذلك سنستخدم **أداة** تعمل على اكتشاف صفحات الموقع بشكل **سريع**.',     /* Moaz 2026-11-13 */
     t_openterm: 'افتح **شاشة الأوامر** [[term]] لنقوم بتشغيل الأداة من خلالها.',     /* the same text is lab-settings mission.openTerminal, so the engine's «open the terminal» step is this one */
     t_left3: 'تبقّى لك **ثلاث محاولات**', t_left2: 'تبقّى لك **محاولتان**', t_left1: 'تبقّى لك **محاولة واحدة**',
     e_try: 'محاولاتك: {n} من 3',
     t_display: 'اكتشف الملفات الموجودة على **سطح المكتب** عن طريق كتابة `display` في شاشة الأوامر.',     /* Moaz 2026-11-13 */
-    t_read: 'اقرأ الملف `pages.txt` بالأمر `read pages.txt`',
-    t_kashif: 'يوجد داخل الملف **أسماء شائعة** للصفحات داخل المواقع الإلكترونية.\nشغّل أداة كاشف بالأمر `kashif camelcode.shop pages.txt`',     /* Moaz 2026-11-13 */
+    t_read: 'اقرأ الملف `pages.txt` باستخدام الأمر `read pages.txt`',
+    t_kashif: 'يوجد داخل الملف **أسماء شائعة** للصفحات داخل المواقع الإلكترونية.\nشغّل أداة كاشف باستخدام الأمر `kashif camelcode.shop pages.txt`',     /* Moaz 2026-11-13 */
     t_open: 'افتح الصفحات التي وجدتها من خلال أداة كاشف (Kashif) واستكشفها، ثم أجب عن الأسئلة.',
     t_done: 'أحسنت! أنهيت التدريب.',
     e_idle: 'اكتب الأمر بصيغته الصحيحة، ثم اضغط Enter ليتم تنفيذه.',
@@ -4421,17 +4522,17 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     h4: 'الأمر clear يمسح ما كُتب على شاشة الأوامر',
     /* kashif output */
     k_start: 'جارٍ البحث عن صفحات الموقع {site} باستخدام ملف الصفحات {file}',
-    k_sum: 'ملخص: الصفحات التي وُجدت',
+    k_sum: 'قائمة الصفحات الموجودة في الموقع',
     k_end: 'انتهى البحث: وُجدت {n} صفحات',
     /* wrong commands: one specific message per mistake */
     m_unknown: 'أمر غير معروف. اكتب `help` لعرض قائمة الأوامر.',
     m_sym: 'الأمر فيه رموز أو حروف غير مدعومة في هذا التدريب (مثل `*` و`|` و`>` و`&` والحروف العربية). اكتب أسماء الملفات كما تظهر في `display`.',
     m_extra: 'الأمر فيه كلمات زائدة. الأمر `{c}` يأخذ {what}. الصيغة الصحيحة: `{ex}`',
     w_display: 'اسماً واحداً على الأكثر', w_one: 'اسماً واحداً فقط',
-    m_need_show: 'الأمر غير مكتمل: لم تحدد الملف الذي تريد قراءته. اكتب اسم الملف بعد `read`، مثل `read pages.txt`. اعرض الملفات أولاً بالأمر `display`.',
+    m_need_show: 'الأمر غير مكتمل: لم تحدد الملف الذي تريد قراءته. اكتب اسم الملف بعد `read`، مثل `read pages.txt`. اعرض الملفات أولاً باستخدام الأمر `display`.',
     m_nooptcmd: 'الأمر `{c}` لا يحتاج إلى خيارات، والخيار `{w}` غير مفهوم. الصيغة الصحيحة: `{ex}`',
     m_nf: 'لم يتم العثور على `{w}`. تأكد من الاسم، واعرض الملفات باستخدام الأمر `display` لترى الأسماء الصحيحة.',
-    m_nf_s: 'لم يتم العثور على `{w}`. هل تقصد `{s}`؟ تأكد من الاسم بالأمر `display`.',
+    m_nf_s: 'لم يتم العثور على `{w}`. هل تقصد `{s}`؟ تأكد من الاسم باستخدام الأمر `display`.',
     m_case: 'لم يتم العثور على `{w}`. أسماء الملفات تتأثر بحالة الأحرف (كبيرة أو صغيرة)، والاسم الصحيح هو `{real}`.',
     m_dispfile: '`{w}` ملف وليس مجلداً، والأمر `display` يعرض الملفات الموجودة هنا. لقراءته استخدم `read {w}`.',
     m_k_none: 'الأمر غير مكتمل: لم تحدد الموقع ولا ملف الصفحات. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
@@ -4440,21 +4541,21 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     m_k_one: 'لم أفهم الاسم `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_swap: 'ترتيب الأمر غير صحيح: اكتب اسم الموقع أولاً ثم اسم الملف. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.shop`.',
-    m_k_file: 'لم يتم العثور على الملف `{w}`. اعرض الملفات الموجودة بالأمر `display` لترى الاسم الصحيح.',
+    m_k_file: 'لم يتم العثور على الملف `{w}`. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
     m_k_extra: 'الأمر فيه كلمات زائدة. أداة كاشف تأخذ اسمين فقط: الموقع ثم الملف. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_opt: 'الخيار `{w}` غير موجود. أداة كاشف لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
-    m_k_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الموقع كما يظهر في شريط العنوان، بدون رموز: `camelcode.shop`',
+    m_k_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الموقع كما يظهر في عنوان الموقع، بدون رموز: `camelcode.shop`',
     /* lesson popups (typed letter by letter, self-paced only) */
     pg_h: 'الموقع والصفحات',
-    pg: 'كل موقع رأيته من قبل يتكوّن من صفحات. الصفحة هي ما تراه على الشاشة، مثل الصفحة الرئيسية وصفحة المنتجات في الدرس.\n\nولكل صفحة عنوان مكتوب في شريط العنوان في الأعلى. اسم الموقع هنا هو `camelcode.shop`، وبعده اسم الصفحة، مثل `camelcode.shop/home`.',
+    pg: 'كل موقع رأيته من قبل يتكوّن من صفحات. الصفحة هي ما تراه على الشاشة، مثل الصفحة الرئيسية وصفحة المنتجات في الدرس.\n\nولكل صفحة عنوان مكتوب في عنوان الموقع في الأعلى. اسم الموقع هنا هو `camelcode.shop`، وبعده اسم الصفحة، مثل `camelcode.shop/home`.',
     url_h: 'العنوان يتغير',
     url: 'عندما ضغطت على زر في الموقع ظهرت صفحة جديدة، وتغيّر العنوان إلى `camelcode.shop/products`. العنوان هو اسم الموقع ثم اسم الصفحة.',
     house_h: 'الموقع مثل البيت',
-    house: 'البيت يتكوّن من عدة غرف. بعض الغرف للضيوف، مثل غرفة الجلوس، ويدخلها الجميع. وبعضها خاص، مثل غرفة نومك، ولا يدخلها إلا أصحابها.\n\nالمواقع الإلكترونية تعمل بنفس الشكل: بعض صفحاتها عامة وتظهر في أزرار الموقع، وبعضها مخفية ولا تظهر بسهولة، ولا تصل إليها إلا إذا كتبت عنوانها بنفسك في شريط العنوان.',
+    house: 'البيت يتكوّن من عدة غرف. بعض الغرف للضيوف، مثل غرفة الجلوس، ويدخلها الجميع. وبعضها خاص، مثل غرفة نومك، ولا يدخلها إلا أصحابها.\n\nالمواقع الإلكترونية تعمل بنفس الشكل: بعض صفحاتها عامة وتظهر في أزرار الموقع، وبعضها مخفية ولا تظهر بسهولة، ولا تصل إليها إلا إذا كتبت عنوانها بنفسك في عنوان الموقع.',
     try_h: 'لنجرّب بأنفسنا',
-    try: 'لنجرّب بعض أسماء الصفحات التي تكون عادةً صفحات مخفية، مثل `secret` و`private` و`hidden`.\n\nاكتب في شريط العنوان `camelcode.shop/admin` ثم اضغط `Enter` لنرى إذا كانت الصفحة موجودة. بعد ذلك جرّب أسماء ثانية تعتقد أنها أسماء لصفحات مخفية، سيكون لديك **ثلاث محاولات**.',
+    try: 'لنجرّب بعض أسماء الصفحات التي تكون عادةً صفحات مخفية، مثل `secret` و`private` و`hidden`.\n\nاكتب في عنوان الموقع `camelcode.shop/employees` ثم اضغط `Enter` لنرى إذا كانت الصفحة موجودة. بعد ذلك جرّب أسماء ثانية تعتقد أنها أسماء لصفحات مخفية، سيكون لديك **ثلاث محاولات**.',
     miss_h: 'جرّب حظك مرة أخرى',
-    miss: 'الصفحة لم تكن موجودة! لنجرّب حظنا مرة أخرى باستخدام الاسمين `admin` و`private`.\n\nاكتب `camelcode.shop/admin` في شريط العنوان ثم اضغط `Enter`، وبعدها `camelcode.shop/private`.',
+    miss: 'الصفحة لم تكن موجودة! لنجرّب حظنا مرة أخرى باستخدام الاسمين `admin` و`private`.\n\nاكتب `camelcode.shop/admin` في عنوان الموقع ثم اضغط `Enter`، وبعدها `camelcode.shop/private`.',
     slow_h: 'استخدام أداة كاشف بدلاً من الطريقة اليدوية',
     slow: 'هذه الطرق تعتمد على الحظ بدل أن تظهر جميع الصفحات الموجودة على الموقع سواء مخفية أم عامة.\n\nالهاكر دائماً يجعل الحاسوب يعمل بدلاً منه باستخدام أدوات الاختراق مثل أداة كاشف.',
     kashif_h: 'أداة كاشف',
@@ -4462,13 +4563,13 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     dis_h: 'الأمر display',
     dis: 'قبل أن نشغّل الأداة، لنعرف الملفات الموجودة. الأمر `display` يعرض أسماء الملفات.\n\nاكتب `display` ثم اضغط `Enter`.',
     rd_h: 'الأمر read',
-    rd: 'الملف `pages.txt` يحتوي أسماء الصفحات. اقرأه بالأمر `read pages.txt` لترى ما بداخله.',
+    rd: 'الملف `pages.txt` يحتوي أسماء الصفحات. اقرأه باستخدام الأمر `read pages.txt` لترى ما بداخله.',
     names_h: 'أسماء شائعة',
     names: 'هذه أسماء شائعة تُستخدم لصفحات المواقع، مثل `admin` و`login` و`backup`. ستجرّب أداة كاشف كل اسم منها على الموقع.',
     run_h: 'شغّل كاشف',
     run: 'اكتب الأمر `kashif camelcode.shop pages.txt` ثم اضغط `Enter`.',
     found_h: 'الصفحات الخضراء',
-    found: 'وجدت الأداة تسع صفحات. أربع منها موجودة في قائمة الموقع، والبقية صفحات مخفية لا تظهر في القائمة.\n\nاكتب عنوان صفحة مخفية في شريط العنوان، مثل `camelcode.shop/employees`، ثم اضغط `Enter`. افتح الصفحات المخفية وأجب عن الأسئلة.',
+    found: 'وجدت الأداة تسع صفحات. أربع منها موجودة في قائمة الموقع، والبقية صفحات مخفية لا تظهر في القائمة.\n\nاكتب عنوان صفحة مخفية في عنوان الموقع، مثل `camelcode.shop/employees`، ثم اضغط `Enter`. افتح الصفحات المخفية وأجب عن الأسئلة.',
     replay: 'إعادة التدريب',
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
     cele_i: 'أهم ما تعلمته في هذا الدرس:',
@@ -4480,9 +4581,9 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     w3: 'هنا نكتب الأمر في شاشة الأوامر ثم نضغط على Enter ليتم تنفيذه. اكتب help لعرض قائمة الأوامر.',
     w4: 'هنا الأسئلة. أجب عنها بما تجده في الصفحات المخفية.', w6: 'زر «؟» يساعدك في فهم مكونات الدرس وكيفية التفاعل معها.',
     /* instructor reference panel (condensed from the popups) */
-    rs_h: 'السيناريو', rs: 'تريد أن تخترق موقعاً لمتجر إلكتروني، فتبدأ بتجميع أكبر قدر من **المعلومات** من خلال زيارة **الصفحات العامة** على الموقع، ولكن تكتشف أنك لا تستطيع الوصول إلى جميع الصفحات، فبعض الصفحات **مخفية** وتحتاج إلى كتابة اسمها في **شريط العنوان**. فتخمّن بعض أسماء الصفحات يدوياً وترى أن الطريقة تعتمد على **الحظ**، فتستخدم **أداة كاشف** في شاشة الأوامر لمسح الموقع واكتشاف جميع صفحاته.',     /* Moaz 2026-11-13 */
-    r0_h: 'الموقع والصفحات', r0: '- كل موقع إلكتروني يتكوّن من **صفحات**.\n- الصفحة هي ما تراه على الشاشة، مثل الصفحة الرئيسية وصفحة المنتجات.\n- لكل صفحة **عنوان** مكتوب في **شريط العنوان** في الأعلى، مثل `camelcode.shop/home`.\n- عند الضغط على زر في الموقع تظهر صفحة جديدة ويتغيّر العنوان، مثل `camelcode.shop/contact`.',
-    r1_h: 'الموقع مثل البيت', r1: '- البيت يتكوّن من عدة غرف: بعضها للضيوف ويدخلها الجميع، وبعضها خاص ولا يدخله إلا أصحابه.\n- المواقع الإلكترونية تعمل بنفس الشكل: بعض صفحاتها **عامة** وتظهر في أزرار الموقع، وبعضها **مخفية** ولا تظهر بسهولة، ولا تصل إليها إلا إذا كتبت عنوانها بنفسك في شريط العنوان.',
+    rs_h: 'السيناريو', rs: 'تريد أن تخترق موقعاً لمتجر إلكتروني، فتبدأ بتجميع أكبر قدر من **المعلومات** من خلال زيارة **الصفحات العامة** على الموقع، ولكن تكتشف أنك لا تستطيع الوصول إلى جميع الصفحات، فبعض الصفحات **مخفية** وتحتاج إلى كتابة اسمها في **عنوان الموقع**. فتخمّن بعض أسماء الصفحات يدوياً وترى أن الطريقة تعتمد على **الحظ**، فتستخدم **أداة كاشف** في شاشة الأوامر لمسح الموقع واكتشاف جميع صفحاته.',     /* Moaz 2026-11-13 */
+    r0_h: 'الموقع والصفحات', r0: '- كل موقع إلكتروني يتكوّن من **صفحات**.\n- الصفحة هي ما تراه على الشاشة، مثل الصفحة الرئيسية وصفحة المنتجات.\n- لكل صفحة **عنوان** مكتوب في **عنوان الموقع** في الأعلى، مثل `camelcode.shop/home`.\n- عند الضغط على زر في الموقع تظهر صفحة جديدة ويتغيّر العنوان، مثل `camelcode.shop/contact`.',
+    r1_h: 'الموقع مثل البيت', r1: '- البيت يتكوّن من عدة غرف: بعضها للضيوف ويدخلها الجميع، وبعضها خاص ولا يدخله إلا أصحابه.\n- المواقع الإلكترونية تعمل بنفس الشكل: بعض صفحاتها **عامة** وتظهر في أزرار الموقع، وبعضها **مخفية** ولا تظهر بسهولة، ولا تصل إليها إلا إذا كتبت عنوانها بنفسك في عنوان الموقع.',
     r2_h: 'استخدام أداة كاشف بدلاً من الطريقة اليدوية', r2: '- الطريقة اليدوية تعتمد على **التخمين والحظ** بدل أن تُظهر جميع الصفحات الموجودة على الموقع سواء مخفية أم عامة.\n- الهاكر دائماً يستخدم **أدوات الاختراق** مثل أداة كاشف بدلاً من العمل يدوياً.',
     r3_h: 'الأمر `display`', r3: '- الأمر `display` يعرض أسماء الملفات الموجودة هنا.\n- مثلاً: `display` يعرض اسم الملف pages.txt.',
     r4_h: 'الأمر `read`', r4: '- الأمر `read` يعرض النص المكتوب داخل ملف.\n- مثلاً: `read pages.txt` يعرض النص داخل الملف pages.txt.',
@@ -4578,7 +4679,7 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
       u.addEventListener('focus', async function () {
         if (autoTyped || st.phase !== 'try' || st.tries > 0) return;
         autoTyped = true;
-        var base = HOST + '/', text = 'admin', mine = false, stop = function () { mine = true; };   /* camelcode.shop/ is already there and locked: only secret is typed */
+        var base = HOST + '/', text = 'employees', mine = false, stop = function () { mine = true; };   /* camelcode.shop/ is already there and locked: only secret is typed */
         u.addEventListener('keydown', stop, { once: true });                 /* if he starts typing himself, the lab stops */
         u.value = base; try { u.setSelectionRange(base.length, base.length); } catch (e) { }
         for (var k = 1; k <= text.length; k++) {
@@ -4614,10 +4715,7 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
       L.clearChips(); await L.chips([['kashif', CC.t('tk_kashif')], [HOST, CC.t('tk_site')], [file, CC.t('tk_list')]], g, 1100); if (!ok()) return false;   /* one part at a time */
       L.follow();
       L.add(iso(CC.t('k_start', { site: HOST, file: file })), 'info ar');
-      var bar = '===============================================================';
-      ['dim:' + bar, 'dim:Kashif', 'dim:' + bar, 'dim:[+] Url:            ' + HOST, 'dim:[+] Wordlist:       ' + file, 'dim:' + bar].forEach(function (l) {
-        var k = l.indexOf(':'); L.add(l.slice(k + 1), l.slice(0, k));
-      });
+      /* no ==== Kashif / Url / Wordlist banner (Moaz 2026-11-14) */
       if (!(await CC.sleep(2500, g))) return false;   /* the header shows, then the tool «loads» a few seconds before its results start (Moaz 2026-11-13) */
       L.expl(CC.t('e_run'));
       /* every name is tried one by one, slowly: found in green, not found in red; then a summary of the found pages */
@@ -4735,12 +4833,14 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     while (document.body.classList.contains('cc-web') && (!qs('#laptop.cc-os') || qs('#laptop.cc-web-shut'))) { if (!(await CC.sleep(200, g))) return; }   /* the step shows once the desktop is ready and the browser is open */
     if (!(await CC.sleep(600, g))) return;
     if (self) CC.guide.show(function () { return qs('#br .br-omni'); }, { dim: true, pointer: false });   /* self-paced: a spotlight on the address, no pointer (Moaz 2026-11-13) */
-    var bar0 = qs('#br .br-omni'); if (bar0) bar0.classList.add('urlflash');     /* the address bar glows until «متابعة» (instructor-led: only this, nothing dimmed) */
+    var bar0 = qs('#br .br-omni'); if (bar0) bar0.classList.add('urlflash');
+    if (P.urlParts) P.urlParts(true);                                    /* «اسم الموقع» under camelcode.shop, «اسم الصفحة» under /home, both modes, until the address step is over (Moaz 2026-11-14) */     /* the address bar glows until «متابعة» (instructor-led: only this, nothing dimmed) */
     var go0 = await CC.stepWait(g); if (bar0) bar0.classList.remove('urlflash'); if (!go0) return;
     CC.guide.hide();
     st.phase = 'click1'; L.task(CC.t('t_click1')); guideLink('/products', true);     /* one link click: «المنتجات», with the pointer in both modes (Moaz 2026-11-13) */
     await CC.waitFor('click1'); CC.guide.hide(); if (!ok()) return;
-    L.task(CC.t('t_see1')); flashBar(3000); if (!(await CC.stepWait(g))) return;      /* the address bar lights up: the address changed; «متابعة» to go on */
+    L.task(CC.t('t_see1')); flashBar(3000); if (!(await CC.stepWait(g))) return;
+    if (P.urlParts) P.urlParts(false);      /* the address bar lights up: the address changed; «متابعة» to go on */
     await CC.say('url'); if (!ok()) return;
     L.task(CC.t('t_ways')); guideBar(true); if (!(await CC.stepWait(g))) return;   /* ring and pointer on the address bar, both modes, no dimming (Moaz 2026-11-13) */        /* the second way: typing the page in the address bar (Moaz 2026-11-13) */
 
@@ -4748,7 +4848,7 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
     await CC.say('house'); if (!ok()) return;
     await CC.say('try'); if (!ok()) return;
     autoType();
-    st.phase = 'try'; st.tries = 0; L.task(CC.t('t_try')); L.expl(''); if (P.urlGhost) P.urlGhost('admin'); guideBar(true);       /* the one pointer of the instructor-led mode: at the address bar for the first guess */
+    st.phase = 'try'; st.tries = 0; L.task(CC.t('t_try')); L.expl(''); if (P.urlGhost) P.urlGhost('employees'); guideBar(true);       /* the one pointer of the instructor-led mode: at the address bar for the first guess */
     await CC.waitFor('tried'); CC.guide.hide(); if (!ok()) return;   /* the three tries in one step (Moaz 2026-11-13: no second-try step, no «miss» popup) */
     L.expl('');
     L.task(CC.t('t_luck')); if (!(await CC.stepWait(g))) return;      /* guessing is luck: a tool does it fast (Moaz 2026-11-13; replaces the «slow» popup) */
@@ -4803,7 +4903,7 @@ body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-wi
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":["t_home","t_click1","t_see1","t_ways"]},{"label":"التخمين اليدوي","keys":["t_try","t_luck"]},{"label":"أداة كاشف","keys":["t_openterm","t_display","t_read","t_kashif"]},{"label":"استكشاف الصفحات","keys":["t_open"]}],"doneKey":"t_done","doneLabel":"أكملت المهمة","ordinals":[],"coach":[],"openTerminal":"افتح **شاشة الأوامر** [[term]] لنقوم بتشغيل الأداة من خلالها."};
+window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":["t_home","t_click1","t_see1","t_ways"]},{"label":"التخمين اليدوي","keys":["t_try","t_luck"]},{"label":"أداة كاشف","keys":["t_openterm","t_display","t_read","t_kashif"]},{"label":"استكشاف الصفحات","keys":["t_open"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openTerminal":"افتح **شاشة الأوامر** [[term]] لنقوم بتشغيل الأداة من خلالها."};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
@@ -4997,6 +5097,10 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
 
   /* ---------- the mission tracker: the lab's stages (lab-settings.json "mission", injected as window.CC_MISSION) ---------- */
   var M = window.CC_MISSION || null, STAGES = (M && M.stages) || [], stage = -1, reached = {};
+  /* lab-settings mission.plain (Moaz 2026-11-14, every challenge lab): nothing that GUIDES the student (spotlights, guide rings and pointers, start glow and bubble,
+     the «ابدأ هنا» label and the extra «open the terminal» step, the command tip, the «سؤال جديد» pulse), and no «شرح مختصر» tab. Every animation that only
+     makes the lab smoother stays (panel slides, window openings, fades, typing of the steps, the assistant's reactions, confetti). */
+  var PLAIN = !!(M && M.plain); if (PLAIN) document.body.classList.add('cc-plain');
   STAGES.forEach(function () { track.appendChild(document.createElement('i')); });
   if (!STAGES.length) track.hidden = true;
   /* which task line is this? compare with the start of each key's text (up to its first {var} or code chip) */
@@ -5020,7 +5124,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
     var s = Math.max(0, stage), segs = track.children;
     for (var i = 0; i < segs.length; i++) { segs[i].className = i < s || stage >= STAGES.length ? 'done' : i === s ? 'now' : ''; }
     count.innerHTML = '';
-    if (stage >= STAGES.length) { count.textContent = (M && M.doneLabel) || 'أكملت المهمة'; return; }
+    if (stage >= STAGES.length) { count.textContent = (M && M.doneLabel) || 'أكملت جميع المهام'; return; }
     count.appendChild(document.createTextNode('الخطوة ' + (s + 1) + ' من ' + STAGES.length));
     var b = document.createElement('span'); b.textContent = STAGES[s].label; count.appendChild(b);
   }
@@ -5154,27 +5258,63 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
     if (isDone) { setBase('win'); celebrateFeed(); }
     else setBase(steps.length === 1 ? 'hello' : 'point');
   };
-  /* the end of the lab in the instruction panel (Moaz 2026-11-13, every lab): the earlier steps are thrown out of the panel one after
-     another, confetti falls through it, and the last step pops. Plays once; reduced motion shows the last step only. */
+  /* the end of the lab in the instruction panel (Moaz 2026-11-13, every lab): the earlier steps CHARGE (they shake harder and harder and glow gold),
+     then explode one after another into gold shards (Moaz 2026-11-14: slower, «charges then explodes»), confetti falls through the panel, and the last
+     step pops. Nothing is left behind: the exploded steps are hidden and the shards and confetti are removed when they finish. Plays once; reduced motion
+     shows the last step only. */
   function celebrateFeed() {
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    [].slice.call(list.querySelectorAll('.cc-step')).forEach(function (li, i) {
-      if (!li.animate) return;
-      var dir = i % 2 ? 1 : -1, dx = dir * (120 + Math.random() * 160), dy = -(180 + Math.random() * 220), rot = dir * (25 + Math.random() * 45);
-      li.animate([{ transform: 'none', opacity: 1 }, { transform: 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg) scale(.6)', opacity: 0 }],
-        { duration: 900, delay: 150 + i * 110, easing: 'cubic-bezier(.55,-.25,.75,.55)', fill: 'forwards' });
-    });
-    var box = document.createElement('div'); box.className = 'cc-fconf'; box.setAttribute('aria-hidden', 'true');
+    var olds = [].slice.call(list.querySelectorAll('.cc-step')).filter(function (li) { return li.animate && li.getClientRects().length; });
+    var CHARGE = 1600, GAP = 260, BLOW = 1400;
+    var fr = feed.getBoundingClientRect(), k = feed.clientWidth / Math.max(1, fr.width);      /* screen px -> page px (the page is zoomed) */
+    var boom = document.createElement('div'); boom.className = 'cc-fboom'; boom.setAttribute('aria-hidden', 'true'); feed.appendChild(boom);
     var cols = ['#FCAD0F', '#FFFFFF', '#5BC8FF', '#8DC63F', '#F39B22'];
-    for (var k = 0; k < 40; k++) {
-      var c = document.createElement('i');
-      c.style.left = (Math.random() * 100) + '%'; c.style.background = cols[k % cols.length];
-      c.style.animationDelay = (0.2 + Math.random() * 1.2) + 's'; c.style.animationDuration = (2 + Math.random() * 1.6) + 's';
-      c.style.transform = 'rotate(' + Math.round(Math.random() * 180) + 'deg)';
-      box.appendChild(c);
-    }
-    feed.appendChild(box); setTimeout(function () { box.remove(); }, 5200);
-    if (cur.animate) cur.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1.06)' }, { transform: 'none' }], { duration: 650, delay: 350, easing: 'ease-out' });
+    olds.forEach(function (li, i) {
+      /* 1. charge: a shake that grows, a gold glow that builds up */
+      var kf = [], n = 16;
+      for (var q = 0; q <= n; q++) {
+        var p = q / n, amp = 1 + p * 5, x = q === n ? 0 : (q % 2 ? amp : -amp), r = q === n ? 0 : (q % 2 ? -p * 2 : p * 2);
+        kf.push({ transform: 'translateX(' + x + 'px) rotate(' + r + 'deg) scale(' + (1 + p * 0.06) + ')', boxShadow: '0 0 ' + Math.round(4 + p * 22) + 'px ' + Math.round(p * 6) + 'px rgba(252,173,15,' + (0.2 + p * 0.7).toFixed(2) + ')', filter: 'brightness(' + (1 + p * 0.5).toFixed(2) + ')' });
+      }
+      li.animate(kf, { duration: CHARGE, easing: 'ease-in', fill: 'forwards' });
+      /* 2. explode, one after another */
+      var at = CHARGE + i * GAP, dir = i % 2 ? 1 : -1, dx = dir * (140 + Math.random() * 160), dy = -(160 + Math.random() * 200), rot = dir * (30 + Math.random() * 50);
+      setTimeout(function () {
+        if (!li.isConnected) return;
+        var rr = li.getBoundingClientRect(), cx = (rr.left + rr.width / 2 - fr.left) * k, cy = (rr.top + rr.height / 2 - fr.top) * k;
+        var fly = li.animate([
+          { transform: 'scale(1.06)', opacity: 1, filter: 'brightness(1.5)', offset: 0 },
+          { transform: 'scale(1.18)', opacity: 1, filter: 'brightness(2.2)', offset: 0.12 },
+          { transform: 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg) scale(.4)', opacity: 0, filter: 'brightness(1)', offset: 1 }
+        ], { duration: BLOW, easing: 'cubic-bezier(.3,.6,.4,1)', fill: 'forwards' });
+        fly.onfinish = function () { li.style.display = 'none'; li.getAnimations().forEach(function (a) { a.cancel(); }); };   /* no leftovers */
+        var fl = document.createElement('b'); fl.className = 'cc-fflash'; fl.style.left = cx + 'px'; fl.style.top = cy + 'px'; boom.appendChild(fl);
+        fl.animate([{ transform: 'translate(-50%,-50%) scale(.2)', opacity: 1 }, { transform: 'translate(-50%,-50%) scale(2.4)', opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' }).onfinish = function () { fl.remove(); };
+        for (var s2 = 0; s2 < 14; s2++) {
+          var sh = document.createElement('i'), ang = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 110;
+          sh.style.left = cx + 'px'; sh.style.top = cy + 'px'; sh.style.background = cols[s2 % cols.length];
+          boom.appendChild(sh);
+          sh.animate([{ transform: 'translate(-50%,-50%) rotate(0)', opacity: 1 },
+            { transform: 'translate(calc(-50% + ' + Math.round(Math.cos(ang) * dist) + 'px),calc(-50% + ' + Math.round(Math.sin(ang) * dist + 40) + 'px)) rotate(' + Math.round(360 + Math.random() * 360) + 'deg)', opacity: 0 }],
+            { duration: 1100 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'forwards' }).onfinish = (function (el) { return function () { el.remove(); }; })(sh);
+        }
+      }, at);
+    });
+    var end = CHARGE + Math.max(0, olds.length - 1) * GAP + BLOW;
+    setTimeout(function () { boom.remove(); }, end + 1800);
+    /* confetti once the steps have blown up; every piece fades out at the bottom and the box goes when the last one lands */
+    setTimeout(function () {
+      var box = document.createElement('div'); box.className = 'cc-fconf'; box.setAttribute('aria-hidden', 'true');
+      var last = 0;
+      for (var c0 = 0; c0 < 40; c0++) {
+        var c = document.createElement('i'), dl = Math.random() * 1.2, du = 2 + Math.random() * 1.6;
+        c.style.left = (Math.random() * 100) + '%'; c.style.background = cols[c0 % cols.length];
+        c.style.animationDelay = dl + 's'; c.style.animationDuration = du + 's';
+        box.appendChild(c); last = Math.max(last, dl + du);
+      }
+      feed.appendChild(box); setTimeout(function () { box.remove(); }, last * 1000 + 200);
+      if (cur.animate) cur.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1.06)' }, { transform: 'none' }], { duration: 650, easing: 'ease-out' });
+    }, Math.max(0, CHARGE + olds.length * GAP));
   }
 
   /* the laptop's parts, bound again for every new laptop (decorate): the command box (locked while a command runs: type),
@@ -5238,7 +5378,8 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
   /* the target device the bubble and the glow belong to: the phone, the computer's monitor (EH1 lab 2), or any other target (Moaz 2026-11-12: every lab) */
   function targetDev() { return $('#stage .phone') || $('#stage .pc-bezel') || $('#stage .dev:not(#laptop)'); }
   CC.targetDev = targetDev;
-  CC.comment = function (txt, persist, opts) {   /* persist: stays until the student first acts on the target (a phone key, a click on the monitor) or the next step (Farhan 2026-11-10) */
+  CC.comment = function (txt, persist, opts) {
+    if (PLAIN) { dropBubble(); return; }   /* persist: stays until the student first acts on the target (a phone key, a click on the monitor) or the next step (Farhan 2026-11-10) */
     if (!txt) { dropBubble(); return; }                       /* CC.comment('') clears it at once */
     var st = $('#stage'), ph = targetDev(); if (!st || !ph) return;
     var old = $('.cc-bubble', st); if (old) old.remove();
@@ -5489,6 +5630,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
   var CMD_TIP = (M && M.cmdTip) || 'اكتب الأمر هنا ليتم تنفيذه على الحاسوب';
   function hideCmdTip(keep) { var t = $('.cc-cmdtip'); if (t) t.remove(); if (!keep) OS.cmdTip = false; }
   function showCmdTip(wrapEl) {
+    if (PLAIN) return;
     var inp = wrapEl && $('input', wrapEl);
     if (!inp) return;
     hideCmdTip(true); OS.cmdTip = true;
@@ -5528,7 +5670,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
   if (WEB) APPS.unshift({ id: 'web', label: WEB_L });
   var WIN = {
     notes: '<div class="cc-note"><b>مهامي في أكاديمية كاملكود</b><ul><li class="ok">أنهيت أول تحدٍّ في البرمجة</li><li class="ok">صمّمت شعار فريقي</li><li>أبني أول روبوت لي</li></ul><p>تذكّر: نختبر فقط الأجهزة التي نملك إذناً باختبارها.</p></div>',
-    files: '<ul class="cc-files"><li><i></i>مشاريع البرمجة<small>4 ملفات</small></li><li><i></i>صور أكاديمية كاملكود<small>12 صورة</small></li><li><i></i>شهاداتي<small>3 ملفات</small></li><li><i></i>أدوات الهاكر<small>ملف واحد</small></li></ul><p class="cc-win-note">هذه الملفات للعرض فقط في هذا المختبر.</p>',
+    files: '<ul class="cc-files"><li><i></i>مشاريع البرمجة<small>4 ملفات</small></li><li><i></i>صور أكاديمية كاملكود<small>12 صورة</small></li><li><i></i>شهاداتي<small>3 ملفات</small></li><li><i></i>أدوات الهاكر<small>ملف واحد</small></li></ul>',
     set: '<div class="cc-locked"><span></span><p>إعدادات هذا الحاسوب مقفلة أثناء التدريب.</p></div>',
     calc: '<div class="cc-calc"><div class="cc-calc-d" dir="ltr">0</div><div class="cc-calc-k" dir="ltr">' +
       ['C', '÷', '×', '−', '7', '8', '9', '+', '4', '5', '6', '=', '1', '2', '3', '0', '.'].map(function (k) { return '<button type="button" data-k="' + k + '"' + (k === '=' ? ' class="eq"' : /[÷×−+C]/.test(k) ? ' class="op"' : k === '0' ? ' class="z"' : '') + '>' + k + '</button>'; }).join('') +
@@ -5682,7 +5824,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
     if (ic) {
       ic.classList.remove('cue'); if (!keep) ic.classList.remove('run');
       /* the step on screen still needs the terminal: show where to open it again */
-      if ((steps.length && steps[steps.length - 1].indexOf(TERM) !== -1) || OS.pending) { void ic.offsetWidth; ic.classList.add('cue'); }
+      if (!PLAIN && ((steps.length && steps[steps.length - 1].indexOf(TERM) !== -1) || OS.pending)) { void ic.offsetWidth; ic.classList.add('cue'); }
     }
     frontTop(l);
   }
@@ -5734,6 +5876,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
   var gShow = CC.guide && CC.guide.show;
   if (gShow) {
     CC.guide.show = function (get) {
+      if (PLAIN) return;
       var el = null; try { el = get(); } catch (e) { el = null; }
       if (el && el.closest && el.closest('.lscreen .cs') && isClosed()) { OS.guide = arguments; return; }   /* only a target inside the terminal waits (the embedded desktop is always visible) */
       if (OS.webPending) { OS.webGuide = arguments; return; }       /* the browser is not open yet: the lab's guide waits for it */
@@ -5773,7 +5916,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
       /* the cued icon draws its own pointer, glow and «ابدأ هنا» label (.cc-app.cue, both modes): no second guide pointer on it (Moaz 2026-11-13) */
       return;
     }
-    if (txt.indexOf(TERM) !== -1 && isClosed() && !OS.peek) {
+    if (!PLAIN && txt.indexOf(TERM) !== -1 && isClosed() && !OS.peek) {
       OS.pending = txt;
       push(OPEN_TXT);
       var ic = $('#laptop .cc-app[data-app="term"]'); if (ic) { ic.classList.remove('cue'); void ic.offsetWidth; ic.classList.add('cue'); }
@@ -5861,13 +6004,14 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
   (function () {
     var qp = document.getElementById('qpanel'), wrapEl = document.querySelector('.wrap');
     if (!qp || !wrapEl) return;
-    var LINES = { yes: 'رائع! أحسنت', oops: 'اقتربت! جرّب مرة أخرى', think: 'فكّر معي...' };
+    var LINES = { yes: 'رائع! أحسنت', oops: 'اقتربت! جرّب مرة أخرى', think: 'فكّر معي...', qnew: 'سؤال جديد' };
     var bot = document.createElement('div'); bot.className = 'cc-qbot'; bot.setAttribute('aria-live', 'polite');
     bot.innerHTML = '<span class="cc-qbot-arr"></span><span class="cc-qbot-av"><span class="cc-qbot-img"></span></span><span class="cc-qbot-say"></span>';
     var sayEl = bot.querySelector('.cc-qbot-say'), arrEl = bot.querySelector('.cc-qbot-arr'), timer = null;
     function react(pose, row, ms) {
       if (!row) return;
       if (bot.parentNode !== wrapEl) wrapEl.appendChild(bot);
+      bot.__row = row;
       var k = wrapEl.clientWidth / Math.max(1, wrapEl.getBoundingClientRect().width);      /* screen px -> page px (the page is zoomed) */
       var wr = wrapEl.getBoundingClientRect(), pr = qp.getBoundingClientRect(), rr = row.getBoundingClientRect();
       var qin = row.querySelector('.qin'), at = qin ? qin.getBoundingClientRect().top - 10 : rr.top + 34;      /* beside the answer box, never on the question text or its number */
@@ -5897,6 +6041,49 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
       var row = hb.closest('.qrow'), h = row && row.querySelector('.qhint');
       setTimeout(function () { if (h && !h.hidden) react('think', row, 3400); }, 0);      /* only when the hint opens */
     });
+    /* a new question (Moaz 2026-11-14, every lab): the same character as the hint stands beside EVERY new question, saying «سؤال جديد», for 2 seconds
+       once it is on screen, then it goes (Moaz 2026-11-14; it was there until the student clicked into the answer box). One character per question; each follows its question when the panel
+       scrolls, hides while its question is out of the panel's view, and steps aside while the hint/right/wrong character speaks for that question.
+       A closed panel hides them by CSS like the other one. */
+    var news = [];
+    function placeNew(n) {
+      var r = n.row, el = n.el;
+      var gone = !r.isConnected || !r.classList.contains('qnew') || r.classList.contains('done') || r.classList.contains('qhidden');
+      if (gone) { el.remove(); return false; }
+      if (n.until && Date.now() > n.until) { el.classList.remove('show'); setTimeout(function () { el.remove(); }, 400); return false; }   /* shows 2 s, then goes, like the other character (Moaz 2026-11-14) */
+      var pr = qp.getBoundingClientRect(), rr = r.getBoundingClientRect(), qin = r.querySelector('.qin');
+      var at = qin ? qin.getBoundingClientRect().top - 10 : rr.top + 34;
+      var vis = rr.height > 0 && at - 12 >= pr.top - 4 && at + 40 <= pr.bottom && !(bot.classList.contains('show') && bot.__row === r);
+      el.classList.toggle('show', vis); if (!vis) return true;
+      if (!n.until) n.until = Date.now() + 2000;      /* the 2 s start once it is on screen */
+      if (el.parentNode !== wrapEl) wrapEl.appendChild(el);
+      var k = wrapEl.clientWidth / Math.max(1, wrapEl.getBoundingClientRect().width), wr = wrapEl.getBoundingClientRect();
+      var top = at - 12, ib = (r.querySelector('input') || qin || r).getBoundingClientRect();
+      el.style.left = Math.round((pr.right + 8 - wr.left) * k) + 'px';
+      el.style.top = Math.round((top - wr.top) * k) + 'px';
+      el.querySelector('.cc-qbot-arr').style.top = Math.round(((ib.top + ib.bottom) / 2 - top) * k) + 'px';
+      return true;
+    }
+    var newT = null;
+    function tickNew() { news = news.filter(placeNew); if (!news.length) { clearInterval(newT); newT = null; } }
+    function addNew(r) {
+      if (news.some(function (n) { return n.row === r; })) return;
+      var el = document.createElement('div'); el.className = 'cc-qbot cc-qbot-new'; el.setAttribute('data-pose', 'qnew'); el.style.maxWidth = '290px';
+      el.innerHTML = '<span class="cc-qbot-arr"></span><span class="cc-qbot-av"><span class="cc-qbot-img"></span></span><span class="cc-qbot-say"></span>';
+      el.querySelector('.cc-qbot-say').textContent = LINES.qnew;
+      news.push({ row: r, el: el });
+      if (!newT) newT = setInterval(tickNew, 200);
+      tickNew();
+    }
+    function scanNew() { [].forEach.call(qp.querySelectorAll('.qrow.qnew'), function (r) { setTimeout(function () { if (r.classList.contains('qnew')) addNew(r); }, 1500); }); }   /* after the panel has opened and scrolled */
+    new MutationObserver(function (ms) {
+      ms.forEach(function (m) {
+        var r = m.target;
+        if (r.nodeType === 1 && r.classList.contains('qrow') && r.classList.contains('qnew') && (m.oldValue || '').indexOf('qnew') < 0)
+          setTimeout(function () { if (r.isConnected && r.classList.contains('qnew')) addNew(r); }, 1500);
+      });
+    }).observe(qp, { attributes: true, attributeFilter: ['class'], attributeOldValue: true, subtree: true });
+    scanNew();
   })();
 
   /* the cable (Moaz 2026-11-09): a normal cable that really goes into the laptop. Ports of a laptop are on the side of its base, so the base gets a thin left
@@ -5950,6 +6137,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
       arrow.style.top = Math.round(((kr.top + kr.bottom) / 2 - wr.top) * k) + 'px';
     }
     CC.pointAt = function (el) {
+      if (PLAIN) return;
       clearInterval(tick); tick = null;
       if (target && target.classList) target.classList.remove('cc-attn');
       target = el || null;
@@ -6011,7 +6199,7 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
   (function () {
     var steps = $('.cc-steps', feed); if (!steps) return;
     var bar = document.createElement('div'); bar.className = 'cc-tabs'; bar.setAttribute('role', 'tablist');
-    var DEF = [['steps', 'خطوة بخطوة'], ['ref', CC.t('ref_title')]], btns = {};
+    var DEF = PLAIN ? [['steps', 'خطوة بخطوة']] : [['steps', 'خطوة بخطوة'], ['ref', CC.t('ref_title')]], btns = {};
     DEF.forEach(function (d) {
       var b = document.createElement('button'); b.type = 'button'; b.className = 'cc-tab'; b.setAttribute('role', 'tab'); b.textContent = d[1];
       b.onclick = function () { setTab(d[0]); }; bar.appendChild(b); btns[d[0]] = b;
