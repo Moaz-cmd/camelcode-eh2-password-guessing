@@ -4144,8 +4144,8 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 /* EH1 final challenge: the fictional website of «أكاديمية كاملكود للتكنولوجيا» (camelcode.academy), a technology academy for kids.
    The look is camelcode.shop's (Moaz 2026-11-14: same colours and design, different content): its CSS, header, hero, cards and footer
    are copied from labs/eh1/04-hidden-pages/site.js; every text, picture, name and page is the academy's own (all invented, male names).
-   Public pages (menu): /home, /courses, /about, /contact. Hidden pages (only Kashif finds them): /teachers, /exams, /staff-login.
-   /staff-login is a login form; the right email and password swap it for the staff panel, in place. CC.siteReset() rebuilds the pages (every start).
+   Public pages (menu): /home, /courses, /about, /contact. Hidden pages (only Kashif finds them): /teachers, /exams, /login.
+   /login is a login form; the right email and password swap it for the staff panel, in place. CC.siteReset() rebuilds the pages (every start).
    Everything is static: no animation, no input field except the login form the lab uses, no dates. Pictures are drawn with SVG. */
 (function () {
   'use strict';
@@ -4320,14 +4320,14 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
   function loginHtml(email) {
     var v = String(email || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    return '<div class="box"><div class="lg">' + logoImg + '</div><h1>دخول الموظفين</h1><p class="s">هذه الصفحة لموظفي الأكاديمية فقط.</p><form method="post" action="/staff-login"><label for="u">البريد الإلكتروني</label><input id="u" name="username" autocomplete="off" value="' + v + '" required><label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div>';
+    return '<div class="box"><div class="lg">' + logoImg + '</div><h1>دخول الموظفين</h1><p class="s">هذه الصفحة لموظفي الأكاديمية فقط.</p><form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="username" autocomplete="off" value="' + v + '" required><label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div>';
   }
   function panelHtml() {
     return page('', '<section class="sec n"><div class="bar"><h2 style="margin:0">لوحة الموظفين</h2><span class="chp">' + A.staff + '، مسؤول التسجيل</span></div>' +
       '<div class="kp"><div><b>77</b><span>طالباً هذا الفصل</span></div><div><b>4</b><span>دورات</span></div><div><b>12</b><span>طلب تسجيل جديد</span></div></div>' +
       '<h3>' + I.note + ' الرسائل الداخلية</h3>' +
-      '<div class="msg"><b>' + A.director + ' (مدير الأكاديمية):</b> سيبدأ معسكر الأمن السيبراني في شهر يناير، لا تعلنوا عنه للطلاب قبل نهاية الشهر.</div>' +
-      '<div class="msg"><b>' + A.staff + ':</b> تم، سأجهّز قائمة التسجيل.</div>' +
+      '<div class="msg"><b>' + A.director + ' (مدير الأكاديمية):</b> سيبدأ معسكر الأمن السيبراني في شهر يناير، علينا أن نراجع خطة محتوى المعسكر هذا الأسبوع.</div>' +
+      '<div class="msg"><b>' + A.staff + ':</b> حسناً، سأجهّز قائمة المحتوى.</div>' +
       '<h3>' + I.users + ' الطلاب المسجلون في كل دورة</h3>' +
       table(['الدورة', 'عدد الطلاب'], [['البرمجة بلغة بايثون', 24], ['الذكاء الاصطناعي', 18], ['الروبوتات', 15], ['تصميم المواقع', 20]]) + '</section>');
   }
@@ -4362,7 +4362,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       table(['المدرب', 'الدورة', 'القاعة'], [['سامي حسن', 'البرمجة بلغة بايثون', 5], ['مازن علي', 'الذكاء الاصطناعي', 3], ['طارق يوسف', 'الروبوتات', 7], ['عمر خالد', 'تصميم المواقع', 2]])) };
     pages['/exams'] = { title: 'مواعيد الاختبارات | ' + A.name, html: priv('مواعيد الاختبارات النهائية', 'لا تُنشر للطلاب قبل الأسبوع الأخير من الدورة.',
       table(['الدورة', 'يوم الاختبار', 'القاعة'], [['البرمجة بلغة بايثون', 'الثلاثاء', 5], ['الذكاء الاصطناعي', 'الأحد', 3], ['الروبوتات', 'الخميس', 7], ['تصميم المواقع', 'الاثنين', 2]])) };
-    pages['/staff-login'] = { title: 'دخول الموظفين | ' + A.name, html: page('', loginHtml('')) };
+    pages['/login'] = { title: 'دخول الموظفين | ' + A.name, html: page('', loginHtml('')) };
     return pages;
   }
 
@@ -4375,15 +4375,15 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     error: ERR_ANY,
     redirects: { '/': '/home' },
     post: function (path, data) {
-      if (path !== '/staff-login') return null;
+      if (path !== '/login') return null;
       var raw = (data.username || '').trim(), u = raw.toLowerCase(), p = data.password || '';
       if (u === A.staffEmail && p === A.realPassword) {
-        CC.site.pages['/staff-login'] = { title: 'لوحة الموظفين | ' + A.name, html: panelHtml() };
-        return { go: '/staff-login' };
+        CC.site.pages['/login'] = { title: 'لوحة الموظفين | ' + A.name, html: panelHtml() };
+        return { go: '/login' };
       }
-      CC.site.pages['/staff-login'] = { title: 'دخول الموظفين | ' + A.name, html: page('', loginHtml(raw)) };
+      CC.site.pages['/login'] = { title: 'دخول الموظفين | ' + A.name, html: page('', loginHtml(raw)) };
       CC.site.error = u === A.staffEmail ? '<p class="err">كلمة المرور غير صحيحة</p>' : ERR_ANY;   /* specific only once the email is right (as in lab 5) */
-      return { page: '/staff-login', error: true };
+      return { page: '/login', error: true };
     }
   };
   /* a restart starts with the login form again (the pages object is shared with the browser) */
@@ -4392,7 +4392,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
 /* EH1 final challenge: covers lab 4 (Kashif) and lab 5 (Barq) on a new website, camelcode.academy (see site.js). Two instructions only:
    challenge 1 finds the hidden pages with `kashif` (its list is in Desktop/pages-files), questions 1 and 2 come from them;
-   challenge 2 finds the right email, runs `barq` (its list is in Desktop/password-files) on /staff-login, logs in, questions 3 to 5.
+   challenge 2 finds the right email, runs `barq` (its list is in Desktop/password-files) on /login, logs in, questions 3 to 5.
    The terminal commands of lab 2 are needed to reach the list files. Everything is fictional. */
 (function () {
   'use strict';
@@ -4442,35 +4442,36 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     k_end: 'انتهى البحث: وُجدت {n} صفحات',
     b_start: 'تجربة كلمات مرور شائعة على حساب {email} في {site}',
     b_sum: 'الحسابات التي تم اكتشافها',
-    b_none: 'جرّبت الأداة كل كلمات المرور في الملف ولم تنجح على هذا الحساب.',
+    b_none: 'جرّبت الأداة كل كلمات الملف ولم تجد كلمة المرور الصحيحة.',     /* as in lab 5 */
     /* wrong commands: one specific message per mistake */
     m_unknown: 'أمر غير معروف. اكتب `help` لعرض قائمة الأوامر.',
-    m_k_none: 'الأمر غير مكتمل: لم تحدد الموقع ولا ملف الصفحات. الصيغة: `kashif` ثم اسم الموقع ثم ملف أسماء الصفحات.',
-    m_k_nofile: 'الأمر غير مكتمل: لم تحدد ملف الصفحات. تحتاج أداة كاشف إلى الملف الذي يحتوي أسماء الصفحات.',
-    m_k_nosite: 'الأمر غير مكتمل: لم تحدد الموقع. تحتاج أداة كاشف إلى معرفة أي موقع تفحص، واسمه مكتوب في عنوان الموقع.',
-    m_k_one: 'لم أفهم الاسم `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف.',
-    m_k_swap: 'ترتيب الأمر غير صحيح: اكتب اسم الموقع أولاً ثم اسم الملف.',
-    m_k_site: 'لم يتم العثور على الموقع `{w}`. انظر إلى عنوان الموقع في المتصفح لتعرف اسم الموقع.',
-    m_k_page: 'اكتب اسم الموقع فقط بدون اسم صفحة، كما يظهر في عنوان الموقع قبل `/`.',
-    m_k_file: 'لم يتم العثور على الملف `{w}` هنا. اعرض محتويات المجلد الحالي باستخدام الأمر `display`.',
-    m_k_extra: 'الأمر فيه كلمات زائدة. أداة كاشف تأخذ اسمين فقط: الموقع ثم الملف.',
-    m_k_opt: 'الخيار `{w}` غير موجود. أداة كاشف لا تحتاج إلى خيارات في هذا التحدي.',
-    m_b_opt: 'الخيار `{w}` غير موجود. أداة برق لا تحتاج إلى خيارات في هذا التحدي.',
-    m_b_none: 'الأمر غير مكتمل: لم تحدد صفحة الدخول ولا البريد الإلكتروني ولا ملف كلمات المرور.',
-    m_b_extra: 'الأمر فيه كلمات زائدة. أداة برق تأخذ ثلاثة أجزاء فقط: صفحة الدخول، ثم البريد الإلكتروني، ثم الملف.',
-    m_b_nofileemail: 'الأمر غير مكتمل: لم تحدد البريد الإلكتروني ولا ملف كلمات المرور.',
-    m_b_nopagefile: 'الأمر غير مكتمل: لم تحدد صفحة الدخول ولا ملف كلمات المرور.',
-    m_b_nofile: 'الأمر غير مكتمل: لم تحدد ملف كلمات المرور؛ يحتاج برق إلى الملف الذي يحتوي كلمات المرور.',
-    m_b_noemail: 'الأمر غير مكتمل: لم تحدد البريد الإلكتروني؛ يحتاج برق إلى معرفة حساب من يجرّب عليه.',
-    m_b_nosite: 'الأمر غير مكتمل: لم تحدد صفحة الدخول؛ يحتاج برق إلى معرفة أي صفحة يحاول الدخول إليها.',
-    m_b_swap: 'ترتيب الأمر غير صحيح: اكتب صفحة الدخول أولاً، ثم البريد الإلكتروني، ثم الملف.',
-    m_b_badpage: '`{w}` ليس عنوان صفحة؛ اكتب بعد `barq` اسم الموقع ثم `/` ثم اسم صفحة الدخول.',
-    m_b_site: 'لم يتم العثور على الموقع `{w}`. انظر إلى عنوان الموقع في المتصفح لتعرف اسم الموقع.',
+    /* Kashif and Barq mistakes: the same messages and checks as EH1 labs 4 and 5 (Moaz 2026-11-14); «الصيغة الصحيحة» shows the general form of help, so the login page and the email are not given away */
+    m_k_none: 'الأمر غير مكتمل: لم تحدد الموقع ولا ملف الصفحات. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_nofile: 'الأمر غير مكتمل: لم تحدد ملف الصفحات. تحتاج أداة كاشف إلى الملف الذي يحتوي أسماء الصفحات. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_nosite: 'الأمر غير مكتمل: لم تحدد الموقع. تحتاج أداة كاشف إلى معرفة أي موقع تفحص. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_one: 'لم أفهم الاسم `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_swap: 'ترتيب الأمر غير صحيح: اكتب اسم الموقع أولاً ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.academy`.',
+    m_k_file: 'لم يتم العثور على الملف `{w}`. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
+    m_k_extra: 'الأمر فيه كلمات زائدة. أداة كاشف تأخذ اسمين فقط: الموقع ثم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_opt: 'الخيار `{w}` غير موجود. أداة كاشف لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `kashif website pages.txt`',
+    m_k_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الموقع كما يظهر في عنوان الموقع، بدون رموز: `camelcode.academy`',
+    m_b_opt: 'الخيار `{w}` غير موجود. أداة برق لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_none: 'الأمر غير مكتمل: لم تحدد صفحة الدخول ولا البريد الإلكتروني ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_extra: 'الأمر فيه كلمات زائدة. أداة برق تأخذ ثلاثة أجزاء فقط: صفحة الدخول، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nofileemail: 'لم تحدد البريد الإلكتروني ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nopagefile: 'لم تحدد صفحة الدخول ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nofile: 'لم تحدد ملف كلمات المرور؛ يحتاج برق إلى الملف الذي يحتوي كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_noemail: 'لم تحدد البريد الإلكتروني؛ يحتاج برق إلى معرفة حساب من يجرّب عليه. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nosite: 'لم تحدد صفحة الدخول؛ يحتاج برق إلى معرفة أي صفحة يحاول الدخول إليها. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_swap: 'ترتيب الأمر غير صحيح: اكتب صفحة الدخول أولاً، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_badpage: '`{w}` ليس عنوان صفحة؛ يجب أن تكتب عنوان الصفحة مباشرة بعد `barq`، هكذا: `website/admin`.',
+    m_b_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.academy`.',
     m_b_page: 'لم يتم العثور على صفحة دخول في `{w}`. ابحث عن صفحة الدخول في نتيجة أداة كاشف.',
-    m_b_noatmail: 'هذا ليس بريداً إلكترونياً صحيحاً؛ يجب أن يحتوي على `@`.',
-    m_b_wrongmail: 'لم يتم العثور على حساب بالبريد `{w}`. ابحث عن البريد الإلكتروني في صفحات الموقع.',
-    m_b_file: 'لم يتم العثور على الملف `{w}` هنا. اعرض محتويات المجلد الحالي باستخدام الأمر `display`.',
-    m_b_sym: 'الأمر فيه رموز غير مدعومة. اكتب الأسماء كما تظهر في عنوان الموقع وفي `display`.',
+    m_b_noatmail: 'هذا ليس بريداً إلكترونياً صحيحاً؛ يجب أن يحتوي على `@`، مثل `example@gmail.com`.',
+    m_b_wrongmail: 'لم يتم العثور على حساب بالبريد `{w}`. ابحث عن البريد الإلكتروني في صفحة «تواصل».',
+    m_b_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الملف كما يظهر في `display`.',
+    m_b_file: 'لم يتم العثور على `{w}`؛ يجب أن يكون اسم ملف كلمات مرور. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
     /* congratulations */
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
@@ -4484,7 +4485,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
 
   /* [LAB] ================= THE TOOLS' LISTS (all fictional) ================= */
   /* Kashif's list: lab 4's 101 common page names plus the academy's own (7 of them exist on camelcode.academy) */
-  var PAGES = ['home', 'about', 'contact', 'products', 'courses', 'cart', 'search', 'login', 'register', 'account', 'profile', 'admin', 'panel', 'dashboard', 'employees', 'staff', 'staff-login', 'users', 'customers', 'orders', 'sales', 'reports', 'invoices', 'payments', 'backup', 'files', 'uploads', 'images', 'photos', 'videos', 'downloads', 'data', 'logs', 'config', 'settings', 'test', 'dev', 'old', 'new', 'private', 'secret', 'hidden', 'api', 'help', 'faq', 'blog', 'news', 'support', 'shop', 'store', 'games', 'devices', 'accessories', 'offers', 'deals', 'gift', 'cards', 'wishlist', 'checkout', 'shipping', 'delivery', 'returns', 'terms', 'privacy', 'policy', 'careers', 'jobs', 'team', 'teachers', 'partners', 'press', 'events', 'forum', 'community', 'reviews', 'feedback', 'newsletter', 'subscribe', 'download', 'install', 'setup', 'update', 'upgrade', 'billing', 'receipts', 'stock', 'inventory', 'exams', 'suppliers', 'prices', 'budget', 'finance', 'salary', 'payroll', 'manager', 'owner', 'internal', 'staging', 'demo', 'temp', 'tmp', 'archive', 'docs', 'tools', 'system'];
+  var PAGES = ['home', 'about', 'contact', 'products', 'courses', 'cart', 'search', 'login', 'register', 'account', 'profile', 'admin', 'panel', 'dashboard', 'employees', 'staff', 'users', 'customers', 'orders', 'sales', 'reports', 'invoices', 'payments', 'backup', 'files', 'uploads', 'images', 'photos', 'videos', 'downloads', 'data', 'logs', 'config', 'settings', 'test', 'dev', 'old', 'new', 'private', 'secret', 'hidden', 'api', 'help', 'faq', 'blog', 'news', 'support', 'shop', 'store', 'games', 'devices', 'accessories', 'offers', 'deals', 'gift', 'cards', 'wishlist', 'checkout', 'shipping', 'delivery', 'returns', 'terms', 'privacy', 'policy', 'careers', 'jobs', 'team', 'teachers', 'partners', 'press', 'events', 'forum', 'community', 'reviews', 'feedback', 'newsletter', 'subscribe', 'download', 'install', 'setup', 'update', 'upgrade', 'billing', 'receipts', 'stock', 'inventory', 'exams', 'suppliers', 'prices', 'budget', 'finance', 'salary', 'payroll', 'manager', 'owner', 'internal', 'staging', 'demo', 'temp', 'tmp', 'archive', 'docs', 'tools', 'system'];
   /* Barq's list: lab 5's leaked common passwords, filled up to 2,000; the real one goes at entry 818 (self-paced) */
   var BASE_WORDS = [
     '123456', '123456789', 'qwerty', 'password', '111111', '12345678', 'abc123', '1234567', 'password1', '12345',
@@ -4498,12 +4499,34 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
     'butterfly', 'rainbow', 'diamond', 'silver', 'golden', 'phoenix', 'dolphin', 'tiger123', 'lion1234', 'eagle1',
     'falcon99', 'panther1', 'cheetah2', 'zebra123', 'koala321', 'panda777', 'turtle88', 'rabbit55', 'wolf2024', 'bear1999'
   ];
-  var FILL_PREFIX = ['sunset', 'river', 'mountain', 'cloud', 'storm', 'comet', 'meteor', 'glacier', 'desert', 'forest', 'ocean', 'valley', 'canyon', 'harbor', 'island', 'jungle', 'prairie', 'tundra', 'volcano', 'lagoon', 'breeze', 'ember', 'frost', 'maple', 'cedar', 'willow', 'granite', 'marble', 'copper', 'cosmic'];
+  /* the long tail of a leaked list (Moaz 2026-11-14: realistic common passwords, same code in lab 5 and the final challenge): common words with the
+     numbers and capitals people add, years, keyboard and number patterns, mixed in a fixed order so every start shows the same list */
+  function leakedList(base, n, avoid) {
+    var W = ['password', 'welcome', 'dragon', 'monkey', 'football', 'soccer', 'baseball', 'sunshine', 'princess', 'master', 'shadow', 'superman', 'hello', 'freedom',
+      'flower', 'summer', 'winter', 'spring', 'love', 'angel', 'tiger', 'lion', 'eagle', 'star', 'lucky', 'happy', 'cookie', 'chocolate', 'pizza', 'gamer', 'player',
+      'hero', 'ninja', 'qwerty', 'admin', 'secret', 'letmein', 'family', 'friend', 'baby', 'honey', 'king', 'queen', 'prince', 'charlie', 'buster', 'jordan', 'hunter',
+      'ranger', 'thunder', 'silver', 'golden', 'diamond', 'orange', 'banana', 'apple', 'computer', 'internet', 'school', 'doha', 'qatar', 'falcon', 'camel', 'ocean',
+      'music', 'money', 'mustang', 'maverick', 'robot', 'soccer'];
+    var S = ['1', '123', '12', '1234', '!', '2024', '2023', '12345', '01', '2022', '99', '2021', '11', '2020', '007', '10', '22', '77', '00', '2019', '2018', '13',
+      '21', '7', '88', '2010', '2015', '1!', '123!', '@123'];
+    var out = [], seen = {}, i, j;
+    base.forEach(function (x) { seen[x] = 1; });
+    function add(x) { if (!seen[x] && avoid.indexOf(x) < 0) { seen[x] = 1; out.push(x); } }
+    for (i = 0; i < S.length; i++) for (j = 0; j < W.length; j++) { add(W[j] + S[i]); if (i % 3 === 0) add(W[j].charAt(0).toUpperCase() + W[j].slice(1) + S[i]); }
+    for (i = 1980; i <= 2015; i++) add(String(i));
+    '0123456789'.split('').forEach(function (d) { add(new Array(7).join(d)); add(new Array(9).join(d)); });
+    ['987654321', '654321', '147258369', '159753', '123654', '741852963', '1qazxsw2', 'qweasd', 'qweasdzxc', 'asdf1234', 'zxcv1234', 'q1w2e3r4', 'a1b2c3', 'abc12345',
+      'pass123', 'p@ssw0rd', 'P@ssw0rd', 'Passw0rd!', 'Password1', 'Password123', 'iloveyou123', 'loveyou1', 'letmein1', 'welcome123', 'admin1234', 'user1234',
+      'test123', 'guest123', 'qwerty12345'].forEach(add);
+    var s = 7;
+    function rnd() { s = (s + 0x6D2B79F5) | 0; var t = Math.imul(s ^ (s >>> 15), 1 | s); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+    for (i = out.length - 1; i > 0; i--) { j = Math.floor(rnd() * (i + 1)); var tmp = out[i]; out[i] = out[j]; out[j] = tmp; }
+    return out.slice(0, n);
+  }
   var SELF_PW = 'galaxy2024', SELF_AT = 817;
   var DYN_PW = ['galaxy2024', 'rocket77', 'planet99', 'orbit2023', 'nebula11', 'astro2010', 'saturn88', 'lunar555'];   /* instructor-led: one of these, at a new place near 818 (same run time) */
   function wordList(pw, at) {
-    var w = BASE_WORDS.slice();
-    for (var fn = 1; w.length < 2000; fn++) w.push(FILL_PREFIX[fn % FILL_PREFIX.length] + fn);
+    var w = BASE_WORDS.concat(leakedList(BASE_WORDS, 2000 - BASE_WORDS.length, DYN_PW));
     w[at] = pw;
     return w;
   }
@@ -4525,7 +4548,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
   var CMDS = ['display', 'enter', 'back', 'read', 'create', 'kashif', 'barq', 'clear', 'help'];
   var LINUX = { ls: 'display', cd: 'enter', cat: 'read', touch: 'create' };
   var BADCH = /[^\w.\-\/@]/;
-  var HOST = A.host, LOGIN = HOST + '/staff-login';
+  var HOST = A.host, LOGIN = HOST + '/login';
   var isMail = function (s) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s); };
   var isPage = function (s) { return !isMail(s) && s.indexOf('/') > 0 && s.split('/')[0].indexOf('.') > 0; };
 
@@ -4606,10 +4629,7 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       L.clearChips(); await L.chips([['barq', CC.t('tk_barq')], [LOGIN, CC.t('tk_page')], [email, CC.t('tk_email')], [typed, CC.t('tk_pfile')]], g, self ? 1100 : 0); if (!ok()) return false;
       L.follow();
       L.add(iso(CC.t('b_start', { email: email, site: LOGIN })), 'info ar');
-      var bar = '===============================================================';
-      ['dim:' + bar, 'dim:Barq', 'dim:' + bar, 'dim:[+] Target:    ' + LOGIN, 'dim:[+] Account:   ' + email, 'dim:[+] Wordlist:  ' + typed, 'dim:' + bar].forEach(function (l) {
-        var k = l.indexOf(':'); L.add(l.slice(k + 1), l.slice(0, k));
-      });
+      /* no ==== Barq / Target / Account / Wordlist banner (Moaz 2026-11-14: never in any lab) */
       if (!(await CC.sleep(1500, g))) return false;
       L.expl(CC.t('e_b_run'));
       var r = await CC.Search.run({ L: L, g: g, total: WORDS.length, hit: right ? HIT : null, text: function (k) { return WORDS[k]; }, rate: right ? RATE : RATE_NONE, capMs: CAP_MS, head: HEAD });
@@ -4654,23 +4674,21 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       if (c === 'clear') { L.clearLog(); return { info: { cmd: 'clear' }, chips: [['clear', CC.t('tk_clear')]] }; }
 
       if (c === 'kashif') {
+        /* the same checks, in the same order, as lab 4; a path to the list (pages-files/pages.txt) is the challenge's one addition */
         for (i = 0; i < args.length; i++) {
           if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_k_opt', { w: args[i] }) };
-          if (BADCH.test(args[i]) || /:\/\//.test(args[i])) return { err: CC.t('m_b_sym') };
+          if (BADCH.test(args[i]) || args[i].indexOf('@') >= 0 || (args[i].indexOf('/') >= 0 && !fileAt(args[i]))) return { err: CC.t('m_k_sym') };
         }
         if (!args.length) return { err: CC.t('m_k_none') };
         if (args.length > 2) return { err: CC.t('m_k_extra') };
-        var site = function (x) { return x.replace(/\/+$/, ''); };
         if (args.length === 1) {
-          if (site(args[0]) === HOST) return { err: CC.t('m_k_nofile') };
+          if (args[0] === HOST) return { err: CC.t('m_k_nofile') };
           if (fileAt(args[0])) return { err: CC.t('m_k_nosite') };
           return { err: CC.t('m_k_one', { w: args[0] }) };
         }
-        var s0 = site(args[0]);
-        if (s0 !== HOST) {
-          if (fileAt(args[0]) && site(args[1]) === HOST) return { err: CC.t('m_k_swap') };
-          if (s0.split('/')[0] === HOST) return { err: CC.t('m_k_page') };
-          return { err: CC.t('m_k_site', { w: s0.split('/')[0] }) };
+        if (args[0] !== HOST) {
+          if (fileAt(args[0]) && args[1] === HOST) return { err: CC.t('m_k_swap') };
+          return { err: CC.t('m_k_site', { w: args[0] }) };
         }
         var kabs = fileAt(args[1]);
         if (!kabs) return { err: CC.t('m_k_file', { w: args[1] }) };
@@ -4679,12 +4697,11 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
       }
 
       if (c === 'barq') {
-        for (i = 0; i < args.length; i++) {
-          if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_b_opt', { w: args[i] }) };
-          if (BADCH.test(args[i]) || /:\/\//.test(args[i])) return { err: CC.t('m_b_sym') };
-        }
+        /* the same checks, in the same order, as lab 5; the challenge adds a path to the list and the general email (which runs and finds nothing) */
+        for (i = 0; i < args.length; i++) if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_b_opt', { w: args[i] }) };
         if (!args.length) return { err: CC.t('m_b_none') };
         if (args.length > 3) return { err: CC.t('m_b_extra') };
+        for (i = 0; i < args.length; i++) if (/^https?:/i.test(args[i]) || args[i].indexOf('://') >= 0) return { err: CC.t('m_b_sym') };
         if (args.length === 1) {
           if (isPage(args[0])) return { err: CC.t('m_b_nofileemail') };
           if (isMail(args[0])) return { err: CC.t('m_b_nopagefile') };
@@ -4700,13 +4717,13 @@ body.cc-plain .cc-app.cue .cc-tip,body.cc-plain .cc-cmdtip{display:none!importan
         var pg = args[0].replace(/\/+$/, ''), em = args[1].toLowerCase(), fl = args[2];
         if (!isPage(pg)) {
           if (args.some(isPage)) return { err: CC.t('m_b_swap') };
-          if (pg === HOST) return { err: CC.t('m_b_badpage', { w: pg }) };
           return { err: CC.t('m_b_badpage', { w: pg }) };
         }
         if (pg.split('/')[0] !== HOST) return { err: CC.t('m_b_site', { w: pg.split('/')[0] }) };
         if (pg !== LOGIN) return { err: CC.t('m_b_page', { w: pg }) };
         if (!isMail(em)) return { err: CC.t('m_b_noatmail') };
         if (em !== A.staffEmail && em !== A.email) return { err: CC.t('m_b_wrongmail', { w: args[1] }) };
+        if (/[^\w.\-\/]/.test(fl)) return { err: CC.t('m_b_sym') };
         if (!fileAt(fl)) return { err: CC.t('m_b_file', { w: fl }) };
         if (!(await barq(em, fl))) return { err: '' };
         return { info: { cmd: 'barq' } };
