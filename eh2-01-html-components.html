@@ -969,7 +969,7 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-code{font-size:14px}
 /* the code font follows the width of the code pane, so a page's code fits without scrolling sideways on any screen (Moaz 2026-11-15) */
 .br-src{container-type:inline-size}
-.br-code{font-size:clamp(8px,2.6cqw,15px)}
+.br-code{font-size:clamp(9px,3cqw,16px)}
 .br-code .no{width:2.4em;padding-right:.6em;margin-right:.6em}
 
 </style>
@@ -4298,31 +4298,33 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function close(e) { var t = e.tagName.toLowerCase(); return VOIDS[t] ? '' : '</' + t + '>'; }
   function flat(e) { return [].every.call(e.childNodes, function (c) { return c.nodeType === 3 || (c.nodeType === 1 && INLINE[c.tagName.toLowerCase()] && flat(c)); }); }
   function inner(e) { return [].map.call(e.childNodes, function (c) { return c.nodeType === 3 ? escT(c.data) : open(c) + inner(c) + close(c); }).join(''); }
-  /* Moaz 2026-11-15: nothing is ever broken in two (a text, a comment, or an element holding text stays on ONE line); only an element that
-     holds other elements puts each of them on its own line, like real code. The engine makes the code font smaller so the longest line fits. */
+  /* Moaz 2026-11-15: a line is broken only where a person would break it: after «:», «،», «.» (and before a lone « . »), like
+       <!-- حساب الإدارة المؤقت:
+            اسم المستخدم admin وكلمة السر camel@123
+            . احذفوه بعد التجربة -->
+     A tag with a one-phrase text stays on ONE line with its text; an element that holds other elements puts each on its own line when it is long. */
+  var MAXW = 60;
+  function pieces(t) { return t.split(/(?<=[^\s][:،.؟!])\s+|\s+(?=\.\s)/).filter(function (x) { return x; }); }
   function textOnly(e) { return [].every.call(e.childNodes, function (c) { return c.nodeType === 3; }); }
-  function mixed(e) { return [].some.call(e.childNodes, function (c) { return c.nodeType === 3 && c.data.trim(); }); }
   function ser(node, ind, out) {
     [].forEach.call(node.childNodes, function (c) {
-      if (c.nodeType === 3) { var t = c.data.replace(/\s+/g, ' ').trim(); if (t) out.push(ind + escT(t)); }
-      else if (c.nodeType === 8) out.push(ind + '<!-- ' + c.data.trim() + ' -->');
+      if (c.nodeType === 3) { var t = c.data.replace(/\s+/g, ' ').trim(); if (t) pieces(escT(t)).forEach(function (p) { out.push(ind + p); }); }
+      else if (c.nodeType === 8) {
+        var ps = pieces(c.data.replace(/\s+/g, ' ').trim()), pad = ind + '     ';
+        if (ps.length < 2) out.push(ind + '<!-- ' + (ps[0] || '') + ' -->');
+        else ps.forEach(function (p, k) { out.push((k ? pad : ind + '<!-- ') + p + (k === ps.length - 1 ? ' -->' : '')); });
+      }
       else if (c.nodeType === 1) {
         var one = flat(c) ? ind + open(c) + inner(c) + close(c) : '';
-        if (one && (textOnly(c) || mixed(c) || one.length <= 60)) out.push(one);
+        var short = textOnly(c) && pieces(c.textContent.replace(/\s+/g, ' ').trim()).length < 2;
+        if (one && (short || one.length <= MAXW)) out.push(one);
         else { out.push(ind + open(c)); ser(c, ind + '  ', out); if (close(c)) out.push(ind + close(c)); }
       }
     });
   }
-  /* a few of Kashif's sentences are shorter here, so every line of the code stays on ONE line in a readable font (Moaz 2026-11-15) */
-  var SHORT = [
-    ['بدأ ' + SHOP.name + ' كمحل صغير لمحبي الألعاب، وأصبح اليوم وجهة اللاعبين في المدينة. ', 'بدأنا كمحل صغير لمحبي الألعاب. '],
-    ['بدأ ' + SHOP.name + ' كمحل صغير لمحبي الألعاب، وكبر ليصبح وجهة اللاعبين في المدينة. نختار منتجاتنا بعناية، ونحب أن نساعد كل لاعب في العثور على ما يناسبه.', 'بدأنا كمحل صغير لمحبي الألعاب، وكبرنا لنصبح وجهة اللاعبين.'],
-    ['نؤمن أن اللعب متعة للجميع، لذلك نوفر أجهزة وألعاباً لمختلف الأعمار والميزانيات.', 'نؤمن أن اللعب متعة للجميع، لكل الأعمار والميزانيات.'],
-    ['المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة، ويمكنك الدخول من الباب الرئيسي ذي المظلة المخططة.', 'المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة.']
-  ];
+
   function toSrc(path, pg) {
     var html = plain(pg.html), cm = COMMENTS[path];
-    SHORT.forEach(function (r) { html = html.split(r[0]).join(r[1]); });
     html = html.replace('<h1>عالم الألعاب في <em>مكان واحد</em></h1>', '<h1>' + SHOP.h1.home + '</h1>');
     if (cm) html = html.replace(cm[0], '<!-- ' + cm[1] + ' -->' + cm[0]);
     var t = document.createElement('template'); t.innerHTML = html;
