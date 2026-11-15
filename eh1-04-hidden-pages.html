@@ -965,6 +965,8 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-code .tx{flex:none;white-space:pre;overflow-wrap:normal}
 /* the code gets half of the browser (was 42%), so a line like `<h1>…</h1>` fits whole (Moaz 2026-11-15) */
 .br-view[data-mode="cmp"] .br-src{flex-basis:50%}
+/* smaller code (Moaz 2026-11-15): with the page's code written to fit, nothing needs scrolling sideways */
+.br-code{font-size:14px}
 
 </style>
 <style id="cc-skin">
@@ -3190,7 +3192,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     "document.addEventListener('submit',function(e){e.preventDefault();var f=e.target,d={};new FormData(f).forEach(function(v,k){d[k]=v;});parent.postMessage({cc:'post',action:f.getAttribute('action')||'',data:d},'*');});" +
     "document.addEventListener('mouseover',function(e){var a=e.target.closest&&e.target.closest('a[href]');parent.postMessage({cc:'hover',href:a?a.getAttribute('href'):null},'*');});" +
     "document.addEventListener('mouseleave',function(){parent.postMessage({cc:'hover',href:null},'*');});" +
-    "document.addEventListener('contextmenu',function(e){e.preventDefault();parent.postMessage({cc:'ctx',x:e.clientX,y:e.clientY,vw:document.documentElement.clientWidth},'*');});" +
+    "document.addEventListener('contextmenu',function(e){e.preventDefault();parent.postMessage({cc:'ctx',x:e.clientX,y:e.clientY,vw:window.innerWidth},'*');});" +
     "document.addEventListener('mousedown',function(){parent.postMessage({cc:'md'},'*');});" +
     "document.addEventListener('keydown',function(e){if((e.ctrlKey||(e.metaKey&&e.altKey))&&String(e.key).toLowerCase()==='u'){e.preventDefault();parent.postMessage({cc:'key',how:'keys'},'*');}});" +
     '<\/script>';
@@ -3486,11 +3488,17 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var pg = S.pages[path], an = analyse(pg); srcPath = path;
       (pg.marks || []).forEach(function (m) { m.used = false; });
       codeEl.innerHTML = '';
+      var inC = false, cMark = null;                     /* a comment that continues on the next lines: those lines are green too, and glow with it (Moaz 2026-11-15) */
       String(pg.src).split('\n').forEach(function (line, i) {
-        var m = markOf(pg, line), ids = (an.open[i] || []).concat(an.close[i] || []);
+        var m, ids = (an.open[i] || []).concat(an.close[i] || []), html;
+        if (inC) { m = cMark; html = isolate('<span class="c">' + esc(line) + '</span>'); if (line.indexOf('-->') >= 0) inC = false; }
+        else {
+          m = markOf(pg, line); html = colour(line);
+          var ci = line.indexOf('<!--'); if (ci >= 0 && line.indexOf('-->', ci) < 0) { inC = true; cMark = m; }
+        }
         var row = el('div', 'ln' + (m ? ' mk' : ''));
         row.setAttribute('data-i', i);
-        row.innerHTML = '<span class="no">' + (i + 1) + '</span><span class="tx"><span class="code">' + (colour(line) || '&nbsp;') + '</span></span>';                  /* only the code itself: no notes, no labels inside it */
+        row.innerHTML = '<span class="no">' + (i + 1) + '</span><span class="tx"><span class="code">' + (html || '&nbsp;') + '</span></span>';                  /* only the code itself: no notes, no labels inside it */
         row.addEventListener('mouseenter', function () { pageHl(ids, an); });
         row.addEventListener('mouseleave', clearPage);
         if (m) {
@@ -3513,7 +3521,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function applyGlow() {
       var hit = null;
       [].forEach.call(codeEl.querySelectorAll('.ln'), function (r) { var on = !!glowId && r.getAttribute('data-m') === glowId; r.classList.toggle('glow', on); if (on) hit = r; });
-      if (hit && !inView(hit)) setTimeout(function () { hit.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60);   /* a glowing line outside the visible code is shown */
+      if (hit && !glowStay && !inView(hit)) setTimeout(function () { hit.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60);   /* a glowing line outside the visible code is shown */
     }
     f.addEventListener('load', function () {                  /* page element to code row: every element, not only a few */
       applyZoom(); applyLinkGlow();
@@ -3576,11 +3584,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     });
 
     /* stand-ins for the guide (a ring and a pointer need an element-like object) */
+    /* page coordinates start at the frame's own left edge, scrollbar included (an Arabic page has it on the left), so the scale is the frame's FULL width (innerWidth), never clientWidth: with clientWidth the ring drifted right (Moaz 2026-11-15) */
     function frameBox(get) {
       return {
-        isConnected: true, contains: function () { return false; }, getClientRects: function () { return [1]; },
+        ccSite: true, isConnected: true, contains: function () { return false; }, getClientRects: function () { return [1]; },
         getBoundingClientRect: function () {
-          var fr = f.getBoundingClientRect(), d = f.contentDocument, vw = (d && d.documentElement && d.documentElement.clientWidth) || fr.width, s = fr.width / vw, r = get(d && d.body ? d : null, vw);
+          var fr = f.getBoundingClientRect(), d = f.contentDocument, vw = (d && d.defaultView && d.defaultView.innerWidth) || fr.width, s = fr.width / vw, r = get(d && d.body ? d : null, vw);
           return { left: fr.left + r.left * s, top: fr.top + r.top * s, width: r.width * s, height: r.height * s };
         }
       };
@@ -3603,7 +3612,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       return frameBox(function (d2) { var a2 = d2 && d2.querySelector('a[href="' + path + '"]'); if (!a2) return { left: 0, top: 0, width: 0, height: 0 }; var r = a2.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; });
     };
     P.ctxItem = function (k) { return ctxEl.hidden ? null : ctxEl.querySelector('.it[data-k="' + k + '"]'); };
-    P.glow = function (id) { glowId = id || null; applyGlow(); };
+    /* P.glow(id, { stay: true }): the line glows but the code is NOT scrolled to it, because finding it is the student's job (Moaz 2026-11-15: the comment steps) */
+    var glowStay = false;
+    P.glow = function (id, o) { glowId = id || null; glowStay = !!(o && o.stay); applyGlow(); };
     /* a link of the page that glows (both modes): P.glowLink('/products') makes the menu link to that page pulse until P.glowLink(null). It comes back after the page reloads. */
     var glowLinkPath = null;
     function applyLinkGlow() {
@@ -4176,7 +4187,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var op = t < 250 ? t / 250 : t < 2400 ? 1 : t < 2900 ? 1 - (t - 2400) / 500 : 0;
     var ps = gEls.ptr.style, ax = rt ? 22 : 4, ay = rt ? 30 : 3;      /* the point that sits on the target: the arrow's tip, or the middle of the mouse */
     ps.display = op > 0 ? 'block' : 'none'; ps.opacity = op;
-    ps.transform = 'translate(' + (cx + ox - ax) + 'px,' + (cy + oy - ay) + 'px) scale(' + (1 - press * .18) + ')';
+    var sz = e.ccSite ? .62 : 1;                                         /* over the website (drawn smaller in the laptop) the pointer is smaller too (Moaz 2026-11-15) */
+    ps.transformOrigin = ax + 'px ' + ay + 'px';
+    ps.transform = 'translate(' + (cx + ox - ax) + 'px,' + (cy + oy - ay) + 'px) scale(' + sz * (1 - press * .18) + ')';
     if (rt) { var rb = gEls.ptr.querySelector('.rb'); if (rb) rb.setAttribute('fill', press > 0 ? '#d97706' : '#FCAD0F'); }
     var rp = gEls.rip.style;
     if (t > 1300 && t < 2100) { var k = (t - 1300) / 800; rp.display = 'block'; rp.left = cx + 'px'; rp.top = cy + 'px'; rp.opacity = .8 * (1 - k); rp.transform = 'translate(-50%,-50%) scale(' + (.3 + k * 1.9) + ')'; }
@@ -4723,8 +4736,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       CC.guide.show(function () {
         var d = f && f.contentDocument, a = d && d.querySelector('header a[href="' + path + '"]');
         if (!a) return null;
-        var fr = f.getBoundingClientRect(), r = a.getBoundingClientRect(), vw = d.documentElement.clientWidth || 1, s = fr.width / vw;
-        return { isConnected: true, getClientRects: function () { return [1]; }, contains: function () { return false; },
+        var fr = f.getBoundingClientRect(), r = a.getBoundingClientRect(), vw = d.defaultView.innerWidth || 1, s = fr.width / vw;   /* full frame width, scrollbar included (2026-11-15) */
+        return { ccSite: true, isConnected: true, getClientRects: function () { return [1]; }, contains: function () { return false; },
           getBoundingClientRect: function () { return { left: fr.left + r.left * s, top: fr.top + r.top * s, width: r.width * s, height: r.height * s }; } };
       }, { force: !!force });
     }

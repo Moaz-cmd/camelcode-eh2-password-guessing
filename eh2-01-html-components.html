@@ -965,6 +965,8 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-code .tx{flex:none;white-space:pre;overflow-wrap:normal}
 /* the code gets half of the browser (was 42%), so a line like `<h1>…</h1>` fits whole (Moaz 2026-11-15) */
 .br-view[data-mode="cmp"] .br-src{flex-basis:50%}
+/* smaller code (Moaz 2026-11-15): with the page's code written to fit, nothing needs scrolling sideways */
+.br-code{font-size:14px}
 
 </style>
 <style id="cc-skin">
@@ -2900,7 +2902,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     "document.addEventListener('submit',function(e){e.preventDefault();var f=e.target,d={};new FormData(f).forEach(function(v,k){d[k]=v;});parent.postMessage({cc:'post',action:f.getAttribute('action')||'',data:d},'*');});" +
     "document.addEventListener('mouseover',function(e){var a=e.target.closest&&e.target.closest('a[href]');parent.postMessage({cc:'hover',href:a?a.getAttribute('href'):null},'*');});" +
     "document.addEventListener('mouseleave',function(){parent.postMessage({cc:'hover',href:null},'*');});" +
-    "document.addEventListener('contextmenu',function(e){e.preventDefault();parent.postMessage({cc:'ctx',x:e.clientX,y:e.clientY,vw:document.documentElement.clientWidth},'*');});" +
+    "document.addEventListener('contextmenu',function(e){e.preventDefault();parent.postMessage({cc:'ctx',x:e.clientX,y:e.clientY,vw:window.innerWidth},'*');});" +
     "document.addEventListener('mousedown',function(){parent.postMessage({cc:'md'},'*');});" +
     "document.addEventListener('keydown',function(e){if((e.ctrlKey||(e.metaKey&&e.altKey))&&String(e.key).toLowerCase()==='u'){e.preventDefault();parent.postMessage({cc:'key',how:'keys'},'*');}});" +
     '<\/script>';
@@ -3196,11 +3198,17 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var pg = S.pages[path], an = analyse(pg); srcPath = path;
       (pg.marks || []).forEach(function (m) { m.used = false; });
       codeEl.innerHTML = '';
+      var inC = false, cMark = null;                     /* a comment that continues on the next lines: those lines are green too, and glow with it (Moaz 2026-11-15) */
       String(pg.src).split('\n').forEach(function (line, i) {
-        var m = markOf(pg, line), ids = (an.open[i] || []).concat(an.close[i] || []);
+        var m, ids = (an.open[i] || []).concat(an.close[i] || []), html;
+        if (inC) { m = cMark; html = isolate('<span class="c">' + esc(line) + '</span>'); if (line.indexOf('-->') >= 0) inC = false; }
+        else {
+          m = markOf(pg, line); html = colour(line);
+          var ci = line.indexOf('<!--'); if (ci >= 0 && line.indexOf('-->', ci) < 0) { inC = true; cMark = m; }
+        }
         var row = el('div', 'ln' + (m ? ' mk' : ''));
         row.setAttribute('data-i', i);
-        row.innerHTML = '<span class="no">' + (i + 1) + '</span><span class="tx"><span class="code">' + (colour(line) || '&nbsp;') + '</span></span>';                  /* only the code itself: no notes, no labels inside it */
+        row.innerHTML = '<span class="no">' + (i + 1) + '</span><span class="tx"><span class="code">' + (html || '&nbsp;') + '</span></span>';                  /* only the code itself: no notes, no labels inside it */
         row.addEventListener('mouseenter', function () { pageHl(ids, an); });
         row.addEventListener('mouseleave', clearPage);
         if (m) {
@@ -3223,7 +3231,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function applyGlow() {
       var hit = null;
       [].forEach.call(codeEl.querySelectorAll('.ln'), function (r) { var on = !!glowId && r.getAttribute('data-m') === glowId; r.classList.toggle('glow', on); if (on) hit = r; });
-      if (hit && !inView(hit)) setTimeout(function () { hit.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60);   /* a glowing line outside the visible code is shown */
+      if (hit && !glowStay && !inView(hit)) setTimeout(function () { hit.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60);   /* a glowing line outside the visible code is shown */
     }
     f.addEventListener('load', function () {                  /* page element to code row: every element, not only a few */
       applyZoom(); applyLinkGlow();
@@ -3286,11 +3294,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     });
 
     /* stand-ins for the guide (a ring and a pointer need an element-like object) */
+    /* page coordinates start at the frame's own left edge, scrollbar included (an Arabic page has it on the left), so the scale is the frame's FULL width (innerWidth), never clientWidth: with clientWidth the ring drifted right (Moaz 2026-11-15) */
     function frameBox(get) {
       return {
-        isConnected: true, contains: function () { return false; }, getClientRects: function () { return [1]; },
+        ccSite: true, isConnected: true, contains: function () { return false; }, getClientRects: function () { return [1]; },
         getBoundingClientRect: function () {
-          var fr = f.getBoundingClientRect(), d = f.contentDocument, vw = (d && d.documentElement && d.documentElement.clientWidth) || fr.width, s = fr.width / vw, r = get(d && d.body ? d : null, vw);
+          var fr = f.getBoundingClientRect(), d = f.contentDocument, vw = (d && d.defaultView && d.defaultView.innerWidth) || fr.width, s = fr.width / vw, r = get(d && d.body ? d : null, vw);
           return { left: fr.left + r.left * s, top: fr.top + r.top * s, width: r.width * s, height: r.height * s };
         }
       };
@@ -3313,7 +3322,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       return frameBox(function (d2) { var a2 = d2 && d2.querySelector('a[href="' + path + '"]'); if (!a2) return { left: 0, top: 0, width: 0, height: 0 }; var r = a2.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; });
     };
     P.ctxItem = function (k) { return ctxEl.hidden ? null : ctxEl.querySelector('.it[data-k="' + k + '"]'); };
-    P.glow = function (id) { glowId = id || null; applyGlow(); };
+    /* P.glow(id, { stay: true }): the line glows but the code is NOT scrolled to it, because finding it is the student's job (Moaz 2026-11-15: the comment steps) */
+    var glowStay = false;
+    P.glow = function (id, o) { glowId = id || null; glowStay = !!(o && o.stay); applyGlow(); };
     /* a link of the page that glows (both modes): P.glowLink('/products') makes the menu link to that page pulse until P.glowLink(null). It comes back after the page reloads. */
     var glowLinkPath = null;
     function applyLinkGlow() {
@@ -3886,7 +3897,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var op = t < 250 ? t / 250 : t < 2400 ? 1 : t < 2900 ? 1 - (t - 2400) / 500 : 0;
     var ps = gEls.ptr.style, ax = rt ? 22 : 4, ay = rt ? 30 : 3;      /* the point that sits on the target: the arrow's tip, or the middle of the mouse */
     ps.display = op > 0 ? 'block' : 'none'; ps.opacity = op;
-    ps.transform = 'translate(' + (cx + ox - ax) + 'px,' + (cy + oy - ay) + 'px) scale(' + (1 - press * .18) + ')';
+    var sz = e.ccSite ? .62 : 1;                                         /* over the website (drawn smaller in the laptop) the pointer is smaller too (Moaz 2026-11-15) */
+    ps.transformOrigin = ax + 'px ' + ay + 'px';
+    ps.transform = 'translate(' + (cx + ox - ax) + 'px,' + (cy + oy - ay) + 'px) scale(' + sz * (1 - press * .18) + ')';
     if (rt) { var rb = gEls.ptr.querySelector('.rb'); if (rb) rb.setAttribute('fill', press > 0 ? '#d97706' : '#FCAD0F'); }
     var rp = gEls.rip.style;
     if (t > 1300 && t < 2100) { var k = (t - 1300) / 800; rp.display = 'block'; rp.left = cx + 'px'; rp.top = cy + 'px'; rp.opacity = .8 * (1 - k); rp.transform = 'translate(-50%,-50%) scale(' + (.3 + k * 1.9) + ')'; }
@@ -3912,7 +3925,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
    shows the same text, so what the student reads is exactly what built the page.
    To keep that code readable for a beginner, the drawings are not inline SVG: icons are <i class="ic i-name"> (a CSS mask), pictures are
    <span class="px p-name"> (a CSS background), and the logo is a CSS background. The ONLY <img> on the home page is the big picture
-   (store-banner.png), so «الصورة (img)» in the questions has one answer. The home title is plain text (no <em>) so «النص بين <h1> و </h1>» is clear.
+   (nova-pro.jpg), so «الصورة (img)» in the questions has one answer. The home title is plain text (no <em>) so «النص بين <h1> و </h1>» is clear.
    Three comments are this lab's own: home (a note), products (to the developer نواف), contact (the forgotten admin account).
    All values are invented (pending). Male names, no dates, no clock, no http or https anywhere. */
 (function () {
@@ -3926,7 +3939,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     email: 'info@camelcode.shop', phone: '+974 5550 1234', address: 'شارع الألعاب، الدوحة',                                             /* pending */
     user: 'admin', pass: 'camel@123',                                       /* the "forgotten" account in the contact page comment (pending) */
     h1: { home: 'عالم الألعاب في مكان واحد' },
-    img: { home: 'store-banner.png' },
+    img: { home: 'nova-pro.jpg' },                                          /* the Nova Pro picture of the home page (Moaz 2026-11-15: a .jpg file) */
     dev: 'نواف'                                                                /* the developer the products page comment is written to */
   };
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -4213,7 +4226,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var COMMENTS = {
     '/home': ['<section class="sec txt"', 'ملاحظة: غيّروا صورة الواجهة قبل نشر الصفحة'],
     '/products': ['<div class="grid">', 'إلى ' + SHOP.dev + ': لا تنسَ تحديث الأسعار قبل نشر الصفحة'],
-    '/contact': ['<div class="info">', 'حساب الإدارة المؤقت: المستخدم ' + SHOP.user + ' وكلمة السر ' + SHOP.pass + ' . احذفوه بعد التجربة']
+    '/contact': ['<div class="info">', 'حساب الإدارة المؤقت: اسم المستخدم ' + SHOP.user + ' وكلمة السر ' + SHOP.pass + ' . احذفوه بعد التجربة']
   };
   var ASSETS = {}, PICCSS = [], picN = 0;
   function dataUri(svgText) {
@@ -4230,13 +4243,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   [['devices', ['nova-pro', 'nova-lite']], ['games', ['dragon-race', 'island-quest', 'champions-ball']], ['gear', ['storm-pad', 'sada-headset']]].forEach(function (g) {
     PRODUCTS[g[0]].forEach(function (it, i) { var m = /<svg[\s\S]*<\/svg>/.exec(it.a); if (m) NAMES.push([m[0], g[1][i]]); });
   });
-  var picOf = {};
+  var picOf = {}, bgDone = {};
+  function nameOf(svgText) {
+    if (picOf[svgText]) return picOf[svgText];
+    var name = null;
+    for (var i = 0; i < NAMES.length; i++) if (NAMES[i][0] === svgText) name = NAMES[i][1];
+    return (picOf[svgText] = name || ('pic-' + (++picN)));
+  }
+  var picDone = {};
   function picSpan(svgText) {
-    var name = picOf[svgText];
-    if (!name) {
-      for (var i = 0; i < NAMES.length; i++) if (NAMES[i][0] === svgText) name = NAMES[i][1];
-      name = name || ('pic-' + (++picN));
-      picOf[svgText] = name;
+    var name = nameOf(svgText);
+    if (!picDone[name]) {
+      picDone[name] = 1;
       var vb = /viewBox="([\d.\s-]+)"/.exec(svgText), wh = vb ? vb[1].trim().split(/\s+/) : [0, 0, 4, 3], slice = /preserveAspectRatio="[^"]*slice/.test(svgText);
       PICCSS.push('.p-' + name + '{background-image:url("' + dataUri(svgText.replace(/\sclass="[^"]*"/, '')) + '");--ar:' + wh[2] + '/' + wh[3] + (slice ? ';background-size:cover' : '') + '}');
     }
@@ -4244,8 +4262,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     return '<span class="' + (cls ? cls + ' ' : '') + 'px p-' + name + '"></span>';
   }
   function plain(html) {
-    html = html.split(logoImg).join('<span class="lg" role="img" aria-label="CamelCode"></span>');
-    html = html.split(heroArt).join('<img class="heroart" src="' + SHOP.img.home + '" alt="جهاز نوفا برو">');
+    html = html.split(logoImg).join('<span class="lg"></span>');
+    /* a picture's background colour goes in the style sheet (class bg-name), not in a long style="" in the code */
+    html = html.replace(/<div class="(art[^"]*)" style="background:([^"]*)">(<svg[\s\S]*?<\/svg>)/g, function (m, cls, bg, svg) {
+      var name = nameOf(svg);
+      if (!bgDone[name]) { bgDone[name] = 1; PICCSS.push('.bg-' + name + '{background:' + bg + '}'); }
+      return '<div class="' + cls + ' bg-' + name + '">' + svg;
+    });
+    html = html.split(heroArt).join('<img src="' + SHOP.img.home + '" alt="جهاز نوفا برو">');
     Object.keys(I).forEach(function (k) { html = html.split(I[k]).join('<i class="ic i-' + k + '"></i>'); });
     return html.replace(/<svg[\s\S]*?<\/svg>/g, picSpan);
   }
@@ -4259,13 +4283,26 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function close(e) { var t = e.tagName.toLowerCase(); return VOIDS[t] ? '' : '</' + t + '>'; }
   function flat(e) { return [].every.call(e.childNodes, function (c) { return c.nodeType === 3 || (c.nodeType === 1 && INLINE[c.tagName.toLowerCase()] && flat(c)); }); }
   function inner(e) { return [].map.call(e.childNodes, function (c) { return c.nodeType === 3 ? escT(c.data) : open(c) + inner(c) + close(c); }).join(''); }
+  /* a line of code fits the code pane (Moaz 2026-11-15: no scrolling sideways): an element too long for one line puts each part on its own line,
+     and long text or a long comment continues on the next line (HTML ignores those line breaks, so the page is the same) */
+  var MAXW = 54;
+  function words(ind, text, out, first, last) {          /* text split over lines of at most MAXW characters */
+    var line = ind + (first || ''), ws = text.split(' ');
+    ws.forEach(function (w, i) {
+      if (line.trim() && (line + w).length > MAXW && line.length > ind.length + (first || '').length) { out.push(line.replace(/\s+$/, '')); line = ind + '  '; }
+      line += w + (i < ws.length - 1 ? ' ' : '');
+    });
+    out.push(line + (last || ''));
+  }
   function ser(node, ind, out) {
     [].forEach.call(node.childNodes, function (c) {
-      if (c.nodeType === 3) { var t = c.data.replace(/\s+/g, ' ').trim(); if (t) out.push(ind + escT(t)); }
-      else if (c.nodeType === 8) out.push(ind + '<!-- ' + c.data.trim() + ' -->');
+      if (c.nodeType === 3) { var t = c.data.replace(/\s+/g, ' ').trim(); if (t) words(ind, escT(t), out); }
+      else if (c.nodeType === 8) words(ind, c.data.trim(), out, '<!-- ', ' -->');
       else if (c.nodeType === 1) {
-        if (flat(c)) out.push(ind + open(c) + inner(c) + close(c));
-        else { out.push(ind + open(c)); ser(c, ind + '  ', out); out.push(ind + close(c)); }
+        var one = flat(c) ? ind + open(c) + inner(c) + close(c) : '';
+        if (flat(c) && (one.length <= MAXW || !c.childNodes.length || c.childNodes.length === 1 && c.firstChild.nodeType === 3 && (ind + open(c)).length > MAXW - 12)) out.push(one);
+        else if (flat(c) && c.childNodes.length === 1 && c.firstChild.nodeType === 3) { var t2 = escT(c.firstChild.data.replace(/\s+/g, ' ').trim()); out.push(ind + open(c)); words(ind + '  ', t2, out); out.push(ind + close(c)); }
+        else { out.push(ind + open(c)); ser(c, ind + '  ', out); if (close(c)) out.push(ind + close(c)); }
       }
     });
   }
@@ -4276,7 +4313,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var t = document.createElement('template'); t.innerHTML = html;
     var out = []; ser(t.content, '  ', out);
     return ['<!DOCTYPE html>', '<html lang="ar" dir="rtl">', '<head>', '  <meta charset="UTF-8">',
-      '  <meta name="viewport" content="width=device-width, initial-scale=1.0">', '  <title>' + escT(pg.title) + '</title>',
+      '  <meta name="viewport" content="width=device-width">', '  <title>' + escT(pg.title) + '</title>',
       '  <link rel="stylesheet" href="style.css">', '</head>', '<body>'].concat(out, ['</body>', '</html>']).join('\n');
   }
   var SRC = {};
@@ -4293,7 +4330,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.px{display:block;background-position:center;background-repeat:no-repeat;background-size:100% 100%}',
     '.art>.px{width:86%;aspect-ratio:var(--ar)}.art.cov>.px,.art.game>.px{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background-size:cover}',
     '.mem .av .px{width:100%;height:100%}',
-    '@media(max-width:700px){.hero .tx{flex-basis:300px}.hero .heroart{display:block;flex:0 1 220px;width:220px}}',     /* the picture stays on a narrow page too (beside its code): the img step points at it */
+    '.hero img{flex:0 1 340px;width:340px;max-width:100%;height:auto}',                 /* Kashif's .hero .heroart, without a class so the <img> line of the code stays short */
+    '@media(max-width:700px){.hero .tx{flex-basis:300px}.hero img{display:block;flex:0 1 220px;width:220px}}',     /* the picture stays on a narrow page too (beside its code): the img step points at it */
     LOGO_CSS
   ].concat(PICCSS).join('\n');
 
@@ -4335,10 +4373,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابة قبل التحقق',
-    q1: 'ما النص المكتوب بين الكود <h1> و </h1> في كود الصفحة الرئيسية؟',
+    q1: 'ما النص المكتوب بين الكود <h1> و </h1> والذي يشير إلى عنوان الصفحة في كود الصفحة الرئيسية؟',
     q1h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم ابحث في الكود عن السطر الذي يبدأ بـ <h1>، واقرأ الكلمات التي بين <h1> و </h1>.',
     q2: 'ما اسم ملف الصورة (img) التي تظهر جهاز نوفا برو في كود الصفحة الرئيسية؟',
-    q2h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم ابحث في الكود عن السطر الذي يبدأ بـ <img، واقرأ الاسم المكتوب بعد src.',
+    q2h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم وجّه الفأرة إلى صورة جهاز نوفا برو وانظر إلى السطر الذي يقابلها في كود الصفحة، واقرأ اسم الملف الذي ينتهي بـ .jpg',
     q3: 'ما اسم المبرمج الذي كُتبت له التعليمة في تعليق صفحة المنتجات؟',
     q3h: 'انتقل إلى صفحة المنتجات في القائمة، ثم ابحث في الكود عن السطر الأخضر الذي يبدأ بـ <!--، واقرأ التعليق.',
     q4: 'ما كلمة السر (Password) المكتوبة في تعليق صفحة تواصل؟',
@@ -4349,9 +4387,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_h1: 'انظر إلى السطر الذي يبدأ بـ `<h1>` حيث أن هذا الكود يُستخدم في إظهار **عنوان الصفحة**.',
     t_img: 'انظر إلى السطر الذي يبدأ بـ `<img` حيث أن هذا الكود يُستخدم في إظهار **الصور** في الصفحة.',
     t_cm: 'والآن ننتقل إلى أكثر ما يهمنا كهاكرز، ابحث في الكود عن **السطر الأخضر** الذي يبدأ بـ `<!--` هذا الكود يستخدمه **مبرمجو الموقع** لوضع **تعليقات مخفية** في كود الصفحة للتواصل بينهم ولا يظهر بشكل عادي لزائر الصفحة.',
-    t_pnav: 'اضغط على «**المنتجات**» في القائمة داخل الصفحة.',
+    t_pnav: 'اضغط على صفحة «**المنتجات**» في القائمة أعلى الموقع.',
     t_psrc: '**كود الصفحة** على الجهة اليسرى تغيّر ليطابق **صفحة المنتجات**! ابحث عن أي **تعليقات مخفية** داخل هذه الصفحة (**السطر الأخضر** الذي يبدأ بـ `<!--`)',
-    t_cnav: 'اضغط على «**تواصل**» في القائمة داخل الصفحة.',
+    t_cnav: 'اضغط على صفحة «**تواصل**» في القائمة أعلى الموقع.',
     t_csrc: '**كود الصفحة** على الجهة اليسرى تغيّر ليطابق **صفحة تواصل**! ابحث عن أي **تعليقات مخفية** داخل هذه الصفحة (**السطر الأخضر** الذي يبدأ بـ `<!--`)',
     t_q: 'الآن تحدَّ نفسك وأجب عن «**أسئلة التحدي**» على يسار الشاشة. تجد الإجابات في **كود الصفحات**.',
     t_done: 'أحسنت! أنهيت التدريب.',
@@ -4397,7 +4435,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     CC.Q.init([
       { id: 'q1', q: iso(CC.t('q1')), answers: [SHOP.h1.home], hint: iso(CC.t('q1h')) },
-      { id: 'q2', q: iso(CC.t('q2')), answers: [SHOP.img.home, 'store-banner'], hint: iso(CC.t('q2h')) },
+      { id: 'q2', q: iso(CC.t('q2')), answers: [SHOP.img.home, 'nova-pro'], hint: iso(CC.t('q2h')) },
       { id: 'q3', q: iso(CC.t('q3')), answers: [SHOP.dev], hint: iso(CC.t('q3h')) },
       { id: 'q4', q: iso(CC.t('q4')), answers: [SHOP.pass], check: function (v) { return String(v).replace(/\s+/g, '').toLowerCase() === SHOP.pass.toLowerCase(); }, hint: iso(CC.t('q4h')) }
     ]);
@@ -4422,7 +4460,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     async function to(phase) {
       st.phase = phase;
       CC.guide.hide();
-      P.glow(phase === 'h1' ? 'h1' : phase === 'img' ? 'img' : (phase === 'cm1' || phase === 'pcm' || phase === 'ccm') ? 'comment' : null);   /* the line the task says to click glows, in both modes */
+      P.glow(phase === 'h1' ? 'h1' : phase === 'img' ? 'img' : (phase === 'cm1' || phase === 'pcm' || phase === 'ccm') ? 'comment' : null, { stay: phase === 'cm1' || phase === 'pcm' || phase === 'ccm' });   /* the comment steps never scroll the code: the student looks for the green line himself (Moaz 2026-11-15) */   /* the line the task says to click glows, in both modes */
       P.glowLink(null);                                                    /* no glow inside the page: the menu link gets Kashif's ring and pointer, both modes (Moaz 2026-11-15) */
       if (phase === 'hover') {
         cue = false; CC.comment('');                                       /* the start sign goes once the code is open */

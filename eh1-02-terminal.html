@@ -965,6 +965,8 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-code .tx{flex:none;white-space:pre;overflow-wrap:normal}
 /* the code gets half of the browser (was 42%), so a line like `<h1>…</h1>` fits whole (Moaz 2026-11-15) */
 .br-view[data-mode="cmp"] .br-src{flex-basis:50%}
+/* smaller code (Moaz 2026-11-15): with the page's code written to fit, nothing needs scrolling sideways */
+.br-code{font-size:14px}
 
 </style>
 <style id="cc-skin">
@@ -3751,7 +3753,9 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     var op = t < 250 ? t / 250 : t < 2400 ? 1 : t < 2900 ? 1 - (t - 2400) / 500 : 0;
     var ps = gEls.ptr.style, ax = rt ? 22 : 4, ay = rt ? 30 : 3;      /* the point that sits on the target: the arrow's tip, or the middle of the mouse */
     ps.display = op > 0 ? 'block' : 'none'; ps.opacity = op;
-    ps.transform = 'translate(' + (cx + ox - ax) + 'px,' + (cy + oy - ay) + 'px) scale(' + (1 - press * .18) + ')';
+    var sz = e.ccSite ? .62 : 1;                                         /* over the website (drawn smaller in the laptop) the pointer is smaller too (Moaz 2026-11-15) */
+    ps.transformOrigin = ax + 'px ' + ay + 'px';
+    ps.transform = 'translate(' + (cx + ox - ax) + 'px,' + (cy + oy - ay) + 'px) scale(' + sz * (1 - press * .18) + ')';
     if (rt) { var rb = gEls.ptr.querySelector('.rb'); if (rb) rb.setAttribute('fill', press > 0 ? '#d97706' : '#FCAD0F'); }
     var rp = gEls.rip.style;
     if (t > 1300 && t < 2100) { var k = (t - 1300) / 800; rp.display = 'block'; rp.left = cx + 'px'; rp.top = cy + 'px'; rp.opacity = .8 * (1 - k); rp.transform = 'translate(-50%,-50%) scale(' + (.3 + k * 1.9) + ')'; }
