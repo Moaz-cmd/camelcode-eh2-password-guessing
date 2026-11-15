@@ -3111,7 +3111,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* a lab can still ask for it: CC.site.fitScale (EH1 lab 3 methodology: 0.7, Moaz 2026-11-14 «don't zoom in the website, make it normal») */
     /* it may also be a function of the browser window's width, so the site can be a little smaller beside the terminal (EH1 labs 4 and 5: 80% alone, 70% beside the terminal, Moaz 2026-11-14 «not so zoomed in, not so zoomed out») */
     function fitScale() { var f = CC.site && CC.site.fitScale; if (typeof f === 'function') f = f(view.clientWidth); return f || 0; }
-    if (window.ResizeObserver) new ResizeObserver(function () { applyZoom(); shintUpd(); partsDraw(); }).observe(view);
+    if (window.ResizeObserver) new ResizeObserver(function () { applyZoom(); shintUpd(); partsDraw(); fitCode(); }).observe(view);
     /* «scroll down» hint on the website (Moaz 2026-11-14, like the one of «شرح مختصر»): a bouncing gold pill at the bottom of the page while the page
        has more below; it goes once the page is scrolled to its end */
     var shint = el('div', 'br-shint'); shint.setAttribute('aria-hidden', 'true');
@@ -3198,6 +3198,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var r = rowOf(inf.open); if (r) { r.classList.add('hv'); if (!inView(r)) r.scrollIntoView({ block: 'center' }); }
       if (inf.close !== inf.open) { var r2 = rowOf(inf.close); if (r2) r2.classList.add('hv2'); }
     }
+    /* the code font gets smaller until the page's longest line fits the pane: a line of code is never broken in two and never needs scrolling sideways (Moaz 2026-11-15) */
+    function fitCode() {
+      if (!codeEl || !codeEl.firstChild || !codeEl.clientWidth) return;
+      codeEl.style.fontSize = '';
+      var fs = parseFloat(getComputedStyle(codeEl).fontSize) || 14, W = codeEl.clientWidth, max = 0;
+      [].forEach.call(codeEl.children, function (r) { if (r.scrollWidth > max) max = r.scrollWidth; });
+      if (max > W) codeEl.style.fontSize = Math.max(5, fs * W / max * 0.98) + 'px';
+    }
     function buildSource(path) {
       var pg = S.pages[path], an = analyse(pg); srcPath = path;
       (pg.marks || []).forEach(function (m) { m.used = false; });
@@ -3226,7 +3234,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         }
         codeEl.appendChild(row);
       });
-      codeEl.scrollTop = 0;
+      codeEl.scrollTop = 0; fitCode();
       $('.br-srcttl', root).textContent = 'view-source:' + S.host + path;
       applyGlow();
     }
@@ -4287,31 +4295,31 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function close(e) { var t = e.tagName.toLowerCase(); return VOIDS[t] ? '' : '</' + t + '>'; }
   function flat(e) { return [].every.call(e.childNodes, function (c) { return c.nodeType === 3 || (c.nodeType === 1 && INLINE[c.tagName.toLowerCase()] && flat(c)); }); }
   function inner(e) { return [].map.call(e.childNodes, function (c) { return c.nodeType === 3 ? escT(c.data) : open(c) + inner(c) + close(c); }).join(''); }
-  /* a line of code fits the code pane (Moaz 2026-11-15: no scrolling sideways): an element too long for one line puts each part on its own line,
-     and long text or a long comment continues on the next line (HTML ignores those line breaks, so the page is the same) */
-  var MAXW = 54;
-  function words(ind, text, out, first, last) {          /* text split over lines of at most MAXW characters */
-    var line = ind + (first || ''), ws = text.split(' ');
-    ws.forEach(function (w, i) {
-      if (line.trim() && (line + w).length > MAXW && line.length > ind.length + (first || '').length) { out.push(line.replace(/\s+$/, '')); line = ind + '  '; }
-      line += w + (i < ws.length - 1 ? ' ' : '');
-    });
-    out.push(line + (last || ''));
-  }
+  /* Moaz 2026-11-15: nothing is ever broken in two (a text, a comment, or an element holding text stays on ONE line); only an element that
+     holds other elements puts each of them on its own line, like real code. The engine makes the code font smaller so the longest line fits. */
+  function textOnly(e) { return [].every.call(e.childNodes, function (c) { return c.nodeType === 3; }); }
+  function mixed(e) { return [].some.call(e.childNodes, function (c) { return c.nodeType === 3 && c.data.trim(); }); }
   function ser(node, ind, out) {
     [].forEach.call(node.childNodes, function (c) {
-      if (c.nodeType === 3) { var t = c.data.replace(/\s+/g, ' ').trim(); if (t) words(ind, escT(t), out); }
-      else if (c.nodeType === 8) words(ind, c.data.trim(), out, '<!-- ', ' -->');
+      if (c.nodeType === 3) { var t = c.data.replace(/\s+/g, ' ').trim(); if (t) out.push(ind + escT(t)); }
+      else if (c.nodeType === 8) out.push(ind + '<!-- ' + c.data.trim() + ' -->');
       else if (c.nodeType === 1) {
         var one = flat(c) ? ind + open(c) + inner(c) + close(c) : '';
-        if (flat(c) && (one.length <= MAXW || !c.childNodes.length || c.childNodes.length === 1 && c.firstChild.nodeType === 3 && (ind + open(c)).length > MAXW - 12)) out.push(one);
-        else if (flat(c) && c.childNodes.length === 1 && c.firstChild.nodeType === 3) { var t2 = escT(c.firstChild.data.replace(/\s+/g, ' ').trim()); out.push(ind + open(c)); words(ind + '  ', t2, out); out.push(ind + close(c)); }
+        if (one && (textOnly(c) || mixed(c) || one.length <= 60)) out.push(one);
         else { out.push(ind + open(c)); ser(c, ind + '  ', out); if (close(c)) out.push(ind + close(c)); }
       }
     });
   }
+  /* a few of Kashif's sentences are shorter here, so every line of the code stays on ONE line in a readable font (Moaz 2026-11-15) */
+  var SHORT = [
+    ['بدأ ' + SHOP.name + ' كمحل صغير لمحبي الألعاب، وأصبح اليوم وجهة اللاعبين في المدينة. ', 'بدأنا كمحل صغير لمحبي الألعاب. '],
+    ['بدأ ' + SHOP.name + ' كمحل صغير لمحبي الألعاب، وكبر ليصبح وجهة اللاعبين في المدينة. نختار منتجاتنا بعناية، ونحب أن نساعد كل لاعب في العثور على ما يناسبه.', 'بدأنا كمحل صغير لمحبي الألعاب، وكبرنا لنصبح وجهة اللاعبين.'],
+    ['نؤمن أن اللعب متعة للجميع، لذلك نوفر أجهزة وألعاباً لمختلف الأعمار والميزانيات.', 'نؤمن أن اللعب متعة للجميع، لكل الأعمار والميزانيات.'],
+    ['المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة، ويمكنك الدخول من الباب الرئيسي ذي المظلة المخططة.', 'المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة.']
+  ];
   function toSrc(path, pg) {
     var html = plain(pg.html), cm = COMMENTS[path];
+    SHORT.forEach(function (r) { html = html.split(r[0]).join(r[1]); });
     html = html.replace('<h1>عالم الألعاب في <em>مكان واحد</em></h1>', '<h1>' + SHOP.h1.home + '</h1>');
     if (cm) html = html.replace(cm[0], '<!-- ' + cm[1] + ' -->' + cm[0]);
     var t = document.createElement('template'); t.innerHTML = html;
@@ -4381,7 +4389,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q1h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم ابحث في الكود عن السطر الذي يبدأ بـ <h1>، واقرأ الكلمات التي بين <h1> و </h1>.',
     q2: 'ما اسم ملف الصورة (img) التي تظهر جهاز نوفا برو في كود الصفحة الرئيسية؟',
     q2h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم وجّه الفأرة إلى صورة جهاز نوفا برو وانظر إلى السطر الذي يقابلها في كود الصفحة، واقرأ اسم الملف الذي ينتهي بـ .jpg',
-    q3: 'ما اسم المبرمج الذي كُتبت له التعليمة في تعليق صفحة المنتجات؟',
+    q3: 'ما اسم المبرمج الموجود في تعليق مخفي في صفحة المنتجات؟',
     q3h: 'انتقل إلى صفحة المنتجات في القائمة، ثم ابحث في الكود عن السطر الأخضر الذي يبدأ بـ <!--، واقرأ التعليق.',
     q4: 'ما كلمة السر (Password) المكتوبة في تعليق صفحة تواصل؟',
     q4h: 'انتقل إلى صفحة تواصل في القائمة، ثم ابحث في الكود عن السطر الأخضر الذي يبدأ بـ <!--، واقرأ التعليق.',
