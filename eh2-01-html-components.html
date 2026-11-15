@@ -960,6 +960,12 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 @keyframes brShintS{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
 @media (prefers-reduced-motion:reduce){.br-shint.side.show{animation:none}}
 
+/* a line of code is always ONE line (Moaz 2026-11-15, every lab): no wrapping; a long line makes the code pane scroll sideways */
+.br-code .ln{width:max-content;min-width:100%}
+.br-code .tx{flex:none;white-space:pre;overflow-wrap:normal}
+/* the code gets half of the browser (was 42%), so a line like `<h1>…</h1>` fits whole (Moaz 2026-11-15) */
+.br-view[data-mode="cmp"] .br-src{flex-basis:50%}
+
 </style>
 <style id="cc-skin">
 :root{
@@ -4334,7 +4340,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابة قبل التحقق',
-    q1: 'ما النص المكتوب بين <h1> و </h1> والذي يشير إلى عنوان الصفحة في كود الصفحة الرئيسية؟',
+    q1: 'ما النص المكتوب بين الكود <h1> و </h1> في كود الصفحة الرئيسية؟',
     q1h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم ابحث في الكود عن السطر الذي يبدأ بـ <h1>، واقرأ الكلمات التي بين <h1> و </h1>.',
     q2: 'ما اسم ملف الصورة (img) في كود الصفحة الرئيسية؟',
     q2h: 'انتقل إلى الصفحة الرئيسية في القائمة، ثم ابحث في الكود عن السطر الذي يبدأ بـ <img، واقرأ الاسم المكتوب بعد src.',
