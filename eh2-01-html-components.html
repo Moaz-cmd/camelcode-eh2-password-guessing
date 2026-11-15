@@ -4422,7 +4422,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       st.phase = phase;
       CC.guide.hide();
       P.glow(phase === 'h1' ? 'h1' : phase === 'img' ? 'img' : (phase === 'cm1' || phase === 'pcm' || phase === 'ccm') ? 'comment' : null);   /* the line the task says to click glows, in both modes */
-      P.glowLink(phase === 'pnav' ? '/products' : phase === 'cnav' ? '/contact' : null);        /* and so does the menu link the student must press, in both modes */
+      P.glowLink(null);                                                    /* no glow inside the page: the menu link gets Kashif's ring and pointer, both modes (Moaz 2026-11-15) */
       if (phase === 'hover') {
         cue = false; CC.comment('');                                       /* the start sign goes once the code is open */
         L.step(1, 'done'); L.step(2, 'now');
@@ -4449,7 +4449,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (phaseIs('cm1')) return to('pnav');
       } else if (phase === 'pnav') {
         if (self) { await CC.popup(CC.t('p5_h'), CC.t('p5')); if (!ok()) return; }
-        L.task(CC.t('t_pnav')); guide(function () { return P.pageLink('/products'); }, function () { return !phaseIs('pnav'); });
+        L.task(CC.t('t_pnav')); guide(function () { return P.pageLink('/products'); }, function () { return !phaseIs('pnav'); }, true);
         if (curPath === '/products') return to('pcm');
       } else if (phase === 'pcm') {
         L.task(CC.t('t_psrc')); guide(function () { return P.codeLine('comment') || P.spot(); }, function () { return !phaseIs('pcm'); });
@@ -4457,7 +4457,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (phaseIs('pcm')) return to('cnav');
       } else if (phase === 'cnav') {
         if (self) { await CC.popup(CC.t('p6_h'), CC.t('p6')); if (!ok()) return; }
-        L.task(CC.t('t_cnav')); guide(function () { return P.pageLink('/contact'); }, function () { return !phaseIs('cnav'); });
+        L.task(CC.t('t_cnav')); guide(function () { return P.pageLink('/contact'); }, function () { return !phaseIs('cnav'); }, true);
         if (curPath === '/contact') return to('ccm');
       } else if (phase === 'ccm') {
         L.task(CC.t('t_csrc')); guide(function () { return P.codeLine('comment') || P.spot(); }, function () { return !phaseIs('ccm'); });
