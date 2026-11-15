@@ -954,6 +954,12 @@ body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 @keyframes brFrameIn{from{opacity:0;transform:translateY(-50%) scale(1.15)}to{opacity:1;transform:translateY(-50%)}}
 @media (prefers-reduced-motion:reduce){.br-shint.show,.br-parts.in .br-part,.br-hostframe.in{animation:none}}
 
+/* the «scroll down» pill sits at the bottom of the page's scrollbar, not in the middle (Moaz 2026-11-15, every lab; engine/targets/browser.js sets the side) */
+.br-shint.side{transform:none}
+.br-shint.side.show{animation:brShintS 1.3s ease-in-out infinite}
+@keyframes brShintS{0%,100%{transform:translateY(0)}50%{transform:translateY(5px)}}
+@media (prefers-reduced-motion:reduce){.br-shint.side.show{animation:none}}
+
 </style>
 <style id="cc-skin">
 :root{
@@ -2109,6 +2115,28 @@ body.cc-plain .br-omni.urlflash{background:inherit!important;box-shadow:none!imp
 .cs .cs-chips:not(:empty),body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-chips:not(:empty){box-sizing:border-box;width:fit-content;min-width:9em;max-width:calc(100% - 20px);margin-left:auto!important;margin-right:auto!important;justify-content:center;padding-left:14px!important;padding-right:14px!important}
 body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle svg,body.cc-q-noanim .qpanel{transition:none!important;animation:none!important}      /* a challenge opens its questions panel at once (Moaz 2026-11-14) */
 
+/* the parts of a command are never cut off (Moaz 2026-11-15, every lab): no «…»; each part keeps its whole name and the row gets smaller to fit
+   (engine/hacker-laptop.js fitChips sets --ck). Each description wraps under its own word. */
+.cs .cs-chips .tk,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk{flex:0 0 auto;min-width:0;max-width:none;zoom:var(--ck,1)}
+.cs .cs-chips .tk b,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-width:none;overflow:visible;text-overflow:clip}
+.cs .cs-chips .tk small,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk small{white-space:normal;max-width:10em;overflow:visible;text-overflow:clip;overflow-wrap:normal}
+
+/* a hint is never shown once its question is answered right, even if it was open before (Moaz 2026-11-15, every lab) */
+.qrow.done .qhint{display:none!important}
+
+/* the warning line under the lab «نتدرب في هذه المنصة...»: red, and always ONE line; engine/brand-addon.js makes its text smaller to fit (Moaz 2026-11-15, every lab) */
+.ethics,.ethics span,body.side .ethics{color:#C62828!important;font-weight:700}
+.ethics,body.side.cc-has-feed .ethics{white-space:nowrap!important}
+.ethics span{display:inline-block;white-space:nowrap}
+
+/* the guide ring is ONE box (Moaz 2026-11-15, every lab): the running light moves on the ring's own frame, not in a second frame 9px outside it */
+.gd-ring::before{inset:-3px!important;padding:3px!important;border-radius:inherit!important}
+
+/* the guide ring on the browser's right-click menu («عرض مصدر الصفحة») is navy, not gold (Moaz 2026-11-15, every lab) */
+.gd-ring.navy{border-color:#0E1F39!important;box-shadow:0 0 0 4px rgba(14,31,57,.22),0 0 20px 5px rgba(14,31,57,.4)!important;animation:gdpulseN 1.5s ease-in-out infinite!important}
+.gd-ring.navy::before{background:conic-gradient(from var(--gdA),transparent 0 58%,rgba(255,255,255,.95) 76%,#0E1F39 88%,transparent 100%)!important}
+@keyframes gdpulseN{0%,100%{border-color:rgba(14,31,57,.6)}50%{border-color:#0E1F39}}
+
 </style><!--/cc-skin-->
 </head>
 <body class="side">
@@ -2676,6 +2704,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       list.forEach(function (c, i) {
         var d = el('div', 'tk t' + i); d.innerHTML = '<b></b><small></small>'; d.firstChild.textContent = c[0]; d.lastChild.textContent = c[1]; box.appendChild(d);
       });
+      fitChips();
       var all = box.children;
       for (var i = 0; i < all.length; i++) {
         all[i].classList.add('on');
@@ -2684,6 +2713,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       return true;
     };
     L.clearChips = function () { $('#chips', root).innerHTML = ''; };
+    /* the parts of a command are never cut off with «…» (Moaz 2026-11-15, every lab): when the row does not fit the terminal, all of it gets smaller
+       (--ck scales the parts) until it fits; it grows back when the terminal gets wider */
+    function fitChips() {
+      var box = $('#chips', root); if (!box) return;
+      box.style.setProperty('--ck', '1'); if (!box.children.length) return;
+      for (var k = 1, n = 0; n < 14 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
+    }
+    if (window.ResizeObserver) { var ckW = 0; new ResizeObserver(function () { var w = root.clientWidth; if (w !== ckW) { ckW = w; fitChips(); } }).observe(root); }
     L.actions = function (btns) {
       var a = $('#act', root); a.innerHTML = '';
       btns.forEach(function (b) { var x = el('button', 'btn ' + (b.cls || 'ghosty')); x.textContent = b.label; x.onclick = b.fn; a.appendChild(x); });
@@ -4153,6 +4190,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     rs.display = 'block'; rs.left = (r.left - pad) + 'px'; rs.top = (r.top - pad) + 'px'; rs.width = (r.width + pad * 2) + 'px'; rs.height = (r.height + pad * 2) + 'px';
     var fnv = function (v) { return typeof v === 'function' ? v() : v; };
     gEls.ring.classList.toggle('dim', !!fnv(gCfg.dim));
+    gEls.ring.classList.toggle('navy', !!(e.closest && e.closest('.br-ctx')));      /* the ring on the browser's right-click menu («عرض مصدر الصفحة») is navy, not gold (Moaz 2026-11-15, every lab) */
     var lt = fnv(gCfg.label), ls = gEls.lab.style;
     if (lt) { gEls.lab.textContent = lt; ls.display = 'block'; ls.left = (r.left + r.width / 2) + 'px'; ls.top = (r.top + r.height + pad + 10) + 'px'; } else ls.display = 'none';
     if (!gCfg.pointer || window.matchMedia('(prefers-reduced-motion:reduce)').matches) { gEls.ptr.style.display = 'none'; gEls.rip.style.display = 'none'; return; }
@@ -6022,6 +6060,8 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: �
 /* any target (phone, computer, browser): the device in the stage that is not the laptop */
 /* the ethics line centres between the devices; with only one (EH1 lab 3: the browser, no laptop) under that one (2026-11-12) */
 (function fc(){try{var ph=document.querySelector('#stage .phone')||document.querySelector('#stage .dev:not(#laptop)')||document.getElementById('laptop'),lp=document.getElementById('laptop')||ph,f=document.querySelector('.ethics');if(ph&&lp&&f&&document.body.classList.contains('cc-has-feed')){var Z=(window.CC&&CC.Z)||1,pr=ph.getBoundingClientRect(),lr=lp.getBoundingClientRect(),a=Math.min(pr.left,lr.left),b=Math.max(pr.right,lr.right);f.style.left=(((a+b)/2)/Z)+'px';f.style.maxWidth=(Math.max(220,b-a-16)/Z)+'px';}}catch(e){}requestAnimationFrame(fc);})();
+/* the warning line is always ONE line (Moaz 2026-11-15, every lab): its text shrinks to the width it has, and grows back up to its normal size */
+(function(){var lastW=-1,lastT='';function fit(){try{var f=document.querySelector('.ethics'),s=f&&f.querySelector('span');if(!f||!s)return;var cs=getComputedStyle(f),w=f.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0),t=s.textContent;if(w===lastW&&t===lastT)return;lastW=w;lastT=t;s.style.fontSize='';var nat=s.offsetWidth;if(w>0&&nat>w){var base=parseFloat(getComputedStyle(s).fontSize)||16;s.style.fontSize=Math.max(8,Math.floor(base*w/nat*10)/10)+'px';}}catch(e){}}(function loop(){fit();requestAnimationFrame(loop);})();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){lastW=-1;fit();});})();
 (function(){
   /* exact golden layout (Farhan 2026-11-10, made exact by Moaz 2026-11-11), three-column layout only:
      questions open:   instructions = questions column (panel + its 38px tab gutter) = P, stage = phi^2 * P

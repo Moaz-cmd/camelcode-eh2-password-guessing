@@ -5541,5 +5541,19 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
 
 </script><!--/cc-addon-->
 <audio id="ccKeySnd" preload="auto" src="data:audio/wav;base64,UklGRrwFAABXQVZFZm10IBAAAAABAAEAgLsAAAB3AQACABAAZGF0YZgFAAD8/////f/5//r/AwAMAA8AFAAYABEACAAGAAQAAQD///7/9//s/+b/4//d/9z/4P/f/9//6P/v//P/9//5//7/BgAKAA4AGgAmAC0AMwA2ADYANAAyADAALQAjABMABwACAPf/4f/O/8D/tf+5/83/4//0////BQAHAAsAGwArACoAKAArABsABQD///L/3P/W/9T/zP/T/+H/5//s//T/+f/6////DwAeABoAEgAVABgAFQARAAsABwAAAPX/8P/q/93/2v/l/+//+v8EAAcABAAEABIAGwAUABEACADv//r/CQDk/93/AgDt/9L/8//6/+7/EAATAPX/+f/z/93/5//4/wwAJwAtAD0ATQAwACUAIQAFACYAJQDf/z8AxP+G+wf0UepA3nfUvdLY1vzbieJW68b0VP4DCM0QQhhgHpQioiTCJPEiMR/VGUkT5AsKBET8//SC7jLpWuUS437imuMr5gvq/u6t9NH6/QDDBvkLVRCAE3wVQhanFdkTLxHJDcsJXQWuAA/8u/fT85zwWu4V7dXssO2b72Ty0/XA+fT9KwI6BvAJBQ1LD7UQLxGyEFAPHQ01CswGIANe/6v7PfhO9QPze/HQ8Pzw9vG58xv27fgW/GX/pgLJBaMI5wp6DFINUw2VDEgLagkKB18EjAGp/uf7dPlx9+X12fR19M30v/Uu9xv5ZfvR/T4AmALFBKEGEQgGCXUJWwnGCLUHKwZjBHsCcABs/pr8+fqv+d34bvhj+MX4hfma+vv7e/0K/6MAJAJ0A4oETwW6BdcFoQUcBVwEZwNIAhQB4P/E/s39Af1x/B/8Avwk/IH8Dv29/XP+Iv/Z/4cADAF0AcMB6QHxAeMBqwFXAQABqABVAAwAzv+q/57/oP+3/9r/8v8BAA8AEQAVAB8AFQD2/+P/4//p/+r/5P/b/9P/0f/W/9//7v/+/wcADQARABAACgALABMAFgATABMAFQAPAAMA/P/6//n/+f/3/+r/1//Q/9j/4v/h/97/6P/8/xAAHQAgACEAJwAtAC4ALAAjABsAFwAOAAIA+v/4//T/7v/o/97/0//S/9//7f/1/wQAGAAgAB0AHAASAAAA9//2//L/7f/s/+7/9/8AAAQABwAGAAIAAwALABMAGQAdABwAGAAVABAADAAFAPr/9f/y/+j/4//s//b//v8HAAoACQAJAAsADgAXAB0AHAAYABAAAgD3//D/6//w//j/+//9/wEAAgACAAUABwAGAAYABQAFAAUAAwAFAAkABwABAPz/+v/4//b/9v/4//v//v8BAAcACQAFAAQAAgD6//T/9//6//r//P8AAAIAAQD///7///8BAAMABAAFAAUABAAFAAQAAAAAAAIAAgD+//r/+v/9/wEAAwD///v//P/9////AAD///7//v/+//7///////7//v/+//3//f/+/wEAAwADAAIAAgACAAAAAAAAAP7//v///wAAAAD//wAAAgACAAEAAAAAAP///v///////////wAAAAACAAIAAQABAAAAAAAAAAAA/////wAAAAAAAAAAAQACAAEAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAP////////////8AAAAAAAAAAAAAAAABAAEAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP////8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"></audio>
+<style>
+/* a hint is never shown once its question is answered right, even if it was open before (Moaz 2026-11-15, every lab) */
+.qrow.done .qhint{display:none!important}
+.gd-ring::before{inset:-3px!important;padding:3px!important;border-radius:inherit!important}     /* one box: the running light on the ring itself (Moaz 2026-11-15) */
+
+/* the warning line under the lab «نتدرب في هذه المنصة...»: red, and always ONE line; engine/brand-addon.js makes its text smaller to fit (Moaz 2026-11-15, every lab) */
+.ethics,.ethics span,body.side .ethics{color:#C62828!important;font-weight:700}
+.ethics,body.side.cc-has-feed .ethics{white-space:nowrap!important}
+.ethics span{display:inline-block;white-space:nowrap}
+</style>
+<script>
+/* the warning line is always ONE line (Moaz 2026-11-15, every lab): its text shrinks to the width it has, and grows back up to its normal size */
+(function(){var lastW=-1,lastT='';function fit(){try{var f=document.querySelector('.ethics'),s=f&&f.querySelector('span');if(!f||!s)return;var cs=getComputedStyle(f),w=f.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0),t=s.textContent;if(w===lastW&&t===lastT)return;lastW=w;lastT=t;s.style.fontSize='';var nat=s.offsetWidth;if(w>0&&nat>w){var base=parseFloat(getComputedStyle(s).fontSize)||16;s.style.fontSize=Math.max(8,Math.floor(base*w/nat*10)/10)+'px';}}catch(e){}}(function loop(){fit();requestAnimationFrame(loop);})();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){lastW=-1;fit();});})();
+</script>
 </body>
 </html>
