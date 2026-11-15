@@ -4260,18 +4260,21 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     if (picOf[svgText]) return picOf[svgText];
     var name = null;
     for (var i = 0; i < NAMES.length; i++) if (NAMES[i][0] === svgText) name = NAMES[i][1];
-    return (picOf[svgText] = name || ('pic-' + (++picN)));
+    return (picOf[svgText] = name || ('team-' + (++picN)));
   }
   var picDone = {};
+  /* every picture of the shop is a real <img> with its own file (Moaz 2026-11-15: pointing at a product picture shows its <img> line);
+     the file is the drawing, served as a data address by the browser target (CC.site.assets) */
+  var ALT = { store: 'المتجر', shelf: 'رفوف المتجر' };
+  ['devices', 'games', 'gear'].forEach(function (g) { PRODUCTS[g].forEach(function (it) { var m = /<svg[\s\S]*<\/svg>/.exec(it.a); if (m) ALT[nameOf(m[0])] = it.n; }); });
   function picSpan(svgText) {
-    var name = nameOf(svgText);
+    var name = nameOf(svgText), file = name + '.jpg';
     if (!picDone[name]) {
       picDone[name] = 1;
-      var vb = /viewBox="([\d.\s-]+)"/.exec(svgText), wh = vb ? vb[1].trim().split(/\s+/) : [0, 0, 4, 3], slice = /preserveAspectRatio="[^"]*slice/.test(svgText);
-      PICCSS.push('.p-' + name + '{background-image:url("' + dataUri(svgText.replace(/\sclass="[^"]*"/, '')) + '");--ar:' + wh[2] + '/' + wh[3] + (slice ? ';background-size:cover' : '') + '}');
+      if (!ASSETS[file]) ASSETS[file] = dataUri(svgText.replace(/\sclass="[^"]*"/, ''));
     }
     var cls = (/^<svg[^>]*\sclass="([^"]*)"/.exec(svgText) || [])[1];
-    return '<span class="' + (cls ? cls + ' ' : '') + 'px p-' + name + '"></span>';
+    return '<img ' + (cls ? 'class="' + cls + '" ' : '') + 'src="' + file + '" alt="' + (ALT[name] || '') + '">';
   }
   function plain(html) {
     html = html.split(logoImg).join('<span class="lg"></span>');
@@ -4339,9 +4342,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.ic{display:inline-block;background-color:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}',
     '.cat{position:relative}.cat::before{content:"";position:absolute;inset-inline-start:16px;top:50%;width:2.3em;height:2.3em;margin-top:-1.15em;border-radius:12px;background:var(--navy)}',
     '.cat .ic{position:relative;z-index:1;background:var(--gold)!important;-webkit-mask-origin:content-box;mask-origin:content-box;-webkit-mask-clip:content-box;mask-clip:content-box}',
-    '.px{display:block;background-position:center;background-repeat:no-repeat;background-size:100% 100%}',
-    '.art>.px{width:86%;aspect-ratio:var(--ar)}.art.cov>.px,.art.game>.px{position:absolute;inset:0;width:100%;height:100%;aspect-ratio:auto;background-size:cover}',
-    '.mem .av .px{width:100%;height:100%}',
+    '.art>img{display:block;width:86%;height:auto}.art.cov>img,.art.game>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}',
+    'img.scene,img.avp{display:block;width:100%;height:100%;object-fit:cover}',
     '.hero img{flex:0 1 340px;width:340px;max-width:100%;height:auto}',                 /* Kashif's .hero .heroart, without a class so the <img> line of the code stays short */
     '@media(max-width:700px){.hero .tx{flex-basis:300px}.hero img{display:block;flex:0 1 220px;width:220px}}',     /* the picture stays on a narrow page too (beside its code): the img step points at it */
     LOGO_CSS
