@@ -2138,10 +2138,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 /* the guide ring is ONE box (Moaz 2026-11-15, every lab): the running light moves on the ring's own frame, not in a second frame 9px outside it */
 .gd-ring::before{inset:-3px!important;padding:3px!important;border-radius:inherit!important}
 
-/* the guide ring on the browser's right-click menu («عرض مصدر الصفحة») is navy, not gold (Moaz 2026-11-15, every lab) */
-.gd-ring.navy{border-color:#0E1F39!important;box-shadow:0 0 0 4px rgba(14,31,57,.22),0 0 20px 5px rgba(14,31,57,.4)!important;animation:gdpulseN 1.5s ease-in-out infinite!important}
-.gd-ring.navy::before{background:conic-gradient(from var(--gdA),transparent 0 58%,rgba(255,255,255,.95) 76%,#0E1F39 88%,transparent 100%)!important}
-@keyframes gdpulseN{0%,100%{border-color:rgba(14,31,57,.6)}50%{border-color:#0E1F39}}
 
 </style><!--/cc-skin-->
 </head>
@@ -4489,7 +4485,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     rs.display = 'block'; rs.left = (r.left - pad) + 'px'; rs.top = (r.top - pad) + 'px'; rs.width = (r.width + pad * 2) + 'px'; rs.height = (r.height + pad * 2) + 'px';
     var fnv = function (v) { return typeof v === 'function' ? v() : v; };
     gEls.ring.classList.toggle('dim', !!fnv(gCfg.dim));
-    gEls.ring.classList.toggle('navy', !!(e.closest && e.closest('.br-ctx')));      /* the ring on the browser's right-click menu («عرض مصدر الصفحة») is navy, not gold (Moaz 2026-11-15, every lab) */
     var lt = fnv(gCfg.label), ls = gEls.lab.style;
     if (lt) { gEls.lab.textContent = lt; ls.display = 'block'; ls.left = (r.left + r.width / 2) + 'px'; ls.top = (r.top + r.height + pad + 10) + 'px'; } else ls.display = 'none';
     if (!gCfg.pointer || window.matchMedia('(prefers-reduced-motion:reduce)').matches) { gEls.ptr.style.display = 'none'; gEls.rip.style.display = 'none'; return; }
