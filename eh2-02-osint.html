@@ -4428,9 +4428,9 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
 
 /* Lab EH2-02 (OSINT): every website besides the shop. The browser target shows them as CC.site.hosts (engine/targets/browser.js, «SEVERAL SITES»).
    LEGAL RULE (Moaz 2026-11-17, every lab): every fictional site uses a reserved `.example` address (RFC 2606: it can never be registered by anyone) and a plain
-   descriptive name that is not a real brand or business («محرك البحث بحث», «منصة التواصل», «شبكة الوظائف», «موقع الأخبار»...). No real logo, colours or layout of a known site.
+   descriptive name that is not a real brand or business («محرك البحث بحث», «منصة التواصل الاجتماعي», «شبكة الوظائف», «موقع الأخبار»...). No real logo, colours or layout of a known site.
    - search.example   the search engine «بحث»: a real search box (the name gives the results, anything else says nothing was found); opened in a new tab (the «+» button)
-   - social.example   «منصة التواصل», a social network: the target's profile (bio, highlights, posts, comments)
+   - social.example   «منصة التواصل الاجتماعي», a social network: the target's profile (bio, highlights, posts, comments)
    - jobs.example     «شبكة الوظائف», a work network: his work profile (jobs, education, work email)
    - news.example     «موقع الأخبار», a news site: an interview with him (childhood, hometown, hobby)
    - four results that are NOT about him (Moaz 2026-11-17): a dentist and a young footballer with the same name, a page about the meaning of the name «سعيد»,
@@ -4554,7 +4554,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     { site: 'عيادة الأسنان', bg: '#0e7490', ico: IC.tooth, cite: 'clinic.example › doctors › saeed', href: '//clinic.example/doctors/saeed', key: 'dentist',
       t: 'د. سعيد التميمي | استشاري تقويم الأسنان', p: 'د. سعيد التميمي، استشاري تقويم الأسنان في عيادة الأسنان بالخور، خبرة أكثر من 20 عاماً في علاج الأطفال والكبار. تعرّف على الطبيب وأوقات العيادة.',
       extra: '<div class="rate"><span class="st">★★★★★</span> 4.8 · 126 مراجعة · عيادة أسنان في الخور</div>' },
-    { site: 'منصة التواصل', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
+    { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
       t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ')', p: '🛒 مدير متجر CamelCode | 🎂 14 مارس 1987 | 🏠 الوكرة | ⚽ عنابي للأبد | 🦅 الصقر رفيق الدرب. 1,248 متابعاً · 86 منشوراً. شاهد صور ومنشورات سعيد التميمي.',
       extra: '<div class="imgs">' + ['falcon', 'store', 'stadium', 'cake'].map(function (k) { return thumb(PIC[k]); }).join('') + '</div>' },
     { site: 'شبكة الوظائف', bg: '#0f766e', ico: IC.bag, cite: 'jobs.example › profile › saeed-altamimi', href: T.workHref, key: 'work',
@@ -4633,8 +4633,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     }
   };
 
-  /* =================================================================== social.example: «منصة التواصل» =================================================================== */
-  var LOGO_SO = '<span class="brand"><span class="bm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A3.5 3.5 0 017.5 3h6A3.5 3.5 0 0117 6.5v3A3.5 3.5 0 0113.5 13H9l-3.5 3v-3.3A3.5 3.5 0 014 9.5z" fill="#fff"/><path d="M19 9.5a2.5 2.5 0 012 2.4v2.6a2.5 2.5 0 01-2 2.4V19l-2.6-2.1H13a2.5 2.5 0 01-2.3-1.6" fill="none" stroke="#fde68a" stroke-width="1.8" stroke-linecap="round"/></svg></span>منصة التواصل</span>';
+  /* =================================================================== social.example: «منصة التواصل الاجتماعي» =================================================================== */
+  var LOGO_SO = '<span class="brand"><span class="bm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A3.5 3.5 0 017.5 3h6A3.5 3.5 0 0117 6.5v3A3.5 3.5 0 0113.5 13H9l-3.5 3v-3.3A3.5 3.5 0 014 9.5z" fill="#fff"/><path d="M19 9.5a2.5 2.5 0 012 2.4v2.6a2.5 2.5 0 01-2 2.4V19l-2.6-2.1H13a2.5 2.5 0 01-2.3-1.6" fill="none" stroke="#fde68a" stroke-width="1.8" stroke-linecap="round"/></svg></span>منصة التواصل الاجتماعي</span>';
   function tags(s) { return s.replace(/#[^\s<]+/g, function (m) { return '<span class="ht">' + m + '</span>'; }); }
   function comment(u, txt, bg, likes) {
     return '<div class="cm">' + letter(u.charAt(0).toUpperCase(), bg) + '<div class="cb"><div class="cl"><b dir="ltr">' + u + '</b> ' + txt + '</div><div class="cmeta"><span>' + (likes || 0) + ' إعجاب</span><span>رد</span></div></div></div>';
@@ -4677,7 +4677,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
         return '<div class="sug"><span class="av">' + p[2] + '</span><span class="who"><b>' + p[0] + '</b><small dir="ltr">@' + p[1] + '</small><small>' + p[3] + '</small></span></div>';
       }).join('') + '</div>' +
     '<div class="box"><h3>الصور</h3><div class="ph3">' + ['falcon', 'store', 'cake', 'stadium', 'school', 'falcon'].map(function (k) { return '<span>' + PIC[k] + '</span>'; }).join('') + '</div></div>' +
-    '<p class="foot">منصة التواصل · الخصوصية · الشروط</p></aside></div>';
+    '<p class="foot">منصة التواصل الاجتماعي · الخصوصية · الشروط</p></aside></div>';
   var SO_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#eef3f6;color:#15212b}' +
     '.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid #dde6ec}.nin{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:9px 20px}' +
     '.brand{display:flex;align-items:center;gap:10px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.45rem;color:#0e7490}.bm{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#06b6d4,#0e7490);box-shadow:0 6px 14px -8px #0e7490}.bm svg{width:24px;height:24px}' +
@@ -4700,7 +4700,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '.ph3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:12px;overflow:hidden}.ph3 span{aspect-ratio:1;overflow:hidden;background:#e6edf2}.ph3 svg{width:100%;height:100%}.foot{color:#8796a2;font-size:.8rem;text-align:center;margin:0}' +
     '@media(max-width:860px){.page{grid-template-columns:1fr}.side{display:none}}';
   var social = { css: SO_CSS, notFound: NF, pages: {} };
-  social.pages[T.social.path] = { title: 'سعيد التميمي (@' + T.user + ') | منصة التواصل', html: socialProfile };
+  social.pages[T.social.path] = { title: 'سعيد التميمي (@' + T.user + ') | منصة التواصل الاجتماعي', html: socialProfile };
 
   /* =================================================================== jobs.example: «شبكة الوظائف» =================================================================== */
   var LOGO_J = '<span class="brand"><span class="bm">' + IC.bag + '</span>شبكة الوظائف</span>';
@@ -4855,7 +4855,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
 /* Lab EH2-02: gathering information from public sources (OSINT) (13-17). Pure gathering, no passwords (the password generator lab comes next and builds on it).
    The target is the store manager of camelcode.shop, «سعيد صالح التميمي». The student finds him on the shop's «من نحن» page, opens the search engine «بحث» (search.example) in a new tab,
    typing its address, searches his full name, tells his results apart from people with the same name, and reads three sources in turn:
-   his social profile («منصة التواصل»), his work profile («شبكة الوظائف») and a news interview («موقع الأخبار»). Each source reveals the questions that it answers.
+   his social profile («منصة التواصل الاجتماعي»), his work profile («شبكة الوظائف») and a news interview («موقع الأخبار»). Each source reveals the questions that it answers.
    Browser only (Moaz 2026-11-17: «no terminal only متصفح»): a planner lab like EH2 lab 1 (no typed command). No protection part; the congratulations card says how
    to protect yourself. Questions: the falcon's name and the birth year (social), the work email (work), the hometown (news). */
 (function () {
@@ -4885,11 +4885,11 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     q1: 'ما اسم مدير المتجر؟',
     q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب تحت صورة مدير المتجر.',
     q2: 'ما تاريخ ميلاد سعيد؟' + String.fromCharCode(10) + 'الصيغة: DD/MM/YYYY',
-    q2h: 'في حسابه على منصة التواصل، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. ثم اكتب التاريخ بالأرقام: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001 (شهر مارس هو الشهر 3).',
+    q2h: 'في حسابه على منصة التواصل الاجتماعي، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. ثم اكتب التاريخ بالأرقام: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001 (شهر مارس هو الشهر 3).',
     q3: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
     q3h: 'في حسابه المهني على شبكة الوظائف، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
     q4: 'ما مدينة الإقامة لسعيد؟ (المدينة التي يسكن فيها)',
-    q4h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل أيضاً.',
+    q4h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل الاجتماعي أيضاً.',
     /* steps (the instruction panel) */
     t_team: 'تعلمنا سابقاً أن أول وأهم خطوة في عملية الاختراق هي **جمع المعلومات**، حيث أن كل اختراق يبدأ بـ **هدف**. وهدفنا اليوم هو **مدير متجر** الموقع الإلكتروني، اضغط على صفحة «**من نحن**» في القائمة أعلى موقع المتجر، وابحث في قسم «**فريقنا**» عن **مدير المتجر**.',
     t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». **هدفنا** هو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**، وأجب عن **السؤال الأول**.',
@@ -4898,7 +4898,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     t_search: 'اكتب **الاسم الكامل** للهدف (**مدير المتجر**) في **صندوق البحث**، ثم اضغط «**بحث**».',
     mark_dentist: 'انتبه! سعيد الذي نبحث عنه ليس طبيب أسنان!',
     t_results: 'هذه **نتائج البحث** عن **الهدف**. انتبه! تظهر بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، الآن لندخل على **صفحة التواصل الاجتماعي** لسعيد لنرى ما بداخلها.',
-    t_social2: 'هذا **حسابه في منصة التواصل**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل واقرأ **المنشورات** و**تواريخها** و**التعليقات** عليها، وأجب عن **السؤال 2** في «أسئلة التحدي» على يسار الشاشة.',
+    t_social2: 'هذا **حسابه في منصة التواصل الاجتماعي**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل واقرأ **المنشورات** و**تواريخها** و**التعليقات** عليها، وأجب عن **السؤال 2** في «أسئلة التحدي» على يسار الشاشة.',
     t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
     t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال 3**.',
     t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من **موقع الأخبار**.',
