@@ -3494,12 +3494,19 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function thClear() {
       var d = f.contentDocument, g = d && d.getElementById('cc-th'); if (g) g.remove();
       if (thEl && thEl.dataset.ccPh != null) { thEl.placeholder = thEl.dataset.ccPh; delete thEl.dataset.ccPh; }
-      thEl = null;
+      thShow(thEl, true); thEl = null;
+    }
+    /* the box's own letters hide while the hint draws them (the caret stays): Arabic letters join, so a typed «س» drawn apart from the hint's «عيد» is wider than
+       the same «س» inside the joined word and the hint would slide over it (Moaz 2026-11-17). The hint draws the whole word as one run: typed letters dark, the rest faint. */
+    function thShow(inp, on) {
+      if (!inp) return;
+      if (on) { if (inp.dataset.ccCol != null) { inp.style.color = inp.dataset.ccCol; inp.style.caretColor = ''; delete inp.dataset.ccCol; } return; }
+      if (inp.dataset.ccCol == null) { var c = inp.ownerDocument.defaultView.getComputedStyle(inp).color; inp.dataset.ccCol = inp.style.color || ''; inp.style.caretColor = c; inp.style.color = 'transparent'; inp.dataset.ccInk = c; }
     }
     function thDraw() {
       var d = f.contentDocument, inp = d && thSel && d.querySelector(thSel);
       if (!inp) return;
-      if (inp !== thEl) { thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; inp.placeholder = ''; }   /* the box's own placeholder steps aside while the hint types */
+      if (inp !== thEl) { thShow(thEl, true); thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; inp.placeholder = ''; }   /* the box's own placeholder steps aside while the hint types */
       var g = d.getElementById('cc-th');
       if (!g) { g = d.createElement('span'); g.id = 'cc-th'; g.setAttribute('aria-hidden', 'true'); d.body.appendChild(g); }
       var w = d.defaultView, cs = w.getComputedStyle(inp), r = inp.getBoundingClientRect();
@@ -3509,10 +3516,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         'padding:0 ' + cs.paddingRight + ' 0 ' + cs.paddingLeft + ';border:' + cs.borderTopWidth + ' solid transparent';
       var v = inp.value, shown = thText.slice(0, thN);
       g.textContent = '';
-      if (thText.indexOf(v) !== 0) return;                   /* what he typed is not the hint: the hint steps aside */
-      var hid = d.createElement('span'); hid.style.visibility = 'hidden'; hid.textContent = v;
+      if (thText.indexOf(v) !== 0) { thShow(inp, true); return; }   /* what he typed is not the hint: the hint steps aside and his letters show as they are */
+      if (!v) thShow(inp, true);
+      else { thShow(inp, false); var typed = d.createElement('span'); typed.style.color = inp.dataset.ccInk; typed.textContent = v; g.appendChild(typed); }
       var rest = d.createElement('span'); rest.textContent = shown.length > v.length ? shown.slice(v.length) : '';
-      g.appendChild(hid); g.appendChild(rest);
+      g.appendChild(rest);
     }
     var thTimer = setInterval(function () {
       if (!root.isConnected) { clearInterval(thTimer); return; }
