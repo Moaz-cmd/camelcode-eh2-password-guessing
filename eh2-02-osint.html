@@ -1901,7 +1901,7 @@ body.side .qpanel .qrow{margin-bottom:13px}
 .cc-step{padding:8px 13px!important;gap:13px!important}
 .cc-ref-b{padding:13px 21px 21px!important}
 .cc-cur{margin:13px 13px 0!important;padding:13px 21px 21px!important}
-.qtxt{margin-bottom:13px!important}
+.qtxt{margin-bottom:13px!important;white-space:pre-line}   /* a line break in a question starts a new line (Moaz 2026-11-17: «الصيغة: DD/MM/YYYY» under the question) */
 .qin{gap:8px!important}
 /* lift the devices (not the stage) so the wire clears the footer; transform doesn't affect layout */
 body.side.cc-has-feed #stage .dev{transform:translateY(-26px)}
@@ -4851,8 +4851,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q_wait: 'ستظهر الأسئلة هنا عندما تفتح مصادر المعلومات عن الهدف.',
     q1: 'ما اسم مدير المتجر؟',
     q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب تحت صورة مدير المتجر.',
-    q2: 'ما تاريخ ميلاد سعيد؟',
-    q2h: 'في حسابه على منصة التواصل، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂.',
+    q2: 'ما تاريخ ميلاد سعيد؟' + String.fromCharCode(10) + 'الصيغة: DD/MM/YYYY',
+    q2h: 'في حسابه على منصة التواصل، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. ثم اكتب التاريخ بالأرقام: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001 (شهر مارس هو الشهر 3).',
     q3: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
     q3h: 'في حسابه المهني على شبكة الوظائف، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
     q4: 'ما مدينة الإقامة لسعيد؟ (المدينة التي يسكن فيها)',
@@ -4916,7 +4916,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     CC.Q.init([
       { id: 'q1', q: CC.t('q1'), answers: [T.name, T.short], hint: CC.t('q1h'), hidden: true },
-      { id: 'q2', q: CC.t('q2'), answers: [T.bday + ' ' + T.born], check: isBirthday, hint: CC.t('q2h'), hidden: true },
+      { id: 'q2', q: iso(CC.t('q2')), answers: [], check: isBirthday, hint: iso(CC.t('q2h')), hidden: true },
       { id: 'q3', q: CC.t('q3'), answers: [T.email], check: function (v) { return String(v).replace(/\s+/g, '').toLowerCase() === T.email; }, hint: iso(CC.t('q3h')), hidden: true },
       { id: 'q4', q: CC.t('q4'), answers: [T.town, 'وكرة', 'مدينة الوكرة'], hint: CC.t('q4h'), hidden: true }
     ]);
@@ -4937,11 +4937,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       else if (host === T.work.host) CC.Q.reveal('q3');
       else if (host === T.news.host) CC.Q.reveal('q4');
     }
-    /* the date of birth in any usual form: «14 مارس 1987», «14/3/1987», «1987-03-14», Arabic digits, «آذار» */
+    /* the date of birth only in the form DD/MM/YYYY (Moaz 2026-11-17): 14/3/1987 or 14/03/1987 (Arabic digits are read as digits); «14 مارس 1987» or 1987-03-14 are not accepted */
     function isBirthday(v) {
-      var s = String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/(مارس|آذار|اذار|march|mar)/gi, ' 3 ');
-      var n = (s.match(/\d+/g) || []).map(Number);
-      return n.length === 3 && n.indexOf(14) >= 0 && n.indexOf(3) >= 0 && n.indexOf(T.born) >= 0;
+      var m = /^\s*(\d{1,2})\/(\d{1,2})\/(\d{4})\s*$/.exec(String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }));
+      return !!m && +m[1] === 14 && +m[2] === 3 && +m[3] === T.born;
     }
     var done = function () { var a = arguments; return [].every.call(a, function (id) { return CC.Q.done[id]; }); };
 
