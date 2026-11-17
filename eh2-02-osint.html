@@ -793,6 +793,12 @@ body:not(.inst) .stage:has(.laptop.off) .br-win{outline:3px solid rgba(252,173,1
 .br-tab.idle{background:transparent;color:#5f6368}
 .br-tab.idle:before,.br-tab.idle:after{background:none}
 .br-tab{cursor:default}
+/* tabs and the «+» new-tab button (Moaz 2026-11-17, a site with newTab): tabs shrink to share the strip; an inactive tab is a link-like grey title */
+.br-strip .br-tab{flex:0 1 15em;width:auto}
+.br-strip .br-tab.idle{cursor:pointer}.br-strip .br-tab.idle:hover{background:rgba(255,255,255,.55)}
+.br-x{cursor:pointer}.br-x:hover{background:rgba(0,0,0,.08)}
+.br-new{flex:none;align-self:center;width:1.9em;height:1.9em;margin:0 0 .15em .2em;border:0;border-radius:50%;background:none;color:#3c4043;display:grid;place-items:center;cursor:pointer;padding:0}
+.br-new:hover{background:rgba(0,0,0,.08)}.br-new svg{width:1.15em;height:1.15em}.br-new[hidden]{display:none}
 .br-src{display:none;flex-direction:column;height:100%;min-width:0;background:#fff;direction:ltr}
 .br-view[data-mode="src"] .br-f{display:none}
 .br-view[data-mode="src"] .br-src{display:flex}
@@ -2887,6 +2893,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
    SEVERAL SITES (lab EH2-02, OSINT): the site may list other websites by address, `hosts: { 'baheth.qa': { css, pages, notFound?, post? }, ... }`. A link to
      `//baheth.qa/search` (no scheme: students never see http or https) or an address typed in the bar opens that site; the browser follows the site of the page shown
      (back and forward too). `freeUrl: true` unlocks the whole address bar (the student may type another site's address); without it the site name stays locked.
+     `newTab: { host, path }` adds Chrome's «+» button beside the tab: it opens a new tab on that page (EH2 lab 2: the search engine). Tabs can be switched by a click
+     and closed with their ✕ (never the last one); each tab keeps its own back and forward. P.newTabBtn() is the «+» button for a guide, P.onNewTab() is called when one opens.
      A page's `html` (and `title`) may be a function (state, entry) for a page that changes with what the student did (a search results page).
    API: P.go(path), P.host() (the site shown now), P.pageEl(selector) (a guide stand-in for an element of the page), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
    PAGE SOURCE (lab EH2-01): a page may carry its real HTML in `src` (one string, lines split by newline). The page is drawn FROM that same text, so what the student reads in the
@@ -3037,11 +3045,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       else if (S.pages[entry.path]) { var pg = S.pages[entry.path]; html = doc(pg, entry); title = typeof pg.title === 'function' ? pg.title(P.state, entry) : pg.title; }
       else if (S.notFound) { title = S.notFoundTitle || ''; html = doc({ title: title, html: S.notFound }, entry); }
       else { html = NOT_FOUND; title = '404 Not Found'; }
-      tab.classList.add('loading'); ttl.textContent = entry.host;
+      var tEl = tab, tTl = ttl;                                                 /* the tab this page belongs to, even if another tab is chosen while it loads */
+      tEl.classList.add('loading'); tTl.textContent = entry.host;
       f.srcdoc = html;
       CC.sleep(quick ? 60 : 170, CC.gen).then(function (ok) {
         if (!ok) return;
-        tab.classList.remove('loading'); ttl.textContent = title;
+        tEl.classList.remove('loading'); tTl.textContent = title;
+        if (tEl !== tab) return;
         urlEl.value = display(entry);
         sec.style.color = entry.host === S.host ? '#5f6368' : '#d93025';
         backB.disabled = idx <= 0; fwdB.disabled = idx >= hist.length - 1;
@@ -3069,9 +3079,48 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       render(entry);
     }
     P.go = function (path) { go({ host: S.host, path: path }, 'push'); };
+    /* ---- tabs (Moaz 2026-11-17, EH2 lab 2): the «+» button opens a new tab on site.newTab; a click on a tab shows it; its ✕ closes it (never the last one) ---- */
+    var TAB_IN = $('.br-tab', root).innerHTML, tabs = [{ el: tab, hist: [], idx: -1 }], ti = 0;
+    var newBtn = el('button', 'br-new'); newBtn.type = 'button'; newBtn.hidden = true; newBtn.setAttribute('aria-label', 'صفحة جديدة'); newBtn.title = 'صفحة جديدة';
+    newBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+    $('.br-strip', root).appendChild(newBtn);
+    function bindTab(t) { tab = t.el; ttl = $('.br-ttl', t.el); }
+    function saveTab() { tabs[ti].hist = hist; tabs[ti].idx = idx; }
+    function showTab(n) {
+      ti = n; tabs.forEach(function (t, i) { t.el.classList.toggle('idle', i !== ti); });
+      bindTab(tabs[ti]); hist = tabs[ti].hist; idx = tabs[ti].idx;
+      hideCtx(); if (tabSel !== 'page') closeSrc();
+      if (hist[idx]) render(hist[idx], true);
+    }
+    function wireTab(t) {
+      t.el.addEventListener('click', function (e) {
+        var n = tabs.indexOf(t); if (n < 0) return;
+        if (e.target.closest('.br-x')) { e.stopPropagation(); closeTab(n); return; }
+        if (n !== ti) { saveTab(); showTab(n); }
+      });
+    }
+    function closeTab(n) {
+      if (tabs.length < 2) return;
+      saveTab(); tabs[n].el.remove(); tabs.splice(n, 1);
+      if (n === ti) showTab(Math.max(0, n - 1)); else if (n < ti) ti--;
+    }
+    wireTab(tabs[0]);
+    newBtn.onclick = function (e) {
+      e.stopPropagation(); if (!R || !R.newTab) return;
+      saveTab();
+      var t = { el: el('div', 'br-tab'), hist: [], idx: -1 }; t.el.innerHTML = TAB_IN;
+      newBtn.parentNode.insertBefore(t.el, newBtn); tabs.push(t); wireTab(t);
+      ti = tabs.length - 1; tabs.forEach(function (x, i) { x.el.classList.toggle('idle', i !== ti); });
+      bindTab(t); hist = []; idx = -1; hideCtx(); if (tabSel !== 'page') closeSrc();
+      go({ host: R.newTab.host, path: R.newTab.path || '/' }, 'push');
+      if (P.onNewTab) P.onNewTab();
+    };
+    P.newTabBtn = function () { return newBtn.hidden || !newBtn.isConnected ? null : newBtn; };
     P.host = function () { var e = hist[idx]; return e ? e.host : null; };
     P.setSite = function (site) {
       S = R = site; P.state = {}; hist = []; idx = -1;
+      tabs.slice(1).forEach(function (t) { t.el.remove(); }); tabs = [tabs[0]]; ti = 0; tabs[0].el.classList.remove('idle'); bindTab(tabs[0]);
+      newBtn.hidden = !R.newTab;
       tabSel = 'page'; hideCtx(); view.setAttribute('data-mode', 'page');
       go({ host: S.host, path: S.start || '/home' }, 'push');
     };
@@ -4248,7 +4297,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   /* ---------- what the browser target uses (sites.js adds the other websites as CC.site.hosts) ---------- */
   CC.site = {
     fitScale: 0.8,                       /* every site drawn as a desktop page at 80% (as Kashif alone) */
-    freeUrl: true,                       /* the whole address can be typed: the student goes to the search engine himself */
+    freeUrl: true,                       /* the whole address can be typed (any site's address works) */
+    newTab: { host: 'baheth.qa', path: '/' },   /* the «+» button opens a new tab on the search engine, like a real browser's new tab (Moaz 2026-11-17) */
     host: SHOP.host, start: '/home', css: CSS, pages: pages,
     notFound: NOT_FOUND, notFoundTitle: 'الصفحة غير موجودة | ' + SHOP.name,
     redirects: { '/': '/home' }
@@ -4535,7 +4585,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* steps (the instruction panel) */
     t_team: 'تعلمنا سابقاً أن أول وأهم خطوة في عملية الاختراق هي **جمع المعلومات**، حيث أن كل اختراق يبدأ بـ **هدف**. وهدفنا اليوم هو **مدير متجر** الموقع الإلكتروني، اضغط على صفحة «**من نحن**» في القائمة أعلى موقع المتجر، وابحث في قسم «**فريقنا**» عن **مدير المتجر**.',
     t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». هذا هو **هدفنا**: «**سعيد صالح التميمي**» وهو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**، سنتعلم الآن إحدى أهم طرق جمع المعلومات وهي **جمع المعلومات من المصادر المفتوحة** (OSINT)، والتي تعني بشكل أبسط **البحث عنه في الإنترنت**.',
-    t_engine: 'اضغط على **عنوان الموقع** في أعلى المتصفح، واكتب `baheth.qa` ثم اضغط `Enter` لتفتح **محرك البحث «باحث»**.',
+    t_engine: 'الآن لنفتح **صفحة جديدة** داخل المتصفح للبحث عن **مدير المتجر** في الإنترنت.',
     t_search: 'اكتب **الاسم الكامل** للهدف «**سعيد صالح التميمي**» في **مربع البحث**، ثم اضغط «**بحث**».',
     t_results: 'هذه **نتائج البحث** عن الاسم. انتبه! بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، وابحث عن النتائج التي تتحدث عن **مدير متجر كاملكود**.',
     t_social: 'اضغط على نتيجة «**سعيد التميمي | أبو صالح 🦅**» من موقع **لمحة** لتفتح **حسابه في وسائل التواصل الاجتماعي**.',
@@ -4574,7 +4624,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     rs_h: 'السيناريو', rs: 'أنت الآن هاكر، وهدفك هو **مدير متجر كاملكود**. قبل أي هجوم، مهمتك أن تجمع عنه أكبر قدر من **المعلومات** من **مصادر عامة** فقط: محرك البحث، وحسابه في **وسائل التواصل الاجتماعي**، وحسابه **المهني**، و**مقابلة** معه في موقع أخبار.',
     r0_h: 'ما هو OSINT؟', r0: '- **جمع المعلومات من المصادر المفتوحة** (OSINT: Open Source Intelligence): جمع معلومات عن هدف من مصادر **يستطيع أي شخص أن يراها**.\n- هو **أول خطوة** في أي اختراق: كلما عرف الهاكر عن هدفه أكثر، سهل عليه الهجوم.',
     r1_h: 'تحديد الهدف', r1: '- صفحة «**من نحن**» في أي موقع تكشف **أسماء الموظفين** و**وظائفهم** و**صورهم**.\n- الهدف هنا: «**سعيد صالح التميمي**»، **مدير المتجر**.',
-    r2_h: 'محرك البحث', r2: '- **محرك البحث** يجمع كل الصفحات التي ذُكر فيها الاسم: اكتب `baheth.qa` في **عنوان الموقع**، ثم اكتب **الاسم الكامل** في مربع البحث.\n- **ليست كل النتائج عن هدفنا**: قد يحمل أشخاص آخرون **الاسم نفسه**.\n- **تأكد من الهوية**: قارن **الوظيفة** و**المدينة** و**الصورة**.',
+    r2_h: 'محرك البحث', r2: '- **محرك البحث** يجمع كل الصفحات التي ذُكر فيها الاسم: افتح **صفحة جديدة** في المتصفح (زر `+` بجانب الصفحة المفتوحة) لتظهر صفحة محرك البحث «**باحث**»، ثم اكتب **الاسم الكامل** في مربع البحث.\n- **ليست كل النتائج عن هدفنا**: قد يحمل أشخاص آخرون **الاسم نفسه**.\n- **تأكد من الهوية**: قارن **الوظيفة** و**المدينة** و**الصورة**.',
     r3_h: 'وسائل التواصل الاجتماعي', r3: '- يشارك الناس فيها الكثير من حياتهم دون أن ينتبهوا.\n- المعلومة تختبئ في **النبذة** (Bio) و**الصور** و**تواريخ المنشورات** و**تعليقات الأصدقاء** و**اسم المستخدم**.',
     r4_h: 'الحساب المهني', r4: '- في **مواقع العمل** يكتب الناس **وظائفهم السابقة** و**دراستهم** و**بريدهم الإلكتروني للعمل**.\n- البريد يكشف **كيف تكتب الشركة عناوين بريد موظفيها**.',
     r5_h: 'الأخبار والمقابلات', r5: '- تكشف **الطفولة** و**الهوايات** و**المدينة التي نشأ فيها** الشخص.\n- **تؤكد** ما وجدناه في المصادر الأخرى: المعلومة التي تظهر في **أكثر من مصدر** أوثق.',
@@ -4599,7 +4649,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     P.setSite(CC.site);
 
     var backBtn = function () { var b = document.querySelector('#br .br-ib.back'); return b && !b.disabled ? b : null; };
-    var urlBar = function () { return document.querySelector('#br .br-url'); };
     function guide(get, until, force) { if (self || force) CC.guide.show(get, { force: !!force, until: until }); }
     var phaseIs = function (p) { return st.phase === p; };
     var onResults = function () { return P.host() === 'baheth.qa' && P.state.hit && curPath === '/search'; };
@@ -4635,8 +4684,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         L.step(1, 'done'); L.step(2, 'now');
         if (self) { await CC.popup(CC.t('p2_h'), CC.t('p2')); if (!ok()) return; }
         L.task(CC.t('t_engine'));
-        P.urlGhost('baheth.qa');                                               /* the faint typing hint in the address bar, both modes */
-        guide(urlBar, function () { return !phaseIs('engine') || document.activeElement === urlBar(); }, true);   /* the one forced guide on the address bar (as Kashif) */
+        /* a new tab, not a typed address (Moaz 2026-11-17): the ring and the pointer show the «+» button beside the tab, both modes (the step names it) */
+        guide(function () { return P.newTabBtn(); }, function () { return !phaseIs('engine'); }, true);
         if (P.host() === 'baheth.qa') return to('search');
       } else if (phase === 'search') {
         L.task(CC.t('t_search'));
