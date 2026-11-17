@@ -3036,7 +3036,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var h = analyse(page).html, assets = S.assets || {}, z = zoomOf();
       h = h.replace(/<link\b[^>]*\brel="stylesheet"[^>]*\bhref="([^"]+)"[^>]*>/g, function (m, fl) {
         return '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + z + '}' + ((S.files && S.files[fl]) || S.css || '') + '.cc-hl{outline:4px solid #FCAD0F!important;outline-offset:3px;border-radius:4px;background-color:rgba(252,173,15,.16)!important}' +
-          '.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}.cc-glow{outline:2px solid rgba(252,173,15,.6)!important;outline-offset:3px;border-radius:99px;box-shadow:0 0 12px 3px rgba(252,173,15,.7)!important;animation:ccg 1.1s ease-in-out infinite}@keyframes ccg{50%{outline-color:#FCAD0F;outline-offset:4px;box-shadow:0 0 22px 8px rgba(252,173,15,.95)}}</style>';
+          '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;inset-inline-start:-4px;background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}.cc-glow{outline:2px solid rgba(252,173,15,.6)!important;outline-offset:3px;border-radius:99px;box-shadow:0 0 12px 3px rgba(252,173,15,.7)!important;animation:ccg 1.1s ease-in-out infinite}@keyframes ccg{50%{outline-color:#FCAD0F;outline-offset:4px;box-shadow:0 0 22px 8px rgba(252,173,15,.95)}}</style>';
       });
       h = h.replace(/(<img\b[^>]*?\ssrc=")([^"]+)(")/g, function (m, a, n, b) { return a + (assets[n] || n) + b; });
       return h.replace(/<\/body>/i, TAIL + '</body>');
@@ -3045,7 +3045,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (page.src) return srcDoc(page);
       var body = String(typeof page.html === 'function' ? page.html(P.state, entry) : page.html).replace('{{error}}', entry.error ? (S.error || '') : '');
       return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(typeof page.title === 'function' ? page.title(P.state, entry) : page.title) + '</title>' +
-        '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}</style></head><body>' + body + TAIL + '</body></html>';
+        '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;inset-inline-start:-4px;background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}</style></head><body>' + body + TAIL + '</body></html>';
     }
 
     function render(entry, quick) {
@@ -3466,11 +3466,17 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (glowLinkPath) { var a = d.querySelector('a[href="' + glowLinkPath + '"]'); if (a) a.classList.add('cc-glow'); }
       [].forEach.call(d.querySelectorAll('.cc-ring'), function (n) { n.classList.remove('cc-ring'); });
       if (ringSel) { var rg = d.querySelector(ringSel); if (rg) rg.classList.add('cc-ring'); }
+      [].forEach.call(d.querySelectorAll('.cc-mark'), function (n) { n.classList.remove('cc-mark'); n.removeAttribute('data-cc-label'); });
+      if (markSel) { var mk = d.querySelector(markSel); if (mk) { mk.classList.add('cc-mark'); mk.setAttribute('data-cc-label', markLabel); } }
     }
     /* a glowing gold ring around any element of the page (Moaz 2026-11-17, EH2 lab 2: the store manager's card), both modes: it is a glow, not a pointer or a dim.
        P.ring('.mem.tgt') / P.ring(null). It sits on the element itself, so the student sees it when he scrolls to it, and it comes back after the page reloads. */
     var ringSel = null;
     P.ring = function (sel) { ringSel = sel || null; applyLinkGlow(); };
+    /* a red frame with a red label above it around any element of the page (Moaz 2026-11-17, EH2 lab 2: «انتبه! سعيد الذي نبحث عنه ليس طبيب أسنان!» on the dentist's
+       result), both modes: a warning drawn on the page, not a popup or a dim. P.mark(selector, label) / P.mark(null). It comes back after the page reloads. */
+    var markSel = null, markLabel = '';
+    P.mark = function (sel, label) { markSel = sel || null; markLabel = label || ''; applyLinkGlow(); };
     /* a faint typing hint inside a box of the page (Moaz 2026-11-17, EH2 lab 2: the target's name in the search box), drawn exactly like the terminal's command hint
        (hacker-laptop.js L.ghost): the text types itself letter by letter (85 ms a letter, a short pause, then again) in a faint colour over the empty box, and the
        letters the student types replace it in place (the rest of the hint goes on after them while they match). It never fills the box and never searches.
@@ -4520,7 +4526,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function isHit(q) { var n = norm(q); return n.indexOf('سعيد') >= 0 || n.indexOf('تميمي') >= 0; }
   function hl(s) { return s.replace(/سعيد|التميمي|صالح/g, function (m) { return '<b>' + m + '</b>'; }); }
   var RESULTS = [
-    { site: 'عيادة الأسنان', bg: '#0e7490', ico: IC.tooth, cite: 'clinic.example › doctors › saeed', href: '//clinic.example/doctors/saeed',
+    { site: 'عيادة الأسنان', bg: '#0e7490', ico: IC.tooth, cite: 'clinic.example › doctors › saeed', href: '//clinic.example/doctors/saeed', key: 'dentist',
       t: 'د. سعيد التميمي | استشاري تقويم الأسنان', p: 'د. سعيد التميمي، استشاري تقويم الأسنان في عيادة الأسنان بالخور، خبرة أكثر من 20 عاماً في علاج الأطفال والكبار. تعرّف على الطبيب وأوقات العيادة.',
       extra: '<div class="rate"><span class="st">★★★★★</span> 4.8 · 126 مراجعة · عيادة أسنان في الخور</div>' },
     { site: 'منصة التواصل', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
@@ -4863,8 +4869,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_osint: 'سنتعلم الآن إحدى أهم طرق جمع المعلومات وهي **جمع المعلومات من المصادر المفتوحة** (OSINT)، والتي تعني بشكل أبسط **البحث عنه في الإنترنت**.',
     t_engine: 'الآن لنفتح **صفحة جديدة** داخل المتصفح للبحث عن **مدير المتجر** في الإنترنت.',
     t_search: 'اكتب **الاسم الكامل** للهدف (**مدير المتجر**) في **صندوق البحث**، ثم اضغط «**بحث**».',
-    t_results: 'هذه **نتائج البحث** عن الاسم. انتبه! بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، وابحث عن النتائج التي تتحدث عن **مدير متجر كاملكود**.',
-    t_social: 'اضغط على نتيجة «**سعيد التميمي | أبو صالح 🦅**» من **منصة التواصل** لتفتح **حسابه في وسائل التواصل الاجتماعي**.',
+    mark_dentist: 'انتبه! سعيد الذي نبحث عنه ليس طبيب أسنان!',
+    t_results: 'هذه **نتائج البحث** عن الاسم. انتبه! بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، الآن لندخل على **صفحة التواصل الاجتماعي** لسعيد.',
     t_social2: 'هذا **حسابه في منصة التواصل**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل واقرأ **المنشورات** و**تواريخها** و**التعليقات** عليها، وأجب عن **السؤال 2** في «أسئلة التحدي» على يسار الشاشة.',
     t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
     t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال 3**.',
@@ -4946,14 +4952,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     /* a step that opens a result: on the results page the result's link glows (both modes) and gets the ring; elsewhere the ring points at the back button */
     function resultGuide(href, ph) {
-      P.glowLink(href);
+      P.ring('a[href="' + href + '"]');                                        /* a gold ring around the result's link, both modes (Moaz 2026-11-17) */
       guide(function () { return onResults() ? P.pageLink(href) : backBtn(); }, function () { return !phaseIs(ph); }, true);
     }
 
     /* ---- one place moves the lab forward ---- */
     async function to(phase) {
       st.phase = phase;
-      CC.guide.hide(); P.glowLink(null); P.urlGhost(null); P.typeHint(null);
+      CC.guide.hide(); P.glowLink(null); P.urlGhost(null); P.typeHint(null); P.mark(null);
       if (phase !== 'name') P.ring(null);                                     /* the ring on the manager stays until question 1 (his name) is answered */
       if (phase === 'name') {
         cue = false; CC.comment('');
@@ -4982,13 +4988,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       } else if (phase === 'results') {
         if (self) { await CC.popup(CC.t('p3_h'), CC.t('p3')); if (!ok()) return; }
         L.task(CC.t('t_results'));
-        if (!(await CC.stepWait(g))) return;
-        if (phaseIs('results')) return to('social');
-      } else if (phase === 'social') {
-        L.step(2, 'done'); L.step(3, 'now');
-        L.task(CC.t('t_social')); resultGuide(T.socialHref, 'social');
+        P.mark('.r[data-k="dentist"]', CC.t('mark_dentist'));                 /* a red frame on the dentist with the same name, both modes (Moaz 2026-11-17) */
+        resultGuide(T.socialHref, 'results');                                   /* and the ring on his social profile's link: the student opens it */
         if (P.host() === T.social.host) return to('social2');
       } else if (phase === 'social2') {
+        L.step(2, 'done'); L.step(3, 'now');
         reveal(T.social.host);
         if (self) { await CC.popup(CC.t('p4_h'), CC.t('p4')); if (!ok()) return; }
         L.task(CC.t('t_social2'));
@@ -5028,7 +5032,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (phaseIs('team') && host === CC.site.host && path === '/about') await to('name');
         else if (phaseIs('engine') && host === T.search) await to('search');
         else if (phaseIs('search') && onResults()) await to('results');
-        else if (phaseIs('social') && host === T.social.host) await to('social2');
+        else if (phaseIs('results') && host === T.social.host) await to('social2');
         else if (phaseIs('work') && host === T.work.host) await to('work2');
         else if (phaseIs('news') && host === T.news.host) await to('news2');
       });
@@ -5088,7 +5092,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social","t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
+window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
