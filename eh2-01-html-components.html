@@ -793,6 +793,12 @@ body:not(.inst) .stage:has(.laptop.off) .br-win{outline:3px solid rgba(252,173,1
 .br-tab.idle{background:transparent;color:#5f6368}
 .br-tab.idle:before,.br-tab.idle:after{background:none}
 .br-tab{cursor:default}
+/* tabs and the «+» new-tab button (Moaz 2026-11-17, a site with newTab): tabs shrink to share the strip; an inactive tab is a link-like grey title */
+.br-strip .br-tab{flex:0 1 15em;width:auto}
+.br-strip .br-tab.idle{cursor:pointer}.br-strip .br-tab.idle:hover{background:rgba(255,255,255,.55)}
+.br-x{cursor:pointer}.br-x:hover{background:rgba(0,0,0,.08)}
+.br-new{flex:none;align-self:center;width:1.9em;height:1.9em;margin:0 0 .15em .2em;border:0;border-radius:50%;background:none;color:#3c4043;display:grid;place-items:center;cursor:pointer;padding:0}
+.br-new:hover{background:rgba(0,0,0,.08)}.br-new svg{width:1.15em;height:1.15em}.br-new[hidden]{display:none}
 .br-src{display:none;flex-direction:column;height:100%;min-width:0;background:#fff;direction:ltr}
 .br-view[data-mode="src"] .br-f{display:none}
 .br-view[data-mode="src"] .br-src{display:flex}
@@ -821,6 +827,17 @@ body:not(.inst) .stage:has(.laptop.off) .br-win{outline:3px solid rgba(252,173,1
 body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-ctx{position:absolute;z-index:20;min-width:15em;padding:6px 0;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);direction:rtl;font-family:'Tajawal',system-ui,sans-serif;font-size:1.08em}
 .br-ctx[hidden]{display:none}
+/* the ⋮ menu of the browser (Moaz 2026-11-17, every lab): zoom − 100% +, like a real browser */
+.br-bar{position:relative}
+.br-ib.menu{cursor:pointer}.br-ib.menu.on{background:#e8eaed}
+.br-menu{position:absolute;z-index:21;top:calc(100% + 2px);right:.6em;min-width:17em;padding:6px 0;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);direction:rtl;font-family:'Tajawal',system-ui,sans-serif;font-size:1.02em}
+.br-menu[hidden]{display:none}
+.br-menu .it{padding:.4em 1.4em;color:#202124;cursor:pointer;white-space:nowrap}.br-menu .it:hover:not(.off){background:#e8f0fe}.br-menu .it.off{color:#9aa0a6;cursor:default}
+.br-menu .sep{height:1px;background:#e8eaed;margin:5px 0}
+.br-menu .zm{display:flex;align-items:center;gap:.4em;padding:.25em 1.4em .25em .8em}.br-menu .zl{flex:1;color:#202124}
+.br-menu .zb{width:2em;height:2em;border:1px solid #dadce0;border-radius:6px;background:#fff;color:#202124;font:inherit;font-size:1.1em;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.br-menu .zb:hover:not(:disabled){background:#f1f3f4}.br-menu .zb:disabled{color:#c4c7c5;cursor:default}
+.br-menu .zv{min-width:3.4em;text-align:center;font-weight:700;color:#202124;direction:ltr}
 .br-ctx .it{padding:.4em 1.4em;color:#202124;cursor:pointer;white-space:nowrap}
 .br-ctx .it:hover:not(.off){background:#e8f0fe}
 .br-ctx .it.off{color:#9aa0a6;cursor:default}
@@ -2884,7 +2901,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
      - a page's html may hold {{error}} (replaced by the site's error line when a form failed)
      - guard(path, state) returns another path to redirect to, or null
      - post(path, data, state) returns { go: path } (move on) or { page: path, error: true } (show the page again with its error)
-   API: P.go(path), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
+   SEVERAL SITES (lab EH2-02, OSINT): the site may list other websites by address, `hosts: { 'baheth.qa': { css, pages, notFound?, post? }, ... }`. A link to
+     `//baheth.qa/search` (no scheme: students never see http or https) or an address typed in the bar opens that site; the browser follows the site of the page shown
+     (back and forward too). `freeUrl: true` unlocks the whole address bar (the student may type another site's address); without it the site name stays locked.
+     `newTab: { host, path }` adds Chrome's «+» button beside the tab: it opens a new tab on that page (EH2 lab 2: the search engine). Tabs can be switched by a click
+     and closed with their ✕ (never the last one); each tab keeps its own back and forward. P.newTabBtn() is the «+» button for a guide, P.onNewTab() is called when one opens.
+     A page's `html` (and `title`) may be a function (state, entry) for a page that changes with what the student did (a search results page).
+   API: P.go(path), P.host() (the site shown now), P.pageEl(selector) (a guide stand-in for an element of the page), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
    PAGE SOURCE (lab EH2-01): a page may carry its real HTML in `src` (one string, lines split by newline). The page is drawn FROM that same text, so what the student reads in the
    source tab is the code the page really is. `<link rel="stylesheet" href="style.css">` is replaced by S.css / S.files[name], and `<img src="name">` by S.assets[name] (a data address).
    EVERY element of such a page goes with its line of code and the other way round (hover the page: its opening line lights up, its closing line lightly; hover a code line: its element lights up and scrolls into view), found automatically.
@@ -2922,7 +2945,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   CC.targets.browser = function () {
     var P = { cable: false, state: {}, onPage: null, onPost: null };
-    var S = null, hist = [], idx = -1;
+    var S = null, R = null, hist = [], idx = -1;       /* R: the lab's site; S: the site of the page shown (R itself, or one of R.hosts) */
+    function siteOf(host) {
+      if (!R) return null;
+      if (host === R.host) return R;
+      var h = R.hosts && R.hosts[host];
+      if (h && !h.host) h.host = host;
+      return h || null;
+    }
     var root = el('div', 'br'); root.id = 'br';
     root.innerHTML = '<span class="tag victim">' + esc(CC.t('tag_site')) + '</span>' +
       '<div class="br-win">' +
@@ -2948,6 +2978,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     function parse(raw) {
       raw = String(raw).trim(); if (!raw) return null;
+      if (raw.slice(0, 2) === '//') raw = raw.slice(2);                         /* a link to another site, written with no scheme */
       var m = /^(?:https?:\/\/)?([^\/?#\s]+)?(\/[^?#]*)?(?:[?#].*)?$/i.exec(raw);
       if (!m) return { host: raw, path: '/' };
       if (raw.charAt(0) === '/') return { host: S.host, path: m[2] || '/' };
@@ -3012,23 +3043,26 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
     function doc(page, entry) {
       if (page.src) return srcDoc(page);
-      var body = String(page.html).replace('{{error}}', entry.error ? (S.error || '') : '');
-      return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(page.title) + '</title>' +
+      var body = String(typeof page.html === 'function' ? page.html(P.state, entry) : page.html).replace('{{error}}', entry.error ? (S.error || '') : '');
+      return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(typeof page.title === 'function' ? page.title(P.state, entry) : page.title) + '</title>' +
         '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '</style></head><body>' + body + TAIL + '</body></html>';
     }
 
     function render(entry, quick) {
       var html, title;
       stat.style.display = 'none';
+      var ss = siteOf(entry.host); if (ss) S = ss;                              /* back and forward may cross from one site to another */
       if (entry.host !== S.host) { html = cantReach(entry.host); title = entry.host; }
-      else if (S.pages[entry.path]) { var pg = S.pages[entry.path]; html = doc(pg, entry); title = pg.title; }
+      else if (S.pages[entry.path]) { var pg = S.pages[entry.path]; html = doc(pg, entry); title = typeof pg.title === 'function' ? pg.title(P.state, entry) : pg.title; }
       else if (S.notFound) { title = S.notFoundTitle || ''; html = doc({ title: title, html: S.notFound }, entry); }
       else { html = NOT_FOUND; title = '404 Not Found'; }
-      tab.classList.add('loading'); ttl.textContent = entry.host;
+      var tEl = tab, tTl = ttl;                                                 /* the tab this page belongs to, even if another tab is chosen while it loads */
+      tEl.classList.add('loading'); tTl.textContent = entry.host;
       f.srcdoc = html;
       CC.sleep(quick ? 60 : 170, CC.gen).then(function (ok) {
         if (!ok) return;
-        tab.classList.remove('loading'); ttl.textContent = title;
+        tEl.classList.remove('loading'); tTl.textContent = title;
+        if (tEl !== tab) return;
         urlEl.value = display(entry);
         sec.style.color = entry.host === S.host ? '#5f6368' : '#d93025';
         backB.disabled = idx <= 0; fwdB.disabled = idx >= hist.length - 1;
@@ -3041,7 +3075,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function go(p, mode, extra) {
       if (typeof p === 'string') p = parse(p);
       if (!p || !S) return;
-      var hops = 0;
+      var hops = 0, ns = siteOf(p.host); if (ns) S = ns;
       if (p.host === S.host) {
         while (hops++ < 4) {
           var rd = S.redirects && S.redirects[p.path.replace(/(.)\/+$/, '$1')];
@@ -3056,8 +3090,85 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       render(entry);
     }
     P.go = function (path) { go({ host: S.host, path: path }, 'push'); };
+    /* ---- tabs (Moaz 2026-11-17, EH2 lab 2): the «+» button opens a new tab on site.newTab; a click on a tab shows it; its ✕ closes it (never the last one) ---- */
+    var TAB_IN = $('.br-tab', root).innerHTML, tabs = [{ el: tab, hist: [], idx: -1 }], ti = 0;
+    var newBtn = el('button', 'br-new'); newBtn.type = 'button'; newBtn.hidden = true; newBtn.setAttribute('aria-label', 'صفحة جديدة'); newBtn.title = 'صفحة جديدة';
+    newBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>';
+    $('.br-strip', root).appendChild(newBtn);
+    function bindTab(t) { tab = t.el; ttl = $('.br-ttl', t.el); }
+    function saveTab() { tabs[ti].hist = hist; tabs[ti].idx = idx; }
+    function showTab(n) {
+      ti = n; tabs.forEach(function (t, i) { t.el.classList.toggle('idle', i !== ti); });
+      bindTab(tabs[ti]); hist = tabs[ti].hist; idx = tabs[ti].idx;
+      hideCtx(); if (tabSel !== 'page') closeSrc();
+      if (hist[idx]) render(hist[idx], true);
+    }
+    function wireTab(t) {
+      t.el.addEventListener('click', function (e) {
+        var n = tabs.indexOf(t); if (n < 0) return;
+        if (e.target.closest('.br-x')) { e.stopPropagation(); closeTab(n); return; }
+        if (n !== ti) { saveTab(); showTab(n); }
+      });
+    }
+    function closeTab(n) {
+      if (tabs.length < 2) return;
+      saveTab(); tabs[n].el.remove(); tabs.splice(n, 1);
+      if (n === ti) showTab(Math.max(0, n - 1)); else if (n < ti) ti--;
+    }
+    wireTab(tabs[0]);
+    newBtn.onclick = function (e) {
+      e.stopPropagation(); if (!R || !R.newTab) return;
+      saveTab();
+      var t = { el: el('div', 'br-tab'), hist: [], idx: -1 }; t.el.innerHTML = TAB_IN;
+      newBtn.parentNode.insertBefore(t.el, newBtn); tabs.push(t); wireTab(t);
+      ti = tabs.length - 1; tabs.forEach(function (x, i) { x.el.classList.toggle('idle', i !== ti); });
+      bindTab(t); hist = []; idx = -1; hideCtx(); if (tabSel !== 'page') closeSrc();
+      go({ host: R.newTab.host, path: R.newTab.path || '/' }, 'push');
+      if (P.onNewTab) P.onNewTab();
+    };
+    /* ---- the ⋮ menu (Moaz 2026-11-17, every lab): zoom the page in and out like a real browser (− 100% +); «صفحة جديدة» works when the site has newTab;
+       the other lines are greyed out like the right-click menu. It closes on a click anywhere else or Escape. ---- */
+    var ZOOMS = [0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2];
+    var menuBtn = $('.br-ib.menu', root), menuEl = el('div', 'br-menu'); menuEl.hidden = true;
+    menuBtn.setAttribute('role', 'button'); menuBtn.setAttribute('aria-label', 'القائمة'); menuBtn.title = 'القائمة';
+    menuEl.innerHTML = '<div class="it nt">صفحة جديدة</div><div class="sep"></div>' +
+      '<div class="zm"><span class="zl">تكبير وتصغير</span><button type="button" class="zb out" aria-label="تصغير">−</button><span class="zv">100%</span><button type="button" class="zb in" aria-label="تكبير">+</button></div>' +
+      '<div class="sep"></div><div class="it off">سجل التصفح</div><div class="it off">التنزيلات</div><div class="it off">الإعدادات</div>';
+    $('.br-bar', root).appendChild(menuEl);
+    function zoomUi() {
+      $('.zv', menuEl).textContent = Math.round(uz * 100) + '%';
+      $('.zb.out', menuEl).disabled = uz <= ZOOMS[0]; $('.zb.in', menuEl).disabled = uz >= ZOOMS[ZOOMS.length - 1];
+      $('.nt', menuEl).classList.toggle('off', !(R && R.newTab));
+    }
+    function setZoom(dir) {
+      var i = ZOOMS.indexOf(uz); if (i < 0) i = ZOOMS.indexOf(1);
+      i = Math.max(0, Math.min(ZOOMS.length - 1, i + dir)); uz = ZOOMS[i];
+      zoomUi(); applyZoom(); shintUpd(); partsDraw();
+      if (P.onZoom) P.onZoom(uz);
+    }
+    function hideMenu() { menuEl.hidden = true; menuBtn.classList.remove('on'); }
+    menuBtn.addEventListener('click', function (e) {
+      e.stopPropagation(); hideCtx();
+      if (!menuEl.hidden) { hideMenu(); return; }
+      zoomUi(); menuEl.hidden = false; menuBtn.classList.add('on');
+    });
+    menuEl.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+    menuEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var b = e.target.closest('.zb'); if (b && !b.disabled) { setZoom(b.classList.contains('in') ? 1 : -1); return; }
+      if (e.target.closest('.nt') && R && R.newTab) { hideMenu(); newBtn.onclick(e); }
+    });
+    document.addEventListener('mousedown', function (e) { if (!menuEl.hidden && !menuEl.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) hideMenu(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideMenu(); });
+    window.addEventListener('message', function (e) { if (e.source === f.contentWindow && e.data && (e.data.cc === 'md' || e.data.cc === 'ctx')) hideMenu(); });
+    P.zoom = function () { return uz; };
+    P.menuBtn = function () { return menuBtn; };
+    P.newTabBtn = function () { return newBtn.hidden || !newBtn.isConnected ? null : newBtn; };
+    P.host = function () { var e = hist[idx]; return e ? e.host : null; };
     P.setSite = function (site) {
-      S = site; P.state = {}; hist = []; idx = -1;
+      S = R = site; P.state = {}; hist = []; idx = -1;
+      tabs.slice(1).forEach(function (t) { t.el.remove(); }); tabs = [tabs[0]]; ti = 0; tabs[0].el.classList.remove('idle'); bindTab(tabs[0]);
+      newBtn.hidden = !R.newTab;
       tabSel = 'page'; hideCtx(); view.setAttribute('data-mode', 'page');
       go({ host: S.host, path: S.start || '/home' }, 'push');
     };
@@ -3068,7 +3179,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var d = e.data, cur = hist[idx];
       if (d.cc === 'nav') {
         if (/^(mailto|tel):/i.test(d.href)) return;
-        go(/^https?:\/\//i.test(d.href) ? parse(d.href) : { host: cur ? cur.host : S.host, path: d.href.charAt(0) === '/' ? d.href.split(/[?#]/)[0] : '/' + d.href.split(/[?#]/)[0] }, 'push');
+        go(/^(https?:)?\/\//i.test(d.href) ? parse(d.href) : { host: cur ? cur.host : S.host, path: d.href.charAt(0) === '/' ? d.href.split(/[?#]/)[0] : '/' + d.href.split(/[?#]/)[0] }, 'push');
       } else if (d.cc === 'post') {
         var path = (d.action || (cur ? cur.path : '/')).split(/[?#]/)[0];
         var res = S.post ? S.post(path, d.data, P.state) : null;
@@ -3083,7 +3194,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (tabSel === 'page') openSource(d.how);
       } else if (d.cc === 'hover') {
         if (d.href && d.href.charAt(0) !== '#') {
-          var h = /^https?:\/\//i.test(d.href) ? d.href : S.host + (d.href.charAt(0) === '/' ? '' : '/') + d.href;
+          var h = /^(https?:)?\/\//i.test(d.href) ? d.href.replace(/^(https?:)?\/\//i, '') : S.host + (d.href.charAt(0) === '/' ? '' : '/') + d.href;
           stat.textContent = h; stat.style.display = 'block';
         } else stat.style.display = 'none';
       }
@@ -3095,15 +3206,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     function curPage() { var e = hist[idx]; return e && e.host === S.host && S.pages[e.path] && S.pages[e.path].src ? S.pages[e.path] : null; }
     var curK = 1;                                              /* the scale of the page frame in the laptop's browser app (1 when not scaled) */
+    var uz = 1;                                                /* the student's own zoom from the ⋮ menu (Moaz 2026-11-17, every lab): 1 = 100% */
     function applyZoom() {                                    /* the page is drawn smaller while it shares the pane with the code */
       var d = f.contentDocument; if (!d || !d.documentElement) return;
-      var cmp = view.getAttribute('data-mode') === 'cmp', k = cmp ? 0 : fitScale(); curK = k || 1;
+      var cmp = view.getAttribute('data-mode') === 'cmp', k = cmp ? 0 : fitScale();
+      if (!cmp && uz !== 1) k = (k || 1) * uz;                 /* like a real browser: zooming in lays the page out narrower and draws it bigger */
+      curK = k || 1;
       if (k) {          /* the laptop's browser app: the frame is laid out wider and scaled down, so the site keeps its desktop layout and only gets smaller */
         d.documentElement.style.zoom = '1';
         f.style.width = (100 / k) + '%'; f.style.height = (100 / k) + '%'; f.style.transform = 'scale(' + k + ')'; f.style.transformOrigin = '0 0';
       } else {
         f.style.width = f.style.height = f.style.transform = f.style.transformOrigin = '';
-        d.documentElement.style.zoom = cmp ? String(S.cmpZoom || zoomOf()) : '';
+        d.documentElement.style.zoom = cmp ? String((S.cmpZoom || zoomOf()) * uz) : '';
       }
     }
     /* the laptop's browser app used to scale the whole page down (70% alone, 50% beside the terminal). Since 2026-11-14 (Moaz) the site is drawn at full size
@@ -3333,6 +3447,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (r0.bottom < 0 || r0.top > vh) return null;
       return frameBox(function (d2) { var a2 = d2 && d2.querySelector('a[href="' + path + '"]'); if (!a2) return { left: 0, top: 0, width: 0, height: 0 }; var r = a2.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; });
     };
+    P.pageEl = function (sel) {                                 /* any element of the page (a search box, a result), null while it is out of view */
+      var d = f.contentDocument, a = d && d.body && d.querySelector(sel);
+      if (!a || tabSel !== 'page') return null;
+      var r0 = a.getBoundingClientRect(), vh = d.documentElement.clientHeight;
+      if (r0.bottom < 0 || r0.top > vh) return null;
+      return frameBox(function (d2) { var a2 = d2 && d2.querySelector(sel); if (!a2) return { left: 0, top: 0, width: 0, height: 0 }; var r = a2.getBoundingClientRect(); return { left: r.left, top: r.top, width: r.width, height: r.height }; });
+    };
     P.ctxItem = function (k) { return ctxEl.hidden ? null : ctxEl.querySelector('.it[data-k="' + k + '"]'); };
     /* P.glow(id, { stay: true }): the line glows but the code is NOT scrolled to it, because finding it is the student's job (Moaz 2026-11-15: the comment steps) */
     var glowStay = false;
@@ -3369,7 +3490,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var ghost = null, gEl = null, gN = 0, gPause = 0;
     function ghostDraw() {
       if (!gEl) { gEl = el('span', 'br-ghost'); gEl.setAttribute('aria-hidden', 'true'); $('.br-omni', root).appendChild(gEl); }
-      var pre = S ? S.host + '/' : '', v = urlEl.value || '';
+      var pre = S && !(R && R.freeUrl) ? S.host + '/' : '', v = urlEl.value || '';
       var on = !!ghost && document.activeElement === urlEl && v.toLowerCase() === pre;
       gEl.style.display = on ? '' : 'none'; if (!on) return;
       var cs = getComputedStyle(urlEl), om = $('.br-omni', root), ro = om.getBoundingClientRect(), ri = urlEl.getBoundingClientRect(), k = ri.width / Math.max(1, urlEl.offsetWidth);
@@ -3384,7 +3505,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       ghostDraw();
     }, 110);
     P.urlGhost = function (text) { ghost = text || null; gN = 0; gPause = 0; ghostDraw(); };
-    urlEl.addEventListener('focus', function () { setTimeout(function () { if (ghost && S && document.activeElement === urlEl) { urlEl.value = S.host + '/'; try { urlEl.setSelectionRange(urlEl.value.length, urlEl.value.length); } catch (x) { } } ghostDraw(); }, 0); });   /* after the bar's own focus handler (which writes the address back) */
+    urlEl.addEventListener('focus', function () { setTimeout(function () { if (ghost && S && document.activeElement === urlEl) { urlEl.value = R && R.freeUrl ? '' : S.host + '/'; try { urlEl.setSelectionRange(urlEl.value.length, urlEl.value.length); } catch (x) { } } ghostDraw(); }, 0); });   /* after the bar's own focus handler (which writes the address back) */
     urlEl.addEventListener('input', ghostDraw);
     urlEl.addEventListener('blur', function () { setTimeout(ghostDraw, 0); });
     /* labels under the address bar (Moaz 2026-11-14): «اسم الموقع» under camelcode.shop and «اسم الصفحة» under the page part (/home), each with a little
@@ -3447,11 +3568,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     urlEl.addEventListener('mousedown', function () { selectOnUp = document.activeElement !== urlEl; });
     /* the site name WITH its slash (camelcode.shop/) is locked (Moaz 2026-11-13: the student never has to delete it): one click or focus selects only the
        page name after it, an edit that damages it puts it back, and typing the whole address (or /page) after it does not double it */
-    function lockLen() { return S ? S.host.length + 1 : 0; }
+    function lockLen() { return S && !(R && R.freeUrl) ? S.host.length + 1 : 0; }   /* freeUrl: nothing is locked, another site's address may be typed */
     function selectPage() { var n = lockLen(), l = urlEl.value.length; try { urlEl.setSelectionRange(Math.min(n, l), l); } catch (x) { urlEl.select(); } }
     urlEl.addEventListener('mouseup', function (ev) { if (selectOnUp) { ev.preventDefault(); if (!ghost) selectPage(); selectOnUp = false; } });
     function fixUrl() {
-      if (!S) return;
+      if (!S || (R && R.freeUrl)) return;
       var fx = S.host + '/', v = urlEl.value, lv = v.toLowerCase(), rest;
       if (lv.indexOf(fx) === 0) rest = v.slice(fx.length);
       else if (fx.indexOf(lv) === 0) rest = '';                                  /* part of camelcode.shop/ was deleted: put it back */
@@ -3466,7 +3587,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (e.key === 'Backspace' && a === b && a <= n) e.preventDefault();
       if ((e.key === 'Backspace' || e.key === 'Delete') && a < n && b > a) { e.preventDefault(); urlEl.setRangeText('', n, Math.max(n, b), 'end'); }
     });
-    urlEl.addEventListener('focus', function () { var e = hist[idx]; if (e) urlEl.value = display(e); if (S && urlEl.value.toLowerCase() === S.host) urlEl.value = S.host + '/'; selectPage(); });
+    urlEl.addEventListener('focus', function () { var e = hist[idx]; if (e) urlEl.value = display(e); if (S && !(R && R.freeUrl) && urlEl.value.toLowerCase() === S.host) urlEl.value = S.host + '/'; selectPage(); });
     urlEl.addEventListener('blur', function () { var e = hist[idx]; if (e) urlEl.value = display(e); });
     urlEl.addEventListener('keydown', function (e) {
       if (e.key === 'Enter') { var v = urlEl.value; urlEl.blur(); go(v, 'push', { typed: true }); }

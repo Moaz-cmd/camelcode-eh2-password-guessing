@@ -827,6 +827,17 @@ body:not(.inst) .stage:has(.laptop.off) .br-win{outline:3px solid rgba(252,173,1
 body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-ctx{position:absolute;z-index:20;min-width:15em;padding:6px 0;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);direction:rtl;font-family:'Tajawal',system-ui,sans-serif;font-size:1.08em}
 .br-ctx[hidden]{display:none}
+/* the ⋮ menu of the browser (Moaz 2026-11-17, every lab): zoom − 100% +, like a real browser */
+.br-bar{position:relative}
+.br-ib.menu{cursor:pointer}.br-ib.menu.on{background:#e8eaed}
+.br-menu{position:absolute;z-index:21;top:calc(100% + 2px);right:.6em;min-width:17em;padding:6px 0;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);direction:rtl;font-family:'Tajawal',system-ui,sans-serif;font-size:1.02em}
+.br-menu[hidden]{display:none}
+.br-menu .it{padding:.4em 1.4em;color:#202124;cursor:pointer;white-space:nowrap}.br-menu .it:hover:not(.off){background:#e8f0fe}.br-menu .it.off{color:#9aa0a6;cursor:default}
+.br-menu .sep{height:1px;background:#e8eaed;margin:5px 0}
+.br-menu .zm{display:flex;align-items:center;gap:.4em;padding:.25em 1.4em .25em .8em}.br-menu .zl{flex:1;color:#202124}
+.br-menu .zb{width:2em;height:2em;border:1px solid #dadce0;border-radius:6px;background:#fff;color:#202124;font:inherit;font-size:1.1em;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.br-menu .zb:hover:not(:disabled){background:#f1f3f4}.br-menu .zb:disabled{color:#c4c7c5;cursor:default}
+.br-menu .zv{min-width:3.4em;text-align:center;font-weight:700;color:#202124;direction:ltr}
 .br-ctx .it{padding:.4em 1.4em;color:#202124;cursor:pointer;white-space:nowrap}
 .br-ctx .it:hover:not(.off){background:#e8f0fe}
 .br-ctx .it.off{color:#9aa0a6;cursor:default}
@@ -3115,6 +3126,43 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       go({ host: R.newTab.host, path: R.newTab.path || '/' }, 'push');
       if (P.onNewTab) P.onNewTab();
     };
+    /* ---- the ⋮ menu (Moaz 2026-11-17, every lab): zoom the page in and out like a real browser (− 100% +); «صفحة جديدة» works when the site has newTab;
+       the other lines are greyed out like the right-click menu. It closes on a click anywhere else or Escape. ---- */
+    var ZOOMS = [0.5, 0.67, 0.75, 0.8, 0.9, 1, 1.1, 1.25, 1.5, 1.75, 2];
+    var menuBtn = $('.br-ib.menu', root), menuEl = el('div', 'br-menu'); menuEl.hidden = true;
+    menuBtn.setAttribute('role', 'button'); menuBtn.setAttribute('aria-label', 'القائمة'); menuBtn.title = 'القائمة';
+    menuEl.innerHTML = '<div class="it nt">صفحة جديدة</div><div class="sep"></div>' +
+      '<div class="zm"><span class="zl">تكبير وتصغير</span><button type="button" class="zb out" aria-label="تصغير">−</button><span class="zv">100%</span><button type="button" class="zb in" aria-label="تكبير">+</button></div>' +
+      '<div class="sep"></div><div class="it off">سجل التصفح</div><div class="it off">التنزيلات</div><div class="it off">الإعدادات</div>';
+    $('.br-bar', root).appendChild(menuEl);
+    function zoomUi() {
+      $('.zv', menuEl).textContent = Math.round(uz * 100) + '%';
+      $('.zb.out', menuEl).disabled = uz <= ZOOMS[0]; $('.zb.in', menuEl).disabled = uz >= ZOOMS[ZOOMS.length - 1];
+      $('.nt', menuEl).classList.toggle('off', !(R && R.newTab));
+    }
+    function setZoom(dir) {
+      var i = ZOOMS.indexOf(uz); if (i < 0) i = ZOOMS.indexOf(1);
+      i = Math.max(0, Math.min(ZOOMS.length - 1, i + dir)); uz = ZOOMS[i];
+      zoomUi(); applyZoom(); shintUpd(); partsDraw();
+      if (P.onZoom) P.onZoom(uz);
+    }
+    function hideMenu() { menuEl.hidden = true; menuBtn.classList.remove('on'); }
+    menuBtn.addEventListener('click', function (e) {
+      e.stopPropagation(); hideCtx();
+      if (!menuEl.hidden) { hideMenu(); return; }
+      zoomUi(); menuEl.hidden = false; menuBtn.classList.add('on');
+    });
+    menuEl.addEventListener('mousedown', function (e) { e.stopPropagation(); });
+    menuEl.addEventListener('click', function (e) {
+      e.stopPropagation();
+      var b = e.target.closest('.zb'); if (b && !b.disabled) { setZoom(b.classList.contains('in') ? 1 : -1); return; }
+      if (e.target.closest('.nt') && R && R.newTab) { hideMenu(); newBtn.onclick(e); }
+    });
+    document.addEventListener('mousedown', function (e) { if (!menuEl.hidden && !menuEl.contains(e.target) && e.target !== menuBtn && !menuBtn.contains(e.target)) hideMenu(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideMenu(); });
+    window.addEventListener('message', function (e) { if (e.source === f.contentWindow && e.data && (e.data.cc === 'md' || e.data.cc === 'ctx')) hideMenu(); });
+    P.zoom = function () { return uz; };
+    P.menuBtn = function () { return menuBtn; };
     P.newTabBtn = function () { return newBtn.hidden || !newBtn.isConnected ? null : newBtn; };
     P.host = function () { var e = hist[idx]; return e ? e.host : null; };
     P.setSite = function (site) {
@@ -3158,15 +3206,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     function curPage() { var e = hist[idx]; return e && e.host === S.host && S.pages[e.path] && S.pages[e.path].src ? S.pages[e.path] : null; }
     var curK = 1;                                              /* the scale of the page frame in the laptop's browser app (1 when not scaled) */
+    var uz = 1;                                                /* the student's own zoom from the ⋮ menu (Moaz 2026-11-17, every lab): 1 = 100% */
     function applyZoom() {                                    /* the page is drawn smaller while it shares the pane with the code */
       var d = f.contentDocument; if (!d || !d.documentElement) return;
-      var cmp = view.getAttribute('data-mode') === 'cmp', k = cmp ? 0 : fitScale(); curK = k || 1;
+      var cmp = view.getAttribute('data-mode') === 'cmp', k = cmp ? 0 : fitScale();
+      if (!cmp && uz !== 1) k = (k || 1) * uz;                 /* like a real browser: zooming in lays the page out narrower and draws it bigger */
+      curK = k || 1;
       if (k) {          /* the laptop's browser app: the frame is laid out wider and scaled down, so the site keeps its desktop layout and only gets smaller */
         d.documentElement.style.zoom = '1';
         f.style.width = (100 / k) + '%'; f.style.height = (100 / k) + '%'; f.style.transform = 'scale(' + k + ')'; f.style.transformOrigin = '0 0';
       } else {
         f.style.width = f.style.height = f.style.transform = f.style.transformOrigin = '';
-        d.documentElement.style.zoom = cmp ? String(S.cmpZoom || zoomOf()) : '';
+        d.documentElement.style.zoom = cmp ? String((S.cmpZoom || zoomOf()) * uz) : '';
       }
     }
     /* the laptop's browser app used to scale the whole page down (70% alone, 50% beside the terminal). Since 2026-11-14 (Moaz) the site is drawn at full size
@@ -4298,7 +4349,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   CC.site = {
     fitScale: 0.8,                       /* every site drawn as a desktop page at 80% (as Kashif alone) */
     freeUrl: true,                       /* the whole address can be typed (any site's address works) */
-    newTab: { host: 'baheth.qa', path: '/' },   /* the «+» button opens a new tab on the search engine, like a real browser's new tab (Moaz 2026-11-17) */
+    newTab: { host: 'search.example', path: '/' },   /* the «+» button opens a new tab on the search engine, like a real browser's new tab (Moaz 2026-11-17) */
     host: SHOP.host, start: '/home', css: CSS, pages: pages,
     notFound: NOT_FOUND, notFoundTitle: 'الصفحة غير موجودة | ' + SHOP.name,
     redirects: { '/': '/home' }
@@ -4307,12 +4358,15 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   CC.shopKit = { avatar: avatar, I: I, face: function () { return avatar('#1f1530', '#14b8a6', '#c58c63'); } };
 })();
 /* Lab EH2-02 (OSINT): every website besides the shop. The browser target shows them as CC.site.hosts (engine/targets/browser.js, «SEVERAL SITES»).
-   - baheth.qa       «باحث», the search engine: a real search box (it works: the name gives the results, anything else says nothing was found)
-   - lamha.qa        «لمحة», a social network: the target's profile (bio, posts, comments)
-   - mihnati.qa      «مهنتي», a work network: his work profile (jobs, education, work email)
-   - nabd-doha.qa    «نبض الدوحة», a news site: an interview with him (childhood, hometown, hobby)
-   - four results that are NOT about him (Moaz 2026-11-17: «put other fake websites to the search results»): a dentist and a young footballer with the
-     same name, a page about the meaning of the name «سعيد», and a company called «التميمي». Each opens a real one-page site.
+   LEGAL RULE (Moaz 2026-11-17, every lab): every fictional site uses a reserved `.example` address (RFC 2606: it can never be registered by anyone) and a plain
+   descriptive name that is not a real brand or business («محرك البحث بحث», «منصة التواصل», «شبكة الوظائف», «موقع الأخبار»...). No real logo, colours or layout of a known site.
+   - search.example   the search engine «بحث»: a real search box (the name gives the results, anything else says nothing was found); opened in a new tab (the «+» button)
+   - social.example   «منصة التواصل», a social network: the target's profile (bio, highlights, posts, comments)
+   - jobs.example     «شبكة الوظائف», a work network: his work profile (jobs, education, work email)
+   - news.example     «موقع الأخبار», a news site: an interview with him (childhood, hometown, hobby)
+   - four results that are NOT about him (Moaz 2026-11-17): a dentist and a young footballer with the same name, a page about the meaning of the name «سعيد»,
+     and a car forum question by another «سعيد التميمي» from another city. Each opens a real one-page site.
+   Moaz 2026-11-17: «make the websites realistic and well designed»: each site has its own look (header, layout, sidebar, details), drawn with CSS and SVG only.
    Real OSINT is never written out: the birthday is the date of a post plus a brother's comment about his age, the hometown is in the bio and in the interview,
    his son's name is in «أبو صالح» and a match post. Everything is invented (pending), male names only, fixed dates (nothing changes by day), no input field
    except the working search box, no http or https anywhere (links are written //host/path). */
@@ -4325,9 +4379,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     name: 'سعيد صالح التميمي', short: 'سعيد التميمي', first: 'سعيد',
     user: 'saeed_altamimi87', falcon: 'برق', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
     email: 'saeed.altamimi@camelcode.shop', town: 'الوكرة', sons: ['صالح', 'حمد'],
-    social: { host: 'lamha.qa', path: '/saeed_altamimi87' },
-    work: { host: 'mihnati.qa', path: '/in/saeed-altamimi' },
-    news: { host: 'nabd-doha.qa', path: '/tech/saeed-altamimi-interview' }
+    search: 'search.example',
+    social: { host: 'social.example', path: '/saeed_altamimi87' },
+    work: { host: 'jobs.example', path: '/profile/saeed-altamimi' },
+    news: { host: 'news.example', path: '/tech/saeed-altamimi-interview' }
   };
   T.socialHref = '//' + T.social.host + T.social.path;
   T.workHref = '//' + T.work.host + T.work.path;
@@ -4336,12 +4391,49 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function ltr(s) { return '<bdi dir="ltr">' + s + '</bdi>'; }
   var NF = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0;font-size:34px;font-weight:700">الصفحة غير موجودة</h1></div>';
-  var BASE = '*{box-sizing:border-box}html{font-size:17px}body{margin:0;line-height:1.75}a{color:inherit;text-decoration:none}img,svg{display:block}bdi{unicode-bidi:isolate}';
+  var BASE = '*{box-sizing:border-box}html{font-size:16px}body{margin:0;line-height:1.7;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}svg{display:block}bdi{unicode-bidi:isolate}' +
+    '.i{width:1.15em;height:1.15em;flex:none;display:inline-block;vertical-align:-.2em}';
+  /* small line icons (24x24), shared by the sites */
+  function ic(p, fill) { return '<svg class="i" viewBox="0 0 24 24" fill="' + (fill || 'none') + '" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; }
+  var IC = {
+    search: ic('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>'),
+    mic: ic('<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0013 0M12 17.5V21"/>'),
+    cam: ic('<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+    heart: ic('<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0112 7.3a4.3 4.3 0 017.5 2.5C19.5 15.4 12 20 12 20z"/>'),
+    chat: ic('<path d="M4 5h16v11H9l-5 4z"/>'),
+    send: ic('<path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/>'),
+    save: ic('<path d="M6 3h12v18l-6-4-6 4z"/>'),
+    pin: ic('<path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
+    cal: ic('<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'),
+    link: ic('<path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/>'),
+    mail: ic('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'),
+    bag: ic('<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2M3 12h18"/>'),
+    cap: ic('<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2.5 9 2.5 12 0v-5"/>'),
+    star: ic('<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>'),
+    home: ic('<path d="M3 11l9-7 9 7M5 10v10h14V10"/>'),
+    bell: ic('<path d="M6 16V11a6 6 0 0112 0v5l2 2H4zM10 20a2 2 0 004 0"/>'),
+    user: ic('<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-7 8-7s7 2.5 8 7"/>'),
+    grid: ic('<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>'),
+    clock: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'),
+    eye: ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'),
+    share: ic('<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>'),
+    lang: ic('<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/>'),
+    thumb: ic('<path d="M7 11v9H4v-9zM7 11l4-8a2.5 2.5 0 012.5 2.5V9H19a2 2 0 012 2.3l-1.3 7A2 2 0 0117.7 20H7"/>'),
+    check: ic('<path d="M5 12.5l4.5 4.5L19 7.5"/>'),
+    tooth: ic('<path d="M7 3c-2.5 0-4 2-4 4.5 0 3 1.5 4.5 2 7.5.5 3 1 6 2.5 6s2-4 4.5-4 3 4 4.5 4 2-3 2.5-6c.5-3 2-4.5 2-7.5C21 5 19.5 3 17 3c-2 0-3 1.2-5 1.2S9 3 7 3z"/>'),
+    ball: ic('<circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/>'),
+    book: ic('<path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M5 17a3 3 0 013-3h10"/>'),
+    car: ic('<path d="M5 16V12l2-5h10l2 5v4M3 16h18v3H3z"/><circle cx="7.5" cy="16" r="1.5"/><circle cx="16.5" cy="16" r="1.5"/>')
+  };
+  /* a round letter badge (a commenter's picture) */
+  function letter(ch, bg) { return '<span class="lt" style="background:' + bg + '">' + ch + '</span>'; }
 
   /* ---------- faces: the target's face is the shop's drawing (same colours everywhere); the namesakes look different ---------- */
   var FACE = K.face();
-  var DENTIST = K.avatar('#9ca3af', '#f8fafc', '#e8b890').replace('</svg>', '<circle cx="35" cy="36" r="5" fill="none" stroke="#1f1530" stroke-width="1.6"/><circle cx="45" cy="36" r="5" fill="none" stroke="#1f1530" stroke-width="1.6"/><path d="M40 36h0" stroke="#1f1530"/><path d="M40 60v20" stroke="#cbd5e1" stroke-width="2"/></svg>');
+  var DENTIST = K.avatar('#9ca3af', '#f8fafc', '#e8b890').replace('</svg>', '<circle cx="35" cy="36" r="5" fill="none" stroke="#1f1530" stroke-width="1.6"/><circle cx="45" cy="36" r="5" fill="none" stroke="#1f1530" stroke-width="1.6"/><path d="M40 60v20" stroke="#cbd5e1" stroke-width="2"/></svg>');
   var PLAYER = K.avatar('#0b0b0b', '#8A1538', '#d49a72');
+  var BROTHER = K.avatar('#2a1b12', '#ffffff', '#c58c63');
+  var COLLEAGUE = K.avatar('#2a1b12', '#3b82f6', '#d49a72');
 
   /* ---------- pictures of the posts (drawn, static) ---------- */
   var PIC = {
@@ -4365,7 +4457,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<g><circle cx="150" cy="168" r="22" fill="#2a1b12"/><path d="M110 260c4-50 20-74 40-74s36 24 40 74z" fill="#8A1538"/><path d="M128 196c10 10 34 10 44 0" stroke="#fff" stroke-width="5"/></g>' +
       '<g><circle cx="236" cy="196" r="15" fill="#1f1530"/><path d="M210 260c2-36 12-54 26-54s24 18 26 54z" fill="#8A1538"/><text x="236" y="246" text-anchor="middle" font-size="16" font-weight="800" fill="#fff" font-family="Montserrat Arabic,Tajawal,sans-serif">10</text></g></svg>',
     school: '<svg viewBox="0 0 400 260" aria-hidden="true"><rect width="400" height="260" fill="#cfe8f7"/><circle cx="330" cy="54" r="24" fill="#fde68a"/><rect y="200" width="400" height="60" fill="#9bc76b"/><rect x="90" y="90" width="220" height="115" fill="#f6e3c6"/><path d="M80 94l120-60 120 60z" fill="#c2410c"/>' +
-      '<rect x="180" y="140" width="40" height="65" fill="#7c4a2a"/><rect x="110" y="120" width="44" height="34" fill="#93c5fd"/><rect x="246" y="120" width="44" height="34" fill="#93c5fd"/><rect x="150" y="98" width="100" height="18" rx="4" fill="#fff"/><text x="200" y="111" text-anchor="middle" font-size="11" font-weight="800" fill="#0E1F39" font-family="Montserrat Arabic,Tajawal,sans-serif">روضة الوكرة</text>' +
+      '<rect x="180" y="140" width="40" height="65" fill="#7c4a2a"/><rect x="110" y="120" width="44" height="34" fill="#93c5fd"/><rect x="246" y="120" width="44" height="34" fill="#93c5fd"/><rect x="150" y="98" width="100" height="18" rx="4" fill="#fff"/><text x="200" y="111" text-anchor="middle" font-size="11" font-weight="800" fill="#0E1F39" font-family="Montserrat Arabic,Tajawal,sans-serif">الروضة</text>' +
       '<path d="M60 190l20-14 20 14-20 8z" fill="#0E1F39"/><path d="M80 198v10" stroke="#FCAD0F" stroke-width="3"/><circle cx="330" cy="170" r="5" fill="#FCAD0F"/><circle cx="350" cy="150" r="4" fill="#91278E"/><circle cx="40" cy="150" r="4" fill="#295AA6"/></svg>',
     shopIn: '<svg viewBox="0 0 800 380" aria-hidden="true"><rect width="800" height="380" fill="#1B2F52"/><rect y="300" width="800" height="80" fill="#14284A"/>' +
       '<rect x="40" y="70" width="230" height="230" rx="8" fill="#22385E"/><rect x="530" y="70" width="230" height="230" rx="8" fill="#22385E"/><path d="M40 145h230M40 220h230M530 145h230M530 220h230" stroke="#3B5279" stroke-width="4"/>' +
@@ -4374,59 +4466,86 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<g transform="translate(330 120) scale(2.2)">' + FACE.replace(/<svg[^>]*>/, '').replace('</svg>', '') + '</g></svg>'
   };
 
-  /* =================================================================== baheth.qa: the search engine =================================================================== */
+
+  /* thumbnails for the search results (the same drawings, small) */
+  function thumb(svg) { return '<span class="th">' + svg + '</span>'; }
+
+  /* =================================================================== search.example: the search engine «بحث» =================================================================== */
   function norm(s) {
     return String(s || '').replace(/[ً-ْـ]/g, '').replace(/[إأآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ').trim();
   }
   function isHit(q) { var n = norm(q); return n.indexOf('سعيد') >= 0 || n.indexOf('تميمي') >= 0; }
+  function hl(s) { return s.replace(/سعيد|التميمي|صالح/g, function (m) { return '<b>' + m + '</b>'; }); }
   var RESULTS = [
-    { site: 'عيادة ابتسامة الخور', bg: '#0ea5e9', l: 'ع', cite: 'smile-khor.qa › doctors › saeed', href: '//smile-khor.qa/doctors/saeed',
-      t: 'د. سعيد التميمي | استشاري تقويم الأسنان - عيادة ابتسامة الخور', p: 'د. سعيد التميمي، استشاري تقويم الأسنان في عيادة ابتسامة الخور، خبرة أكثر من 20 عاماً في علاج الأطفال والكبار. تعرّف على الطبيب وأوقات العيادة.' },
-    { site: 'لمحة', bg: '#91278E', l: 'ل', cite: 'lamha.qa › ' + T.user, href: T.socialHref, key: 'social',
-      t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ') • لمحة', p: '🛒 CamelCode | 📍 الوكرة ⇄ الدوحة | ⚽ عنابي للأبد | الصقر رفيق الدرب. 1,248 متابعاً. شاهد منشورات سعيد التميمي وصوره على لمحة.' },
-    { site: 'مهنتي', bg: '#295AA6', l: 'م', cite: 'mihnati.qa › in › saeed-altamimi', href: T.workHref, key: 'work',
-      t: 'سعيد صالح التميمي - مدير متجر في CamelCode | مهنتي', p: 'مدير متجر في CamelCode | تجزئة إلكترونيات | خدمة عملاء · الدوحة، قطر · أكثر من 500 جهة اتصال · الخبرة: CamelCode، متجر الضوء للإلكترونيات · التعليم: كلية الخليج للعلوم الإدارية.' },
-    { site: 'موسوعة الأسماء', bg: '#16a34a', l: 'أ', cite: 'asmaa-encyclopedia.qa › names › saeed', href: '//asmaa-encyclopedia.qa/names/saeed',
-      t: 'معنى اسم سعيد وصفات حامل الاسم | موسوعة الأسماء', p: 'معنى اسم سعيد في اللغة العربية: الفرِح المسرور صاحب الحظ الطيب. تعرّف على أصل الاسم وصفات من يحمله وطريقة كتابته بالإنجليزية.' },
-    { site: 'نبض الدوحة', bg: '#b91c1c', l: 'ن', cite: 'nabd-doha.qa › tech › saeed-altamimi-interview', href: T.newsHref, key: 'news',
-      t: 'من بائع صغير إلى مدير متجر: قصة سعيد التميمي مع التقنية | نبض الدوحة', p: '3 يونيو 2024: في حديث خاص، يروي سعيد صالح التميمي، مدير متجر CamelCode، كيف بدأ شغفه بالأجهزة منذ أن كان طالباً في المدرسة...' },
-    { site: 'رياضة اليوم', bg: '#ea580c', l: 'ر', cite: 'riyada-today.qa › youth › saeed-altamimi', href: '//riyada-today.qa/youth/saeed-altamimi',
-      t: 'اللاعب الشاب سعيد التميمي يقود فريق الناشئين للفوز | رياضة اليوم', p: 'سجّل اللاعب سعيد التميمي (17 عاماً) هدف الفوز لفريق الناشئين في نهائي البطولة المدرسية، ليحصل على جائزة أفضل لاعب في المباراة.' },
-    { site: 'التميمي للمقاولات', bg: '#57534e', l: 'ت', cite: 'tamimi-build.qa', href: '//tamimi-build.qa/',
-      t: 'التميمي للمقاولات والصيانة - الصفحة الرئيسية', p: 'شركة التميمي للمقاولات والصيانة: بناء الفلل والمباني التجارية وصيانتها في الدوحة منذ عام 1998.' }
+    { site: 'عيادة الأسنان', bg: '#0e7490', ico: IC.tooth, cite: 'clinic.example › doctors › saeed', href: '//clinic.example/doctors/saeed',
+      t: 'د. سعيد التميمي | استشاري تقويم الأسنان', p: 'د. سعيد التميمي، استشاري تقويم الأسنان في عيادة الأسنان بالخور، خبرة أكثر من 20 عاماً في علاج الأطفال والكبار. تعرّف على الطبيب وأوقات العيادة.',
+      extra: '<div class="rate"><span class="st">★★★★★</span> 4.8 · 126 مراجعة · عيادة أسنان في الخور</div>' },
+    { site: 'منصة التواصل', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
+      t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ')', p: '🛒 مدير متجر CamelCode | 🎂 14 مارس 1987 | 🏠 الوكرة | ⚽ عنابي للأبد | 🦅 الصقر رفيق الدرب. 1,248 متابعاً · 86 منشوراً. شاهد صور ومنشورات سعيد التميمي.',
+      extra: '<div class="imgs">' + ['falcon', 'store', 'stadium', 'cake'].map(function (k) { return thumb(PIC[k]); }).join('') + '</div>' },
+    { site: 'شبكة الوظائف', bg: '#0f766e', ico: IC.bag, cite: 'jobs.example › profile › saeed-altamimi', href: T.workHref, key: 'work',
+      t: 'سعيد صالح التميمي - مدير متجر في CamelCode', p: 'مدير متجر في CamelCode | تجزئة إلكترونيات | خدمة عملاء · الوكرة، قطر · أكثر من 500 جهة اتصال · الخبرة: CamelCode · التعليم: كلية إدارة الأعمال.' },
+    { site: 'معاني الأسماء', bg: '#15803d', ico: IC.book, cite: 'names.example › names › saeed', href: '//names.example/names/saeed',
+      t: 'معنى اسم سعيد وصفات حامل الاسم', p: 'معنى اسم سعيد في اللغة العربية: الفرِح المسرور صاحب الحظ الطيب. تعرّف على أصل الاسم وصفات من يحمله وطريقة كتابته بالإنجليزية.' },
+    { site: 'موقع الأخبار', bg: '#b91c1c', ico: IC.book, cite: 'news.example › tech › saeed-altamimi-interview', href: T.newsHref, key: 'news', date: '3 يونيو 2024',
+      t: 'من بائع صغير إلى مدير متجر: قصة سعيد التميمي مع التقنية', p: 'في حديث خاص، يروي سعيد صالح التميمي، مدير متجر CamelCode، كيف بدأ شغفه بالأجهزة منذ أن كان طالباً في المدرسة، وكيف تحوّل هذا الشغف إلى عمله اليومي...',
+      side: thumb(PIC.shopIn) },
+    { site: 'الأخبار الرياضية', bg: '#ea580c', ico: IC.ball, cite: 'sports.example › youth › saeed-altamimi', href: '//sports.example/youth/saeed-altamimi', date: '12 أبريل 2025',
+      t: 'اللاعب الشاب سعيد التميمي يقود فريق الناشئين للفوز', p: 'سجّل اللاعب سعيد التميمي (17 عاماً) هدف الفوز لفريق الناشئين في نهائي البطولة المدرسية، ليحصل على جائزة أفضل لاعب في المباراة.' },
+    { site: 'منتدى السيارات', bg: '#475569', ico: IC.car, cite: 'forum.example › threads › 4821', href: '//forum.example/threads/4821',
+      t: 'سيارتي لا تعمل في الصباح البارد، ما الحل؟', p: 'كتبه العضو سعيد التميمي (الرياض): السلام عليكم، سيارتي موديل 2009 لا تعمل في الصباح حتى أحاول عدة مرات. 3 ردود.' }
   ];
   T.results = RESULTS;
-  var BH_LOGO = '<span class="lg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5l5 5"/></svg>باحث</span>';
-  function bhForm(q, big) {
-    return '<form class="sf' + (big ? ' big' : '') + '" method="post" action="/search"><input id="q" name="q" type="text" autocomplete="off" spellcheck="false" dir="rtl" value="' + esc(q || '') + '" placeholder="ابحث في الإنترنت"><button class="go" type="submit">بحث</button></form>';
+  var LOGO_S = '<span class="lg"><span class="mk">' + IC.search + '</span>بحث</span>';
+  function sForm(q, big) {
+    return '<form class="sf' + (big ? ' big' : '') + '" method="post" action="/search"><span class="sic">' + IC.search + '</span>' +
+      '<input id="q" name="q" type="text" autocomplete="off" spellcheck="false" dir="rtl" value="' + esc(q || '') + '" placeholder="ابحث في الإنترنت" aria-label="ابحث">' +
+      '<button class="go" type="submit">بحث</button></form>';
   }
-  var bhHome = '<main class="home">' + BH_LOGO.replace('class="lg"', 'class="lg xl"') + '<p class="tag">ابحث في الإنترنت بسهولة</p>' + bhForm('', true) + '</main>';
-  function bhResults(st) {
+  var sHome = '<div class="hm"><header class="tb"><span>الأخبار</span><span>الصور</span><span class="ap">' + IC.grid + '</span></header>' +
+    '<main class="cen">' + LOGO_S.replace('class="lg"', 'class="lg xl"') + '<p class="tag">ابحث في الإنترنت بسهولة وأمان</p>' + sForm('', true) +
+    '<p class="lng">متوفر باللغتين: العربية · English</p></main>' +
+    '<footer class="fb"><span>قطر</span><span class="sp"></span><span>الخصوصية</span><span>الشروط</span><span>حول بحث</span></footer></div>';
+  function sResults(st) {
     var q = st.q || '';
-    var top = '<header class="top">' + '<a href="/">' + BH_LOGO + '</a>' + bhForm(q) + '</header><div class="tabs"><span class="on">الكل</span><span>صور</span><span>أخبار</span><span>فيديو</span></div>';
+    var top = '<header class="rh"><a href="/" class="hl0">' + LOGO_S + '</a>' + sForm(q) + '<span class="ap">' + IC.grid + '</span></header>' +
+      '<nav class="tabs"><span class="on">' + IC.search + 'الكل</span><span>' + IC.cam + 'صور</span><span>' + IC.book + 'أخبار</span><span>' + IC.eye + 'فيديو</span><span>' + IC.pin + 'خرائط</span></nav>';
     if (!isHit(q)) {
-      return top + '<main class="res"><p class="none">لم نجد أي نتائج تطابق بحثك عن «<b>' + esc(q) + '</b>».</p><ul class="tips"><li>تأكد من كتابة الكلمات بشكل صحيح.</li><li>جرّب كلمات أخرى.</li></ul></main>';
+      return top + '<main class="res"><div class="none"><p>لم نجد أي نتائج تطابق بحثك عن «<b>' + esc(q) + '</b>».</p><p>اقتراحات:</p><ul><li>تأكد من كتابة الكلمات بشكل صحيح.</li><li>جرّب كلمات أخرى.</li><li>جرّب كلمات أعمّ.</li></ul></div></main>';
     }
-    return top + '<main class="res"><p class="cnt">حوالي 7 نتائج</p>' + RESULTS.map(function (r) {
-      return '<div class="r"' + (r.key ? ' data-k="' + r.key + '"' : '') + '><div class="src"><span class="fav" style="background:' + r.bg + '">' + r.l + '</span><span class="sn"><b>' + r.site + '</b><cite dir="ltr">' + r.cite + '</cite></span></div>' +
-        '<a class="t" href="' + r.href + '">' + r.t + '</a><p>' + r.p + '</p></div>';
-    }).join('') + '</main>';
+    return top + '<main class="res"><p class="cnt">حوالي 7 نتائج (0.41 ثانية)</p>' + RESULTS.map(function (r) {
+      return '<div class="r' + (r.side ? ' hs' : '') + '"' + (r.key ? ' data-k="' + r.key + '"' : '') + '><div class="rb"><div class="src"><span class="fav" style="background:' + r.bg + '">' + r.ico + '</span><span class="sn"><b>' + r.site + '</b><cite dir="ltr">' + r.cite + '</cite></span></div>' +
+        '<a class="t" href="' + r.href + '">' + r.t + '</a><p>' + (r.date ? '<span class="dt">' + r.date + ': </span>' : '') + hl(r.p) + '</p>' + (r.extra || '') + '</div>' + (r.side || '') + '</div>';
+    }).join('') + '<p class="end">لا توجد نتائج أخرى لهذا البحث.</p></main>';
   }
-  var BH_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#fff;color:#202124}' +
-    '.lg{display:inline-flex;align-items:center;gap:6px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.7rem;color:#295AA6;line-height:1}.lg svg{width:1em;height:1em;color:#FCAD0F}' +
-    '.lg.xl{font-size:4.2rem;gap:12px}.home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 20px 120px}.tag{color:#5f6368;margin:6px 0 26px}' +
-    '.sf{display:flex;align-items:center;gap:0;width:100%;max-width:560px;border:1.5px solid #dfe1e5;border-radius:99px;background:#fff;padding:4px;box-shadow:0 1px 6px rgba(32,33,36,.12)}.sf:focus-within{box-shadow:0 1px 10px rgba(32,33,36,.28);border-color:#c6c9ce}' +
-    '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:8px 18px;color:#202124}.sf .go{border:0;border-radius:99px;background:#295AA6;color:#fff;font:inherit;font-weight:800;padding:8px 22px;cursor:pointer}.sf .go:hover{background:#1d4580}' +
-    '.top{display:flex;align-items:center;gap:26px;padding:18px 28px 12px;border-bottom:0}.top .sf{max-width:620px;box-shadow:none}.tabs{display:flex;gap:22px;padding:0 28px 0 28px;margin-inline-start:96px;border-bottom:1px solid #ebebeb;color:#5f6368;font-size:.92rem}.tabs span{padding:8px 2px}.tabs .on{color:#295AA6;border-bottom:3px solid #295AA6;font-weight:700}' +
-    '.res{max-width:680px;padding:10px 28px 40px;margin-inline-start:96px}.cnt{color:#70757a;font-size:.86rem;margin:6px 0 14px}.r{margin:0 0 26px}.src{display:flex;align-items:center;gap:10px;margin-bottom:2px}.fav{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.85rem;flex:none}' +
-    '.sn{display:flex;flex-direction:column;line-height:1.3}.sn b{font-weight:600;font-size:.92rem;color:#202124}.sn cite{font-style:normal;color:#4d5156;font-size:.8rem;text-align:right}.t{display:inline-block;color:#1a0dab;font-size:1.22rem;line-height:1.4;margin:4px 0 2px}.t:hover{text-decoration:underline}.r p{margin:0;color:#4d5156;font-size:.93rem}' +
-    '.none{font-size:1.05rem;margin:22px 0 10px}.tips{color:#4d5156}' +
-    '@media(max-width:700px){.top{flex-direction:column;align-items:stretch;gap:10px;padding:12px 16px}.tabs,.res{margin-inline-start:0;padding-inline:16px}.lg.xl{font-size:3rem}}';
-  var baheth = {
-    css: BH_CSS, notFound: NF,
+  var S_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#fff;color:#1f2430}' +
+    '.lg{display:inline-flex;align-items:center;gap:.25em;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.8rem;line-height:1;color:#3730a3;letter-spacing:-.01em}' +
+    '.lg .mk{display:grid;place-items:center;width:1.25em;height:1.25em;border-radius:.38em;background:linear-gradient(135deg,#6366f1,#3730a3);color:#fff;box-shadow:0 4px 10px -4px rgba(55,48,163,.6)}.lg .mk .i{width:.72em;height:.72em;stroke-width:2.6}' +
+    '.lg.xl{font-size:4.6rem;gap:.18em}' +
+    '.hm{min-height:100vh;display:flex;flex-direction:column}.tb{display:flex;justify-content:flex-end;align-items:center;gap:22px;padding:14px 26px;font-size:.92rem;color:#3c4150}.ap{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:#5f6475}.ap .i{width:1.3em;height:1.3em}' +
+    '.cen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px 90px}.tag{color:#5f6475;margin:10px 0 28px;font-size:1.02rem}.lng{color:#5f6475;font-size:.88rem;margin-top:26px}' +
+    '.fb{display:flex;gap:22px;padding:14px 28px;background:#f4f5f8;border-top:1px solid #e6e8ee;color:#5f6475;font-size:.88rem}.fb .sp{flex:1}' +
+    '.sf{display:flex;align-items:center;width:100%;max-width:600px;border:1px solid #dcdfe6;border-radius:99px;background:#fff;padding:5px 6px 5px 5px;box-shadow:0 2px 8px -2px rgba(31,36,48,.12);transition:box-shadow .2s}' +
+    '.sf:focus-within{box-shadow:0 4px 18px -4px rgba(55,48,163,.35);border-color:#c7cbe8}.sf .sic{color:#8a8fa0;padding:0 14px 0 6px}.sf .sic .i{width:1.25em;height:1.25em}' +
+    '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:9px 4px;color:#1f2430}.sf input::placeholder{color:#9aa0ad}' +
+    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:640px;padding:7px 8px 7px 7px}.sf.big input{font-size:1.12rem}' +
+    '.rh{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
+    '.tabs{display:flex;gap:26px;padding:0 28px;padding-inline-start:146px;border-bottom:1px solid #eceef3;color:#5f6475;font-size:.9rem}.tabs span{display:flex;align-items:center;gap:6px;padding:9px 2px}.tabs .i{width:1em;height:1em}.tabs .on{color:#3730a3;border-bottom:3px solid #3730a3;font-weight:700}' +
+    '.res{max-width:720px;padding:10px 28px 40px;margin-inline-start:118px}.cnt{color:#717684;font-size:.85rem;margin:8px 0 18px}' +
+    '.r{margin:0 0 30px;display:flex;gap:18px;align-items:flex-start}.r .rb{flex:1;min-width:0}.src{display:flex;align-items:center;gap:10px;margin-bottom:3px}' +
+    '.fav{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;border:1px solid rgba(0,0,0,.06)}.fav .i{width:1em;height:1em}' +
+    '.sn{display:flex;flex-direction:column;line-height:1.3;min-width:0}.sn b{font-weight:600;font-size:.9rem;color:#1f2430}.sn cite{font-style:normal;color:#5f6475;font-size:.8rem;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.t{display:inline-block;color:#2f2a9e;font-size:1.25rem;line-height:1.4;margin:4px 0 3px;font-weight:600}.t:hover{text-decoration:underline}.r p{margin:0;color:#4a4f5c;font-size:.93rem;line-height:1.65}.r p b{color:#1f2430}.dt{color:#717684}' +
+    '.rate{margin-top:4px;color:#5f6475;font-size:.86rem}.rate .st{color:#f59e0b;letter-spacing:1px}' +
+    '.imgs{display:flex;gap:6px;margin-top:10px}.th{display:block;border-radius:10px;overflow:hidden;background:#eee;border:1px solid #eceef3}.imgs .th{width:118px;height:76px}.th svg{width:100%;height:100%}.th svg{object-fit:cover}' +
+    '.r.hs>.th{flex:none;width:150px;height:96px;margin-top:34px}.end{color:#9aa0ad;font-size:.85rem;margin-top:10px}' +
+    '.none{padding:14px 0}.none p{margin:0 0 8px;font-size:1.02rem}.none ul{color:#4a4f5c;margin:0;padding-inline-start:22px}' +
+    '@media(max-width:760px){.rh{flex-wrap:wrap;gap:10px;padding:12px 16px}.rh .ap{display:none}.tabs{padding-inline:16px;gap:16px;overflow:hidden}.res{margin-inline-start:0;padding-inline:16px}.lg.xl{font-size:3.2rem}.r.hs>.th{display:none}.imgs .th{width:84px;height:56px}}';
+  var searchSite = {
+    css: S_CSS, notFound: NF,
     pages: {
-      '/': { title: 'باحث', html: bhHome },
-      '/search': { title: function (st) { return (st.q || '') + ' - بحث باحث'; }, html: bhResults }
+      '/': { title: 'بحث', html: sHome },
+      '/search': { title: function (st) { return (st.q || '') + ' - بحث'; }, html: sResults }
     },
     redirects: { '/home': '/' },
     post: function (path, data, st) {
@@ -4438,116 +4557,227 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
   };
 
-  /* =================================================================== lamha.qa: the social network =================================================================== */
-  function post(date, text, pic, likes, comments, extra) {
-    return '<article class="post"><div class="ph"><span class="av">' + FACE + '</span><span class="who"><b>سعيد التميمي</b><small dir="ltr">@' + T.user + '</small></span><span class="dt">' + date + '</span></div>' +
-      (extra || '') + '<p class="tx">' + text + '</p>' + (pic ? '<div class="pic">' + pic + '</div>' : '') +
-      '<div class="acts"><span>♡ ' + likes + '</span><span>💬 ' + comments.length + '</span></div>' +
-      (comments.length ? '<div class="cms">' + comments.map(function (c) { return '<div class="cm"><b dir="ltr">@' + c[0] + '</b><span>' + c[1] + '</span></div>'; }).join('') + '</div>' : '') + '</article>';
+  /* =================================================================== social.example: «منصة التواصل» =================================================================== */
+  var LOGO_SO = '<span class="brand"><span class="bm"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5A3.5 3.5 0 017.5 3h6A3.5 3.5 0 0117 6.5v3A3.5 3.5 0 0113.5 13H9l-3.5 3v-3.3A3.5 3.5 0 014 9.5z" fill="#fff"/><path d="M19 9.5a2.5 2.5 0 012 2.4v2.6a2.5 2.5 0 01-2 2.4V19l-2.6-2.1H13a2.5 2.5 0 01-2.3-1.6" fill="none" stroke="#fde68a" stroke-width="1.8" stroke-linecap="round"/></svg></span>منصة التواصل</span>';
+  function tags(s) { return s.replace(/#[^\s<]+/g, function (m) { return '<span class="ht">' + m + '</span>'; }); }
+  function comment(u, txt, bg, likes) {
+    return '<div class="cm">' + letter(u.charAt(0).toUpperCase(), bg) + '<div class="cb"><div class="cl"><b dir="ltr">' + u + '</b> ' + txt + '</div><div class="cmeta"><span>' + (likes || 0) + ' إعجاب</span><span>رد</span></div></div></div>';
   }
-  var lamhaProfile = '<header class="nav"><span class="brand">لمحة</span></header>' +
-    '<main class="wrap"><section class="prof"><div class="cover"></div><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>سعيد التميمي | أبو صالح 🦅</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
-    '<div class="bio"><p>🛒 CamelCode</p><p>📍 الوكرة ⇄ الدوحة</p><p>⚽ عنابي للأبد</p><p>🦅 الصقر رفيق الدرب</p></div>' +
-    '<div class="stats"><span><b>86</b> منشوراً</span><span><b>1,248</b> متابعاً</span><span><b>312</b> يتابع</span><span class="jn">انضم في مايو 2015</span></div></section>' +
-    '<h2 class="sh">المنشورات</h2>' +
-    post('3 نوفمبر 2025', 'برق جاهز لموسم المقناص 🦅 #صقارة', PIC.falcon, 214, [['fahad_almarri', 'ما شاء الله، برق كبر يا بو صالح! 👏'], [T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍']]) +
-    post('20 سبتمبر 2025', 'يوم جرد طويل في المتجر… الفريق ما قصّر 💪 #كاملكود', PIC.store, 167, [['yousef_m', 'يعطيكم العافية يا مدير 👏']]) +
-    post('14 مارس 2025', 'الحمد لله على نعمة العمر 🤍', PIC.cake, 389, [['nasser_altamimi', 'كل عام وأنت بخير يا سعيد، 38 سنة وما تغيرت 😂'], ['salem_k', 'عساك من عواده يا بو صالح 🎉']]) +
-    post('2 فبراير 2024', 'أول مباراة لصالح في الملعب ⚽ #العنابي', PIC.stadium, 276, [['hamad_96', 'ما شاء الله صالح كبر! الله يحفظه']]) +
-    post('10 يونيو 2023', 'حفل تخرّج حمد من الروضة، فخور فيك يا ولدي 🎓', PIC.school, 198, [], '<p class="loc">📍 روضة الوكرة</p>') +
-    '<p class="end">لا توجد منشورات أخرى</p></main>';
-  var LAMHA_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#f3f0f6;color:#1c1424}' +
-    '.nav{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #e7e1ee;padding:10px 24px}.brand{font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.6rem;color:#91278E}' +
-    '.wrap{max-width:620px;margin:0 auto;padding:16px 14px 40px}.prof{background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e7e1ee}.cover{height:120px;background:linear-gradient(120deg,#0E1F39,#91278E 60%,#FCAD0F)}' +
-    '.row{display:flex;align-items:flex-end;gap:14px;padding:0 20px;margin-top:-44px}.big{width:104px;height:104px;border-radius:50%;overflow:hidden;border:4px solid #fff;background:#fff;flex:none}.big svg,.av svg{width:100%;height:100%}.nm h1{margin:0;font-size:1.3rem;line-height:1.3}.un{color:#6b5a7a;font-size:.92rem}' +
-    '.bio{padding:12px 20px 4px}.bio p{margin:0;line-height:1.7}.stats{display:flex;flex-wrap:wrap;gap:6px 18px;padding:8px 20px 16px;color:#6b5a7a;font-size:.92rem}.stats b{color:#1c1424}.jn{width:100%}' +
-    '.sh{font-size:1.05rem;margin:20px 6px 10px;color:#6b5a7a}.post{background:#fff;border:1px solid #e7e1ee;border-radius:18px;padding:14px 16px;margin-bottom:14px}.ph{display:flex;align-items:center;gap:10px}.av{width:42px;height:42px;border-radius:50%;overflow:hidden;flex:none}.who{display:flex;flex-direction:column;line-height:1.25;flex:1}.who small{color:#6b5a7a;text-align:right}.dt{color:#6b5a7a;font-size:.85rem}' +
-    '.tx{margin:10px 0}.loc{margin:8px 0 0;color:#91278E;font-weight:700;font-size:.92rem}.pic{border-radius:14px;overflow:hidden;background:#eee}.pic svg{width:100%;height:auto}.acts{display:flex;gap:22px;color:#6b5a7a;margin:10px 0 2px;font-size:.92rem}' +
-    '.cms{border-top:1px solid #efeaf3;margin-top:8px;padding-top:8px}.cm{display:flex;flex-wrap:wrap;gap:4px 8px;padding:5px 0;font-size:.95rem}.cm b{color:#1c1424}.end{text-align:center;color:#6b5a7a;font-size:.9rem}';
-  var lamha = { css: LAMHA_CSS, notFound: NF, pages: {} };
-  lamha.pages[T.social.path] = { title: 'سعيد التميمي (@' + T.user + ') | لمحة', html: lamhaProfile };
+  function post(date, text, pic, likes, liker, comments, loc) {
+    return '<article class="post"><header class="ph"><span class="av ring">' + FACE + '</span><span class="who"><b>سعيد التميمي</b><small><bdi dir="ltr">@' + T.user + '</bdi> · ' + date + '</small></span></header>' +
+      (loc ? '<p class="loc">' + IC.pin + loc + '</p>' : '') +
+      '<p class="tx">' + tags(text) + '</p>' + (pic ? '<div class="pic">' + pic + '</div>' : '') +
+      '<div class="acts"><span>' + IC.heart + likes + '</span><span>' + IC.chat + comments.length + '</span><span>' + IC.send + '</span><span class="sv">' + IC.save + '</span></div>' +
+      '<p class="lk">أعجب بها <b dir="ltr">' + liker + '</b> و' + (likes - 1) + ' آخرون</p>' +
+      (comments.length ? '<div class="cms">' + comments.join('') + '</div>' : '') + '</article>';
+  }
+  var COVER = '<svg viewBox="0 0 800 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="cv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1e3a5f"/><stop offset=".6" stop-color="#e07a3f"/><stop offset="1" stop-color="#f7c873"/></linearGradient></defs>' +
+    '<rect width="800" height="220" fill="url(#cv)"/><circle cx="600" cy="150" r="40" fill="#fde68a" opacity=".85"/>' +
+    '<path d="M0 220V170h40v-30h20v30h30v-60h18v60h26v-40h30v40h22v-90h12l6-20 6 20h12v90h30v-50h24v50h40v-70h16v70h30v-34h28v34h40v-110l14-14 14 14v110h30v-46h24v46h36v-62h20v62h40v-30h30v30h60v50z" fill="#14233d" opacity=".9"/>' +
+    '<path d="M0 220c120-26 240-30 400-18s280 10 400-8v26z" fill="#0b1626"/></svg>';
+  var HL = [
+    ['برق', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f3a35b"/><path d="M14 30c4-14 10-20 16-18-2 6-6 12-12 18z" fill="#6b4423"/><circle cx="26" cy="14" r="4" fill="#6b4423"/><path d="M29 15l4 1-3 2z" fill="#f3b33d"/></svg>'],
+    ['المتجر', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#1B2F52"/><rect x="8" y="12" width="24" height="18" rx="2" fill="#22385E"/><rect x="10" y="15" width="5" height="7" fill="#FCAD0F"/><rect x="17" y="16" width="5" height="6" fill="#ef4444"/><rect x="24" y="15" width="5" height="7" fill="#14b8a6"/></svg>'],
+    ['العنابي', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#8A1538"/><circle cx="20" cy="20" r="9" fill="#fff"/><path d="M20 14l4 3-1.5 4.5h-5L16 17z" fill="#8A1538"/></svg>'],
+    ['البر', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f7c873"/><path d="M0 30c10-6 20-6 40-2v12H0z" fill="#c9843f"/><path d="M12 30l6-12 6 12z" fill="#7a4b2a"/></svg>']
+  ];
+  var socialProfile = '<header class="nav"><div class="nin">' + LOGO_SO + '<span class="nic"><span class="on">' + IC.home + '</span><span>' + IC.grid + '</span><span>' + IC.bell + '</span><span class="me">' + IC.user + '</span></span></div></header>' +
+    '<div class="page"><main class="main">' +
+    '<section class="prof"><div class="cover">' + COVER + '</div><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>سعيد التميمي | أبو صالح 🦅</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
+    '<div class="bio"><p>🛒 مدير متجر CamelCode</p><p>🎂 14 مارس 1987</p><p>🏠 الوكرة</p><p>⚽ عنابي للأبد</p><p>🦅 الصقر رفيق الدرب</p></div>' +
+    '<div class="meta"><span>' + IC.pin + 'الوكرة، قطر</span><span>' + IC.bag + 'CamelCode</span><span>' + IC.cal + 'انضم في مايو 2015</span></div>' +
+    '<div class="stats"><span><b>86</b> منشوراً</span><span><b>1,248</b> متابعاً</span><span><b>312</b> يتابع</span></div>' +
+    '<div class="hls">' + HL.map(function (h) { return '<span class="hlc"><span class="hli">' + h[1] + '</span><small>' + h[0] + '</small></span>'; }).join('') + '</div>' +
+    '<nav class="ptabs"><span class="on">' + IC.grid + 'المنشورات</span><span>' + IC.cam + 'الصور</span><span>' + IC.user + 'الإشارات</span></nav></section>' +
+    post('3 نوفمبر 2025', 'برق جاهز لموسم المقناص 🦅 #صقارة #البر', PIC.falcon, 214, 'fahad_almarri', [comment('fahad_almarri', 'ما شاء الله، برق كبر يا بو صالح! 👏', '#0891b2', 3), comment(T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍', '#1B2F52', 2)]) +
+    post('20 سبتمبر 2025', 'يوم جرد طويل في المتجر… الفريق ما قصّر 💪 #كاملكود', PIC.store, 167, 'yousef_m', [comment('yousef_m', 'يعطيكم العافية يا مدير 👏', '#7c3aed', 1)]) +
+    post('14 مارس 2025', 'الحمد لله على نعمة العمر 🤍', PIC.cake, 389, 'nasser_altamimi', [comment('nasser_altamimi', 'كل عام وأنت بخير يا سعيد، 38 سنة وما تغيرت 😂', '#b45309', 12), comment('salem_k', 'عساك من عواده يا بو صالح 🎉', '#15803d', 4)]) +
+    post('2 فبراير 2024', 'أول مباراة لصالح في الملعب ⚽ #العنابي', PIC.stadium, 276, 'hamad_96', [comment('hamad_96', 'ما شاء الله صالح كبر! الله يحفظه', '#be123c', 2)]) +
+    post('10 يونيو 2023', 'حفل تخرّج حمد من الروضة، فخور فيك يا ولدي 🎓', PIC.school, 198, 'nasser_altamimi', [], 'الوكرة، قطر') +
+    '<p class="end">لا توجد منشورات أخرى</p></main>' +
+    '<aside class="side"><div class="box"><h3>قد تعرفهم</h3>' +
+      [['ناصر التميمي', 'nasser_altamimi', BROTHER, 'يتابعه سعيد'], ['فهد المري', 'fahad_almarri', K.avatar('#1f1530', '#0891b2', '#e0ac80'), 'متابَع مشترك'], ['يوسف محمد', 'yousef_m', COLLEAGUE, 'يعمل في CamelCode']].map(function (p) {
+        return '<div class="sug"><span class="av">' + p[2] + '</span><span class="who"><b>' + p[0] + '</b><small dir="ltr">@' + p[1] + '</small><small>' + p[3] + '</small></span></div>';
+      }).join('') + '</div>' +
+    '<div class="box"><h3>الصور</h3><div class="ph3">' + ['falcon', 'store', 'cake', 'stadium', 'school', 'falcon'].map(function (k) { return '<span>' + PIC[k] + '</span>'; }).join('') + '</div></div>' +
+    '<p class="foot">منصة التواصل · الخصوصية · الشروط</p></aside></div>';
+  var SO_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#eef3f6;color:#15212b}' +
+    '.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid #dde6ec}.nin{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:9px 20px}' +
+    '.brand{display:flex;align-items:center;gap:10px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.45rem;color:#0e7490}.bm{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#06b6d4,#0e7490);box-shadow:0 6px 14px -8px #0e7490}.bm svg{width:24px;height:24px}' +
+    '.nic{display:flex;gap:8px;color:#5b6b78}.nic span{width:42px;height:42px;border-radius:12px;display:grid;place-items:center}.nic .i{width:1.4em;height:1.4em}.nic .on{color:#0e7490;background:#e0f4f8}.nic .me{border-radius:50%;background:#eef3f6}' +
+    '.page{max-width:1040px;margin:0 auto;padding:18px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}' +
+    '.prof,.post,.box{background:#fff;border:1px solid #dde6ec;border-radius:20px;box-shadow:0 10px 28px -24px rgba(21,33,43,.5)}.prof{overflow:hidden}.cover{height:170px;overflow:hidden}.cover svg{width:100%;height:100%}' +
+    '.row{display:flex;align-items:flex-start;gap:16px;padding:0 24px}.row .big{margin-top:-56px}.big{width:122px;height:122px;border-radius:50%;overflow:hidden;border:5px solid #fff;background:#fff;flex:none;box-shadow:0 0 0 3px #06b6d4}.big svg,.av svg{width:100%;height:100%}' +
+    '.nm{padding-top:14px}.nm h1{margin:0;font-size:1.45rem;line-height:1.3}.un{color:#5b6b78;font-size:.95rem}' +
+    '.bio{padding:14px 24px 2px}.bio p{margin:0;line-height:1.75}.meta{display:flex;flex-wrap:wrap;gap:6px 18px;padding:8px 24px 0;color:#5b6b78;font-size:.9rem}.meta span{display:flex;align-items:center;gap:6px}' +
+    '.stats{display:flex;gap:22px;padding:10px 24px 4px;color:#5b6b78;font-size:.93rem}.stats b{color:#15212b;font-size:1.05rem}' +
+    '.hls{display:flex;gap:20px;padding:14px 24px 6px}.hlc{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.82rem;color:#3b4a56}.hli{width:66px;height:66px;border-radius:50%;padding:3px;background:#fff;box-shadow:0 0 0 2px #cfe3ea;overflow:hidden}.hli svg{width:100%;height:100%;border-radius:50%}' +
+    '.ptabs{display:flex;border-top:1px solid #e6edf2;margin-top:10px}.ptabs span{flex:1;display:flex;justify-content:center;align-items:center;gap:8px;padding:12px 0;color:#5b6b78;font-weight:700;font-size:.93rem}.ptabs .on{color:#0e7490;box-shadow:inset 0 -3px 0 #0e7490}' +
+    '.post{padding:16px 18px;margin-top:16px}.ph{display:flex;align-items:center;gap:12px}.av{width:46px;height:46px;border-radius:50%;overflow:hidden;flex:none}.av.ring{box-shadow:0 0 0 2px #fff,0 0 0 4px #06b6d4}' +
+    '.who{display:flex;flex-direction:column;line-height:1.3;min-width:0}.who small{color:#6b7b88;font-size:.82rem}.tx{margin:12px 2px;font-size:1.02rem}.ht{color:#0e7490;font-weight:700}.loc{margin:10px 2px 0;color:#0e7490;font-size:.88rem;font-weight:700;display:flex;align-items:center;gap:4px}' +
+    '.pic{border-radius:16px;overflow:hidden;background:#e6edf2}.pic svg{width:100%;height:auto}' +
+    '.acts{display:flex;gap:20px;color:#3b4a56;margin:12px 2px 4px;font-size:.92rem}.acts span{display:flex;align-items:center;gap:6px}.acts .i{width:1.35em;height:1.35em}.acts .sv{margin-inline-start:auto}.lk{margin:2px 2px 6px;font-size:.9rem;color:#3b4a56}' +
+    '.cms{border-top:1px solid #edf2f5;padding-top:8px}.cm{display:flex;gap:10px;padding:7px 0}.lt{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:.85rem;flex:none;font-family:system-ui,sans-serif}' +
+    '.cb{background:#f2f6f8;border-radius:14px;padding:7px 12px;min-width:0}.cl{font-size:.94rem;line-height:1.6}.cmeta{display:flex;gap:14px;color:#6b7b88;font-size:.78rem;margin-top:2px}.end{text-align:center;color:#6b7b88;font-size:.88rem;margin-top:18px}' +
+    '.side{position:sticky;top:76px;display:flex;flex-direction:column;gap:16px}.box{padding:14px 16px}.box h3{margin:0 0 10px;font-size:1rem}.sug{display:flex;gap:10px;align-items:center;padding:7px 0}.sug .av{width:44px;height:44px}.sug small{display:block}' +
+    '.ph3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:12px;overflow:hidden}.ph3 span{aspect-ratio:1;overflow:hidden;background:#e6edf2}.ph3 svg{width:100%;height:100%}.foot{color:#8796a2;font-size:.8rem;text-align:center;margin:0}' +
+    '@media(max-width:860px){.page{grid-template-columns:1fr}.side{display:none}}';
+  var social = { css: SO_CSS, notFound: NF, pages: {} };
+  social.pages[T.social.path] = { title: 'سعيد التميمي (@' + T.user + ') | منصة التواصل', html: socialProfile };
 
-  /* =================================================================== mihnati.qa: the work network =================================================================== */
-  function job(logo, bg, title, org, when, place) {
-    return '<div class="job"><span class="org" style="background:' + bg + '">' + logo + '</span><div><b>' + title + '</b><span>' + org + '</span><small>' + when + '</small>' + (place ? '<small>' + place + '</small>' : '') + '</div></div>';
+  /* =================================================================== jobs.example: «شبكة الوظائف» =================================================================== */
+  var LOGO_J = '<span class="brand"><span class="bm">' + IC.bag + '</span>شبكة الوظائف</span>';
+  function exp(logo, bg, title, org, when, place, desc) {
+    return '<div class="exp"><span class="org" style="background:' + bg + '">' + logo + '</span><div class="ed"><b>' + title + '</b><span>' + org + '</span><small>' + when + '</small>' + (place ? '<small>' + place + '</small>' : '') + (desc ? '<p>' + desc + '</p>' : '') + '</div></div>';
   }
-  var mihnatiProfile = '<header class="nav"><span class="brand">مهنتي</span></header>' +
-    '<main class="wrap"><section class="card top"><div class="cover"></div><span class="big">' + FACE + '</span><h1>سعيد صالح التميمي</h1><p class="hl">مدير متجر في CamelCode | تجزئة إلكترونيات | خدمة عملاء</p><p class="loc">الدوحة، قطر · <b>أكثر من 500</b> جهة اتصال</p></section>' +
-    '<section class="card"><h2>نبذة</h2><p>أكثر من 12 عاماً في قطاع التجزئة. أؤمن أن العميل السعيد هو أفضل إعلان.</p></section>' +
+  var J_COVER = '<svg viewBox="0 0 800 200" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="800" height="200" fill="#0f766e"/><circle cx="680" cy="20" r="160" fill="#14b8a6" opacity=".35"/><circle cx="120" cy="230" r="150" fill="#5eead4" opacity=".25"/><path d="M0 150c160-40 300 30 460-10s240-40 340 0v60H0z" fill="#115e59" opacity=".6"/></svg>';
+  var jobsProfile = '<header class="nav"><div class="nin">' + LOGO_J + '<nav class="nl"><span class="on">' + IC.home + '<small>الرئيسية</small></span><span>' + IC.user + '<small>شبكتي</small></span><span>' + IC.bag + '<small>الوظائف</small></span><span>' + IC.chat + '<small>الرسائل</small></span><span>' + IC.bell + '<small>التنبيهات</small></span></nav></div></header>' +
+    '<div class="page"><main class="main">' +
+    '<section class="card top"><div class="cover">' + J_COVER + '</div><span class="big">' + FACE + '</span>' +
+      '<div class="tin"><h1>سعيد صالح التميمي <span class="pr">هو</span></h1><p class="hl">مدير متجر في CamelCode | تجزئة إلكترونيات | خدمة عملاء</p>' +
+      '<p class="loc">الوكرة، قطر · <b>أكثر من 500</b> جهة اتصال</p><div class="cur"><span class="org s" style="background:#0E1F39">C</span><b>CamelCode</b><span class="org s" style="background:#7c2d12">' + IC.cap + '</span><b>كلية إدارة الأعمال</b></div></div></section>' +
+    '<section class="card"><h2>نبذة</h2><p>أكثر من 12 عاماً في قطاع التجزئة. أؤمن أن العميل السعيد هو أفضل إعلان، وأحب أن أبني فريقاً يحب ما يعمل.</p></section>' +
     '<section class="card"><h2>الخبرة</h2>' +
-      job('C', '#0E1F39', 'مدير المتجر', 'CamelCode · دوام كامل', 'يناير 2021 حتى الآن', 'الدوحة، قطر') +
-      job('ض', '#ca8a04', 'مشرف مبيعات', 'متجر الضوء للإلكترونيات', '2014 إلى 2020', 'الدوحة، قطر') +
-      job('ض', '#ca8a04', 'موظف مبيعات', 'متجر الضوء للإلكترونيات', '2011 إلى 2014', '') + '</section>' +
-    '<section class="card"><h2>التعليم</h2>' + job('ك', '#295AA6', 'كلية الخليج للعلوم الإدارية', 'بكالوريوس إدارة أعمال', '2005 إلى 2009', '') + '</section>' +
-    '<section class="card"><h2>المهارات</h2><div class="sk"><span>إدارة الفرق</span><span>المبيعات</span><span>خدمة العملاء</span></div></section>' +
-    '<section class="card"><h2>التوصيات</h2><blockquote>«سعيد مدير يسمع لفريقه، ودائماً أول واحد يوصل المتجر الساعة 7 الصبح.»<cite>يوسف محمد، زميل في CamelCode</cite></blockquote></section>' +
-    '<section class="card"><h2>معلومات التواصل</h2><div class="ct"><span>' + I.mail + '</span><div><b>البريد الإلكتروني للعمل</b>' + ltr(T.email) + '</div></div><div class="ct"><span>' + I.pin + '</span><div><b>الموقع</b>الدوحة، قطر</div></div></section></main>';
-  var MIH_CSS = BASE + 'body{font-family:"CC Digits",system-ui,"Segoe UI",Tahoma,"Montserrat Arabic",sans-serif;background:#eef1f5;color:#1d2226}' +
-    '.nav{position:sticky;top:0;z-index:3;background:#fff;border-bottom:1px solid #dfe3e8;padding:10px 24px}.brand{display:inline-block;background:#295AA6;color:#fff;font-weight:800;border-radius:8px;padding:0 12px;font-size:1.25rem}' +
-    '.wrap{max-width:680px;margin:0 auto;padding:16px 14px 40px}.card{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:16px 22px;margin-bottom:12px}.card h2{margin:0 0 10px;font-size:1.15rem}.card p{margin:0}' +
-    '.top{padding:0 0 18px;overflow:hidden}.top .cover{height:110px;background:linear-gradient(120deg,#c7d7ee,#295AA6)}.top .big{display:block;width:112px;height:112px;border-radius:50%;overflow:hidden;border:4px solid #fff;margin:-56px 22px 6px;background:#fff}.top .big svg{width:100%;height:100%}' +
-    '.top h1{margin:0 22px;font-size:1.45rem;line-height:1.3}.hl{margin:4px 22px 0!important}.loc{margin:4px 22px 0!important;color:#5e6a75;font-size:.92rem}' +
-    '.job{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid #eef1f5}.job:last-child{border:0}.org{width:46px;height:46px;border-radius:8px;display:grid;place-items:center;color:#fff;font-weight:800;flex:none}.job div{display:flex;flex-direction:column;line-height:1.5}.job span,.job small{color:#5e6a75}' +
-    '.sk{display:flex;flex-wrap:wrap;gap:8px}.sk span{border:1px solid #c5ced8;border-radius:99px;padding:2px 14px}blockquote{margin:0;padding:6px 14px;border-inline-start:4px solid #295AA6;background:#f5f8fc;border-radius:6px}blockquote cite{display:block;color:#5e6a75;font-style:normal;font-size:.9rem;margin-top:4px}' +
-    '.ct{display:flex;gap:12px;align-items:flex-start;padding:6px 0}.ct span{color:#295AA6}.ct .ic{width:1.5em;height:1.5em}.ct div{display:flex;flex-direction:column}';
-  var mihnati = { css: MIH_CSS, notFound: NF, pages: {} };
-  mihnati.pages[T.work.path] = { title: 'سعيد صالح التميمي - مدير متجر في CamelCode | مهنتي', html: mihnatiProfile };
+      exp('C', '#0E1F39', 'مدير المتجر', 'CamelCode · دوام كامل', 'يناير 2021 حتى الآن', 'الدوحة، قطر', 'إدارة فريق المتجر والمبيعات وخدمة العملاء.') +
+      exp(IC.bag, '#a16207', 'مشرف مبيعات', 'متجر إلكترونيات في الدوحة', '2014 إلى 2020', 'الدوحة، قطر', '') +
+      exp(IC.bag, '#a16207', 'موظف مبيعات', 'متجر إلكترونيات في الدوحة', '2011 إلى 2014', '', '') + '</section>' +
+    '<section class="card"><h2>التعليم</h2>' + exp(IC.cap, '#7c2d12', 'كلية إدارة الأعمال', 'بكالوريوس إدارة أعمال', '2005 إلى 2009', '', '') + '</section>' +
+    '<section class="card"><h2>المهارات</h2><div class="sk"><div><b>إدارة الفرق</b><span>' + IC.thumb + '24 تأييداً</span></div><div><b>المبيعات</b><span>' + IC.thumb + '19 تأييداً</span></div><div><b>خدمة العملاء</b><span>' + IC.thumb + '31 تأييداً</span></div></div></section>' +
+    '<section class="card"><h2>التوصيات</h2><div class="rec"><span class="av">' + COLLEAGUE + '</span><div><b>يوسف محمد</b><small>مسؤول التوصيل في CamelCode</small><blockquote>«سعيد مدير يسمع لفريقه، ودائماً أول واحد يوصل المتجر الساعة 7 الصبح.»</blockquote></div></div></section>' +
+    '<section class="card"><h2>معلومات التواصل</h2><div class="ct"><span class="ci">' + IC.mail + '</span><div><b>البريد الإلكتروني للعمل</b>' + ltr(T.email) + '</div></div><div class="ct"><span class="ci">' + IC.link + '</span><div><b>الملف الشخصي</b>' + ltr('jobs.example/profile/saeed-altamimi') + '</div></div></section>' +
+    '</main><aside class="side">' +
+    '<section class="card"><h3>اللغات</h3><div class="lng"><b>العربية</b><span>اللغة الأم</span></div><div class="lng"><b>الإنجليزية</b><span>جيد جداً</span></div></section>' +
+    '<section class="card"><h3>أشخاص شاهدوا هذا الملف أيضاً</h3>' +
+      [['ماجد سعيد', 'مسؤول المبيعات في CamelCode', K.avatar('#5a3a22', '#91278E', '#e8b890')], ['سالم خالد', 'مالك متجر CamelCode', K.avatar('#3b2a1c', '#295AA6', '#e0ac80')], ['عبدالله جاسم', 'مدير متجر ملابس', K.avatar('#1f1530', '#16a34a', '#c58c63')]].map(function (p) {
+        return '<div class="pp"><span class="av">' + p[2] + '</span><div><b>' + p[0] + '</b><small>' + p[1] + '</small></div></div>';
+      }).join('') + '</section><p class="foot">شبكة الوظائف · الخصوصية · الشروط</p></aside></div>';
+  var J_CSS = BASE + 'body{font-family:"CC Digits",system-ui,"Segoe UI",Tahoma,"Montserrat Arabic",sans-serif;background:#f1f5f4;color:#16231f}' +
+    '.nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #dbe5e2}.nin{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px 22px}' +
+    '.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;color:#0f766e}.bm{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:#0f766e;color:#fff}.bm .i{width:1.3em;height:1.3em}' +
+    '.nl{display:flex;gap:4px}.nl span{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 12px;color:#5d6f69;font-size:.75rem}.nl .i{width:1.35em;height:1.35em}.nl .on{color:#0f766e;box-shadow:inset 0 -2px 0 #0f766e}' +
+    '.page{max-width:1080px;margin:0 auto;padding:18px 22px 40px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}' +
+    '.card{background:#fff;border:1px solid #dbe5e2;border-radius:14px;padding:18px 24px;margin-bottom:12px}.card h2{margin:0 0 12px;font-size:1.2rem}.card h3{margin:0 0 10px;font-size:1rem}.card p{margin:0}' +
+    '.top{padding:0;overflow:hidden;position:relative}.cover{height:150px}.cover svg{width:100%;height:100%}.big{position:absolute;top:70px;right:24px;width:150px;height:150px;border-radius:50%;overflow:hidden;border:5px solid #fff;background:#fff}.big svg,.av svg{width:100%;height:100%}' +
+    '.tin{padding:84px 24px 20px}.tin h1{margin:0;font-size:1.6rem;line-height:1.3}.pr{font-size:.85rem;font-weight:400;color:#5d6f69}.hl{font-size:1.05rem;margin:6px 0 0!important}.loc{color:#5d6f69;font-size:.92rem;margin-top:6px!important}.loc b{color:#0f766e}' +
+    '.cur{display:flex;align-items:center;gap:8px;margin-top:12px;font-size:.9rem}.cur b{margin-inline-end:14px}' +
+    '.exp{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid #edf3f1}.exp:last-child{border:0;padding-bottom:0}.org{width:50px;height:50px;border-radius:10px;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.2rem;flex:none}.org .i{width:1.3em;height:1.3em}.org.s{width:28px;height:28px;font-size:.85rem;border-radius:6px}.org.s .i{width:1em;height:1em}' +
+    '.ed{display:flex;flex-direction:column;line-height:1.55}.ed span,.ed small{color:#5d6f69}.ed p{margin-top:6px!important;font-size:.93rem}' +
+    '.sk{display:flex;flex-direction:column}.sk div{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #edf3f1}.sk div:last-child{border:0}.sk span{display:flex;align-items:center;gap:6px;color:#5d6f69;font-size:.88rem}' +
+    '.rec{display:flex;gap:14px}.rec .av{width:52px;height:52px;border-radius:50%;overflow:hidden;flex:none}.rec small{display:block;color:#5d6f69}blockquote{margin:8px 0 0;padding:10px 14px;background:#f1f8f6;border-radius:10px;border-inline-start:4px solid #14b8a6}' +
+    '.ct{display:flex;gap:12px;align-items:flex-start;padding:8px 0}.ci{width:40px;height:40px;border-radius:10px;background:#e6f4f1;color:#0f766e;display:grid;place-items:center;flex:none}.ci .i{width:1.3em;height:1.3em}.ct div{display:flex;flex-direction:column}' +
+    '.side{position:sticky;top:70px}.lng{display:flex;justify-content:space-between;padding:6px 0;font-size:.95rem}.lng span{color:#5d6f69}' +
+    '.pp{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #edf3f1}.pp:last-child{border:0}.pp .av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none}.pp small{display:block;color:#5d6f69;font-size:.82rem;line-height:1.4}.foot{color:#8a9a95;font-size:.8rem;text-align:center}' +
+    '@media(max-width:860px){.page{grid-template-columns:1fr}.side{display:none}.nl small{display:none}}';
+  var jobs = { css: J_CSS, notFound: NF, pages: {} };
+  jobs.pages[T.work.path] = { title: 'سعيد صالح التميمي - مدير متجر في CamelCode | شبكة الوظائف', html: jobsProfile };
 
-  /* =================================================================== nabd-doha.qa: the news site =================================================================== */
-  var NEWS_NAV = '<nav><span>الرئيسية</span><span>محليات</span><span>اقتصاد</span><span class="on">تقنية</span><span>رياضة</span><span>منوعات</span></nav>';
-  var newsArticle = '<header class="mast"><div class="in"><span class="brand">نبض <b>الدوحة</b></span><span class="sub">أخبار الدوحة كل يوم</span></div>' + NEWS_NAV + '</header>' +
-    '<main class="art"><span class="cat">تقنية · مقابلات</span><h1>من بائع صغير إلى مدير متجر: قصة سعيد التميمي مع التقنية</h1>' +
-    '<p class="by">بقلم: محرر الاقتصاد · 3 يونيو 2024 · 4 دقائق للقراءة</p>' +
-    '<figure><div class="hero">' + PIC.shopIn + '</div><figcaption>التميمي داخل المتجر في الدوحة</figcaption></figure>' +
-    '<p class="lead">في حديث خاص، يروي سعيد صالح التميمي، مدير متجر CamelCode، كيف بدأ شغفه بالأجهزة منذ أن كان طالباً في مدرسة الوكرة الإعدادية، وكيف تحوّل هذا الشغف إلى عمله اليومي.</p>' +
+  /* =================================================================== news.example: «موقع الأخبار» =================================================================== */
+  var LOGO_N = '<span class="brand"><span class="bm">أ</span><span>موقع <b>الأخبار</b></span></span>';
+  var newsArticle = '<div class="util"><div class="w"><span>طبعة قطر</span><span>الأحد 3 يونيو 2024</span></div></div>' +
+    '<header class="mast"><div class="w">' + LOGO_N + '<span class="sl">أخبار قطر والعالم</span></div></header>' +
+    '<nav class="nv"><div class="w"><span>الرئيسية</span><span>محليات</span><span>اقتصاد</span><span class="on">تقنية</span><span>رياضة</span><span>ثقافة</span><span>منوعات</span></div></nav>' +
+    '<div class="w lay"><article class="art"><p class="crumb">الرئيسية › تقنية › مقابلات</p><span class="cat">مقابلة</span>' +
+    '<h1>من بائع صغير إلى مدير متجر: قصة سعيد التميمي مع التقنية</h1>' +
+    '<p class="std">مدير متجر CamelCode يروي كيف تحوّل شغفه بالأجهزة منذ الطفولة إلى عمله اليومي</p>' +
+    '<div class="by"><span class="ba">م</span><div><b>محرر الاقتصاد</b><small>' + IC.cal + ' 3 يونيو 2024 · ' + IC.clock + ' 4 دقائق للقراءة</small></div></div>' +
+    '<figure><div class="hero">' + PIC.shopIn + '</div><figcaption>' + IC.cam + ' التميمي داخل المتجر في الدوحة</figcaption></figure>' +
+    '<p class="lead">في حديث خاص، يروي سعيد صالح التميمي، مدير متجر CamelCode، كيف بدأ شغفه بالأجهزة منذ أن كان طالباً في إحدى مدارس الوكرة، وكيف تحوّل هذا الشغف إلى عمله اليومي.</p>' +
     '<h2>البداية في بيت العائلة</h2><p>يقول التميمي وهو يبتسم: «كنت أفكّ أجهزة الراديو في بيتنا بالوكرة وأركّبها من جديد، وأبوي يعصّب علي 😄». ويضيف أن أول جهاز ألعاب اشتراه كان بمصروفه الذي جمعه طوال عام كامل.</p>' +
-    '<h2>من البيع إلى الإدارة</h2><p>بدأ التميمي العمل موظف مبيعات في متجر للإلكترونيات بعد تخرجه من الجامعة، ثم أصبح مشرفاً على المبيعات، قبل أن ينتقل إلى CamelCode مديراً للمتجر. يقول: «أحب أن أرى وجه الطفل حين يجرّب لعبة جديدة لأول مرة».</p>' +
+    '<blockquote class="pq">«أحب أن أرى وجه الطفل حين يجرّب لعبة جديدة لأول مرة»</blockquote>' +
+    '<h2>من البيع إلى الإدارة</h2><p>بدأ التميمي العمل موظف مبيعات في متجر للإلكترونيات بعد تخرجه من الجامعة، ثم أصبح مشرفاً على المبيعات، قبل أن ينتقل إلى CamelCode مديراً للمتجر.</p>' +
     '<h2>هواية ورثها عن جده</h2><p>وخارج العمل، تجده في البر مع صقره، فالصقارة هواية ورثها عن جده. يقول: «الصقر يعلّمك الصبر، والصبر هو سر النجاح في أي عمل».</p>' +
-    '<div class="tags"><span>#تقنية</span><span>#الوكرة</span><span>#قصص_نجاح</span></div></main>' +
-    '<footer class="ft">© نبض الدوحة. جميع الحقوق محفوظة.</footer>';
-  var NEWS_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#fff;color:#1f2937}' +
-    '.mast{border-bottom:1px solid #e5e7eb}.mast .in{display:flex;align-items:baseline;gap:14px;padding:14px 28px 6px}.brand{font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:1.9rem;font-weight:800;color:#111827}.brand b{color:#b91c1c}.sub{color:#6b7280;font-size:.9rem}' +
-    'nav{display:flex;flex-wrap:wrap;gap:4px 22px;padding:6px 28px 10px;background:#111827;color:#e5e7eb;font-weight:700;font-size:.95rem}nav span{padding:2px 0}nav .on{color:#fff;border-bottom:3px solid #b91c1c}' +
-    '.art{max-width:760px;margin:0 auto;padding:22px 24px 30px}.cat{color:#b91c1c;font-weight:800;font-size:.9rem}.art h1{font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:2rem;line-height:1.35;margin:6px 0 8px;color:#111827}.by{color:#6b7280;font-size:.9rem;margin:0 0 16px}' +
-    'figure{margin:0 0 16px}.hero{border-radius:10px;overflow:hidden}.hero svg{width:100%;height:auto}figcaption{color:#6b7280;font-size:.88rem;margin-top:6px}' +
-    '.lead{font-size:1.12rem;font-weight:700;color:#111827}.art h2{font-size:1.25rem;margin:22px 0 4px;color:#111827}.art p{margin:0 0 12px}.tags{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}.tags span{background:#f3f4f6;border-radius:99px;padding:2px 12px;color:#374151;font-size:.9rem}' +
-    '.ft{border-top:1px solid #e5e7eb;color:#6b7280;text-align:center;padding:16px;font-size:.88rem}';
-  var nabd = { css: NEWS_CSS, notFound: NF, pages: {} };
-  nabd.pages[T.news.path] = { title: 'من بائع صغير إلى مدير متجر: قصة سعيد التميمي مع التقنية | نبض الدوحة', html: newsArticle };
+    '<h2>بين الوكرة والدوحة</h2><p>ورغم أن عمله في الدوحة، ما زال التميمي يسكن في الوكرة مع عائلته، ويقول: «الوكرة بيتي، وكل صباح أقطع الطريق إلى المتجر وأنا مبسوط».</p>' +
+    '<div class="tags"><span>#تقنية</span><span>#الوكرة</span><span>#قصص_نجاح</span></div></article>' +
+    '<aside class="side"><h3>الأكثر قراءة</h3><ol>' +
+      ['افتتاح حديقة جديدة للعائلات في الدوحة', 'نصائح لحماية حساباتك على الإنترنت', 'طلاب المدارس يفوزون في مسابقة الروبوت', 'كيف تختار جهاز الألعاب المناسب لك؟', 'موسم المقناص: كل ما تريد معرفته'].map(function (t) { return '<li>' + t + '</li>'; }).join('') +
+    '</ol><div class="ad">مساحة إعلانية</div></aside></div>' +
+    '<footer class="ft"><div class="w">' + LOGO_N + '<span>© موقع الأخبار. جميع الحقوق محفوظة.</span></div></footer>';
+  var N_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#fff;color:#1c1c1e}.w{max-width:1080px;margin:0 auto;padding:0 24px}' +
+    '.util{background:#111;color:#bdbdbd;font-size:.78rem}.util .w{display:flex;justify-content:space-between;padding-top:5px;padding-bottom:5px}' +
+    '.mast .w{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:14px}.brand{display:flex;align-items:center;gap:10px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:2.1rem;line-height:1;color:#111}.brand b{color:#b91c1c}' +
+    '.bm{width:44px;height:44px;background:#b91c1c;color:#fff;display:grid;place-items:center;font-size:1.6rem;border-radius:4px}.sl{color:#6b6b6b;font-size:.9rem}' +
+    '.nv{border-top:3px solid #111;border-bottom:1px solid #e3e3e3;position:sticky;top:0;background:#fff;z-index:4}.nv .w{display:flex;gap:26px;font-weight:700;font-size:.95rem}.nv span{padding:10px 0}.nv .on{color:#b91c1c;box-shadow:inset 0 -3px 0 #b91c1c}' +
+    '.lay{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:40px;padding-top:22px;padding-bottom:30px}.crumb{color:#6b6b6b;font-size:.85rem;margin:0 0 8px}' +
+    '.cat{display:inline-block;background:#b91c1c;color:#fff;font-weight:800;font-size:.8rem;padding:2px 10px;border-radius:3px}.art h1{font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:2.35rem;line-height:1.3;margin:10px 0 8px}' +
+    '.std{font-size:1.15rem;color:#444;margin:0 0 16px}.by{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #eee;border-bottom:1px solid #eee;margin-bottom:18px}.ba{width:42px;height:42px;border-radius:50%;background:#1c1c1e;color:#fff;display:grid;place-items:center;font-weight:800}' +
+    '.by div{display:flex;flex-direction:column}.by small{color:#6b6b6b;display:flex;gap:6px;align-items:center}' +
+    'figure{margin:0 0 20px}.hero{overflow:hidden;border-radius:4px}.hero svg{width:100%;height:auto}figcaption{color:#6b6b6b;font-size:.85rem;margin-top:8px;display:flex;align-items:center;gap:6px}' +
+    '.art p{font-size:1.06rem;line-height:1.95;margin:0 0 14px}.lead{font-weight:700}.lead::first-letter{float:right;font-family:"Baloo Bhaijaan 2",sans-serif;font-size:3.6rem;line-height:.9;color:#b91c1c;margin-inline-end:8px}' +
+    '.art h2{font-size:1.35rem;margin:26px 0 6px}.pq{margin:22px 0;padding:14px 22px;border-inline-start:5px solid #b91c1c;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:1.45rem;line-height:1.5;color:#b91c1c;background:#fdf3f3}' +
+    '.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}.tags span{border:1px solid #ddd;border-radius:99px;padding:2px 12px;color:#444;font-size:.88rem}' +
+    '.side h3{margin:0 0 6px;font-size:1.1rem;border-bottom:3px solid #111;padding-bottom:6px}.side ol{margin:0;padding:0;list-style:none;counter-reset:n}.side li{counter-increment:n;display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee;font-weight:700;line-height:1.5}' +
+    '.side li::before{content:counter(n);font-family:"Baloo Bhaijaan 2",sans-serif;font-size:1.8rem;line-height:1;color:#d4d4d4;min-width:1.1em}.ad{margin-top:22px;height:220px;display:grid;place-items:center;background:repeating-linear-gradient(45deg,#f6f6f6 0 10px,#efefef 10px 20px);color:#9a9a9a;font-size:.85rem;border-radius:4px}' +
+    '.ft{background:#111;color:#bdbdbd;padding:18px 0;font-size:.85rem}.ft .w{display:flex;justify-content:space-between;align-items:center}.ft .brand{color:#fff;font-size:1.4rem}.ft .bm{width:32px;height:32px;font-size:1.1rem}' +
+    '@media(max-width:860px){.lay{grid-template-columns:1fr}.side{display:none}.art h1{font-size:1.8rem}.sl{display:none}}';
+  var news = { css: N_CSS, notFound: NF, pages: {} };
+  news.pages[T.news.path] = { title: 'من بائع صغير إلى مدير متجر: قصة سعيد التميمي مع التقنية | موقع الأخبار', html: newsArticle };
 
   /* =================================================================== the four results that are NOT about the target =================================================================== */
-  var smile = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#f0f9ff;color:#0c4a6e}.hd{background:#0ea5e9;color:#fff;padding:14px 28px;font-weight:800;font-size:1.35rem}.c{max-width:760px;margin:24px auto;padding:0 20px}' +
-    '.doc{display:flex;gap:22px;align-items:center;background:#fff;border-radius:18px;padding:22px;border:1px solid #bae6fd}.doc .p{width:130px;height:130px;border-radius:50%;overflow:hidden;flex:none;border:4px solid #0ea5e9}.doc .p svg{width:100%;height:100%}.doc h1{margin:0;font-size:1.5rem}.doc p{margin:4px 0 0;color:#0369a1}' +
-    '.box{background:#fff;border-radius:18px;padding:18px 22px;margin-top:14px;border:1px solid #bae6fd}.box h2{margin:0 0 6px;font-size:1.15rem}.box ul{margin:0;padding-inline-start:20px}@media(max-width:560px){.doc{flex-direction:column;text-align:center}}' };
-  smile.pages['/doctors/saeed'] = { title: 'د. سعيد التميمي | عيادة ابتسامة الخور', html: '<header class="hd">😁 عيادة ابتسامة الخور</header><main class="c"><section class="doc"><span class="p">' + DENTIST + '</span><div><h1>د. سعيد التميمي</h1><p>استشاري تقويم الأسنان</p><p>الخور، قطر</p></div></section>' +
-    '<section class="box"><h2>عن الطبيب</h2><p>تخرّج د. سعيد التميمي في كلية طب الأسنان عام 1995، ويعمل في عيادة ابتسامة الخور منذ أكثر من 20 عاماً. يهتم بعلاج أسنان الأطفال وتقويمها.</p></section>' +
-    '<section class="box"><h2>أوقات العيادة</h2><ul><li>من الأحد إلى الخميس: من 8 صباحاً إلى 4 عصراً</li><li>للحجز اتصل بالعيادة على الرقم ' + ltr('+974 5550 7788') + '</li></ul></section></main>' };
-  var riyada = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#fff7ed;color:#1c1917}.hd{background:#ea580c;color:#fff;padding:12px 28px;font-weight:800;font-size:1.4rem}.c{max-width:760px;margin:0 auto;padding:22px 20px 30px}' +
-    '.cat{color:#ea580c;font-weight:800;font-size:.9rem}h1{margin:4px 0 6px;font-size:1.7rem;line-height:1.35}.by{color:#78716c;font-size:.9rem;margin:0 0 14px}.pl{display:flex;gap:18px;align-items:center;background:#fff;border-radius:14px;padding:16px;border:1px solid #fed7aa;margin-bottom:14px}.pl span{width:96px;height:96px;border-radius:50%;overflow:hidden;flex:none}.pl svg{width:100%;height:100%}.pl b{display:block;font-size:1.1rem}' };
-  riyada.pages['/youth/saeed-altamimi'] = { title: 'اللاعب الشاب سعيد التميمي يقود فريق الناشئين للفوز | رياضة اليوم', html: '<header class="hd">⚽ رياضة اليوم</header><main class="c"><span class="cat">رياضة مدرسية</span><h1>اللاعب الشاب سعيد التميمي يقود فريق الناشئين للفوز</h1><p class="by">12 أبريل 2025</p>' +
-    '<div class="pl"><span>' + PLAYER + '</span><div><b>سعيد التميمي</b>17 عاماً · مهاجم فريق الناشئين · رقم 9</div></div>' +
+  /* a dentist with the same name (older, glasses, white coat, another city) */
+  var clinic = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#f3f9fb;color:#0b2a36}.w{max-width:1000px;margin:0 auto;padding:0 24px}' +
+    '.hd{background:#fff;border-bottom:1px solid #d8e9ef}.hd .w{display:flex;align-items:center;justify-content:space-between;padding-top:12px;padding-bottom:12px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.3rem;color:#0e7490}.bm{width:40px;height:40px;border-radius:50%;background:#e0f2f7;color:#0e7490;display:grid;place-items:center}.bm .i{width:1.4em;height:1.4em}' +
+    '.hd nav{display:flex;gap:22px;color:#476471;font-weight:700;font-size:.92rem}.hero{background:linear-gradient(120deg,#0e7490,#0891b2);color:#fff;padding:34px 0 80px}.hero p{margin:0;opacity:.85}.hero h1{margin:4px 0 0;font-size:1.9rem}' +
+    '.doc{display:flex;gap:24px;align-items:center;background:#fff;border-radius:20px;padding:22px 26px;margin-top:-60px;box-shadow:0 20px 40px -30px rgba(11,42,54,.5)}.doc .p{width:140px;height:140px;border-radius:24px;overflow:hidden;flex:none;background:#e0f2f7}.doc .p svg{width:100%;height:100%}' +
+    '.doc h2{margin:0;font-size:1.5rem}.doc .sp{color:#0e7490;font-weight:700}.st{color:#f59e0b;letter-spacing:2px}.doc small{color:#476471}' +
+    '.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:18px 0}.grid div{background:#fff;border-radius:16px;padding:16px;border:1px solid #d8e9ef}.grid b{display:block;font-size:1.3rem;color:#0e7490}.grid span{color:#476471;font-size:.9rem}' +
+    '.box{background:#fff;border-radius:16px;padding:18px 22px;border:1px solid #d8e9ef;margin-bottom:14px}.box h3{margin:0 0 8px}.box p{margin:0}.hrs{width:100%;border-collapse:collapse}.hrs td{padding:8px 0;border-bottom:1px solid #eef5f8}.hrs td:last-child{text-align:left;font-weight:700}' +
+    '@media(max-width:700px){.grid{grid-template-columns:1fr}.doc{flex-direction:column;text-align:center}.hd nav{display:none}}' };
+  clinic.pages['/doctors/saeed'] = { title: 'د. سعيد التميمي | عيادة الأسنان', html: '<header class="hd"><div class="w"><span class="brand"><span class="bm">' + IC.tooth + '</span>عيادة الأسنان</span><nav><span>الرئيسية</span><span>الأطباء</span><span>الخدمات</span><span>تواصل</span></nav></div></header>' +
+    '<section class="hero"><div class="w"><p>أطباؤنا</p><h1>تعرّف على طبيبك</h1></div></section>' +
+    '<main class="w"><section class="doc"><span class="p">' + DENTIST + '</span><div><h2>د. سعيد التميمي</h2><p class="sp">استشاري تقويم الأسنان</p><p><span class="st">★★★★★</span> 4.8 <small>(126 مراجعة)</small></p><small>' + IC.pin + ' الخور، قطر</small></div></section>' +
+    '<div class="grid"><div><b>+20</b><span>سنة خبرة</span></div><div><b>1995</b><span>سنة التخرج من كلية طب الأسنان</span></div><div><b>العربية والإنجليزية</b><span>لغات الطبيب</span></div></div>' +
+    '<section class="box"><h3>عن الطبيب</h3><p>د. سعيد التميمي استشاري تقويم الأسنان، يعمل في عيادة الأسنان بالخور منذ أكثر من 20 عاماً، ويهتم بعلاج أسنان الأطفال وتقويمها.</p></section>' +
+    '<section class="box"><h3>أوقات العيادة</h3><table class="hrs"><tr><td>من الأحد إلى الخميس</td><td>8 صباحاً إلى 4 عصراً</td></tr><tr><td>للحجز اتصل بالعيادة</td><td>' + ltr('+974 5550 7788') + '</td></tr></table></section></main>' };
+  /* a young footballer with the same name */
+  var sports = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#f6f6f4;color:#141414}.w{max-width:1000px;margin:0 auto;padding:0 24px}' +
+    '.hd{background:#141414;color:#fff}.hd .w{display:flex;align-items:center;gap:26px;padding-top:12px;padding-bottom:12px}.brand{display:flex;align-items:center;gap:8px;font-family:"Baloo Bhaijaan 2",sans-serif;font-weight:800;font-size:1.5rem}.brand .i{color:#f97316;width:1.3em;height:1.3em}.hd nav{display:flex;gap:18px;color:#bdbdbd;font-weight:700;font-size:.9rem}.hd nav .on{color:#f97316}' +
+    '.art{max-width:760px;margin:0 auto;padding:22px 24px 30px}.cat{color:#ea580c;font-weight:800;font-size:.88rem}h1{margin:4px 0 6px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:2rem;line-height:1.3}.by{color:#6b6b6b;font-size:.88rem;margin:0 0 16px}' +
+    '.score{display:flex;align-items:center;justify-content:center;gap:28px;background:#141414;color:#fff;border-radius:16px;padding:20px;margin-bottom:16px}.score div{text-align:center;font-weight:700}.score b{font-family:"Baloo Bhaijaan 2",sans-serif;font-size:2.6rem;color:#f97316;line-height:1}.score small{display:block;color:#9a9a9a;font-weight:400}' +
+    '.pl{display:flex;gap:16px;align-items:center;background:#fff;border-radius:16px;padding:14px 18px;margin-bottom:16px;border-inline-start:5px solid #f97316}.pl span{width:84px;height:84px;border-radius:50%;overflow:hidden;flex:none}.pl svg{width:100%;height:100%}.pl b{display:block;font-size:1.15rem}.pl small{color:#6b6b6b}.art p{line-height:1.9}' };
+  sports.pages['/youth/saeed-altamimi'] = { title: 'اللاعب الشاب سعيد التميمي يقود فريق الناشئين للفوز | الأخبار الرياضية', html: '<header class="hd"><div class="w"><span class="brand">' + IC.ball + 'الأخبار الرياضية</span><nav><span>كرة القدم</span><span class="on">الرياضة المدرسية</span><span>كرة السلة</span><span>نتائج</span></nav></div></header>' +
+    '<main class="art"><span class="cat">الرياضة المدرسية</span><h1>اللاعب الشاب سعيد التميمي يقود فريق الناشئين للفوز</h1><p class="by">12 أبريل 2025</p>' +
+    '<div class="score"><div>فريق الناشئين (أ)<b>2</b></div><div><small>النهائي</small>انتهت</div><div>فريق الناشئين (ب)<b>1</b></div></div>' +
+    '<div class="pl"><span>' + PLAYER + '</span><div><b>سعيد التميمي</b><small>17 عاماً · مهاجم · رقم 9 · أفضل لاعب في المباراة</small></div></div>' +
     '<p>سجّل اللاعب الشاب سعيد التميمي هدف الفوز لفريق الناشئين في نهائي البطولة المدرسية، وحصل على جائزة أفضل لاعب في المباراة.</p><p>وقال سعيد بعد المباراة: «أهدي هذا الفوز لزملائي في الفريق ولمدربنا الذي آمن بنا».</p></main>' };
-  var asmaa = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#f0fdf4;color:#14532d}.hd{background:#16a34a;color:#fff;padding:12px 28px;font-weight:800;font-size:1.3rem}.c{max-width:760px;margin:0 auto;padding:22px 20px 30px}' +
-    'h1{margin:0 0 10px;font-size:1.7rem}.box{background:#fff;border-radius:14px;padding:16px 20px;border:1px solid #bbf7d0;margin-bottom:12px}.box h2{margin:0 0 4px;font-size:1.1rem}.box p{margin:0}' };
-  asmaa.pages['/names/saeed'] = { title: 'معنى اسم سعيد وصفات حامل الاسم | موسوعة الأسماء', html: '<header class="hd">📖 موسوعة الأسماء</header><main class="c"><h1>معنى اسم سعيد</h1>' +
+  /* the meaning of the name «سعيد» */
+  var names = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#f4f8f1;color:#17301c}.w{max-width:900px;margin:0 auto;padding:0 24px}' +
+    '.hd{background:#fff;border-bottom:1px solid #dfe9da}.hd .w{display:flex;align-items:center;gap:10px;padding-top:12px;padding-bottom:12px;font-weight:800;font-size:1.25rem;color:#15803d}.hd .i{width:1.4em;height:1.4em}' +
+    '.big{text-align:center;padding:30px 0 10px}.big h1{margin:0;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:4.4rem;line-height:1.1;color:#15803d}.big p{margin:6px 0 0;color:#4d6652}' +
+    '.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}.facts div{background:#fff;border-radius:14px;padding:14px;text-align:center;border:1px solid #dfe9da}.facts b{display:block;font-size:1.1rem}.facts span{color:#4d6652;font-size:.88rem}' +
+    '.box{background:#fff;border-radius:14px;padding:16px 20px;border:1px solid #dfe9da;margin-bottom:12px}.box h2{margin:0 0 6px;font-size:1.1rem;color:#15803d}.box p{margin:0}.chips{display:flex;gap:8px;flex-wrap:wrap}.chips span{background:#e8f3e4;border-radius:99px;padding:3px 14px}' };
+  names.pages['/names/saeed'] = { title: 'معنى اسم سعيد وصفات حامل الاسم | معاني الأسماء', html: '<header class="hd"><div class="w">' + IC.book + 'معاني الأسماء</div></header><main class="w">' +
+    '<section class="big"><h1>سعيد</h1><p>اسم علم مذكر</p></section>' +
+    '<div class="facts"><div><b>عربي</b><span>الأصل</span></div><div><b>3 أحرف</b><span>عدد الحروف</span></div><div><b>' + ltr('Saeed') + '</b><span>بالإنجليزية</span></div></div>' +
     '<div class="box"><h2>المعنى</h2><p>سعيد اسم عربي، معناه الفرِح المسرور صاحب الحظ الطيب، وهو عكس الحزين.</p></div>' +
     '<div class="box"><h2>صفات حامل الاسم</h2><p>يوصف حامل اسم سعيد بأنه متفائل، يحب مساعدة الآخرين، ويُدخل البهجة على من حوله.</p></div>' +
-    '<div class="box"><h2>كتابة الاسم بالإنجليزية</h2><p>' + ltr('Saeed · Saeid · Said') + '</p></div></main>' };
-  var tamimi = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;background:#fafaf9;color:#292524}.hd{background:#292524;color:#fbbf24;padding:14px 28px;font-weight:800;font-size:1.35rem}.hero{background:linear-gradient(120deg,#57534e,#a8a29e);color:#fff;padding:46px 28px}.hero h1{margin:0 0 6px;font-size:2rem}.c{max-width:900px;margin:0 auto;padding:22px 20px 30px}' +
-    '.sv{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}.sv div{background:#fff;border:1px solid #e7e5e4;border-radius:14px;padding:16px}.sv b{display:block;font-size:1.1rem}' };
-  tamimi.pages['/'] = { title: 'التميمي للمقاولات والصيانة', html: '<header class="hd">🏗️ التميمي للمقاولات والصيانة</header><section class="hero"><h1>نبني أحلامك منذ 1998</h1><p>بناء الفلل والمباني التجارية وصيانتها في الدوحة.</p></section>' +
-    '<main class="c"><div class="sv"><div><b>بناء الفلل</b>من التصميم حتى التسليم.</div><div><b>المباني التجارية</b>مكاتب ومحلات بجودة عالية.</div><div><b>الصيانة</b>كهرباء وسباكة وتكييف.</div></div><p>للتواصل: ' + ltr('info@tamimi-build.qa') + '</p></main>' };
+    '<div class="box"><h2>طرق كتابته بالإنجليزية</h2><div class="chips"><span>' + ltr('Saeed') + '</span><span>' + ltr('Saeid') + '</span><span>' + ltr('Said') + '</span></div></div>' +
+    '<div class="box"><h2>أسماء قريبة</h2><div class="chips"><span>سعد</span><span>مسعود</span><span>أسعد</span><span>سعود</span></div></div></main>' };
+  /* a car forum question by another «سعيد التميمي» (another city, older post) */
+  function fpost(name, city, posts, since, text, bg, n) {
+    return '<div class="fp"><aside class="u">' + letter(name.charAt(0), bg) + '<b>' + name + '</b><small>المدينة: ' + city + '</small><small>المشاركات: ' + posts + '</small><small>عضو منذ ' + since + '</small></aside>' +
+      '<div class="c"><div class="cm2"><span>#' + n + '</span></div>' + text + '</div></div>';
+  }
+  var forum = { notFound: NF, pages: {}, css: BASE + 'body{font-family:"CC Digits",Tahoma,"Montserrat Arabic",sans-serif;background:#e9edf1;color:#1f2933;font-size:15px}.w{max-width:1000px;margin:0 auto;padding:0 18px}' +
+    '.hd{background:linear-gradient(#334155,#1e293b);color:#fff}.hd .w{display:flex;align-items:center;gap:10px;padding-top:14px;padding-bottom:14px;font-weight:800;font-size:1.3rem}.hd .i{width:1.4em;height:1.4em;color:#fbbf24}' +
+    '.crumb{color:#52606d;font-size:.85rem;padding:12px 0 6px}.th{background:#fff;border:1px solid #cbd2d9;border-radius:8px;padding:12px 16px;margin-bottom:12px}.th h1{margin:0;font-size:1.3rem}.th small{color:#52606d}' +
+    '.fp{display:flex;background:#fff;border:1px solid #cbd2d9;border-radius:8px;margin-bottom:10px;overflow:hidden}.u{width:170px;flex:none;background:#f5f7fa;border-inline-end:1px solid #e4e7eb;padding:14px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:2px}' +
+    '.lt{width:56px;height:56px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.3rem;margin-bottom:6px}.u small{color:#52606d;font-size:.8rem}.c{padding:12px 18px;flex:1;line-height:1.9}.cm2{color:#9aa5b1;font-size:.8rem;text-align:left}' };
+  forum.pages['/threads/4821'] = { title: 'سيارتي لا تعمل في الصباح البارد، ما الحل؟ | منتدى السيارات', html: '<header class="hd"><div class="w">' + IC.car + 'منتدى السيارات</div></header><main class="w">' +
+    '<p class="crumb">المنتدى › الصيانة والأعطال › سيارات السيدان</p><div class="th"><h1>سيارتي لا تعمل في الصباح البارد، ما الحل؟</h1><small>3 ردود · 15 يناير 2016</small></div>' +
+    fpost('سعيد التميمي', 'الرياض', 12, '2010', '<p>السلام عليكم، سيارتي موديل 2009 لا تعمل في الصباح حتى أحاول عدة مرات، وبعدها تعمل عادي. هل المشكلة في البطارية؟</p>', '#475569', 1) +
+    fpost('أبو خالد', 'جدة', 2304, '2008', '<p>وعليكم السلام، غالباً البطارية ضعفت. افحصها عند أي محل بطاريات، الفحص مجاني.</p>', '#0f766e', 2) +
+    fpost('سعيد التميمي', 'الرياض', 12, '2010', '<p>شكراً لك، غيّرت البطارية والحمد لله اشتغلت من أول مرة 👍</p>', '#475569', 3) + '</main>' };
 
   CC.site.hosts = {
-    'baheth.qa': baheth, 'lamha.qa': lamha, 'mihnati.qa': mihnati, 'nabd-doha.qa': nabd,
-    'smile-khor.qa': smile, 'riyada-today.qa': riyada, 'asmaa-encyclopedia.qa': asmaa, 'tamimi-build.qa': tamimi
+    'search.example': searchSite, 'social.example': social, 'jobs.example': jobs, 'news.example': news,
+    'clinic.example': clinic, 'sports.example': sports, 'names.example': names, 'forum.example': forum
   };
 })();
 
 /* Lab EH2-02: gathering information from public sources (OSINT) (13-17). Pure gathering, no passwords (the password generator lab comes next and builds on it).
-   The target is the store manager of camelcode.shop, «سعيد صالح التميمي». The student finds him on the shop's «من نحن» page, opens the search engine «باحث» by
+   The target is the store manager of camelcode.shop, «سعيد صالح التميمي». The student finds him on the shop's «من نحن» page, opens the search engine «بحث» (search.example) in a new tab,
    typing its address, searches his full name, tells his results apart from people with the same name, and reads three sources in turn:
-   his social profile («لمحة»), his work profile («مهنتي») and a news interview («نبض الدوحة»). Each source reveals the questions that it answers.
+   his social profile («منصة التواصل»), his work profile («شبكة الوظائف») and a news interview («موقع الأخبار»). Each source reveals the questions that it answers.
    Browser only (Moaz 2026-11-17: «no terminal only متصفح»): a planner lab like EH2 lab 1 (no typed command). No protection part; the congratulations card says how
    to protect yourself. Questions: the falcon's name and the birth year (social), the work email (work), the hometown (news). */
 (function () {
@@ -4574,26 +4804,27 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابة قبل التحقق',
     q_wait: 'ستظهر الأسئلة هنا عندما تفتح مصادر المعلومات عن الهدف.',
-    q1: 'ما اسم الصقر الذي يملكه سعيد؟',
-    q1h: 'في حسابه على لمحة، ابحث عن المنشور الذي فيه صورة الصقر، واقرأ ما كتبه سعيد والتعليقات تحته.',
-    q2: 'في أي سنة وُلد سعيد؟',
-    q2h: 'في حسابه على لمحة، ابحث عن منشور عيد ميلاده: انظر إلى سنة المنشور، واقرأ تعليق أخيه الذي يذكر عمره، ثم اطرح العمر من سنة المنشور. لاحظ أيضاً الرقم في آخر اسم المستخدم.',
+    q1: 'ما اسم مدير المتجر؟',
+    q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب تحت صورة مدير المتجر.',
+    q2: 'ما تاريخ ميلاد سعيد؟',
+    q2h: 'في حسابه على منصة التواصل، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂.',
     q3: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
-    q3h: 'في حسابه المهني على مهنتي، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
-    q4: 'ما اسم المدينة التي نشأ فيها سعيد وعاش فيها طفولته؟',
-    q4h: 'في مقابلة نبض الدوحة، اقرأ الجزء «البداية في بيت العائلة»، وانظر أين كان بيتهم. ستجد المدينة نفسها في النبذة على لمحة أيضاً.',
+    q3h: 'في حسابه المهني على شبكة الوظائف، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
+    q4: 'ما مدينة الإقامة لسعيد؟ (المدينة التي يسكن فيها)',
+    q4h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل أيضاً.',
     /* steps (the instruction panel) */
     t_team: 'تعلمنا سابقاً أن أول وأهم خطوة في عملية الاختراق هي **جمع المعلومات**، حيث أن كل اختراق يبدأ بـ **هدف**. وهدفنا اليوم هو **مدير متجر** الموقع الإلكتروني، اضغط على صفحة «**من نحن**» في القائمة أعلى موقع المتجر، وابحث في قسم «**فريقنا**» عن **مدير المتجر**.',
     t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». هذا هو **هدفنا**: «**سعيد صالح التميمي**» وهو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**، سنتعلم الآن إحدى أهم طرق جمع المعلومات وهي **جمع المعلومات من المصادر المفتوحة** (OSINT)، والتي تعني بشكل أبسط **البحث عنه في الإنترنت**.',
+    t_q1: 'قبل أن نبحث، سجّل أول معلومة عن هدفنا: اكتب **اسم مدير المتجر** الكامل في «**أسئلة التحدي**» على يسار الشاشة، وأجب عن **السؤال 1**.',
     t_engine: 'الآن لنفتح **صفحة جديدة** داخل المتصفح للبحث عن **مدير المتجر** في الإنترنت.',
     t_search: 'اكتب **الاسم الكامل** للهدف «**سعيد صالح التميمي**» في **مربع البحث**، ثم اضغط «**بحث**».',
     t_results: 'هذه **نتائج البحث** عن الاسم. انتبه! بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، وابحث عن النتائج التي تتحدث عن **مدير متجر كاملكود**.',
-    t_social: 'اضغط على نتيجة «**سعيد التميمي | أبو صالح 🦅**» من موقع **لمحة** لتفتح **حسابه في وسائل التواصل الاجتماعي**.',
-    t_social2: 'هذا **حسابه في لمحة**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل واقرأ **المنشورات** و**تواريخها** و**التعليقات** عليها، وأجب عن **السؤالين 1 و2** في «أسئلة التحدي» على يسار الشاشة.',
-    t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **مهنتي**.',
-    t_work2: 'هذا **حسابه المهني** في مهنتي. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال 3**.',
-    t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من موقع **نبض الدوحة**.',
-    t_news2: 'هذه **مقابلة** معه في موقع أخبار. اقرأها كاملة، وانتبه لما قاله عن **طفولته** و**هوايته**، ثم أجب عن **السؤال 4**.',
+    t_social: 'اضغط على نتيجة «**سعيد التميمي | أبو صالح 🦅**» من **منصة التواصل** لتفتح **حسابه في وسائل التواصل الاجتماعي**.',
+    t_social2: 'هذا **حسابه في منصة التواصل**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل واقرأ **المنشورات** و**تواريخها** و**التعليقات** عليها، وأجب عن **السؤال 2** في «أسئلة التحدي» على يسار الشاشة.',
+    t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
+    t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال 3**.',
+    t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من **موقع الأخبار**.',
+    t_news2: 'هذه **مقابلة** معه في موقع أخبار. اقرأها كاملة، وانتبه لما قاله عن **طفولته** و**المدينة التي يسكن فيها اليوم**، ثم أجب عن **السؤال 4**.',
     t_done: 'أحسنت! أنهيت التدريب.',
     c_start: 'ابدأ من هنا: صفحة «من نحن»',
     /* lesson popups (typed letter by letter, self-paced only) */
@@ -4612,7 +4843,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     p6_h: 'الأخبار والمقابلات',
     p6: '**المقالات** و**المقابلات** في مواقع الأخبار تكشف تفاصيل عن **طفولة** الشخص و**هواياته** و**المدينة التي نشأ فيها**.\n\nوهي أيضاً **تؤكد** المعلومات التي وجدناها في المصادر الأخرى. كلما ظهرت المعلومة في **أكثر من مصدر**، زادت ثقتنا بها.',
     p7_h: 'ملف الهدف جاهز',
-    p7: 'أحسنت! من **ثلاثة مصادر عامة** فقط جمعت عن الهدف: **اسم صقره**، و**سنة ميلاده**، و**بريده الإلكتروني للعمل**، و**المدينة التي نشأ فيها**، وأيضاً **أسماء أبنائه** و**فريقه المفضل**.\n\nكثير من الناس يختارون **كلمات السر** من هذه المعلومات، ولهذا يجمعها الهاكر قبل أي هجوم. في الدرس القادم سنرى كيف تتحول إلى **كلمات سر محتملة**.',
+    p7: 'أحسنت! من **مصادر عامة** فقط جمعت عن الهدف: **اسمه الكامل**، و**تاريخ ميلاده**، و**بريده الإلكتروني للعمل**، و**مدينة إقامته**، وأيضاً **اسم صقره** و**أسماء أبنائه** و**فريقه المفضل**.\n\nكثير من الناس يختارون **كلمات السر** من هذه المعلومات، ولهذا يجمعها الهاكر قبل أي هجوم. في الدرس القادم سنرى كيف تتحول إلى **كلمات سر محتملة**.',
     /* congratulations card */
     cele_0: '**جمع المعلومات من المصادر المفتوحة** (OSINT) هو جمع معلومات عن هدف من مصادر **يستطيع أي شخص أن يراها**: وسائل التواصل الاجتماعي ومواقع العمل والأخبار ومحركات البحث.',
     cele_1: 'قبل جمع أي معلومة، **تأكد من هوية الهدف**: قد يحمل أشخاص آخرون **الاسم نفسه**. قارن **الوظيفة** و**المدينة** و**الصورة**، وصدّق المعلومة التي تظهر في **أكثر من مصدر**.',
@@ -4624,7 +4855,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     rs_h: 'السيناريو', rs: 'أنت الآن هاكر، وهدفك هو **مدير متجر كاملكود**. قبل أي هجوم، مهمتك أن تجمع عنه أكبر قدر من **المعلومات** من **مصادر عامة** فقط: محرك البحث، وحسابه في **وسائل التواصل الاجتماعي**، وحسابه **المهني**، و**مقابلة** معه في موقع أخبار.',
     r0_h: 'ما هو OSINT؟', r0: '- **جمع المعلومات من المصادر المفتوحة** (OSINT: Open Source Intelligence): جمع معلومات عن هدف من مصادر **يستطيع أي شخص أن يراها**.\n- هو **أول خطوة** في أي اختراق: كلما عرف الهاكر عن هدفه أكثر، سهل عليه الهجوم.',
     r1_h: 'تحديد الهدف', r1: '- صفحة «**من نحن**» في أي موقع تكشف **أسماء الموظفين** و**وظائفهم** و**صورهم**.\n- الهدف هنا: «**سعيد صالح التميمي**»، **مدير المتجر**.',
-    r2_h: 'محرك البحث', r2: '- **محرك البحث** يجمع كل الصفحات التي ذُكر فيها الاسم: افتح **صفحة جديدة** في المتصفح (زر `+` بجانب الصفحة المفتوحة) لتظهر صفحة محرك البحث «**باحث**»، ثم اكتب **الاسم الكامل** في مربع البحث.\n- **ليست كل النتائج عن هدفنا**: قد يحمل أشخاص آخرون **الاسم نفسه**.\n- **تأكد من الهوية**: قارن **الوظيفة** و**المدينة** و**الصورة**.',
+    r2_h: 'محرك البحث', r2: '- **محرك البحث** يجمع كل الصفحات التي ذُكر فيها الاسم: افتح **صفحة جديدة** في المتصفح (زر `+` بجانب الصفحة المفتوحة) لتظهر صفحة محرك البحث «**بحث**»، ثم اكتب **الاسم الكامل** في مربع البحث.\n- **ليست كل النتائج عن هدفنا**: قد يحمل أشخاص آخرون **الاسم نفسه**.\n- **تأكد من الهوية**: قارن **الوظيفة** و**المدينة** و**الصورة**.',
     r3_h: 'وسائل التواصل الاجتماعي', r3: '- يشارك الناس فيها الكثير من حياتهم دون أن ينتبهوا.\n- المعلومة تختبئ في **النبذة** (Bio) و**الصور** و**تواريخ المنشورات** و**تعليقات الأصدقاء** و**اسم المستخدم**.',
     r4_h: 'الحساب المهني', r4: '- في **مواقع العمل** يكتب الناس **وظائفهم السابقة** و**دراستهم** و**بريدهم الإلكتروني للعمل**.\n- البريد يكشف **كيف تكتب الشركة عناوين بريد موظفيها**.',
     r5_h: 'الأخبار والمقابلات', r5: '- تكشف **الطفولة** و**الهوايات** و**المدينة التي نشأ فيها** الشخص.\n- **تؤكد** ما وجدناه في المصادر الأخرى: المعلومة التي تظهر في **أكثر من مصدر** أوثق.',
@@ -4639,8 +4870,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     CC.free = false;
 
     CC.Q.init([
-      { id: 'q1', q: CC.t('q1'), answers: [T.falcon], hint: CC.t('q1h'), hidden: true },
-      { id: 'q2', q: CC.t('q2'), answers: [String(T.born)], check: function (v) { return CC.numMatch ? CC.numMatch(v, T.born) : false; }, hint: CC.t('q2h'), hidden: true },
+      { id: 'q1', q: CC.t('q1'), answers: [T.name, T.short], hint: CC.t('q1h'), hidden: true },
+      { id: 'q2', q: CC.t('q2'), answers: [T.bday + ' ' + T.born], check: isBirthday, hint: CC.t('q2h'), hidden: true },
       { id: 'q3', q: CC.t('q3'), answers: [T.email], check: function (v) { return String(v).replace(/\s+/g, '').toLowerCase() === T.email; }, hint: iso(CC.t('q3h')), hidden: true },
       { id: 'q4', q: CC.t('q4'), answers: [T.town, 'وكرة', 'مدينة الوكرة'], hint: CC.t('q4h'), hidden: true }
     ]);
@@ -4651,15 +4882,21 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var backBtn = function () { var b = document.querySelector('#br .br-ib.back'); return b && !b.disabled ? b : null; };
     function guide(get, until, force) { if (self || force) CC.guide.show(get, { force: !!force, until: until }); }
     var phaseIs = function (p) { return st.phase === p; };
-    var onResults = function () { return P.host() === 'baheth.qa' && P.state.hit && curPath === '/search'; };
+    var onResults = function () { return P.host() === T.search && P.state.hit && curPath === '/search'; };
     var curPath = '/home';
 
     /* each source shows the questions it answers, whenever the student opens it (the order of the steps is a guide, not a lock) */
     function reveal(host) {
       if (st.seen[host]) return; st.seen[host] = true;
-      if (host === T.social.host) { CC.Q.reveal('q1'); CC.Q.reveal('q2'); }
+      if (host === T.social.host) CC.Q.reveal('q2');
       else if (host === T.work.host) CC.Q.reveal('q3');
       else if (host === T.news.host) CC.Q.reveal('q4');
+    }
+    /* the date of birth in any usual form: «14 مارس 1987», «14/3/1987», «1987-03-14», Arabic digits, «آذار» */
+    function isBirthday(v) {
+      var s = String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/(مارس|آذار|اذار|march|mar)/gi, ' 3 ');
+      var n = (s.match(/\d+/g) || []).map(Number);
+      return n.length === 3 && n.indexOf(14) >= 0 && n.indexOf(3) >= 0 && n.indexOf(T.born) >= 0;
     }
     var done = function () { var a = arguments; return [].every.call(a, function (id) { return CC.Q.done[id]; }); };
 
@@ -4679,14 +4916,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         L.task(CC.t('t_name'));
         guide(function () { return P.pageEl('.mem.tgt'); }, function () { return !phaseIs('name'); });
         if (!(await CC.stepWait(g))) return;                                   /* a «لاحظ» step: the glowing «متابعة» (DESIGN.md section 27) */
-        if (phaseIs('name')) return to('engine');
+        if (phaseIs('name')) return to('q1');
+      } else if (phase === 'q1') {
+        CC.Q.reveal('q1');                                                     /* question 1 is answered from the shop's own page, before any search (Moaz 2026-11-17) */
+        L.task(CC.t('t_q1'));
+        if (done('q1')) return to('engine');
       } else if (phase === 'engine') {
         L.step(1, 'done'); L.step(2, 'now');
         if (self) { await CC.popup(CC.t('p2_h'), CC.t('p2')); if (!ok()) return; }
         L.task(CC.t('t_engine'));
         /* a new tab, not a typed address (Moaz 2026-11-17): the ring and the pointer show the «+» button beside the tab, both modes (the step names it) */
         guide(function () { return P.newTabBtn(); }, function () { return !phaseIs('engine'); }, true);
-        if (P.host() === 'baheth.qa') return to('search');
+        if (P.host() === T.search) return to('search');
       } else if (phase === 'search') {
         L.task(CC.t('t_search'));
         guide(function () { return P.pageEl('#q'); }, function () { return !phaseIs('search'); });
@@ -4704,7 +4945,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         reveal(T.social.host);
         if (self) { await CC.popup(CC.t('p4_h'), CC.t('p4')); if (!ok()) return; }
         L.task(CC.t('t_social2'));
-        if (done('q1', 'q2')) return to('work');
+        if (done('q2')) return to('work');
       } else if (phase === 'work') {
         if (self) { await CC.popup(CC.t('p5_h'), CC.t('p5')); if (!ok()) return; }
         L.task(CC.t('t_work')); resultGuide(T.workHref, 'work');
@@ -4735,10 +4976,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     P.onPage = function (path, entry) {
       curPath = path;
       var host = entry ? entry.host : P.host();
-      if (host === T.social.host || host === T.work.host || host === T.news.host) { if (st.phase !== 'team' && st.phase !== 'name' && st.phase !== 'engine' && st.phase !== 'search') reveal(host); }
+      if (host === T.social.host || host === T.work.host || host === T.news.host) { if (st.phase !== 'team' && st.phase !== 'name' && st.phase !== 'q1' && st.phase !== 'engine' && st.phase !== 'search') reveal(host); }
       run(async function () {
         if (phaseIs('team') && host === CC.site.host && path === '/about') await to('name');
-        else if (phaseIs('engine') && host === 'baheth.qa') await to('search');
+        else if (phaseIs('engine') && host === T.search) await to('search');
         else if (phaseIs('search') && onResults()) await to('results');
         else if (phaseIs('social') && host === T.social.host) await to('social2');
         else if (phaseIs('work') && host === T.work.host) await to('work2');
@@ -4747,7 +4988,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     };
     CC.Q.onCorrect = function () {
       run(async function () {
-        if (phaseIs('social2') && done('q1', 'q2')) await to('work');
+        if (phaseIs('q1') && done('q1')) await to('engine');
+        else if (phaseIs('social2') && done('q2')) await to('work');
         else if (phaseIs('work2') && done('q3')) await to('news');
         else if (phaseIs('news2') && done('q4')) await finish();
       });
@@ -4799,7 +5041,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social","t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
+window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_q1"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social","t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
