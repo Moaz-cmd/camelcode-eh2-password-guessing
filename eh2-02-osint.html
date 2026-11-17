@@ -3036,7 +3036,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var h = analyse(page).html, assets = S.assets || {}, z = zoomOf();
       h = h.replace(/<link\b[^>]*\brel="stylesheet"[^>]*\bhref="([^"]+)"[^>]*>/g, function (m, fl) {
         return '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + z + '}' + ((S.files && S.files[fl]) || S.css || '') + '.cc-hl{outline:4px solid #FCAD0F!important;outline-offset:3px;border-radius:4px;background-color:rgba(252,173,15,.16)!important}' +
-          '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;inset-inline-start:-4px;background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}.cc-glow{outline:2px solid rgba(252,173,15,.6)!important;outline-offset:3px;border-radius:99px;box-shadow:0 0 12px 3px rgba(252,173,15,.7)!important;animation:ccg 1.1s ease-in-out infinite}@keyframes ccg{50%{outline-color:#FCAD0F;outline-offset:4px;box-shadow:0 0 22px 8px rgba(252,173,15,.95)}}</style>';
+          '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;left:50%;transform:translateX(-50%);background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}.cc-glow{outline:2px solid rgba(252,173,15,.6)!important;outline-offset:3px;border-radius:99px;box-shadow:0 0 12px 3px rgba(252,173,15,.7)!important;animation:ccg 1.1s ease-in-out infinite}@keyframes ccg{50%{outline-color:#FCAD0F;outline-offset:4px;box-shadow:0 0 22px 8px rgba(252,173,15,.95)}}</style>';
       });
       h = h.replace(/(<img\b[^>]*?\ssrc=")([^"]+)(")/g, function (m, a, n, b) { return a + (assets[n] || n) + b; });
       return h.replace(/<\/body>/i, TAIL + '</body>');
@@ -3045,7 +3045,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (page.src) return srcDoc(page);
       var body = String(typeof page.html === 'function' ? page.html(P.state, entry) : page.html).replace('{{error}}', entry.error ? (S.error || '') : '');
       return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(typeof page.title === 'function' ? page.title(P.state, entry) : page.title) + '</title>' +
-        '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;inset-inline-start:-4px;background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}</style></head><body>' + body + TAIL + '</body></html>';
+        '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;left:50%;transform:translateX(-50%);background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}</style></head><body>' + body + TAIL + '</body></html>';
     }
 
     function render(entry, quick) {
@@ -4436,8 +4436,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
    - four results that are NOT about him (Moaz 2026-11-17): a dentist and a young footballer with the same name, a page about the meaning of the name «سعيد»,
      and a car forum question by another «سعيد التميمي» from another city. Each opens a real one-page site.
    Moaz 2026-11-17: «make the websites realistic and well designed»: each site has its own look (header, layout, sidebar, details), drawn with CSS and SVG only.
-   Real OSINT is never written out: the birthday is the date of a post plus a brother's comment about his age, the hometown is in the bio and in the interview,
-   his son's name is in «أبو صالح» and a match post. Everything is invented (pending), male names only, fixed dates (nothing changes by day), no input field
+   The profile has two posts only (Moaz 2026-11-17): his falcon «براق» in the desert and his son's first match at Lusail stadium; the banner is a cup of tea in the
+   desert. The birthday and the hometown are in the bio (the hometown also in the interview), his son's name is in «أبو صالح» and the match post. Everything is invented (pending), male names only, fixed dates (nothing changes by day), no input field
    except the working search box, no http or https anywhere (links are written //host/path). */
 (function () {
   'use strict';
@@ -4446,8 +4446,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
   /* ---------- the target: every value the questions and the lab's text depend on (single source, pending) ---------- */
   var T = CC.osint = {
     name: 'سعيد صالح التميمي', short: 'سعيد التميمي', first: 'سعيد',
-    user: 'saeed_altamimi87', falcon: 'برق', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
-    email: 'saeed.altamimi@camelcode.shop', town: 'الوكرة', sons: ['صالح', 'حمد'],
+    user: 'saeed_altamimi87', falcon: 'براق', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
+    email: 'saeed.altamimi@camelcode.shop', town: 'الوكرة', sons: ['صالح'],
     search: 'search.example',
     social: { host: 'social.example', path: '/saeed_altamimi87' },
     work: { host: 'jobs.example', path: '/profile/saeed-altamimi' },
@@ -4555,8 +4555,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
       t: 'د. سعيد التميمي | استشاري تقويم الأسنان', p: 'د. سعيد التميمي، استشاري تقويم الأسنان في عيادة الأسنان بالخور، خبرة أكثر من 20 عاماً في علاج الأطفال والكبار. تعرّف على الطبيب وأوقات العيادة.',
       extra: '<div class="rate"><span class="st">★★★★★</span> 4.8 · 126 مراجعة · عيادة أسنان في الخور</div>' },
     { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
-      t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ')', p: '🛒 مدير متجر CamelCode | 🎂 14 مارس 1987 | 🏠 الوكرة | ⚽ عنابي للأبد | 🦅 الصقر رفيق الدرب. 1,248 متابعاً · 86 منشوراً. شاهد صور ومنشورات سعيد التميمي.',
-      extra: '<div class="imgs">' + ['falcon', 'store', 'stadium', 'cake'].map(function (k) { return thumb(PIC[k]); }).join('') + '</div>' },
+      t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ')', p: '🛒 مدير متجر CamelCode | 🎂 14 مارس 1987 | 🏠 الوكرة | ⚽ عنابي للأبد | 🦅 الصقر رفيق الدرب. 1,248 متابعاً · 2 منشور. شاهد صور ومنشورات سعيد التميمي.',
+      extra: '<div class="imgs">' + ['falcon', 'stadium'].map(function (k) { return thumb(PIC[k]); }).join('') + '</div>' },
     { site: 'شبكة الوظائف', bg: '#0f766e', ico: IC.bag, cite: 'jobs.example › profile › saeed-altamimi', href: T.workHref, key: 'work',
       t: 'سعيد صالح التميمي - مدير متجر في CamelCode', p: 'مدير متجر في CamelCode | تجزئة إلكترونيات | خدمة عملاء · الوكرة، قطر · أكثر من 500 جهة اتصال · الخبرة: CamelCode · التعليم: كلية إدارة الأعمال.' },
     { site: 'معاني الأسماء', bg: '#15803d', ico: IC.book, cite: 'names.example › names › saeed', href: '//names.example/names/saeed',
@@ -4602,7 +4602,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '.sf{display:flex;align-items:center;width:100%;max-width:600px;border:1px solid #dcdfe6;border-radius:99px;background:#fff;padding:5px 6px 5px 5px;box-shadow:0 2px 8px -2px rgba(31,36,48,.12);transition:box-shadow .2s}' +
     '.sf:focus-within{box-shadow:0 4px 18px -4px rgba(55,48,163,.35);border-color:#c7cbe8}.sf .sic{color:#8a8fa0;padding:0 14px 0 6px}.sf .sic .i{width:1.25em;height:1.25em}' +
     '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:9px 4px;color:#1f2430}.sf input::placeholder{color:#9aa0ad}' +
-    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:470px;padding:7px 8px 7px 7px}.sf.big input{font-size:1.12rem}' +
+    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:470px;padding:3px 4px 3px 3px}.sf.big input{font-size:1.05rem;padding:5px 4px}.sf.big .go{padding:6px 22px}' +
     '.rh{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
     '.tabs{display:flex;gap:26px;padding:0 28px;padding-inline-start:146px;border-bottom:1px solid #eceef3;color:#5f6475;font-size:.9rem}.tabs span{display:flex;align-items:center;gap:6px;padding:9px 2px}.tabs .i{width:1em;height:1em}.tabs .on{color:#3730a3;border-bottom:3px solid #3730a3;font-weight:700}' +
     '.res{max-width:720px;padding:10px 28px 40px;margin-inline-start:118px}.cnt{color:#717684;font-size:.85rem;margin:8px 0 18px}' +
@@ -4651,9 +4651,17 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '<rect width="800" height="220" fill="url(#cv)"/><circle cx="600" cy="150" r="40" fill="#fde68a" opacity=".85"/>' +
     '<path d="M0 220V170h40v-30h20v30h30v-60h18v60h26v-40h30v40h22v-90h12l6-20 6 20h12v90h30v-50h24v50h40v-70h16v70h30v-34h28v34h40v-110l14-14 14 14v110h30v-46h24v46h36v-62h20v62h40v-30h30v30h60v50z" fill="#14233d" opacity=".9"/>' +
     '<path d="M0 220c120-26 240-30 400-18s280 10 400-8v26z" fill="#0b1626"/></svg>';
-  COVER = photo('doha', COVER);                                             /* Doha skyline at night (CC0) */
+  COVER = '<svg viewBox="0 0 800 220" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="cv" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f6c27a"/><stop offset=".55" stop-color="#f9dcae"/><stop offset="1" stop-color="#fbe9cc"/></linearGradient>' +
+    '<linearGradient id="tea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c2410c"/><stop offset="1" stop-color="#7c2d12"/></linearGradient></defs>' +
+    '<rect width="800" height="220" fill="url(#cv)"/><circle cx="170" cy="70" r="34" fill="#fff3d6" opacity=".9"/>' +
+    '<path d="M0 150c120-40 250-40 380-6s260 30 420-20v96H0z" fill="#e8b779"/><path d="M0 182c160-30 330-26 480-4s220 10 320-6v48H0z" fill="#d79a5a"/>' +
+    '<ellipse cx="560" cy="196" rx="54" ry="7" fill="#b9773d" opacity=".55"/>' +
+    '<path d="M532 112h56l-7 80c-.6 6-5 8-10 8h-22c-5 0-9.4-2-10-8z" fill="#fff" fill-opacity=".35" stroke="#fff" stroke-opacity=".8" stroke-width="2.5"/>' +
+    '<path d="M535.5 134h49l-5 57c-.5 4.6-3.6 6-7.6 6h-23.8c-4 0-7.1-1.4-7.6-6z" fill="url(#tea)"/><path d="M540 118v62" stroke="#fff" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>' +
+    '<path d="M552 100c-6-8 6-12 0-22M568 100c-6-8 6-12 0-22" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="2.5" stroke-linecap="round"/></svg>';
+  COVER = photo('tea', COVER);                                              /* Moaz 2026-11-17: the banner is a cup of tea in the desert */
   var HL = [
-    ['برق', PH.falcon ? photo('falcon') : '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f3a35b"/><path d="M14 30c4-14 10-20 16-18-2 6-6 12-12 18z" fill="#6b4423"/><circle cx="26" cy="14" r="4" fill="#6b4423"/><path d="M29 15l4 1-3 2z" fill="#f3b33d"/></svg>'],
+    ['براق', PH.falcon ? photo('falcon') : '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f3a35b"/><path d="M14 30c4-14 10-20 16-18-2 6-6 12-12 18z" fill="#6b4423"/><circle cx="26" cy="14" r="4" fill="#6b4423"/><path d="M29 15l4 1-3 2z" fill="#f3b33d"/></svg>'],
     ['المتجر', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#1B2F52"/><rect x="8" y="12" width="24" height="18" rx="2" fill="#22385E"/><rect x="10" y="15" width="5" height="7" fill="#FCAD0F"/><rect x="17" y="16" width="5" height="6" fill="#ef4444"/><rect x="24" y="15" width="5" height="7" fill="#14b8a6"/></svg>'],
     ['العنابي', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#8A1538"/><circle cx="20" cy="20" r="9" fill="#fff"/><path d="M20 14l4 3-1.5 4.5h-5L16 17z" fill="#8A1538"/></svg>'],
     ['البر', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f7c873"/><path d="M0 30c10-6 20-6 40-2v12H0z" fill="#c9843f"/><path d="M12 30l6-12 6 12z" fill="#7a4b2a"/></svg>']
@@ -4663,20 +4671,17 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '<section class="prof"><div class="cover">' + COVER + '</div><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>سعيد التميمي | أبو صالح 🦅</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
     '<div class="bio"><p>🛒 مدير متجر CamelCode</p><p>🎂 14 مارس 1987</p><p>🏠 الوكرة</p><p>⚽ عنابي للأبد</p><p>🦅 الصقر رفيق الدرب</p></div>' +
     '<div class="meta"><span>' + IC.pin + 'الوكرة، قطر</span><span>' + IC.bag + 'CamelCode</span><span>' + IC.cal + 'انضم في مايو 2015</span></div>' +
-    '<div class="stats"><span><b>86</b> منشوراً</span><span><b>1,248</b> متابعاً</span><span><b>312</b> يتابع</span></div>' +
+    '<div class="stats"><span><b>2</b> منشور</span><span><b>1,248</b> متابعاً</span><span><b>312</b> يتابع</span></div>' +
     '<div class="hls">' + HL.map(function (h) { return '<span class="hlc"><span class="hli">' + h[1] + '</span><small>' + h[0] + '</small></span>'; }).join('') + '</div>' +
     '<nav class="ptabs"><span class="on">' + IC.grid + 'المنشورات</span><span>' + IC.cam + 'الصور</span><span>' + IC.user + 'الإشارات</span></nav></section>' +
-    post('3 نوفمبر 2025', 'برق جاهز لموسم المقناص 🦅 #صقارة #البر', PIC.falcon, 214, 'fahad_almarri', [comment('fahad_almarri', 'ما شاء الله، برق كبر يا بو صالح! 👏', '#0891b2', 3), comment(T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍', '#1B2F52', 2)]) +
-    post('20 سبتمبر 2025', 'يوم جرد طويل في المتجر… الفريق ما قصّر 💪 #كاملكود', PIC.store, 167, 'yousef_m', [comment('yousef_m', 'يعطيكم العافية يا مدير 👏', '#7c3aed', 1)]) +
-    post('14 مارس 2025', 'الحمد لله على نعمة العمر 🤍', PIC.cake, 389, 'nasser_altamimi', [comment('nasser_altamimi', 'كل عام وأنت بخير يا سعيد، 38 سنة وما تغيرت 😂', '#b45309', 12), comment('salem_k', 'عساك من عواده يا بو صالح 🎉', '#15803d', 4)]) +
-    post('2 فبراير 2024', 'أول مباراة لصالح في الملعب ⚽ #العنابي', PIC.stadium, 276, 'hamad_96', [comment('hamad_96', 'ما شاء الله صالح كبر! الله يحفظه', '#be123c', 2)]) +
-    post('10 يونيو 2023', 'حفل تخرّج حمد من الروضة، فخور فيك يا ولدي 🎓', PIC.school, 198, 'nasser_altamimi', [], 'الوكرة، قطر') +
+    post('3 نوفمبر 2025', 'براق جاهز لموسم المقناص 🦅 #صقارة #البر', PIC.falcon, 214, 'fahad_almarri', [comment('fahad_almarri', 'ما شاء الله، براق كبر يا بو صالح! 👏', '#0891b2', 3), comment(T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍', '#1B2F52', 2)]) +
+    post('2 فبراير 2024', 'أول مباراة لصالح في استاد لوسيل ⚽ #العنابي', PIC.stadium, 276, 'hamad_96', [comment('hamad_96', 'ما شاء الله صالح كبر! الله يحفظه', '#be123c', 2)], 'استاد لوسيل، قطر') +
     '<p class="end">لا توجد منشورات أخرى</p></main>' +
     '<aside class="side"><div class="box"><h3>قد تعرفهم</h3>' +
       [['ناصر التميمي', 'nasser_altamimi', BROTHER, 'يتابعه سعيد'], ['فهد المري', 'fahad_almarri', K.avatar('#1f1530', '#0891b2', '#e0ac80'), 'متابَع مشترك'], ['يوسف محمد', 'yousef_m', COLLEAGUE, 'يعمل في CamelCode']].map(function (p) {
         return '<div class="sug"><span class="av">' + p[2] + '</span><span class="who"><b>' + p[0] + '</b><small dir="ltr">@' + p[1] + '</small><small>' + p[3] + '</small></span></div>';
       }).join('') + '</div>' +
-    '<div class="box"><h3>الصور</h3><div class="ph3">' + ['falcon', 'store', 'cake', 'stadium', 'school', 'falcon'].map(function (k) { return '<span>' + PIC[k] + '</span>'; }).join('') + '</div></div>' +
+    '<div class="box"><h3>الصور</h3><div class="ph3">' + ['falcon', 'stadium'].map(function (k) { return '<span>' + PIC[k] + '</span>'; }).join('') + '</div></div>' +
     '<p class="foot">منصة التواصل الاجتماعي · الخصوصية · الشروط</p></aside></div>';
   var SO_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#eef3f6;color:#15212b}' +
     '.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid #dde6ec}.nin{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:9px 20px}' +
@@ -4886,10 +4891,10 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب تحت صورة مدير المتجر.',
     q2: 'ما تاريخ ميلاد سعيد؟' + String.fromCharCode(10) + 'الصيغة: DD/MM/YYYY',
     q2h: 'في حسابه على منصة التواصل الاجتماعي، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. ثم اكتب التاريخ بالأرقام: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001 (شهر مارس هو الشهر 3).',
-    q3: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
-    q3h: 'في حسابه المهني على شبكة الوظائف، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
-    q4: 'ما مدينة الإقامة لسعيد؟ (المدينة التي يسكن فيها)',
-    q4h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل الاجتماعي أيضاً.',
+    q3: 'في أي مدينة يسكن سعيد؟',
+    q3h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل الاجتماعي أيضاً.',
+    q4: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
+    q4h: 'في حسابه المهني على شبكة الوظائف، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
     /* steps (the instruction panel) */
     t_team: 'تعلمنا سابقاً أن أول وأهم خطوة في عملية الاختراق هي **جمع المعلومات**، حيث أن كل اختراق يبدأ بـ **هدف**. وهدفنا اليوم هو **مدير متجر** الموقع الإلكتروني، اضغط على صفحة «**من نحن**» في القائمة أعلى موقع المتجر، وابحث في قسم «**فريقنا**» عن **مدير المتجر**.',
     t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». **هدفنا** هو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**، وأجب عن **السؤال الأول**.',
@@ -4899,10 +4904,10 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     mark_dentist: 'انتبه! سعيد الذي نبحث عنه ليس طبيب أسنان!',
     t_results: 'هذه **نتائج البحث** عن **الهدف**. انتبه! تظهر بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، الآن لندخل على **صفحة التواصل الاجتماعي** لسعيد لنرى ما بداخلها.',
     t_social2: 'هذا **حساب سعيد في منصة التواصل الاجتماعي**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل لترى **المنشورات** و**الصور** الموجودة، وأجب عن **السؤال الثاني** في «أسئلة التحدي» على يسار الشاشة.',
-    t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
-    t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال الثالث**.',
-    t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من **موقع الأخبار**.',
-    t_news2: 'هذه **مقابلة** معه في موقع أخبار. اقرأها كاملة، وانتبه لما قاله عن **طفولته** و**المدينة التي يسكن فيها اليوم**، ثم أجب عن **السؤال الرابع**.',
+    t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
+    t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال الرابع**.',
+    t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من **موقع الأخبار**.',
+    t_news2: 'هذه **مقابلة** معه في موقع أخبار. اقرأها كاملة، وانتبه لما قاله عن **طفولته** و**المدينة التي يسكن فيها اليوم**، ثم أجب عن **السؤال الثالث**.',
     t_done: 'أحسنت! أنهيت التدريب.',
     c_start: 'ابدأ من هنا: صفحة «من نحن»',
     /* lesson popups (typed letter by letter, self-paced only) */
@@ -4917,11 +4922,11 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     p4_h: 'وسائل التواصل الاجتماعي',
     p4: 'يشارك الناس في **وسائل التواصل الاجتماعي** الكثير من حياتهم دون أن ينتبهوا.\n\nالمعلومة لا تكون مكتوبة بشكل مباشر دائماً، بل تختبئ في **النبذة** (Bio)، وفي **الصور**، وفي **تواريخ المنشورات**، وفي **تعليقات الأصدقاء**، وحتى في **اسم المستخدم**.\n\nاقرأ كل شيء بانتباه، وتأكد أولاً أن **صورته** هي نفس صورة مدير المتجر.',
     p5_h: 'الحساب المهني',
-    p5: 'رائع! جمعت معلومات من حسابه الشخصي.\n\nفي **مواقع العمل** يكتب الناس **وظائفهم السابقة** و**دراستهم** و**بريدهم الإلكتروني للعمل**. هذه المعلومات تساعد الهاكر على معرفة **كيف تكتب الشركة عناوين بريد موظفيها**.',
+    p5: 'رائع! جمعت معلومات من حسابه الشخصي ومن المقابلة.\n\nفي **مواقع العمل** يكتب الناس **وظائفهم السابقة** و**دراستهم** و**بريدهم الإلكتروني للعمل**. هذه المعلومات تساعد الهاكر على معرفة **كيف تكتب الشركة عناوين بريد موظفيها**.',
     p6_h: 'الأخبار والمقابلات',
     p6: '**المقالات** و**المقابلات** في مواقع الأخبار تكشف تفاصيل عن **طفولة** الشخص و**هواياته** و**المدينة التي نشأ فيها**.\n\nوهي أيضاً **تؤكد** المعلومات التي وجدناها في المصادر الأخرى. كلما ظهرت المعلومة في **أكثر من مصدر**، زادت ثقتنا بها.',
     p7_h: 'ملف الهدف جاهز',
-    p7: 'أحسنت! من **مصادر عامة** فقط جمعت عن الهدف: **اسمه الكامل**، و**تاريخ ميلاده**، و**بريده الإلكتروني للعمل**، و**مدينة إقامته**، وأيضاً **اسم صقره** و**أسماء أبنائه** و**فريقه المفضل**.\n\nكثير من الناس يختارون **كلمات السر** من هذه المعلومات، ولهذا يجمعها الهاكر قبل أي هجوم. في الدرس القادم سنرى كيف تتحول إلى **كلمات سر محتملة**.',
+    p7: 'أحسنت! من **مصادر عامة** فقط جمعت عن الهدف: **اسمه الكامل**، و**تاريخ ميلاده**، و**بريده الإلكتروني للعمل**، و**مدينة إقامته**، وأيضاً **اسم صقره** و**اسم ابنه** و**فريقه المفضل**.\n\nكثير من الناس يختارون **كلمات السر** من هذه المعلومات، ولهذا يجمعها الهاكر قبل أي هجوم. في الدرس القادم سنرى كيف تتحول إلى **كلمات سر محتملة**.',
     /* congratulations card */
     cele_0: '**جمع المعلومات من المصادر المفتوحة** (OSINT) هو جمع معلومات عن هدف من مصادر **يستطيع أي شخص أن يراها**: وسائل التواصل الاجتماعي ومواقع العمل والأخبار ومحركات البحث.',
     cele_1: 'قبل جمع أي معلومة، **تأكد من هوية الهدف**: قد يحمل أشخاص آخرون **الاسم نفسه**. قارن **الوظيفة** و**المدينة** و**الصورة**، وصدّق المعلومة التي تظهر في **أكثر من مصدر**.',
@@ -4950,8 +4955,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     CC.Q.init([
       { id: 'q1', q: CC.t('q1'), answers: [T.name, T.short], hint: CC.t('q1h'), hidden: true },
       { id: 'q2', q: iso(CC.t('q2')), answers: [], check: isBirthday, hint: iso(CC.t('q2h')), hidden: true },
-      { id: 'q3', q: CC.t('q3'), answers: [T.email], check: function (v) { return String(v).replace(/\s+/g, '').toLowerCase() === T.email; }, hint: iso(CC.t('q3h')), hidden: true },
-      { id: 'q4', q: CC.t('q4'), answers: [T.town, 'وكرة', 'مدينة الوكرة'], hint: CC.t('q4h'), hidden: true }
+      { id: 'q3', q: CC.t('q3'), answers: [T.town, 'وكرة'], hint: CC.t('q3h'), hidden: true },   /* Moaz 2026-11-17: «الوكرة» or «وكرة» */
+      { id: 'q4', q: CC.t('q4'), answers: [T.email], check: function (v) { return String(v).replace(/\s+/g, '').toLowerCase() === T.email; }, hint: iso(CC.t('q4h')), hidden: true }
     ]);
     [1, 2, 3].forEach(function (i) { L.step(i, 'idle'); });
     L.task('');
@@ -4967,8 +4972,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     function reveal(host) {
       if (st.seen[host]) return; st.seen[host] = true;
       if (host === T.social.host) CC.Q.reveal('q2');
-      else if (host === T.work.host) CC.Q.reveal('q3');
-      else if (host === T.news.host) CC.Q.reveal('q4');
+      else if (host === T.news.host) CC.Q.reveal('q3');
+      else if (host === T.work.host) CC.Q.reveal('q4');
     }
     /* the date of birth only in the form DD/MM/YYYY (Moaz 2026-11-17): 14/3/1987 or 14/03/1987 (Arabic digits are read as digits); «14 مارس 1987» or 1987-03-14 are not accepted */
     function isBirthday(v) {
@@ -5023,7 +5028,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
         reveal(T.social.host);
         if (self) { await CC.popup(CC.t('p4_h'), CC.t('p4')); if (!ok()) return; }
         L.task(CC.t('t_social2'));
-        if (done('q2')) return to('work');
+        if (done('q2')) return to('news');
       } else if (phase === 'work') {
         if (self) { await CC.popup(CC.t('p5_h'), CC.t('p5')); if (!ok()) return; }
         L.task(CC.t('t_work')); resultGuide(T.workHref, 'work');
@@ -5031,7 +5036,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
       } else if (phase === 'work2') {
         reveal(T.work.host);
         L.task(CC.t('t_work2'));
-        if (done('q3')) return to('news');
+        if (done('q4')) return finish();
       } else if (phase === 'news') {
         L.task(CC.t('t_news')); resultGuide(T.newsHref, 'news');
         if (P.host() === T.news.host) return to('news2');
@@ -5039,7 +5044,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
         reveal(T.news.host);
         if (self) { await CC.popup(CC.t('p6_h'), CC.t('p6')); if (!ok()) return; }
         L.task(CC.t('t_news2'));
-        if (done('q4')) return finish();
+        if (done('q3')) return to('work');
       }
     }
     /* one move at a time; an event that arrives while the lab is busy (a page opened during a popup, two answers in a row) waits its turn instead of being lost */
@@ -5067,9 +5072,9 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     CC.Q.onCorrect = function () {
       run(async function () {
         if (phaseIs('name') && done('q1')) await to('osint');
-        else if (phaseIs('social2') && done('q2')) await to('work');
-        else if (phaseIs('work2') && done('q3')) await to('news');
-        else if (phaseIs('news2') && done('q4')) await finish();
+        else if (phaseIs('social2') && done('q2')) await to('news');
+        else if (phaseIs('news2') && done('q3')) await to('work');
+        else if (phaseIs('work2') && done('q4')) await finish();
       });
     };
     CC.Q.onAll = function () { CC.Q.onCorrect(); };
@@ -5119,7 +5124,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
+window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social2","t_news","t_news2","t_work","t_work2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
