@@ -4820,8 +4820,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q4h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل أيضاً.',
     /* steps (the instruction panel) */
     t_team: 'تعلمنا سابقاً أن أول وأهم خطوة في عملية الاختراق هي **جمع المعلومات**، حيث أن كل اختراق يبدأ بـ **هدف**. وهدفنا اليوم هو **مدير متجر** الموقع الإلكتروني، اضغط على صفحة «**من نحن**» في القائمة أعلى موقع المتجر، وابحث في قسم «**فريقنا**» عن **مدير المتجر**.',
-    t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». هذا هو **هدفنا**: «**سعيد صالح التميمي**» وهو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**، سنتعلم الآن إحدى أهم طرق جمع المعلومات وهي **جمع المعلومات من المصادر المفتوحة** (OSINT)، والتي تعني بشكل أبسط **البحث عنه في الإنترنت**.',
-    t_q1: 'قبل أن نبحث، سجّل أول معلومة عن هدفنا: اكتب **اسم مدير المتجر** الكامل في «**أسئلة التحدي**» على يسار الشاشة، وأجب عن **السؤال 1**.',
+    t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». هذا هو **هدفنا**: «**سعيد صالح التميمي**» وهو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**.',
+    t_osint: 'سنتعلم الآن إحدى أهم طرق جمع المعلومات وهي **جمع المعلومات من المصادر المفتوحة** (OSINT)، والتي تعني بشكل أبسط **البحث عنه في الإنترنت**.',
     t_engine: 'الآن لنفتح **صفحة جديدة** داخل المتصفح للبحث عن **مدير المتجر** في الإنترنت.',
     t_search: 'اكتب **الاسم الكامل** للهدف «**سعيد صالح التميمي**» في **مربع البحث**، ثم اضغط «**بحث**».',
     t_results: 'هذه **نتائج البحث** عن الاسم. انتبه! بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، وابحث عن النتائج التي تتحدث عن **مدير متجر كاملكود**.',
@@ -4916,18 +4916,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     async function to(phase) {
       st.phase = phase;
       CC.guide.hide(); P.glowLink(null); P.urlGhost(null);
-      if (phase !== 'name' && phase !== 'q1') P.ring(null);                    /* the ring on the manager stays until question 1 (his name) is answered */
+      if (phase !== 'name') P.ring(null);                                     /* the ring on the manager stays until question 1 (his name) is answered */
       if (phase === 'name') {
         cue = false; CC.comment('');
         if (self) { await CC.popup(CC.t('p1_h'), CC.t('p1')); if (!ok()) return; }
         L.task(CC.t('t_name'));
         P.ring('.mem.tgt');                                                     /* a gold ring around «سعيد صالح التميمي» in «فريقنا», both modes (Moaz 2026-11-17) */
+        CC.Q.reveal('q1');                                                     /* question 1 (his full name) appears with this step, answered from the shop's own page before any search (Moaz 2026-11-17) */
+        if (done('q1')) return to('osint');
+      } else if (phase === 'osint') {
+        L.task(CC.t('t_osint'));
         if (!(await CC.stepWait(g))) return;                                   /* a «لاحظ» step: the glowing «متابعة» (DESIGN.md section 27) */
-        if (phaseIs('name')) return to('q1');
-      } else if (phase === 'q1') {
-        CC.Q.reveal('q1');                                                     /* question 1 is answered from the shop's own page, before any search (Moaz 2026-11-17) */
-        L.task(CC.t('t_q1'));
-        if (done('q1')) return to('engine');
+        if (phaseIs('osint')) return to('engine');
       } else if (phase === 'engine') {
         L.step(1, 'done'); L.step(2, 'now');
         if (self) { await CC.popup(CC.t('p2_h'), CC.t('p2')); if (!ok()) return; }
@@ -4983,7 +4983,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     P.onPage = function (path, entry) {
       curPath = path;
       var host = entry ? entry.host : P.host();
-      if (host === T.social.host || host === T.work.host || host === T.news.host) { if (st.phase !== 'team' && st.phase !== 'name' && st.phase !== 'q1' && st.phase !== 'engine' && st.phase !== 'search') reveal(host); }
+      if (host === T.social.host || host === T.work.host || host === T.news.host) { if (st.phase !== 'team' && st.phase !== 'name' && st.phase !== 'osint' && st.phase !== 'engine' && st.phase !== 'search') reveal(host); }
       run(async function () {
         if (phaseIs('team') && host === CC.site.host && path === '/about') await to('name');
         else if (phaseIs('engine') && host === T.search) await to('search');
@@ -4995,7 +4995,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     };
     CC.Q.onCorrect = function () {
       run(async function () {
-        if (phaseIs('q1') && done('q1')) await to('engine');
+        if (phaseIs('name') && done('q1')) await to('osint');
         else if (phaseIs('social2') && done('q2')) await to('work');
         else if (phaseIs('work2') && done('q3')) await to('news');
         else if (phaseIs('news2') && done('q4')) await finish();
@@ -5048,7 +5048,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_q1"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social","t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
+window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social","t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
