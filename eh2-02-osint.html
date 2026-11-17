@@ -4555,7 +4555,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
       t: 'د. سعيد التميمي | استشاري تقويم الأسنان', p: 'د. سعيد التميمي، استشاري تقويم الأسنان في عيادة الأسنان بالخور، خبرة أكثر من 20 عاماً في علاج الأطفال والكبار. تعرّف على الطبيب وأوقات العيادة.',
       extra: '<div class="rate"><span class="st">★★★★★</span> 4.8 · 126 مراجعة · عيادة أسنان في الخور</div>' },
     { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
-      t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ')', p: '🛒 مدير متجر CamelCode | 🎂 14 مارس 1987 | 🏠 الوكرة | ⚽ عنابي للأبد | 🦅 الصقر رفيق الدرب. 1,248 متابعاً · 2 منشور. شاهد صور ومنشورات سعيد التميمي.',
+      t: 'سعيد التميمي | أبو صالح 🦅 (@' + T.user + ')', p: '🛒 مدير متجر CamelCode | 🎂 ' + ltr('14/03/1987') + ' | 📍 الوكرة، قطر | ⚽ عنابي للأبد | 🦅 الصقر رفيق الدرب. 1,248 متابعاً · 2 منشور. شاهد صور ومنشورات سعيد التميمي.',
       extra: '<div class="imgs">' + ['falcon', 'stadium'].map(function (k) { return thumb(PIC[k]); }).join('') + '</div>' },
     { site: 'شبكة الوظائف', bg: '#0f766e', ico: IC.bag, cite: 'jobs.example › profile › saeed-altamimi', href: T.workHref, key: 'work',
       t: 'سعيد صالح التميمي - مدير متجر في CamelCode', p: 'مدير متجر في CamelCode | تجزئة إلكترونيات | خدمة عملاء · الوكرة، قطر · أكثر من 500 جهة اتصال · الخبرة: CamelCode · التعليم: كلية إدارة الأعمال.' },
@@ -4669,7 +4669,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
   var socialProfile = '<header class="nav"><div class="nin">' + LOGO_SO + '<span class="nic"><span class="on">' + IC.home + '</span><span>' + IC.grid + '</span><span>' + IC.bell + '</span><span class="me">' + IC.user + '</span></span></div></header>' +
     '<div class="page"><main class="main">' +
     '<section class="prof"><div class="cover">' + COVER + '</div><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>سعيد التميمي | أبو صالح 🦅</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
-    '<div class="bio"><p>🛒 مدير متجر CamelCode</p><p>🎂 14 مارس 1987</p><p>🏠 الوكرة</p><p>⚽ عنابي للأبد</p><p>🦅 الصقر رفيق الدرب</p></div>' +
+    '<div class="bio"><p>🛒 مدير متجر CamelCode</p><p>🎂 ' + ltr('14/03/1987') + '</p><p>📍 الوكرة، قطر</p><p>⚽ عنابي للأبد</p><p>🦅 الصقر رفيق الدرب</p></div>' +
     '<div class="meta"><span>' + IC.pin + 'الوكرة، قطر</span><span>' + IC.bag + 'CamelCode</span><span>' + IC.cal + 'انضم في مايو 2015</span></div>' +
     '<div class="stats"><span><b>2</b> منشور</span><span><b>1,248</b> متابعاً</span><span><b>312</b> يتابع</span></div>' +
     '<div class="hls">' + HL.map(function (h) { return '<span class="hlc"><span class="hli">' + h[1] + '</span><small>' + h[0] + '</small></span>'; }).join('') + '</div>' +
@@ -4890,7 +4890,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     q1: 'ما اسم مدير المتجر؟',
     q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب تحت صورة مدير المتجر.',
     q2: 'ما تاريخ ميلاد سعيد؟' + String.fromCharCode(10) + 'الصيغة: DD/MM/YYYY',
-    q2h: 'في حسابه على منصة التواصل الاجتماعي، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. ثم اكتب التاريخ بالأرقام: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001 (شهر مارس هو الشهر 3).',
+    q2h: 'في حسابه على منصة التواصل الاجتماعي، اقرأ النبذة تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. اكتب التاريخ كما هو مكتوب: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001.',
     q3: 'في أي مدينة يسكن سعيد؟',
     q3h: 'في المقابلة على موقع الأخبار، اقرأ الجزء الأخير «بين الوكرة والدوحة» لتعرف أين يسكن اليوم. ستجد المدينة نفسها في النبذة على منصة التواصل الاجتماعي أيضاً.',
     q4: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
