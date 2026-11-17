@@ -3511,10 +3511,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (!g) { g = d.createElement('span'); g.id = 'cc-th'; g.setAttribute('aria-hidden', 'true'); d.body.appendChild(g); }
       var w = d.defaultView, cs = w.getComputedStyle(inp), r = inp.getBoundingClientRect();
       g.style.cssText = 'position:absolute;pointer-events:none;white-space:pre;overflow:hidden;z-index:50;box-sizing:border-box;color:rgba(95,100,117,.5);' +
-        'left:' + (r.left + w.scrollX) + 'px;top:' + (r.top + w.scrollY) + 'px;width:' + r.width + 'px;height:' + r.height + 'px;line-height:' + r.height + 'px;' +
-        'font:' + cs.font + ';letter-spacing:' + cs.letterSpacing + ';direction:' + cs.direction + ';text-align:' + cs.textAlign + ';' +
+        'left:' + (r.left + w.scrollX) + 'px;top:' + (r.top + w.scrollY) + 'px;width:' + r.width + 'px;height:' + r.height + 'px;' +
+        'font:' + cs.font + ';line-height:' + r.height + 'px;letter-spacing:' + cs.letterSpacing + ';direction:' + cs.direction + ';text-align:' + cs.textAlign + ';' +
         'padding:0 ' + cs.paddingRight + ' 0 ' + cs.paddingLeft + ';border:' + cs.borderTopWidth + ' solid transparent';
-      var v = inp.value, shown = thText.slice(0, thN);
+      var v = inp.value, shown = v ? thText : thText.slice(0, thN);   /* once he types, the rest of the name stays still after his letters (it no longer types itself) */
       g.textContent = '';
       if (thText.indexOf(v) !== 0) { thShow(inp, true); return; }   /* what he typed is not the hint: the hint steps aside and his letters show as they are */
       if (!v) thShow(inp, true);
@@ -4602,7 +4602,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.sf{display:flex;align-items:center;width:100%;max-width:600px;border:1px solid #dcdfe6;border-radius:99px;background:#fff;padding:5px 6px 5px 5px;box-shadow:0 2px 8px -2px rgba(31,36,48,.12);transition:box-shadow .2s}' +
     '.sf:focus-within{box-shadow:0 4px 18px -4px rgba(55,48,163,.35);border-color:#c7cbe8}.sf .sic{color:#8a8fa0;padding:0 14px 0 6px}.sf .sic .i{width:1.25em;height:1.25em}' +
     '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:9px 4px;color:#1f2430}.sf input::placeholder{color:#9aa0ad}' +
-    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:470px;padding:3px 4px 3px 3px}.sf.big input{font-size:1.05rem;padding:5px 4px}.sf.big .go{padding:6px 22px}' +
+    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:400px;height:44px;padding:0 4px 0 5px}.sf.big input{height:100%;font-size:1rem;line-height:normal;padding:0 6px}.sf.big .go{height:34px;line-height:34px;padding:0 20px;font-size:.92rem}' +
     '.rh{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
     '.tabs{display:flex;gap:26px;padding:0 28px;padding-inline-start:146px;border-bottom:1px solid #eceef3;color:#5f6475;font-size:.9rem}.tabs span{display:flex;align-items:center;gap:6px;padding:9px 2px}.tabs .i{width:1em;height:1em}.tabs .on{color:#3730a3;border-bottom:3px solid #3730a3;font-weight:700}' +
     '.res{max-width:720px;padding:10px 28px 40px;margin-inline-start:118px}.cnt{color:#717684;font-size:.85rem;margin:8px 0 18px}' +
