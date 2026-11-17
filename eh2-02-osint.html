@@ -4436,7 +4436,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
    - four results that are NOT about him (Moaz 2026-11-17): a dentist and a young footballer with the same name, a page about the meaning of the name «سعيد»,
      and a car forum question by another «سعيد التميمي» from another city. Each opens a real one-page site.
    Moaz 2026-11-17: «make the websites realistic and well designed»: each site has its own look (header, layout, sidebar, details), drawn with CSS and SVG only.
-   The profile has two posts only (Moaz 2026-11-17): his falcon «براق» in the desert and his son's first match at Lusail stadium; the banner is a cup of tea in the
+   The profile has two posts only (Moaz 2026-11-17): his falcon «براق» and his son's first match at the stadium (a real CC0 stadium photo); the banner is a cup of tea in the
    desert. The birthday and the hometown are in the bio (the hometown also in the interview), his son's name is in «أبو صالح» and the match post. Everything is invented (pending), male names only, fixed dates (nothing changes by day), no input field
    except the working search box, no http or https anywhere (links are written //host/path). */
 (function () {
@@ -4447,7 +4447,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
   var T = CC.osint = {
     name: 'سعيد صالح التميمي', short: 'سعيد التميمي', first: 'سعيد',
     user: 'saeed_altamimi87', falcon: 'براق', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
-    email: 'saeed.altamimi@camelcode.shop', town: 'الوكرة', sons: ['صالح'],
+    email: 'saeed.altamimi@camelcode.shop', firstFalcon: 'شاهين', town: 'الوكرة', sons: ['صالح'],
     search: 'search.example',
     social: { host: 'social.example', path: '/saeed_altamimi87' },
     work: { host: 'jobs.example', path: '/profile/saeed-altamimi' },
@@ -4675,7 +4675,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '<div class="hls">' + HL.map(function (h) { return '<span class="hlc"><span class="hli">' + h[1] + '</span><small>' + h[0] + '</small></span>'; }).join('') + '</div>' +
     '<nav class="ptabs"><span class="on">' + IC.grid + 'المنشورات</span><span>' + IC.cam + 'الصور</span><span>' + IC.user + 'الإشارات</span></nav></section>' +
     post('3 نوفمبر 2025', 'براق جاهز لموسم المقناص 🦅 #صقارة #البر', PIC.falcon, 214, 'fahad_almarri', [comment('fahad_almarri', 'ما شاء الله، براق كبر يا بو صالح! 👏', '#0891b2', 3), comment(T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍', '#1B2F52', 2)]) +
-    post('2 فبراير 2024', 'أول مباراة لصالح في استاد لوسيل ⚽ #العنابي', PIC.stadium, 276, 'hamad_96', [comment('hamad_96', 'ما شاء الله صالح كبر! الله يحفظه', '#be123c', 2)], 'استاد لوسيل، قطر') +
+    post('2 فبراير 2024', 'أول مباراة لصالح في الملعب ⚽ #العنابي', PIC.stadium, 276, 'hamad_96', [comment('hamad_96', 'ما شاء الله صالح كبر! الله يحفظه', '#be123c', 2)]) +
     '<p class="end">لا توجد منشورات أخرى</p></main>' +
     '<aside class="side"><div class="box"><h3>قد تعرفهم</h3>' +
       [['ناصر التميمي', 'nasser_altamimi', BROTHER, 'يتابعه سعيد'], ['فهد المري', 'fahad_almarri', K.avatar('#1f1530', '#0891b2', '#e0ac80'), 'متابَع مشترك'], ['يوسف محمد', 'yousef_m', COLLEAGUE, 'يعمل في CamelCode']].map(function (p) {
@@ -4768,7 +4768,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '<h2>البداية في بيت العائلة</h2><p>يقول التميمي وهو يبتسم: «كنت أفكّ أجهزة الراديو في بيتنا بالوكرة وأركّبها من جديد، وأبوي يعصّب علي 😄». ويضيف أن أول جهاز ألعاب اشتراه كان بمصروفه الذي جمعه طوال عام كامل.</p>' +
     '<blockquote class="pq">«أحب أن أرى وجه الطفل حين يجرّب لعبة جديدة لأول مرة»</blockquote>' +
     '<h2>من البيع إلى الإدارة</h2><p>بدأ التميمي العمل موظف مبيعات في متجر للإلكترونيات بعد تخرجه من الجامعة، ثم أصبح مشرفاً على المبيعات، قبل أن ينتقل إلى CamelCode مديراً للمتجر.</p>' +
-    '<h2>هواية ورثها عن جده</h2><p>وخارج العمل، تجده في البر مع صقره، فالصقارة هواية ورثها عن جده. يقول: «الصقر يعلّمك الصبر، والصبر هو سر النجاح في أي عمل».</p>' +
+    '<h2>هواية ورثها عن جده</h2><p>وخارج العمل، تجده في البر مع صقره، فالصقارة هواية ورثها عن جده. وكان أول صقر امتلكه هديةً من جده وهو في العاشرة من عمره، وسمّاه «شاهين». يقول: «الصقر يعلّمك الصبر، والصبر هو سر النجاح في أي عمل».</p>' +
     '<h2>بين الوكرة والدوحة</h2><p>ورغم أن عمله في الدوحة، ما زال التميمي يسكن في الوكرة مع عائلته، ويقول: «الوكرة بيتي، وكل صباح أقطع الطريق إلى المتجر وأنا مبسوط».</p>' +
     '<div class="tags"><span>#تقنية</span><span>#الوكرة</span><span>#قصص_نجاح</span></div></article>' +
     '<aside class="side"><h3>الأكثر قراءة</h3><ol>' +
@@ -4893,8 +4893,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     q2h: 'في حسابه على منصة التواصل الاجتماعي، اقرأ وصف حسابه تحت اسمه، وابحث عن السطر الذي فيه رمز الكعكة 🎂. اكتب التاريخ كما هو مكتوب: اليوم ثم الشهر ثم السنة بينها /، مثل 01/01/2001.',
     q3: 'في أي مدينة يسكن سعيد؟',
     q3h: 'في حسابه على منصة التواصل الاجتماعي، اقرأ وصف حسابه تحت اسمه، وابحث عن السطر الذي فيه رمز الدبوس 📍. اكتب اسم المدينة فقط.',
-    q4: 'ما البريد الإلكتروني الذي يستخدمه سعيد في عمله؟',
-    q4h: 'في حسابه المهني على شبكة الوظائف، انزل إلى آخر الصفحة وانظر إلى قسم «معلومات التواصل».',
+    q4: 'ما اسم أول صقر امتلكه سعيد؟',
+    q4h: 'في المقابلة على موقع الأخبار، اقرأ الجزء «هواية ورثها عن جده». انتبه: «براق» هو صقره اليوم، والسؤال عن أول صقر امتلكه.',
     /* steps (the instruction panel) */
     t_team: 'تعلمنا سابقاً أن أول وأهم خطوة في عملية الاختراق هي **جمع المعلومات**، حيث أن كل اختراق يبدأ بـ **هدف**. وهدفنا اليوم هو **مدير متجر** الموقع الإلكتروني، اضغط على صفحة «**من نحن**» في القائمة أعلى موقع المتجر، وابحث في قسم «**فريقنا**» عن **مدير المتجر**.',
     t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». **هدفنا** هو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**، وأجب عن **السؤال الأول**.',
@@ -4904,10 +4904,10 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     mark_dentist: 'انتبه! سعيد الذي نبحث عنه ليس طبيب أسنان!',
     t_results: 'هذه **نتائج البحث** عن **الهدف**. انتبه! تظهر بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، الآن لندخل على **صفحة التواصل الاجتماعي** لسعيد لنرى ما بداخلها.',
     t_social2: 'هذا **حساب سعيد في منصة التواصل الاجتماعي**. اقرأ **وصف حسابه**، ثم مرّر للأسفل لترى **المنشورات** و**الصور** الموجودة، وأجب عن **السؤال الثاني** و**الثالث** في «أسئلة التحدي» على يسار الشاشة.',
-    t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
-    t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة، وأجب عن **السؤال الرابع**.',
-    t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من **موقع الأخبار**.',
-    t_news2: 'هذه **مقابلة** معه في موقع أخبار. اقرأها كاملة، ولاحظ أنها **تؤكد المدينة التي يسكن فيها** التي وجدتها في **وصف حسابه**، ثم اضغط «**متابعة**».',
+    t_work: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع** (السهم في أعلى يسار المتصفح)، ثم اضغط على نتيجة «**سعيد صالح التميمي - مدير متجر في CamelCode**» من موقع **شبكة الوظائف**.',
+    t_work2: 'هذا **حسابه المهني** في شبكة الوظائف. اقرأ **الخبرة** و**التعليم**، ثم انزل إلى «**معلومات التواصل**» في آخر الصفحة ولاحظ **بريده الإلكتروني للعمل**، ثم اضغط «**متابعة**».',
+    t_news: 'ارجع إلى **نتائج البحث** بالضغط على **زر الرجوع**، ثم اضغط على نتيجة «**من بائع صغير إلى مدير متجر**» من **موقع الأخبار**.',
+    t_news2: 'هذه **مقابلة** معه في موقع أخبار. اقرأها كاملة، وانتبه لما قاله عن **طفولته** و**هوايته**، ثم أجب عن **السؤال الرابع**.',
     t_done: 'أحسنت! أنهيت التدريب.',
     c_start: 'ابدأ من هنا: صفحة «من نحن»',
     /* lesson popups (typed letter by letter, self-paced only) */
@@ -4922,11 +4922,11 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     p4_h: 'وسائل التواصل الاجتماعي',
     p4: 'يشارك الناس في **وسائل التواصل الاجتماعي** الكثير من حياتهم دون أن ينتبهوا.\n\nالمعلومة لا تكون مكتوبة بشكل مباشر دائماً، بل تختبئ في **وصف الحساب** (Bio)، وفي **الصور**، وفي **تواريخ المنشورات**، وفي **تعليقات الأصدقاء**، وحتى في **اسم المستخدم**.\n\nاقرأ كل شيء بانتباه، وتأكد أولاً أن **صورته** هي نفس صورة مدير المتجر.',
     p5_h: 'الحساب المهني',
-    p5: 'رائع! جمعت معلومات من حسابه الشخصي ومن المقابلة.\n\nفي **مواقع العمل** يكتب الناس **وظائفهم السابقة** و**دراستهم** و**بريدهم الإلكتروني للعمل**. هذه المعلومات تساعد الهاكر على معرفة **كيف تكتب الشركة عناوين بريد موظفيها**.',
+    p5: 'رائع! جمعت معلومات من حسابه الشخصي.\n\nفي **مواقع العمل** يكتب الناس **وظائفهم السابقة** و**دراستهم** و**بريدهم الإلكتروني للعمل**. هذه المعلومات تساعد الهاكر على معرفة **كيف تكتب الشركة عناوين بريد موظفيها**.',
     p6_h: 'الأخبار والمقابلات',
     p6: '**المقالات** و**المقابلات** في مواقع الأخبار تكشف تفاصيل عن **طفولة** الشخص و**هواياته** و**المدينة التي نشأ فيها**.\n\nوهي أيضاً **تؤكد** المعلومات التي وجدناها في المصادر الأخرى. كلما ظهرت المعلومة في **أكثر من مصدر**، زادت ثقتنا بها.',
     p7_h: 'ملف الهدف جاهز',
-    p7: 'أحسنت! من **مصادر عامة** فقط جمعت عن الهدف: **اسمه الكامل**، و**تاريخ ميلاده**، و**بريده الإلكتروني للعمل**، و**مدينة إقامته**، وأيضاً **اسم صقره** و**اسم ابنه** و**فريقه المفضل**.\n\nكثير من الناس يختارون **كلمات السر** من هذه المعلومات، ولهذا يجمعها الهاكر قبل أي هجوم. في الدرس القادم سنرى كيف تتحول إلى **كلمات سر محتملة**.',
+    p7: 'أحسنت! من **مصادر عامة** فقط جمعت عن الهدف: **اسمه الكامل**، و**تاريخ ميلاده**، و**بريده الإلكتروني للعمل**، و**مدينة إقامته**، وأيضاً **اسم صقره** و**اسم أول صقر له** و**اسم ابنه** و**فريقه المفضل**.\n\nكثير من الناس يختارون **كلمات السر** من هذه المعلومات، ولهذا يجمعها الهاكر قبل أي هجوم. في الدرس القادم سنرى كيف تتحول إلى **كلمات سر محتملة**.',
     /* congratulations card */
     cele_0: '**جمع المعلومات من المصادر المفتوحة** (OSINT) هو جمع معلومات عن هدف من مصادر **يستطيع أي شخص أن يراها**: وسائل التواصل الاجتماعي ومواقع العمل والأخبار ومحركات البحث.',
     cele_1: 'قبل جمع أي معلومة، **تأكد من هوية الهدف**: قد يحمل أشخاص آخرون **الاسم نفسه**. قارن **الوظيفة** و**المدينة** و**الصورة**، وصدّق المعلومة التي تظهر في **أكثر من مصدر**.',
@@ -4956,7 +4956,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
       { id: 'q1', q: CC.t('q1'), answers: [T.name, T.short], hint: CC.t('q1h'), hidden: true },
       { id: 'q2', q: iso(CC.t('q2')), answers: [], check: isBirthday, hint: iso(CC.t('q2h')), hidden: true },
       { id: 'q3', q: CC.t('q3'), answers: [T.town, 'وكرة'], hint: CC.t('q3h'), hidden: true },   /* Moaz 2026-11-17: «الوكرة» or «وكرة» */
-      { id: 'q4', q: CC.t('q4'), answers: [T.email], check: function (v) { return String(v).replace(/\s+/g, '').toLowerCase() === T.email; }, hint: iso(CC.t('q4h')), hidden: true }
+      { id: 'q4', q: CC.t('q4'), answers: [T.firstFalcon], hint: CC.t('q4h'), hidden: true }   /* Moaz 2026-11-17: a fact from the interview that people put in passwords */
     ]);
     [1, 2, 3].forEach(function (i) { L.step(i, 'idle'); });
     L.task('');
@@ -4972,7 +4972,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     function reveal(host) {
       if (st.seen[host]) return; st.seen[host] = true;
       if (host === T.social.host) { CC.Q.reveal('q2'); CC.Q.reveal('q3'); }   /* both are in his account's description (Moaz 2026-11-17) */
-      else if (host === T.work.host) CC.Q.reveal('q4');
+      else if (host === T.news.host) CC.Q.reveal('q4');
     }
     /* the date of birth only in the form DD/MM/YYYY (Moaz 2026-11-17): 14/3/1987 or 14/03/1987 (Arabic digits are read as digits); «14 مارس 1987» or 1987-03-14 are not accepted */
     function isBirthday(v) {
@@ -5027,7 +5027,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
         reveal(T.social.host);
         if (self) { await CC.popup(CC.t('p4_h'), CC.t('p4')); if (!ok()) return; }
         L.task(CC.t('t_social2'));
-        if (done('q2', 'q3')) return to('news');
+        if (done('q2', 'q3')) return to('work');
       } else if (phase === 'work') {
         if (self) { await CC.popup(CC.t('p5_h'), CC.t('p5')); if (!ok()) return; }
         L.task(CC.t('t_work')); resultGuide(T.workHref, 'work');
@@ -5035,7 +5035,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
       } else if (phase === 'work2') {
         reveal(T.work.host);
         L.task(CC.t('t_work2'));
-        if (done('q4')) return finish();
+        if (!(await CC.stepWait(g))) return;                                   /* no question here: he notices the work email, then «متابعة» */
+        if (phaseIs('work2')) return to('news');
       } else if (phase === 'news') {
         L.task(CC.t('t_news')); resultGuide(T.newsHref, 'news');
         if (P.host() === T.news.host) return to('news2');
@@ -5043,8 +5044,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
         reveal(T.news.host);
         if (self) { await CC.popup(CC.t('p6_h'), CC.t('p6')); if (!ok()) return; }
         L.task(CC.t('t_news2'));
-        if (!(await CC.stepWait(g))) return;                                   /* no question here: the interview confirms the city, then «متابعة» */
-        if (phaseIs('news2')) return to('work');
+        if (done('q4')) return finish();
       }
     }
     /* one move at a time; an event that arrives while the lab is busy (a page opened during a popup, two answers in a row) waits its turn instead of being lost */
@@ -5072,8 +5072,8 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     CC.Q.onCorrect = function () {
       run(async function () {
         if (phaseIs('name') && done('q1')) await to('osint');
-        else if (phaseIs('social2') && done('q2', 'q3')) await to('news');
-        else if (phaseIs('work2') && done('q4')) await finish();
+        else if (phaseIs('social2') && done('q2', 'q3')) await to('work');
+        else if (phaseIs('news2') && done('q4')) await finish();
       });
     };
     CC.Q.onAll = function () { CC.Q.onCorrect(); };
@@ -5123,7 +5123,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social2","t_news","t_news2","t_work","t_work2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
+window.CC_MISSION = {"stages":[{"label":"تحديد الهدف","keys":["t_team","t_name","t_osint"]},{"label":"البحث عن الهدف","keys":["t_engine","t_search","t_results"]},{"label":"جمع المعلومات","keys":["t_social2","t_work","t_work2","t_news","t_news2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[]};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
