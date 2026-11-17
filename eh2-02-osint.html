@@ -3471,21 +3471,42 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
        P.ring('.mem.tgt') / P.ring(null). It sits on the element itself, so the student sees it when he scrolls to it, and it comes back after the page reloads. */
     var ringSel = null;
     P.ring = function (sel) { ringSel = sel || null; applyLinkGlow(); };
-    /* a faint typing hint inside a box of the page (Moaz 2026-11-17, EH2 lab 2: the target's name in the search box), like the address bar's and the terminal's hint:
-       P.typeHint('#q', 'سعيد صالح التميمي') types the text letter by letter as the box's placeholder, on a loop, while the box is empty; P.typeHint(null) stops it and puts
-       the box's own placeholder back. It never fills the box and never searches: the student types it. P.pageFocused(selector) tells whether that box has the focus. */
+    /* a faint typing hint inside a box of the page (Moaz 2026-11-17, EH2 lab 2: the target's name in the search box), drawn exactly like the terminal's command hint
+       (hacker-laptop.js L.ghost): the text types itself letter by letter (85 ms a letter, a short pause, then again) in a faint colour over the empty box, and the
+       letters the student types replace it in place (the rest of the hint goes on after them while they match). It never fills the box and never searches.
+       P.typeHint('#q', 'سعيد صالح التميمي') / P.typeHint(null). P.pageFocused(selector) tells whether that box has the focus. */
     var thSel = null, thText = '', thN = 0, thPause = 0, thEl = null;
-    function thRestore() { if (thEl && thEl.isConnected && thEl.dataset.ccPh != null) thEl.placeholder = thEl.dataset.ccPh; thEl = null; }
+    function thClear() {
+      var d = f.contentDocument, g = d && d.getElementById('cc-th'); if (g) g.remove();
+      if (thEl && thEl.dataset.ccPh != null) { thEl.placeholder = thEl.dataset.ccPh; delete thEl.dataset.ccPh; }
+      thEl = null;
+    }
+    function thDraw() {
+      var d = f.contentDocument, inp = d && thSel && d.querySelector(thSel);
+      if (!inp) return;
+      if (inp !== thEl) { thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; inp.placeholder = ''; }   /* the box's own placeholder steps aside while the hint types */
+      var g = d.getElementById('cc-th');
+      if (!g) { g = d.createElement('span'); g.id = 'cc-th'; g.setAttribute('aria-hidden', 'true'); d.body.appendChild(g); }
+      var w = d.defaultView, cs = w.getComputedStyle(inp), r = inp.getBoundingClientRect();
+      g.style.cssText = 'position:absolute;pointer-events:none;white-space:pre;overflow:hidden;z-index:50;box-sizing:border-box;color:rgba(95,100,117,.5);' +
+        'left:' + (r.left + w.scrollX) + 'px;top:' + (r.top + w.scrollY) + 'px;width:' + r.width + 'px;height:' + r.height + 'px;line-height:' + r.height + 'px;' +
+        'font:' + cs.font + ';letter-spacing:' + cs.letterSpacing + ';direction:' + cs.direction + ';text-align:' + cs.textAlign + ';' +
+        'padding:0 ' + cs.paddingRight + ' 0 ' + cs.paddingLeft + ';border:' + cs.borderTopWidth + ' solid transparent';
+      var v = inp.value, shown = thText.slice(0, thN);
+      g.textContent = '';
+      if (thText.indexOf(v) !== 0) return;                   /* what he typed is not the hint: the hint steps aside */
+      var hid = d.createElement('span'); hid.style.visibility = 'hidden'; hid.textContent = v;
+      var rest = d.createElement('span'); rest.textContent = shown.length > v.length ? shown.slice(v.length) : '';
+      g.appendChild(hid); g.appendChild(rest);
+    }
     var thTimer = setInterval(function () {
       if (!root.isConnected) { clearInterval(thTimer); return; }
       if (!thSel) return;
-      var d = f.contentDocument, inp = d && d.querySelector(thSel); if (!inp) return;
-      if (inp !== thEl) { thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; thN = 0; thPause = 0; }
-      if (inp.value) { inp.placeholder = inp.dataset.ccPh; return; }
-      if (thN < thText.length) thN++; else if (++thPause > 14) { thN = 0; thPause = 0; }
-      inp.placeholder = thText.slice(0, thN) || ' ';
-    }, 110);
-    P.typeHint = function (sel, text) { thRestore(); thSel = sel || null; thText = text || ''; thN = 0; thPause = 0; };
+      if (thN < thText.length) thN++; else if (++thPause > 16) { thN = 0; thPause = 0; }
+      thDraw();
+    }, 85);
+    f.addEventListener('load', function () { thEl = null; if (thSel) thDraw(); });
+    P.typeHint = function (sel, text) { thClear(); thSel = sel || null; thText = text || ''; thN = 0; thPause = 0; if (thSel) thDraw(); };
     P.pageFocused = function (sel) { var d = f.contentDocument, e = d && d.querySelector(sel); return !!e && d.activeElement === e; };
     P.glowLink = function (path) {
       glowLinkPath = path || null; applyLinkGlow();
