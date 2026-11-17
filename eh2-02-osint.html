@@ -3471,6 +3471,22 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
        P.ring('.mem.tgt') / P.ring(null). It sits on the element itself, so the student sees it when he scrolls to it, and it comes back after the page reloads. */
     var ringSel = null;
     P.ring = function (sel) { ringSel = sel || null; applyLinkGlow(); };
+    /* a faint typing hint inside a box of the page (Moaz 2026-11-17, EH2 lab 2: the target's name in the search box), like the address bar's and the terminal's hint:
+       P.typeHint('#q', 'سعيد صالح التميمي') types the text letter by letter as the box's placeholder, on a loop, while the box is empty; P.typeHint(null) stops it and puts
+       the box's own placeholder back. It never fills the box and never searches: the student types it. P.pageFocused(selector) tells whether that box has the focus. */
+    var thSel = null, thText = '', thN = 0, thPause = 0, thEl = null;
+    function thRestore() { if (thEl && thEl.isConnected && thEl.dataset.ccPh != null) thEl.placeholder = thEl.dataset.ccPh; thEl = null; }
+    var thTimer = setInterval(function () {
+      if (!root.isConnected) { clearInterval(thTimer); return; }
+      if (!thSel) return;
+      var d = f.contentDocument, inp = d && d.querySelector(thSel); if (!inp) return;
+      if (inp !== thEl) { thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; thN = 0; thPause = 0; }
+      if (inp.value) { inp.placeholder = inp.dataset.ccPh; return; }
+      if (thN < thText.length) thN++; else if (++thPause > 14) { thN = 0; thPause = 0; }
+      inp.placeholder = thText.slice(0, thN) || ' ';
+    }, 110);
+    P.typeHint = function (sel, text) { thRestore(); thSel = sel || null; thText = text || ''; thN = 0; thPause = 0; };
+    P.pageFocused = function (sel) { var d = f.contentDocument, e = d && d.querySelector(sel); return !!e && d.activeElement === e; };
     P.glowLink = function (path) {
       glowLinkPath = path || null; applyLinkGlow();
       if (glowLinkPath) { try { f.contentWindow.scrollTo({ top: 0, behavior: 'smooth' }); } catch (e) { } }   /* the menu is at the top: bring it into view, the code pane may have scrolled the page down */
@@ -4546,6 +4562,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.imgs{display:flex;gap:6px;margin-top:10px}.th{display:block;border-radius:10px;overflow:hidden;background:#eee;border:1px solid #eceef3}.imgs .th{width:118px;height:76px}.th svg{width:100%;height:100%}.th svg{object-fit:cover}' +
     '.r.hs>.th{flex:none;width:150px;height:96px;margin-top:34px}.end{color:#9aa0ad;font-size:.85rem;margin-top:10px}' +
     '.none{padding:14px 0}.none p{margin:0 0 8px;font-size:1.02rem}.none ul{color:#4a4f5c;margin:0;padding-inline-start:22px}' +
+    '@media(max-height:560px){.tb{padding:6px 20px}.lg.xl{font-size:3.2rem}.tag{margin:4px 0 16px}.cen{padding-bottom:24px}.fb{padding:8px 20px}}' +
+    '@media(max-height:420px){.tb,.fb{display:none}.hm{min-height:100vh;justify-content:center}.cen{padding:10px 20px}.lg.xl{font-size:2.6rem}}' +   /* the search home always fits the window: nothing to scroll, the scroll pill never covers the box */
     '@media(max-width:760px){.rh{flex-wrap:wrap;gap:10px;padding:12px 16px}.rh .ap{display:none}.tabs{padding-inline:16px;gap:16px;overflow:hidden}.res{margin-inline-start:0;padding-inline:16px}.lg.xl{font-size:3.2rem}.r.hs>.th{display:none}.imgs .th{width:84px;height:56px}}';
   var searchSite = {
     css: S_CSS, notFound: NF,
@@ -4823,7 +4841,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_name: 'مرّر الصفحة للأسفل إلى قسم «**فريقنا**». هذا هو **هدفنا**: «**سعيد صالح التميمي**» وهو **مدير المتجر**. لاحظ **صورته** و**اسمه الكامل**.',
     t_osint: 'سنتعلم الآن إحدى أهم طرق جمع المعلومات وهي **جمع المعلومات من المصادر المفتوحة** (OSINT)، والتي تعني بشكل أبسط **البحث عنه في الإنترنت**.',
     t_engine: 'الآن لنفتح **صفحة جديدة** داخل المتصفح للبحث عن **مدير المتجر** في الإنترنت.',
-    t_search: 'اكتب **الاسم الكامل** للهدف «**سعيد صالح التميمي**» في **مربع البحث**، ثم اضغط «**بحث**».',
+    t_search: 'اكتب **الاسم الكامل** للهدف (**مدير المتجر**) في **صندوق البحث**، ثم اضغط «**بحث**».',
     t_results: 'هذه **نتائج البحث** عن الاسم. انتبه! بعض النتائج عن **أشخاص آخرين** يحملون الاسم نفسه. اقرأ **العنوان** و**الوصف** تحت كل نتيجة، وابحث عن النتائج التي تتحدث عن **مدير متجر كاملكود**.',
     t_social: 'اضغط على نتيجة «**سعيد التميمي | أبو صالح 🦅**» من **منصة التواصل** لتفتح **حسابه في وسائل التواصل الاجتماعي**.',
     t_social2: 'هذا **حسابه في منصة التواصل**. اقرأ **النبذة** تحت اسمه، ثم مرّر للأسفل واقرأ **المنشورات** و**تواريخها** و**التعليقات** عليها، وأجب عن **السؤال 2** في «أسئلة التحدي» على يسار الشاشة.',
@@ -4915,7 +4933,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* ---- one place moves the lab forward ---- */
     async function to(phase) {
       st.phase = phase;
-      CC.guide.hide(); P.glowLink(null); P.urlGhost(null);
+      CC.guide.hide(); P.glowLink(null); P.urlGhost(null); P.typeHint(null);
       if (phase !== 'name') P.ring(null);                                     /* the ring on the manager stays until question 1 (his name) is answered */
       if (phase === 'name') {
         cue = false; CC.comment('');
@@ -4937,7 +4955,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (P.host() === T.search) return to('search');
       } else if (phase === 'search') {
         L.task(CC.t('t_search'));
-        guide(function () { return P.pageEl('#q'); }, function () { return !phaseIs('search'); });
+        /* both modes (Moaz 2026-11-17): the ring and pointer click the search box, then his name types itself faintly in it (a hint: the student types it) */
+        guide(function () { return P.pageEl('#q'); }, function () { return !phaseIs('search') || P.pageFocused('#q'); }, true);
+        P.typeHint('#q', T.name);
         if (onResults()) return to('results');
       } else if (phase === 'results') {
         if (self) { await CC.popup(CC.t('p3_h'), CC.t('p3')); if (!ok()) return; }
