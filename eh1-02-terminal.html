@@ -793,6 +793,12 @@ body:not(.inst) .stage:has(.laptop.off) .br-win{outline:3px solid rgba(252,173,1
 .br-tab.idle{background:transparent;color:#5f6368}
 .br-tab.idle:before,.br-tab.idle:after{background:none}
 .br-tab{cursor:default}
+/* tabs and the «+» new-tab button (Moaz 2026-11-17, a site with newTab): tabs shrink to share the strip; an inactive tab is a link-like grey title */
+.br-strip .br-tab{flex:0 1 15em;width:auto}
+.br-strip .br-tab.idle{cursor:pointer}.br-strip .br-tab.idle:hover{background:rgba(255,255,255,.55)}
+.br-x{cursor:pointer}.br-x:hover{background:rgba(0,0,0,.08)}
+.br-new{flex:none;align-self:center;width:1.9em;height:1.9em;margin:0 0 .15em .2em;border:0;border-radius:50%;background:none;color:#3c4043;display:grid;place-items:center;cursor:pointer;padding:0}
+.br-new:hover{background:rgba(0,0,0,.08)}.br-new svg{width:1.15em;height:1.15em}.br-new[hidden]{display:none}
 .br-src{display:none;flex-direction:column;height:100%;min-width:0;background:#fff;direction:ltr}
 .br-view[data-mode="src"] .br-f{display:none}
 .br-view[data-mode="src"] .br-src{display:flex}
@@ -821,6 +827,17 @@ body:not(.inst) .stage:has(.laptop.off) .br-win{outline:3px solid rgba(252,173,1
 body:not(.inst) .br-code .ln.sel .nt.tip{display:block}
 .br-ctx{position:absolute;z-index:20;min-width:15em;padding:6px 0;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);direction:rtl;font-family:'Tajawal',system-ui,sans-serif;font-size:1.08em}
 .br-ctx[hidden]{display:none}
+/* the ⋮ menu of the browser (Moaz 2026-11-17, every lab): zoom − 100% +, like a real browser */
+.br-bar{position:relative}
+.br-ib.menu{cursor:pointer}.br-ib.menu.on{background:#e8eaed}
+.br-menu{position:absolute;z-index:21;top:calc(100% + 2px);right:.6em;min-width:17em;padding:6px 0;border-radius:8px;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.28),0 0 0 1px rgba(0,0,0,.08);direction:rtl;font-family:'Tajawal',system-ui,sans-serif;font-size:1.02em}
+.br-menu[hidden]{display:none}
+.br-menu .it{padding:.4em 1.4em;color:#202124;cursor:pointer;white-space:nowrap}.br-menu .it:hover:not(.off){background:#e8f0fe}.br-menu .it.off{color:#9aa0a6;cursor:default}
+.br-menu .sep{height:1px;background:#e8eaed;margin:5px 0}
+.br-menu .zm{display:flex;align-items:center;gap:.4em;padding:.25em 1.4em .25em .8em}.br-menu .zl{flex:1;color:#202124}
+.br-menu .zb{width:2em;height:2em;border:1px solid #dadce0;border-radius:6px;background:#fff;color:#202124;font:inherit;font-size:1.1em;line-height:1;cursor:pointer;display:grid;place-items:center;padding:0}
+.br-menu .zb:hover:not(:disabled){background:#f1f3f4}.br-menu .zb:disabled{color:#c4c7c5;cursor:default}
+.br-menu .zv{min-width:3.4em;text-align:center;font-weight:700;color:#202124;direction:ltr}
 .br-ctx .it{padding:.4em 1.4em;color:#202124;cursor:pointer;white-space:nowrap}
 .br-ctx .it:hover:not(.off){background:#e8f0fe}
 .br-ctx .it.off{color:#9aa0a6;cursor:default}
@@ -1884,7 +1901,7 @@ body.side .qpanel .qrow{margin-bottom:13px}
 .cc-step{padding:8px 13px!important;gap:13px!important}
 .cc-ref-b{padding:13px 21px 21px!important}
 .cc-cur{margin:13px 13px 0!important;padding:13px 21px 21px!important}
-.qtxt{margin-bottom:13px!important}
+.qtxt{margin-bottom:13px!important;white-space:pre-line}   /* a line break in a question starts a new line (Moaz 2026-11-17: «الصيغة: DD/MM/YYYY» under the question) */
 .qin{gap:8px!important}
 /* lift the devices (not the stage) so the wire clears the footer; transform doesn't affect layout */
 body.side.cc-has-feed #stage .dev{transform:translateY(-26px)}
@@ -3478,8 +3495,9 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       var pb = el('div', 'q-plan'), ph = el('div', 'pl-h'), pth = CC.t('pl_title'); ph.textContent = pth === 'pl_title' ? '' : pth;
       pb.appendChild(ph); pb.appendChild(plan.steps); box.appendChild(pb);
     }
-    var wait = CC.t('q_wait');                         /* a lab whose questions all start hidden may give q_wait: a note shown until the first question appears */
-    if (wait !== 'q_wait') { var qe = el('div', 'q-empty'); qe.textContent = wait; box.appendChild(qe); }
+    /* while every question is still hidden, one generic note for every lab (Moaz 2026-11-17); it goes as soon as a question appears (styles.css .q-empty) */
+    var wait = CC.t('q_wait'); if (wait === 'q_wait') wait = 'تابع الخطوات الموجودة على يمين الشاشة، وستظهر الأسئلة هنا بناءً على الخطوات.';
+    var qe = el('div', 'q-empty'); qe.textContent = wait; box.appendChild(qe);
     /* the short explanation lives in the same panel (a copy of the reference text), hidden until its tab is chosen */
     var ref = el('div', 'q-ref'), src = $('#drawer .dr-b');
     if (src) ref.appendChild(src.cloneNode(true));
@@ -3751,7 +3769,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     /* one round: appear and glide in (0 to 1.3s), press (1.3 to 1.6s), stay (to 2.4s), fade (to 2.9s), rest (to 3.4s) */
     var rt = !!fnv(gCfg.right);
     if (rt !== gEls.right) { gEls.right = rt; gEls.ptr.innerHTML = rt ? MOUSE : CURSOR; gT0 = now; }   /* a new kind of click: the animation starts again from the beginning */
-    var t = (now - gT0) % 3400, cx = r.left + Math.min(r.width / 2, 90), cy = r.top + r.height / 2;
+    var t = (now - gT0) % 3400, cx = r.left + (gCfg.center ? r.width / 2 : Math.min(r.width / 2, 90)), cy = r.top + r.height / 2;
     var gl = ease(t / 1300), ox = (1 - gl) * 90, oy = (1 - gl) * 110;
     var press = t > 1300 && t < 1650 ? 1 - Math.abs((t - 1475) / 175) : 0;
     var op = t < 250 ? t / 250 : t < 2400 ? 1 : t < 2900 ? 1 - (t - 2400) / 500 : 0;
@@ -3771,7 +3789,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       if (document.body.classList.contains('inst') && !o.force) return;      /* instructor-led mode shows no guide, unless the lab forces one (use it very rarely) */
       gMake();
       if (document.body.classList.contains('inst')) o.dim = false;      /* instructor-led never dims or blurs the screen, even for a forced guide (Moaz 2026-11-13) */
-      gCfg = { get: get, dim: o.dim, pointer: o.pointer !== false, until: o.until || null, force: !!o.force, right: o.right, label: o.label };   /* dim, right and label stay as given: a value or a function */
+      gCfg = { get: get, dim: o.dim, pointer: o.pointer !== false, until: o.until || null, force: !!o.force, right: o.right, label: o.label, center: !!o.center };   /* dim, right and label stay as given: a value or a function */
       gGen = CC.gen; gT0 = 0;
       if (!G.on) { G.on = true; gRaf = requestAnimationFrame(gFrame); }
     },

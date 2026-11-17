@@ -3817,8 +3817,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var pb = el('div', 'q-plan'), ph = el('div', 'pl-h'), pth = CC.t('pl_title'); ph.textContent = pth === 'pl_title' ? '' : pth;
       pb.appendChild(ph); pb.appendChild(plan.steps); box.appendChild(pb);
     }
-    var wait = CC.t('q_wait');                         /* a lab whose questions all start hidden may give q_wait: a note shown until the first question appears */
-    if (wait !== 'q_wait') { var qe = el('div', 'q-empty'); qe.textContent = wait; box.appendChild(qe); }
+    /* while every question is still hidden, one generic note for every lab (Moaz 2026-11-17); it goes as soon as a question appears (styles.css .q-empty) */
+    var wait = CC.t('q_wait'); if (wait === 'q_wait') wait = 'تابع الخطوات الموجودة على يمين الشاشة، وستظهر الأسئلة هنا بناءً على الخطوات.';
+    var qe = el('div', 'q-empty'); qe.textContent = wait; box.appendChild(qe);
     /* the short explanation lives in the same panel (a copy of the reference text), hidden until its tab is chosen */
     var ref = el('div', 'q-ref'), src = $('#drawer .dr-b');
     if (src) ref.appendChild(src.cloneNode(true));
@@ -4886,7 +4887,6 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابة قبل التحقق',
-    q_wait: 'ستظهر الأسئلة هنا عندما تفتح مصادر المعلومات عن الهدف.',
     q1: 'ما اسم مدير المتجر؟',
     q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب لمدير المتجر.',
     q2: 'ما تاريخ ميلاد سعيد؟' + String.fromCharCode(10) + 'الصيغة: DD/MM/YYYY',

@@ -3326,7 +3326,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var h = analyse(page).html, assets = S.assets || {}, z = zoomOf();
       h = h.replace(/<link\b[^>]*\brel="stylesheet"[^>]*\bhref="([^"]+)"[^>]*>/g, function (m, fl) {
         return '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + z + '}' + ((S.files && S.files[fl]) || S.css || '') + '.cc-hl{outline:4px solid #FCAD0F!important;outline-offset:3px;border-radius:4px;background-color:rgba(252,173,15,.16)!important}' +
-          '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;inset-inline-start:-4px;background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}.cc-glow{outline:2px solid rgba(252,173,15,.6)!important;outline-offset:3px;border-radius:99px;box-shadow:0 0 12px 3px rgba(252,173,15,.7)!important;animation:ccg 1.1s ease-in-out infinite}@keyframes ccg{50%{outline-color:#FCAD0F;outline-offset:4px;box-shadow:0 0 22px 8px rgba(252,173,15,.95)}}</style>';
+          '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;left:50%;transform:translateX(-50%);background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}.cc-glow{outline:2px solid rgba(252,173,15,.6)!important;outline-offset:3px;border-radius:99px;box-shadow:0 0 12px 3px rgba(252,173,15,.7)!important;animation:ccg 1.1s ease-in-out infinite}@keyframes ccg{50%{outline-color:#FCAD0F;outline-offset:4px;box-shadow:0 0 22px 8px rgba(252,173,15,.95)}}</style>';
       });
       h = h.replace(/(<img\b[^>]*?\ssrc=")([^"]+)(")/g, function (m, a, n, b) { return a + (assets[n] || n) + b; });
       return h.replace(/<\/body>/i, TAIL + '</body>');
@@ -3335,7 +3335,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (page.src) return srcDoc(page);
       var body = String(typeof page.html === 'function' ? page.html(P.state, entry) : page.html).replace('{{error}}', entry.error ? (S.error || '') : '');
       return '<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>' + esc(typeof page.title === 'function' ? page.title(P.state, entry) : page.title) + '</title>' +
-        '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;inset-inline-start:-4px;background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}</style></head><body>' + body + TAIL + '</body></html>';
+        '<style>' + fontCss() + 'html{overflow-y:auto}::-webkit-scrollbar{width:20px;height:20px}::-webkit-scrollbar-track{background:#f1f3f4}::-webkit-scrollbar-thumb{background:#b5bcc6;border-radius:10px;border:4px solid #f1f3f4}::-webkit-scrollbar-thumb:hover{background:#8f98a5}html{zoom:' + zoomOf() + '}' + S.css + '.cc-mark{position:relative;outline:3px solid #DC2626!important;outline-offset:8px;border-radius:6px;margin-top:2.6em!important}.cc-mark::after{content:attr(data-cc-label);position:absolute;z-index:9;top:-2.1em;left:50%;transform:translateX(-50%);background:#DC2626;color:#fff;font:700 .85rem/1.5 "Montserrat Arabic",Tajawal,system-ui,sans-serif;padding:3px 12px;border-radius:8px;white-space:nowrap;box-shadow:0 4px 12px -4px rgba(185,28,28,.6)}.cc-ring{outline:3px solid #FCAD0F!important;outline-offset:6px;box-shadow:0 0 0 10px rgba(252,173,15,.18),0 0 26px 6px rgba(252,173,15,.55)!important;animation:ccring 1.4s ease-in-out infinite}@keyframes ccring{50%{outline-offset:10px;box-shadow:0 0 0 14px rgba(252,173,15,.1),0 0 34px 10px rgba(252,173,15,.8)}}@media (prefers-reduced-motion:reduce){.cc-ring{animation:none}}</style></head><body>' + body + TAIL + '</body></html>';
     }
 
     function render(entry, quick) {
@@ -3784,25 +3784,33 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function thClear() {
       var d = f.contentDocument, g = d && d.getElementById('cc-th'); if (g) g.remove();
       if (thEl && thEl.dataset.ccPh != null) { thEl.placeholder = thEl.dataset.ccPh; delete thEl.dataset.ccPh; }
-      thEl = null;
+      thShow(thEl, true); thEl = null;
+    }
+    /* the box's own letters hide while the hint draws them (the caret stays): Arabic letters join, so a typed «س» drawn apart from the hint's «عيد» is wider than
+       the same «س» inside the joined word and the hint would slide over it (Moaz 2026-11-17). The hint draws the whole word as one run: typed letters dark, the rest faint. */
+    function thShow(inp, on) {
+      if (!inp) return;
+      if (on) { if (inp.dataset.ccCol != null) { inp.style.color = inp.dataset.ccCol; inp.style.caretColor = ''; delete inp.dataset.ccCol; } return; }
+      if (inp.dataset.ccCol == null) { var c = inp.ownerDocument.defaultView.getComputedStyle(inp).color; inp.dataset.ccCol = inp.style.color || ''; inp.style.caretColor = c; inp.style.color = 'transparent'; inp.dataset.ccInk = c; }
     }
     function thDraw() {
       var d = f.contentDocument, inp = d && thSel && d.querySelector(thSel);
       if (!inp) return;
-      if (inp !== thEl) { thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; inp.placeholder = ''; }   /* the box's own placeholder steps aside while the hint types */
+      if (inp !== thEl) { thShow(thEl, true); thEl = inp; if (inp.dataset.ccPh == null) inp.dataset.ccPh = inp.placeholder || ''; inp.placeholder = ''; }   /* the box's own placeholder steps aside while the hint types */
       var g = d.getElementById('cc-th');
       if (!g) { g = d.createElement('span'); g.id = 'cc-th'; g.setAttribute('aria-hidden', 'true'); d.body.appendChild(g); }
       var w = d.defaultView, cs = w.getComputedStyle(inp), r = inp.getBoundingClientRect();
       g.style.cssText = 'position:absolute;pointer-events:none;white-space:pre;overflow:hidden;z-index:50;box-sizing:border-box;color:rgba(95,100,117,.5);' +
-        'left:' + (r.left + w.scrollX) + 'px;top:' + (r.top + w.scrollY) + 'px;width:' + r.width + 'px;height:' + r.height + 'px;line-height:' + r.height + 'px;' +
-        'font:' + cs.font + ';letter-spacing:' + cs.letterSpacing + ';direction:' + cs.direction + ';text-align:' + cs.textAlign + ';' +
+        'left:' + (r.left + w.scrollX) + 'px;top:' + (r.top + w.scrollY) + 'px;width:' + r.width + 'px;height:' + r.height + 'px;' +
+        'font:' + cs.font + ';line-height:' + r.height + 'px;letter-spacing:' + cs.letterSpacing + ';direction:' + cs.direction + ';text-align:' + cs.textAlign + ';' +
         'padding:0 ' + cs.paddingRight + ' 0 ' + cs.paddingLeft + ';border:' + cs.borderTopWidth + ' solid transparent';
-      var v = inp.value, shown = thText.slice(0, thN);
+      var v = inp.value, shown = v ? thText : thText.slice(0, thN);   /* once he types, the rest of the name stays still after his letters (it no longer types itself) */
       g.textContent = '';
-      if (thText.indexOf(v) !== 0) return;                   /* what he typed is not the hint: the hint steps aside */
-      var hid = d.createElement('span'); hid.style.visibility = 'hidden'; hid.textContent = v;
+      if (thText.indexOf(v) !== 0) { thShow(inp, true); return; }   /* what he typed is not the hint: the hint steps aside and his letters show as they are */
+      if (!v) thShow(inp, true);
+      else { thShow(inp, false); var typed = d.createElement('span'); typed.style.color = inp.dataset.ccInk; typed.textContent = v; g.appendChild(typed); }
       var rest = d.createElement('span'); rest.textContent = shown.length > v.length ? shown.slice(v.length) : '';
-      g.appendChild(hid); g.appendChild(rest);
+      g.appendChild(rest);
     }
     var thTimer = setInterval(function () {
       if (!root.isConnected) { clearInterval(thTimer); return; }
@@ -4421,8 +4429,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var pb = el('div', 'q-plan'), ph = el('div', 'pl-h'), pth = CC.t('pl_title'); ph.textContent = pth === 'pl_title' ? '' : pth;
       pb.appendChild(ph); pb.appendChild(plan.steps); box.appendChild(pb);
     }
-    var wait = CC.t('q_wait');                         /* a lab whose questions all start hidden may give q_wait: a note shown until the first question appears */
-    if (wait !== 'q_wait') { var qe = el('div', 'q-empty'); qe.textContent = wait; box.appendChild(qe); }
+    /* while every question is still hidden, one generic note for every lab (Moaz 2026-11-17); it goes as soon as a question appears (styles.css .q-empty) */
+    var wait = CC.t('q_wait'); if (wait === 'q_wait') wait = 'تابع الخطوات الموجودة على يمين الشاشة، وستظهر الأسئلة هنا بناءً على الخطوات.';
+    var qe = el('div', 'q-empty'); qe.textContent = wait; box.appendChild(qe);
     /* the short explanation lives in the same panel (a copy of the reference text), hidden until its tab is chosen */
     var ref = el('div', 'q-ref'), src = $('#drawer .dr-b');
     if (src) ref.appendChild(src.cloneNode(true));
@@ -4694,7 +4703,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* one round: appear and glide in (0 to 1.3s), press (1.3 to 1.6s), stay (to 2.4s), fade (to 2.9s), rest (to 3.4s) */
     var rt = !!fnv(gCfg.right);
     if (rt !== gEls.right) { gEls.right = rt; gEls.ptr.innerHTML = rt ? MOUSE : CURSOR; gT0 = now; }   /* a new kind of click: the animation starts again from the beginning */
-    var t = (now - gT0) % 3400, cx = r.left + Math.min(r.width / 2, 90), cy = r.top + r.height / 2;
+    var t = (now - gT0) % 3400, cx = r.left + (gCfg.center ? r.width / 2 : Math.min(r.width / 2, 90)), cy = r.top + r.height / 2;
     var gl = ease(t / 1300), ox = (1 - gl) * 90, oy = (1 - gl) * 110;
     var press = t > 1300 && t < 1650 ? 1 - Math.abs((t - 1475) / 175) : 0;
     var op = t < 250 ? t / 250 : t < 2400 ? 1 : t < 2900 ? 1 - (t - 2400) / 500 : 0;
@@ -4714,7 +4723,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (document.body.classList.contains('inst') && !o.force) return;      /* instructor-led mode shows no guide, unless the lab forces one (use it very rarely) */
       gMake();
       if (document.body.classList.contains('inst')) o.dim = false;      /* instructor-led never dims or blurs the screen, even for a forced guide (Moaz 2026-11-13) */
-      gCfg = { get: get, dim: o.dim, pointer: o.pointer !== false, until: o.until || null, force: !!o.force, right: o.right, label: o.label };   /* dim, right and label stay as given: a value or a function */
+      gCfg = { get: get, dim: o.dim, pointer: o.pointer !== false, until: o.until || null, force: !!o.force, right: o.right, label: o.label, center: !!o.center };   /* dim, right and label stay as given: a value or a function */
       gGen = CC.gen; gT0 = 0;
       if (!G.on) { G.on = true; gRaf = requestAnimationFrame(gFrame); }
     },
