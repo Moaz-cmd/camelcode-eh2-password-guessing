@@ -4082,7 +4082,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* one round: appear and glide in (0 to 1.3s), press (1.3 to 1.6s), stay (to 2.4s), fade (to 2.9s), rest (to 3.4s) */
     var rt = !!fnv(gCfg.right);
     if (rt !== gEls.right) { gEls.right = rt; gEls.ptr.innerHTML = rt ? MOUSE : CURSOR; gT0 = now; }   /* a new kind of click: the animation starts again from the beginning */
-    var t = (now - gT0) % 3400, cx = r.left + Math.min(r.width / 2, 90), cy = r.top + r.height / 2;
+    var t = (now - gT0) % 3400, cx = r.left + (gCfg.center ? r.width / 2 : Math.min(r.width / 2, 90)), cy = r.top + r.height / 2;
     var gl = ease(t / 1300), ox = (1 - gl) * 90, oy = (1 - gl) * 110;
     var press = t > 1300 && t < 1650 ? 1 - Math.abs((t - 1475) / 175) : 0;
     var op = t < 250 ? t / 250 : t < 2400 ? 1 : t < 2900 ? 1 - (t - 2400) / 500 : 0;
@@ -4102,7 +4102,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (document.body.classList.contains('inst') && !o.force) return;      /* instructor-led mode shows no guide, unless the lab forces one (use it very rarely) */
       gMake();
       if (document.body.classList.contains('inst')) o.dim = false;      /* instructor-led never dims or blurs the screen, even for a forced guide (Moaz 2026-11-13) */
-      gCfg = { get: get, dim: o.dim, pointer: o.pointer !== false, until: o.until || null, force: !!o.force, right: o.right, label: o.label };   /* dim, right and label stay as given: a value or a function */
+      gCfg = { get: get, dim: o.dim, pointer: o.pointer !== false, until: o.until || null, force: !!o.force, right: o.right, label: o.label, center: !!o.center };   /* dim, right and label stay as given: a value or a function */
       gGen = CC.gen; gT0 = 0;
       if (!G.on) { G.on = true; gRaf = requestAnimationFrame(gFrame); }
     },
@@ -4594,7 +4594,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     '.sf{display:flex;align-items:center;width:100%;max-width:600px;border:1px solid #dcdfe6;border-radius:99px;background:#fff;padding:5px 6px 5px 5px;box-shadow:0 2px 8px -2px rgba(31,36,48,.12);transition:box-shadow .2s}' +
     '.sf:focus-within{box-shadow:0 4px 18px -4px rgba(55,48,163,.35);border-color:#c7cbe8}.sf .sic{color:#8a8fa0;padding:0 14px 0 6px}.sf .sic .i{width:1.25em;height:1.25em}' +
     '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:9px 4px;color:#1f2430}.sf input::placeholder{color:#9aa0ad}' +
-    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:640px;padding:7px 8px 7px 7px}.sf.big input{font-size:1.12rem}' +
+    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:470px;padding:7px 8px 7px 7px}.sf.big input{font-size:1.12rem}' +
     '.rh{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
     '.tabs{display:flex;gap:26px;padding:0 28px;padding-inline-start:146px;border-bottom:1px solid #eceef3;color:#5f6475;font-size:.9rem}.tabs span{display:flex;align-items:center;gap:6px;padding:9px 2px}.tabs .i{width:1em;height:1em}.tabs .on{color:#3730a3;border-bottom:3px solid #3730a3;font-weight:700}' +
     '.res{max-width:720px;padding:10px 28px 40px;margin-inline-start:118px}.cnt{color:#717684;font-size:.85rem;margin:8px 0 18px}' +
@@ -4950,7 +4950,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
     P.setSite(CC.site);
 
     var backBtn = function () { var b = document.querySelector('#br .br-ib.back'); return b && !b.disabled ? b : null; };
-    function guide(get, until, force) { if (self || force) CC.guide.show(get, { force: !!force, until: until }); }
+    function guide(get, until, force, center) { if (self || force) CC.guide.show(get, { force: !!force, until: until, center: !!center }); }
     var phaseIs = function (p) { return st.phase === p; };
     var onResults = function () { return P.host() === T.search && P.state.hit && curPath === '/search'; };
     var curPath = '/home';
@@ -5001,7 +5001,7 @@ window.CC.osintPhotos = {"cake":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQAB
       } else if (phase === 'search') {
         L.task(CC.t('t_search'));
         /* both modes (Moaz 2026-11-17): the ring and pointer click the search box, then his name types itself faintly in it (a hint: the student types it) */
-        guide(function () { return P.pageEl('.sf'); }, function () { return !phaseIs('search') || P.pageFocused('#q'); }, true);   /* the ring goes around the whole search box (icon, field and «بحث»), Moaz 2026-11-17 */
+        guide(function () { return P.pageEl('.sf'); }, function () { return !phaseIs('search') || P.pageFocused('#q'); }, true, true);   /* the ring goes around the whole search box (icon, field and «بحث»), Moaz 2026-11-17 */
         P.typeHint('#q', T.name);
         if (onResults()) return to('results');
       } else if (phase === 'results') {
