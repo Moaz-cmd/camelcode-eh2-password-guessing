@@ -4132,7 +4132,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     name: 'متجر كاملكود للألعاب',
     host: 'camelcode.shop',
     owner: 'سالم خالد', manager: 'صالح سعيد التميمي', managerFirst: 'صالح', support: 'يوسف محمد', sales: 'ماجد سعيد', newStaff: 'حمد علي',   /* pending */
-    email: 'info@camelcode.shop', phone: '+974 5550 1234', address: 'شارع الألعاب، الدوحة'                                              /* pending */
+    email: 'info@camelcode.shop', managerEmail: 'saleh.altamimi@camelcode.shop', phone: '+974 5550 1234', address: 'شارع الألعاب، الدوحة'   /* pending */
   };
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 
@@ -4315,13 +4315,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function grid(list) { return '<div class="grid">' + list.map(card).join('') + '</div>'; }
 
   /* ---------- page parts ---------- */
-  var NAV = [['/home', 'الرئيسية'], ['/products', 'المنتجات'], ['/about', 'من نحن'], ['/contact', 'تواصل']];   /* lab 2 menu without «موظفين»: in this lab /employees is a hidden page */
+  var NAV = [['/home', 'الرئيسية'], ['/products', 'المنتجات'], ['/about', 'من نحن'], ['/contact', 'تواصل'], ['/login', 'تسجيل الدخول']];   /* a public login page (Moaz 2026-11-18); OSINT never logs in (every submit fails), the password generator lab uses it */
   function head(active) {
     return '<header class="hd"><div class="w"><a class="logo" href="/home">' + logoImg + '</a><nav>' +
       NAV.map(function (n) { return '<a href="' + n[0] + '"' + (n[0] === active ? ' class="on"' : '') + '>' + n[1] + '</a>'; }).join('') + '</nav></div></header>';
   }
   var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><p>أجهزة وألعاب وملحقات لكل لاعب، مع خدمة مميزة وأسعار ممتازة.</p></div>' +
-    '<div><h4>الصفحات</h4><a href="/home">الرئيسية</a><a href="/products">المنتجات</a><a href="/about">من نحن</a><a href="/contact">تواصل</a></div>' +
+    '<div><h4>الصفحات</h4><a href="/home">الرئيسية</a><a href="/products">المنتجات</a><a href="/about">من نحن</a><a href="/contact">تواصل</a><a href="/login">تسجيل الدخول</a></div>' +
     '<div><h4>معلومات المتجر</h4><span>' + I.pin + ' ' + SHOP.address + '</span><span>' + I.clock + ' يومياً من 10 صباحاً إلى 10 مساءً</span><span>' + I.card + ' الدفع ببطاقة أو عند الاستلام</span></div></div>' +
     '<div class="w sub"><span>© ' + SHOP.name + '. جميع الحقوق محفوظة.</span></div></footer>';
   function page(active, body) { return head(active) + '<main>' + body + '</main>' + FOOT; }
@@ -4409,6 +4409,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '<div class="info"><div>' + I.mail + '<span><b>البريد الإلكتروني</b><bdi dir="ltr">' + SHOP.email + '</bdi></span></div><div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + SHOP.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + SHOP.address + '</span></div><div>' + I.clock + '<span><b>ساعات العمل</b>التفاصيل أدناه</span></div></div>' +
     '<div class="two ct"><div class="pnl"><h3>أوقات العمل</h3><table class="hrs"><tr><td>من السبت إلى الخميس</td><td>من 10 صباحاً إلى 10 مساءً</td></tr><tr><td>الجمعة</td><td>من 2 ظهراً إلى 10 مساءً</td></tr></table></div>' +
     '<div class="pnl"><h3>كيف تصل إلينا</h3><p>المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة، ويمكنك الدخول من الباب الرئيسي ذي المظلة المخططة.</p></div></div></section>') };
+  /* /login: a public account-login page (Moaz 2026-11-18). A real form, never dead: it answers every attempt. In this OSINT lab there is no
+     valid login (reconnaissance only), so every submit returns «wrong credentials»; the password generator lab reuses this page where the
+     manager's account really logs in (SHOP.managerEmail + the found password). The email the student typed stays in the field after a failed try. */
+  function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+  function loginFormHtml(email) {
+    return '<section class="sec"><div class="box"><h1>تسجيل الدخول</h1><p class="s">سجّل الدخول إلى حسابك في ' + SHOP.name + '.</p>' +
+      '<form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="username" autocomplete="off" value="' + escAttr(email || '') + '" required>' +
+      '<label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required>' +
+      '<button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div></section>';
+  }
+  pages['/login'] = { title: 'تسجيل الدخول | ' + SHOP.name, html: page('/login', loginFormHtml('')) };
+
   /* an address that does not exist */
   var NOT_FOUND = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0;font-size:34px;font-weight:700">الصفحة غير موجودة</h1></div>';   /* a plain white page like a normal browser, the text in the middle (Moaz 2026-11-13) */   /* a plain white page, like a normal browser: no menu, no button */
 
@@ -4419,7 +4431,15 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     newTab: { host: 'search.example', path: '/' },   /* the «+» button opens a new tab on the search engine, like a real browser's new tab (Moaz 2026-11-17) */
     host: SHOP.host, start: '/home', css: CSS, pages: pages,
     notFound: NOT_FOUND, notFoundTitle: 'الصفحة غير موجودة | ' + SHOP.name,
-    redirects: { '/': '/home' }
+    redirects: { '/': '/home' },
+    error: '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>',
+    /* OSINT is reconnaissance only: the login page is real and public, but no account logs in here, so every attempt fails (never a dead form) */
+    post: function (path, data) {
+      if (path !== '/login') return null;
+      var raw = (data.username || '').trim();
+      pages['/login'] = { title: 'تسجيل الدخول | ' + SHOP.name, html: page('/login', loginFormHtml(raw)) };
+      return { page: '/login', error: true };
+    }
   };
   /* the manager's face (same drawing on every site, so the student can match the person) and the icons, for sites.js */
   CC.shopKit = { avatar: avatar, I: I, face: function () { return avatar('#1f1530', '#14b8a6', '#c58c63'); } };
@@ -4437,7 +4457,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
    - four results that are NOT about him (Moaz 2026-11-17): a dentist and a young footballer with the same name, a page about the meaning of the name «صالح»,
      and a car forum question by another «صالح التميمي» from another city. Each opens a real one-page site.
    Moaz 2026-11-17: «make the websites realistic and well designed»: each site has its own look (header, layout, sidebar, details), drawn with CSS and SVG only.
-   The profile has two posts only (Moaz 2026-11-17): his falcon «براق» and a sunset in Florence, Italy (CC0 photos, no person); the banner is a cup of tea in the
+   The profile has two posts only (Moaz 2026-11-17): his falcon «سهم» and a sunset in Florence, Italy (CC0 photos, no person); the banner is a cup of tea in the
    desert. The birthday and the hometown are in the bio (the hometown also in the interview), his son's name is in «أبو سعيد». Everything is invented (pending), male names only, fixed dates (nothing changes by day), no input field
    except the working search box, no http or https anywhere (links are written //host/path). */
 (function () {
@@ -4447,8 +4467,8 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   /* ---------- the target: every value the questions and the lab's text depend on (single source, pending) ---------- */
   var T = CC.osint = {
     name: 'صالح سعيد التميمي', short: 'صالح التميمي', first: 'صالح',
-    user: 'saleh_altamimi87', falcon: 'براق', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
-    email: 'saleh.altamimi@camelcode.shop', firstFalcon: 'براق', town: 'الوكرة', sons: ['سعيد'],
+    user: 'saleh_altamimi87', falcon: 'سهم', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
+    email: 'saleh.altamimi@camelcode.shop', firstFalcon: 'سهم', town: 'الوكرة', sons: ['سعيد'],
     search: 'search.example',
     social: { host: 'social.example', path: '/saleh_altamimi87' },
     work: { host: 'jobs.example', path: '/profile/saleh-altamimi' },
@@ -4662,7 +4682,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '<path d="M552 100c-6-8 6-12 0-22M568 100c-6-8 6-12 0-22" fill="none" stroke="#fff" stroke-opacity=".75" stroke-width="2.5" stroke-linecap="round"/></svg>';
   COVER = photo('desert', COVER);                                           /* Moaz 2026-11-17: desert dunes at sunset (CC0, no person); the drawing is the fallback */
   var HL = [
-    ['براق', PH.falcon ? photo('falcon') : '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f3a35b"/><path d="M14 30c4-14 10-20 16-18-2 6-6 12-12 18z" fill="#6b4423"/><circle cx="26" cy="14" r="4" fill="#6b4423"/><path d="M29 15l4 1-3 2z" fill="#f3b33d"/></svg>'],
+    ['سهم', PH.falcon ? photo('falcon') : '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f3a35b"/><path d="M14 30c4-14 10-20 16-18-2 6-6 12-12 18z" fill="#6b4423"/><circle cx="26" cy="14" r="4" fill="#6b4423"/><path d="M29 15l4 1-3 2z" fill="#f3b33d"/></svg>'],
     ['المتجر', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#1B2F52"/><rect x="8" y="12" width="24" height="18" rx="2" fill="#22385E"/><rect x="10" y="15" width="5" height="7" fill="#FCAD0F"/><rect x="17" y="16" width="5" height="6" fill="#ef4444"/><rect x="24" y="15" width="5" height="7" fill="#14b8a6"/></svg>'],
     ['العنابي', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#8A1538"/><circle cx="20" cy="20" r="9" fill="#fff"/><path d="M20 14l4 3-1.5 4.5h-5L16 17z" fill="#8A1538"/></svg>'],
     ['البر', '<svg viewBox="0 0 40 40"><rect width="40" height="40" fill="#f7c873"/><path d="M0 30c10-6 20-6 40-2v12H0z" fill="#c9843f"/><path d="M12 30l6-12 6 12z" fill="#7a4b2a"/></svg>']
@@ -4675,7 +4695,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '<div class="stats"><span><b>2</b> منشور</span><span><b>1,248</b> متابعاً</span><span><b>312</b> يتابع</span></div>' +
     '<div class="hls">' + HL.map(function (h) { return '<span class="hlc"><span class="hli">' + h[1] + '</span><small>' + h[0] + '</small></span>'; }).join('') + '</div>' +
     '<nav class="ptabs"><span class="on">' + IC.grid + 'المنشورات</span><span>' + IC.cam + 'الصور</span><span>' + IC.user + 'الإشارات</span></nav></section>' +
-    post('3 نوفمبر 2025', 'براق جاهز لموسم المقناص 🦅 #تربية_الصقور #البر', PIC.falcon, 214, 'fahad_almarri', [comment('fahad_almarri', 'ما شاء الله، براق كبر يا بو سعيد! 👏', '#0891b2', 3), comment(T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍', '#1B2F52', 2)]) +
+    post('3 نوفمبر 2025', 'سهم جاهز لموسم المقناص 🦅 #تربية_الصقور #البر', PIC.falcon, 214, 'fahad_almarri', [comment('fahad_almarri', 'ما شاء الله، سهم كبر يا بو سعيد! 👏', '#0891b2', 3), comment(T.user, 'الله يحفظك يا فهد، صار له ثلاث سنين معي 🤍', '#1B2F52', 2)]) +
     post('12 أغسطس 2024', 'غروب الشمس في فلورنسا… أجمل ختام لرحلة الصيف 🌅 #إيطاليا #سفر', PIC.italy, 276, 'hamad_96', [comment('hamad_96', 'منظر خيالي! استمتع يا بو سعيد 😍', '#be123c', 2)], 'فلورنسا، إيطاليا') +
     '<p class="end">لا توجد منشورات أخرى</p></main>' +
     '<aside class="side"><div class="box"><h3>قد تعرفهم</h3>' +
@@ -4769,7 +4789,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '<h2>البداية في بيت العائلة</h2><p>يقول التميمي وهو يبتسم: «كنت أفكّ أجهزة الراديو في بيتنا بالوكرة وأركّبها من جديد، وأبوي يعصّب علي 😄». ويضيف أن أول جهاز ألعاب اشتراه كان بمصروفه الذي جمعه طوال عام كامل.</p>' +
     '<blockquote class="pq">«أحب أن أرى وجه الطفل حين يلعب لعبة جديدة لأول مرة»</blockquote>' +
     '<h2>من البيع إلى الإدارة</h2><p>بدأ التميمي العمل موظف مبيعات في متجر للإلكترونيات بعد تخرجه من الجامعة، ثم أصبح مشرفاً على المبيعات، قبل أن ينتقل إلى CamelCode مديراً للمتجر.</p>' +
-    '<h2>هواية ورثها عن جده</h2><p>وخارج العمل، تجده في البر مع صقره، فتربية الصقور هواية ورثها عن جده. وكان أول صقر امتلكه هديةً من جده وهو في العاشرة من عمره، وسمّاه «براق»، ومن يومها يسمّي كل صقر عنده «براق». يقول: «الصقر يعلّمك الصبر، والصبر هو سر النجاح في أي عمل».</p>' +
+    '<h2>هواية ورثها عن جده</h2><p>وخارج العمل، تجده في البر مع صقره، فتربية الصقور هواية ورثها عن جده. وكان أول صقر امتلكه هديةً من جده وهو في العاشرة من عمره، وسمّاه «سهم»، ومن يومها يسمّي كل صقر عنده «سهم». يقول: «الصقر يعلّمك الصبر، والصبر هو سر النجاح في أي عمل».</p>' +
     '<h2>بين الوكرة والدوحة</h2><p>ورغم أن عمله في الدوحة، ما زال التميمي يسكن في الوكرة مع عائلته، ويقول: «الوكرة بيتي، وكل صباح أقطع الطريق إلى المتجر وأنا مبسوط».</p>' +
     '<div class="tags"><span>#تكنولوجيا</span><span>#الوكرة</span><span>#قصص_نجاح</span></div></article>' +
     '<aside class="side"><h3>الأكثر قراءة</h3><ol>' +
