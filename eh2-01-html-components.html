@@ -6652,12 +6652,12 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
       var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]]) return;
       if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.innerHTML = IC + '<span>نسخ</span>';
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.innerHTML = IC + '<span>نسخ الأمر</span>';
       b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
       b.addEventListener('click', function (e) {
         e.stopPropagation(); e.preventDefault(); copy(t);
         b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
-        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ</span>'; }, 1500);
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ الأمر</span>'; }, 1500);
         var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
       });
       c.parentNode.insertBefore(b, c.nextSibling);
