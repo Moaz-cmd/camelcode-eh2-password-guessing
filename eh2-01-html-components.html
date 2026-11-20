@@ -3292,6 +3292,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function clearRows() { [].forEach.call(codeEl.querySelectorAll('.ln.hv,.ln.hv2'), function (r) { r.classList.remove('hv', 'hv2'); }); }
     function rowOf(i) { return codeEl.querySelector('.ln[data-i="' + i + '"]'); }
     function inView(r) { var a = r.getBoundingClientRect(), c = codeEl.getBoundingClientRect(); return a.top >= c.top && a.bottom <= c.bottom; }
+    /* Moaz 2026-11-20: the highlighted code (rows a to b) always moves to the middle of the code pane, never stays at its edge.
+       Only the code pane scrolls (not the page). A block taller than the pane starts near its top. */
+    function centerRows(a, b) {
+      if (!a || !codeEl) return; b = b || a;
+      /* the laptop screen is drawn scaled: screen pixels (getBoundingClientRect) are turned into the pane's own pixels (scrollTop) */
+      var c = codeEl.getBoundingClientRect(), k = c.height / (codeEl.offsetHeight || c.height || 1) || 1, ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect();
+      var top = (Math.min(ra.top, rb.top) - c.top) / k, bot = (Math.max(ra.bottom, rb.bottom) - c.top) / k, h = bot - top, ch = codeEl.clientHeight;
+      var to = codeEl.scrollTop + (h > ch * 0.9 ? top - ch * 0.05 : (top + bot) / 2 - ch / 2);
+      to = Math.max(0, Math.min(to, codeEl.scrollHeight - ch));
+      if (Math.abs(to - codeEl.scrollTop) < 4) return;
+      try { codeEl.scrollTo({ top: to, behavior: 'smooth' }); } catch (x) { codeEl.scrollTop = to; }
+    }
     /* code row to page element: the row's first visible element lights up (and scrolls into view) */
     function pageHl(ids, an) {
       clearPage();
@@ -3299,7 +3311,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var vid = ids.filter(function (id) { return an.info[id].vis; })[0], d = f.contentDocument, n = vid && d && d.querySelector('[data-cc="' + vid + '"]');
       if (!n) return;
       n.classList.add('cc-hl'); hlEl = n;
-      try { n.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (x) { }
+      try { n.scrollIntoView({ block: 'center', inline: 'nearest', behavior: 'smooth' }); } catch (x) { }   /* the element moves to the middle of the page (Moaz 2026-11-20) */
     }
     /* page element to code rows: where it opens (strong) and where it closes (light) */
     function showPick(n) {
@@ -3309,8 +3321,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var id = n.getAttribute('data-cc'), inf = an.info[id]; if (!inf) return;
       n.classList.add('cc-hl'); hlEl = n;
       if (P.onPick) P.onPick(e.path + ':' + id);                  /* the student points at an element of the page (a lab may count them) */
-      var r = rowOf(inf.open); if (r) { r.classList.add('hv'); if (!inView(r)) r.scrollIntoView({ block: 'center' }); }
-      if (inf.close !== inf.open) { var r2 = rowOf(inf.close); if (r2) r2.classList.add('hv2'); }
+      var r = rowOf(inf.open), r2 = inf.close !== inf.open ? rowOf(inf.close) : null;
+      if (r) r.classList.add('hv');
+      if (r2) r2.classList.add('hv2');
+      centerRows(r, r2);                                          /* its code moves to the middle of the code pane (Moaz 2026-11-20) */
     }
     /* the code font gets smaller until the page's longest line fits the pane: a line of code is never broken in two and never needs scrolling sideways (Moaz 2026-11-15) */
     function fitCode() {
@@ -3357,7 +3371,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function applyGlow() {
       var hit = null;
       [].forEach.call(codeEl.querySelectorAll('.ln'), function (r) { var on = !!glowId && r.getAttribute('data-m') === glowId; r.classList.toggle('glow', on); if (on) hit = r; });
-      if (hit && !glowStay && !inView(hit)) setTimeout(function () { hit.scrollIntoView({ block: 'center', behavior: 'smooth' }); }, 60);   /* a glowing line outside the visible code is shown */
+      if (hit && !glowStay) setTimeout(function () { centerRows(hit); }, 60);   /* a glowing line moves to the middle of the code pane (Moaz 2026-11-20) */   /* a glowing line outside the visible code is shown */
     }
     f.addEventListener('load', function () {                  /* page element to code row: every element, not only a few */
       applyZoom(); applyLinkGlow();
