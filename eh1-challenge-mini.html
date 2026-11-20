@@ -4301,7 +4301,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     q7: 'ما اسم المتحف المكتوب في الملف Documents/trip/plan.txt؟', q7h: 'اقرأ الملف باستخدام الأمر read، أو ادخل إلى المجلدات واحداً تلو الآخر باستخدام الأمر enter.',
     q8: 'المهمة: أنشئ ملفاً اسمه goals.txt داخل المجلد projects/robot', q8h: 'ادخل إلى المجلد projects ثم robot باستخدام الأمر enter، ثم استخدم الأمر create.',
     /* the «ألعابي» app (all fictional) */
-    ga_title: 'ألعابي', ga_sub: 'سجّل الدخول إلى حسابك', ga_user: 'اسم المستخدم', ga_pass: 'كلمة السر', ga_login: 'تسجيل الدخول',
+    ga_title: 'ألعابي', ga_sub: 'سجّل الدخول إلى حسابك', ga_user: 'اسم المستخدم', ga_pass: 'كلمة السر', ga_show: 'إظهار كلمة السر', ga_hide: 'إخفاء كلمة السر', ga_login: 'تسجيل الدخول',
     ga_bad: 'اسم المستخدم أو كلمة السر غير صحيحة', ga_empty: 'اكتب اسم المستخدم وكلمة السر', ga_hi: 'مرحباً صقر',
     ga_level: 'المستوى', ga_coins: 'عملة ذهبية', ga_team: 'الفريق', ga_teamv: 'صقور الصحراء', ga_last: 'آخر الألعاب',
     ga_g1: 'سباق الجِمال: المركز الأول', ga_g2: 'متاهة الفضاء: المركز الثالث', ga_g3: 'لغز الألوان: مكتمل', ga_out: 'تسجيل الخروج',
@@ -4402,6 +4402,9 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     var css = '.ga{padding:14px 16px;display:flex;flex-direction:column;gap:7px;color:#0E1F39;font-size:13px}' +
       '.ga-logo{text-align:center;font-size:22px;font-weight:800;color:#91278E}.ga-sub{text-align:center;font-weight:700;margin:0 0 6px}' +
       '.ga label{font-size:12px;color:#5A6880}.ga input{border:1.5px solid #c9d2e0;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;outline:none}' +
+      '.ga-pw{position:relative;display:flex}.ga-pw input{flex:1;min-width:0;padding-left:38px}' +
+      '.ga-eye{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#5A6880;display:grid;place-items:center;cursor:pointer;padding:0}' +
+      '.ga-eye:hover{background:#f1f4f9;color:#0E1F39}.ga-eye svg{width:19px;height:19px}.ga-eye.on{color:#91278E}' +
       '.ga input:focus{border-color:#FCAD0F}.ga-go,.ga-outb{margin-top:8px;border:0;border-radius:10px;padding:9px;background:#0E1F39;color:#fff;font:inherit;font-weight:700;cursor:pointer}' +
       '.ga-msg{min-height:18px;margin:0;color:#c0392b;font-size:12px;text-align:center}' +
       '.ga-acc{align-items:center;text-align:center}.ga-av{width:56px;height:56px;border-radius:50%;background:#FCAD0F;color:#0E1F39;display:grid;place-items:center;font-size:24px;font-weight:800}' +
@@ -4473,12 +4476,18 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       var head = '<div class="app-h"><b style="cursor:pointer">‹</b>' + CC.t('ga_title') + '</div>';
       if (!st.logged) {
         v.innerHTML = head + '<div class="ga"><div class="ga-logo"></div><p class="ga-sub"></p>' +
-          '<label></label><input class="ga-u" dir="ltr" autocomplete="off" spellcheck="false"><label></label><input class="ga-p" type="password" dir="ltr" autocomplete="off">' +
+          '<label></label><input class="ga-u" dir="ltr" autocomplete="off" spellcheck="false"><label></label><div class="ga-pw"><input class="ga-p" type="password" dir="ltr" autocomplete="off"><button type="button" class="ga-eye"></button></div>' +
           '<button type="button" class="ga-go"></button><p class="ga-msg"></p></div>';
         var lb = v.querySelectorAll('.ga label'); lb[0].textContent = CC.t('ga_user'); lb[1].textContent = CC.t('ga_pass');
         v.querySelector('.ga-logo').textContent = CC.t('ga_title');
         v.querySelector('.ga-sub').textContent = CC.t('ga_sub'); v.querySelector('.ga-go').textContent = CC.t('ga_login');
         var u = v.querySelector('.ga-u'), pw = v.querySelector('.ga-p'), msg = v.querySelector('.ga-msg');
+        /* the eye button shows or hides the password (Moaz 2026-11-20) */
+        var eye = v.querySelector('.ga-eye'), EYE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>', EYE_OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"/><path d="M10.6 5.1A10.6 10.6 0 0112 5c6.4 0 10 7 10 7a17.7 17.7 0 01-3.1 4.1M6.6 6.6C3.9 8.4 2 12 2 12s3.6 7 10 7a10 10 0 004.3-.9"/><path d="M9.9 9.9a3 3 0 004.2 4.2"/></svg>';
+        var setEye = function (show) { pw.type = show ? 'text' : 'password'; eye.innerHTML = show ? EYE_OFF : EYE; eye.classList.toggle('on', show); var l = CC.t(show ? 'ga_hide' : 'ga_show'); eye.title = l; eye.setAttribute('aria-label', l); };
+        setEye(false);
+        eye.addEventListener('mousedown', function (e) { e.preventDefault(); });
+        eye.onclick = function (e) { e.stopPropagation(); setEye(pw.type === 'password'); pw.focus(); };
         var go = function () {
           if (!u.value.trim() || !pw.value) { msg.textContent = CC.t('ga_empty'); return; }
           if (u.value.trim().toLowerCase() === USER && pw.value === PASS) { st.logged = true; CC.emit('step', { id: 'login' }); P.apps.music(v); return; }
