@@ -1966,9 +1966,10 @@ body.cc-one-dev .laptop.cc-os .lscreen .cs{left:calc(50% + .7cqw)}
 .prompt.dyn:has(.cc-hl),.cs-in:has(.cc-hl){overflow:visible}     /* the prompt clips its content; not while the spotlight is on */
 @media (prefers-reduced-motion:reduce){.cs .cc-hl{animation:none}}
 /* the same banner on a computer screen (a folder or file the questions ask about): sized to the screen (Moaz 2026-11-12) */
-.pc-screen .cc-pna{width:86%;gap:2cqw;padding:5cqw 4cqw 6cqw}
-.pc-screen .cc-pna span{font-size:max(15px,5.6cqw);line-height:1.5}
-.pc-screen .cc-pna svg{width:max(34px,11cqw);height:max(34px,11cqw)}
+/* Moaz 2026-11-20: the lock note on the computer is a compact card in the middle, never covering the whole screen */
+.pc-screen .cc-pna{width:auto;max-width:52%;gap:1.2cqw;padding:2.4cqw 3.4cqw 2.8cqw;border-radius:2cqw}
+.pc-screen .cc-pna span{font-size:max(13px,2.7cqw);line-height:1.5}
+.pc-screen .cc-pna svg{width:max(22px,5cqw);height:max(22px,5cqw)}
 /* one device: the laptop is about 1.6x wider, and these guides are sized in its width, so bring them back to their two-device size (Moaz 2026-11-12) */
 body.cc-one-dev .cc-app.cue .cc-tip{gap:.2cqw;left:calc(100% + .8cqw);max-width:17cqw;padding:.7cqw 1.1cqw .75cqw;border-radius:.8cqw}
 body.cc-one-dev .cc-app.cue .cc-tip::before{left:-.35cqw;width:.7cqw;height:.7cqw;margin-top:-.35cqw}
