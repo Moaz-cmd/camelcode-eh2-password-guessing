@@ -6780,6 +6780,10 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
   .cc-step:hover .cc-txt{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
 }
 
+/* Moaz 2026-11-20, every lab: a question's hint is justified, so its lines end evenly on both sides (the big bold keywords made a ragged edge),
+   and «pretty» wrapping avoids a lonely last word. The last line stays on the right. */
+.qhint{text-align:justify;text-wrap:pretty}
+
 /* Farhan's motion add-on for EH1 lab 4: the «خلف الشاشة» card. The lab's own design is not changed. */
 .fx-card{position:absolute;z-index:60;width:452px;background:#0E1F39;color:#fff;border:2px solid #FCAD0F;border-radius:16px;
   box-shadow:0 18px 40px -14px rgba(4,10,24,.75),0 0 0 4px rgba(252,173,15,.14);font-family:"Montserrat Arabic",Tahoma,sans-serif;direction:rtl;

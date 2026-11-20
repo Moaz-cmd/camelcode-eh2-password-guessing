@@ -5664,6 +5664,10 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
   .cc-step:hover .cc-txt{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
 }
 
+/* Moaz 2026-11-20, every lab: a question's hint is justified, so its lines end evenly on both sides (the big bold keywords made a ragged edge),
+   and «pretty» wrapping avoids a lonely last word. The last line stays on the right. */
+.qhint{text-align:justify;text-wrap:pretty}
+
 /* Farhan 2026-11-19 (EH1 lab 1): the realistic cable (see cable.js). The wire: a soft outline, the white body, a thin highlight. */
 #cable.fx-real rect:not(.fx-keep){display:none}
 #cable.fx-real .fx-usb rect{display:inline}

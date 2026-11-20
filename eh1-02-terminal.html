@@ -5946,6 +5946,10 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
   .cc-step:hover .cc-txt{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
 }
 
+/* Moaz 2026-11-20, every lab: a question's hint is justified, so its lines end evenly on both sides (the big bold keywords made a ragged edge),
+   and «pretty» wrapping avoids a lonely last word. The last line stays on the right. */
+.qhint{text-align:justify;text-wrap:pretty}
+
 /* Farhan 2026-11-20 (EH1 lab 2): files created one by one (see create.js) */
 .pc .fx-wait{opacity:0!important;transform:scale(.5)!important;pointer-events:none}
 .pc .fx-born{animation:fx-born .55s cubic-bezier(.3,1.6,.5,1) both!important;box-shadow:inset 0 0 0 2px #FFC94A,0 0 14px 4px rgba(252,173,15,.6)}
