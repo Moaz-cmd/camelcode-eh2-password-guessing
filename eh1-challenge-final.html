@@ -4977,6 +4977,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   CC.site = {
     host: A.host, start: '/home', css: CSS, pages: build(),
+    fitScale: 0.75,     /* Moaz 2026-11-20: the site is drawn at 75% so it is not zoomed in; the ⋮ menu still says 100% (its own zoom multiplies this) */
     notFound: NOT_FOUND, notFoundTitle: 'الصفحة غير موجودة | ' + A.name,
     error: ERR_ANY,
     redirects: { '/': '/home' },
@@ -7029,6 +7030,11 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 /* Moaz 2026-11-20, every lab: a question's hint is justified, so its lines end evenly on both sides (the big bold keywords made a ragged edge),
    and «pretty» wrapping avoids a lonely last word. The last line stays on the right. */
 .qhint{text-align:justify;text-wrap:pretty}
+
+/* Moaz 2026-11-20, every lab: an error message in the terminal always has the terminal's own font and font size
+   (it used to switch to the Arabic UI font, and the code chips inside it were smaller). */
+.cs-log .row.bad,.cs-log .errmsg,.cs-err{font-family:var(--f-mono,ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace)!important;font-size:inherit!important}
+.cs-log .row.bad *,.cs-log .errmsg *,.cs-err *{font-family:inherit!important;font-size:inherit!important}
 
 /* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
    Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */

@@ -6253,6 +6253,11 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 /* Moaz 2026-11-20, every lab: a question's hint is justified, so its lines end evenly on both sides (the big bold keywords made a ragged edge),
    and «pretty» wrapping avoids a lonely last word. The last line stays on the right. */
 .qhint{text-align:justify;text-wrap:pretty}
+
+/* Moaz 2026-11-20, every lab: an error message in the terminal always has the terminal's own font and font size
+   (it used to switch to the Arabic UI font, and the code chips inside it were smaller). */
+.cs-log .row.bad,.cs-log .errmsg,.cs-err{font-family:var(--f-mono,ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace)!important;font-size:inherit!important}
+.cs-log .row.bad *,.cs-log .errmsg *,.cs-err *{font-family:inherit!important;font-size:inherit!important}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
