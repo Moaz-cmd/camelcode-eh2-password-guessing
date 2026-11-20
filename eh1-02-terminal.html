@@ -3810,7 +3810,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
   /* plain-text lines (questions, hints, help, log rows) mix Arabic with English names, and a bare English run next to punctuation
      lands in the wrong place. Isolate each English run so the order and the punctuation stay right. Chips (`code`) need none. */
   function iso(s) {
-    return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>]*[A-Za-z0-9._\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });   /* no break inside a command */
+    return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>]*[A-Za-z0-9_\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });   /* no break inside a command */
   }
 
   /* [LAB] ================= STRING TABLE (ar filled, en empty for later) ================= */

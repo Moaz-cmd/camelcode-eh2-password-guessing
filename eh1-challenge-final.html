@@ -4991,7 +4991,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* keep English runs (paths, commands) in their place inside Arabic lines (as in EH1 labs 4 and 5) */
   function iso(s) {
-    return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._@\-\/~+<>]*[A-Za-z0-9._\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
+    return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._@\-\/~+<>]*[A-Za-z0-9_\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
   }
 
   /* [LAB] ================= STRING TABLE (ar filled, en empty for later) ================= */

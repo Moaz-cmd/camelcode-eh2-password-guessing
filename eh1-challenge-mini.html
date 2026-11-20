@@ -4260,7 +4260,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
 
   /* keep English runs (paths, commands) in their place inside Arabic lines (as in EH1 lab 2) */
   function iso(s) {
-    return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>]*[A-Za-z0-9._\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
+    return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>]*[A-Za-z0-9_\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
   }
 
   /* [LAB] ================= STRING TABLE (ar filled, en empty for later) ================= */
@@ -4296,7 +4296,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     q2: 'ما اسم المستخدم لحساب تطبيق «ألعابي»؟', q2h: 'افتح تطبيق «**الملاحظات**» في الهاتف وابحث عن ملاحظة **حساب ألعابي**.',
     q3: 'ما كلمة السر لحساب تطبيق «ألعابي»؟', q3h: 'افتح تطبيق «**الملاحظات**» في الهاتف وابحث عن ملاحظة **حساب ألعابي**.',
     q4: 'ما اسم الفريق الذي انضم إليه صاحب الهاتف في تطبيق «ألعابي»؟', q4h: 'سجّل الدخول إلى تطبيق «**ألعابي**» باسم المستخدم وكلمة السر المكتوبين في **الملاحظات**، ثم انظر إلى صفحة **الحساب**.',
-    q5: 'كم ملفاً يوجد داخل المجلد projects/games؟', q5h: 'ادخل إلى المجلد projects ثم games باستخدام الأمر enter، ثم اعرض محتواه باستخدام الأمر display. انتبه: المجلد ليس ملفاً.',
+    q5: 'كم ملفاً يوجد داخل المجلد projects/games؟', q5h: 'ادخل إلى المجلد projects ثم games باستخدام الأمر enter، ثم اعرض محتواه باستخدام الأمر display. انتبه أن لا تحسب المجلدات من ضمن العدد.',
     q6: 'ما رقم القميص المكتوب في الملف club/team.txt؟', q6h: 'اقرأ الملف باستخدام الأمر read ومساره الكامل: read club/team.txt',
     q7: 'ما اسم المتحف المكتوب في الملف Documents/trip/plan.txt؟', q7h: 'اقرأ الملف باستخدام الأمر read، أو ادخل إلى المجلدات واحداً تلو الآخر باستخدام الأمر enter.',
     q8: 'المهمة: أنشئ ملفاً اسمه goals.txt داخل المجلد projects/robot', q8h: 'ادخل إلى المجلد projects ثم robot باستخدام الأمر enter، ثم استخدم الأمر create.',
