@@ -5043,12 +5043,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_k_nosite: 'الأمر غير مكتمل: لم تحدد الموقع. تحتاج أداة كاشف إلى معرفة أي موقع تفحص. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_one: 'لم أجد الموقع `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_swap: 'ترتيب الأمر غير صحيح: اكتب اسم الموقع أولاً ثم اسم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
-    m_k_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.academy`.',
+    m_k_site: 'لم يتم العثور على الموقع. استخدم الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_file: 'لم يتم العثور على الملف `{w}`. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
     m_k_extra: 'الأمر فيه كلمات زائدة. أداة كاشف تأخذ اسمين فقط: الموقع ثم الملف. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_opt: 'الخيار `{w}` غير موجود. أداة كاشف لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_page: 'اكتب اسم الموقع فقط `{site}` بدون اسم الصفحة `{page}`. الصيغة الصحيحة: `kashif website pages.txt`',
-    m_k_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الموقع كما يظهر في عنوان الموقع، بدون رموز: `camelcode.academy`',
+    m_k_sym: 'لم يتم العثور على الموقع. استخدم الصيغة الصحيحة: `kashif website pages.txt`',
     m_b_opt: 'الخيار `{w}` غير موجود. أداة برق لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     m_b_none: 'الأمر غير مكتمل: لم تحدد صفحة الدخول ولا البريد الإلكتروني ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     m_b_extra: 'الأمر فيه كلمات زائدة. أداة برق تأخذ ثلاثة أجزاء فقط: صفحة الدخول، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
@@ -5308,7 +5308,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         /* the same checks, in the same order, as lab 4; a path to the list (pages-files/pages.txt) is the challenge's one addition */
         for (i = 0; i < args.length; i++) {
           if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_k_opt', { w: args[i] }) };
-          if (args[i].indexOf('@') < 0 && args[i].indexOf('/') > 0 && !fileAt(args[i]) && /^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+\//.test(args[i])) return { err: CC.t('m_k_page', { site: args[i].slice(0, args[i].indexOf('/')), page: args[i].slice(args[i].indexOf('/')) }) }; if (BADCH.test(args[i]) || args[i].indexOf('@') >= 0 || (args[i].indexOf('/') >= 0 && !fileAt(args[i]))) return { err: CC.t('m_k_sym') };
+          if (args[i].indexOf('@') < 0 && args[i].indexOf('/') > 0 && !fileAt(args[i]) && /^[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)+\//.test(args[i])) return { err: CC.t('m_k_page', { site: args[i].slice(0, args[i].indexOf('/')), page: args[i].slice(args[i].indexOf('/')) }) }; if (BADCH.test(args[i]) || args[i].indexOf('@') >= 0 || (args[i].indexOf('/') >= 0 && !fileAt(args[i]))) return { err: i === 0 ? CC.t('m_k_sym') : CC.t('m_k_file', { w: args[i] }) };   /* Moaz 2026-11-20: odd site -> «website not found», odd file name -> «file not found» */
         }
         if (!args.length) return { err: CC.t('m_k_none') };
         if (args.length > 2) return { err: CC.t('m_k_extra') };

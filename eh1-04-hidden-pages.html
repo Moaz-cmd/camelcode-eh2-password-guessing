@@ -4813,11 +4813,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_k_nosite: 'الأمر غير مكتمل: لم تحدد الموقع. تحتاج أداة كاشف إلى معرفة أي موقع تفحص. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_one: 'لم أجد الموقع `{w}`. تحتاج أداة كاشف إلى اسم الموقع ثم اسم الملف. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_swap: 'ترتيب الأمر غير صحيح: اكتب اسم الموقع أولاً ثم اسم الملف. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
-    m_k_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.shop`.',
+    m_k_site: 'لم يتم العثور على الموقع. استخدم الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_file: 'لم يتم العثور على الملف `{w}`. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
     m_k_extra: 'الأمر فيه كلمات زائدة. أداة كاشف تأخذ اسمين فقط: الموقع ثم الملف. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     m_k_opt: 'الخيار `{w}` غير موجود. أداة كاشف لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
-    m_k_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الموقع كما يظهر في عنوان الموقع، بدون رموز: `camelcode.shop`',
+    m_k_sym: 'لم يتم العثور على الموقع. استخدم الصيغة الصحيحة: `kashif camelcode.shop pages.txt`',
     /* lesson popups (typed letter by letter, self-paced only) */
     pg_h: 'الموقع والصفحات',
     pg: 'كل موقع رأيته من قبل يتكوّن من صفحات. الصفحة هي ما تراه على الشاشة، مثل الصفحة الرئيسية وصفحة المنتجات في الدرس.\n\nولكل صفحة عنوان مكتوب في عنوان الموقع في الأعلى. اسم الموقع هنا هو `camelcode.shop`، وبعده اسم الصفحة، مثل `camelcode.shop/home`.',
@@ -5029,7 +5029,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (c === 'kashif') {
         for (i = 0; i < args.length; i++) {
           if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_k_opt', { w: args[i] }) };
-          if (BADCH.test(args[i]) || args[i].indexOf('/') >= 0) return { err: CC.t('m_k_sym') };
+          if (BADCH.test(args[i]) || args[i].indexOf('/') >= 0) return { err: i === 0 ? CC.t('m_k_sym') : CC.t('m_k_file', { w: args[i] }) };   /* Moaz 2026-11-20: odd site -> «website not found», odd file name -> «file not found» */
         }
         if (!args.length) return { err: CC.t('m_k_none') };
         var isFile = function (x) { var w = fs.walk(fs.resolve(x)); return !!(w.node && w.node.type === 'file'); };
