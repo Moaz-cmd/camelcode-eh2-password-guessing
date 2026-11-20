@@ -4336,7 +4336,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     m_g_gone: 'لا يوجد هاتف متصل بالحاسوب الآن. استخدم أوامر الملفات، واكتب `help` لعرضها.',
     /* help, phase 1: the guess command (Moaz 2026-11-14) */
     h_t: 'الأوامر المتاحة:',
-    hg_guess: 'يجعل الحاسوب يخمّن كلمة السر، ويجرّب كل الاحتمالات واحداً تلو الآخر حتى يجد الصحيحة',
+    hg_guess: 'يجعل الحاسوب يخمّن كلمة سر الهاتف، ويجرّب كل الاحتمالات واحداً تلو الآخر حتى يجد كلمة السر الصحيحة',
     hg_4: 'يخمّن كلمة سر من 4 خانات كلها أرقام',
     hg_6: 'يخمّن كلمة سر من 6 خانات فيها أرقام وأحرف صغيرة وكبيرة',
     hg_len_a: 'الرقم بعد', hg_len_b: 'يدل على عدد الخانات التي تتكون منها كلمة السر.',
@@ -4530,10 +4530,10 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       if (st.phase === 1) {
         var bl = CC.el('div', 'hl-b'), d = CC.el('div', 'hl-d'), cn = CC.el('span', 'hl-c');
         cn.textContent = 'guess password'; d.appendChild(cn); d.appendChild(document.createTextNode(CC.t('hg_guess'))); bl.appendChild(d);
-        /* Moaz 2026-11-14: the number line comes first, then the two examples («مثلاً» then «ومثلاً») */
+        /* Moaz 2026-11-14: the number line comes first, then the two examples («فمثلاً» then «ومثلاً») */
         var nt = CC.el('div', 'hl-x'), nc = CC.el('code'); nc.textContent = 'guess password';
         nt.appendChild(document.createTextNode(CC.t('hg_len_a') + ' ')); nt.appendChild(nc); nt.appendChild(document.createTextNode(' ' + CC.t('hg_len_b'))); bl.appendChild(nt);
-        [['guess password 4', 'hg_4', 'مثلاً: '], ['guess password 6 Aa0', 'hg_6', 'ومثلاً: ']].forEach(function (x) {
+        [['guess password 4', 'hg_4', 'فمثلاً: '], ['guess password 6 Aa0', 'hg_6', 'ومثلاً: ']].forEach(function (x) {
           var xr = CC.el('div', 'hl-x'), cd = CC.el('code'); cd.textContent = x[0];
           xr.appendChild(document.createTextNode(x[2])); xr.appendChild(cd); xr.appendChild(document.createTextNode(' ' + CC.t(x[1]))); bl.appendChild(xr);
         });
