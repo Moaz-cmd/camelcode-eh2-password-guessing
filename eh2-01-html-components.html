@@ -4426,7 +4426,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var COMMENTS = {
     '/home': ['<section class="sec txt"', 'ملاحظة: غيّروا صورة الواجهة قبل نشر الصفحة'],
     '/products': ['<div class="grid">', 'إلى ' + SHOP.dev + ': لا تنسَ تحديث الأسعار قبل نشر الصفحة'],
-    '/contact': ['<div class="info">', 'حساب الإدارة المؤقت: اسم المستخدم ' + SHOP.user + ' وكلمة السر ' + SHOP.pass + ' . احذفوه بعد التجربة']
+    '/contact': ['<div class="info">', 'حساب الإدارة المؤقت: اسم المستخدم ' + SHOP.user + ' || كلمة السر ' + SHOP.pass + ' || احذفوه بعد التجربة']
   };
   var ASSETS = {}, PICCSS = [], picN = 0;
   function dataUri(svgText) {
@@ -4492,7 +4492,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
             . احذفوه بعد التجربة -->
      A tag with a one-phrase text stays on ONE line with its text; an element that holds other elements puts each on its own line when it is long. */
   var MAXW = 60;
-  function pieces(t) { return t.split(/(?<=[^\s][:،.؟!])\s+|\s+(?=\.\s)/).filter(function (x) { return x; }); }
+  function pieces(t) { return t.split(/\s*\|\|\s*|(?<=[^\s][:،.؟!])\s+|\s+(?=\.\s)/).filter(function (x) { return x; }); }
   function textOnly(e) { return [].every.call(e.childNodes, function (c) { return c.nodeType === 3; }); }
   function ser(node, ind, out) {
     [].forEach.call(node.childNodes, function (c) {
@@ -4588,9 +4588,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* task line (the gold band) */
     t_s1: 'اضغط **بزر الفأرة الأيمن** على أي مكان فارغ في الصفحة ثم اختر «**عرض مصدر الصفحة** (View page source)» من القائمة لفتح **كود الصفحة**. طريقة أخرى: اضغط `Ctrl` و `U` معاً على لوحة المفاتيح.',
     t_hv: 'حرّك الفأرة على **مكونات الموقع** في الجهة اليمنى ولاحظ ما يقابلها من **الكود** الخاص بها في الجهة اليسرى.',
-    t_h1: 'انظر إلى السطر الذي يبدأ بـ `<h1>` حيث أن هذا الكود يُستخدم في إظهار **عنوان الصفحة**.',
-    t_img: 'انظر إلى السطر الذي يبدأ بـ `<img` حيث أن هذا الكود يُستخدم في إظهار **الصور** في الصفحة.',
-    t_cm: 'والآن ننتقل إلى أكثر ما يهمنا كهاكرز، ابحث في الكود عن **السطر الأخضر** الذي يبدأ بـ `<!--` هذا الكود يستخدمه **مبرمجو الموقع** لوضع **تعليقات مخفية** في كود الصفحة للتواصل بينهم ولا يظهر بشكل عادي لزائر الصفحة.',
+    t_h1: 'انظر إلى السطر الذي يبدأ بـ `<h1>` حيث أن هذا الكود البرمجي يُستخدم في إظهار **عنوان الصفحة**.',
+    t_img: 'انظر إلى السطر الذي يبدأ بـ `<img` حيث أن هذا الكود البرمجي يُستخدم في إظهار **الصور** في الصفحة.',
+    t_cm: 'والآن ننتقل إلى أكثر ما يهمنا كهاكرز، ابحث في الكود عن **السطر الأخضر** الذي يبدأ بـ `<!--` هذا الكود البرمجي يستخدمه **مبرمجو الموقع** لوضع **تعليقات مخفية** في كود الصفحة للتواصل بينهم ولا يظهر بشكل عادي لزائر الصفحة.',
     t_pnav: 'اضغط على صفحة «**المنتجات**» في القائمة أعلى الموقع.',
     t_psrc: '**كود الصفحة** على الجهة اليسرى تغيّر ليطابق **صفحة المنتجات**! ابحث عن أي **تعليقات مخفية** داخل هذه الصفحة (**السطر الأخضر** الذي يبدأ بـ `<!--`)',
     t_cnav: 'اضغط على صفحة «**تواصل**» في القائمة أعلى الموقع.',
@@ -6274,5 +6274,703 @@ window.CC_MISSION = {"stages":[{"label":"كود الصفحة","keys":["t_s1","t_
 })();
 
 </script><!--/cc-addon-->
+<!--cc-touches-->
+<style id="cc-touches">
+/* Farhan's shared add-on for every lab: small touches on the laptop's desktop and on the phone (2026-11-19). */
+
+/* the phone gets a little brighter while the mouse is over it */
+.phone{transition:filter .2s ease}
+.phone:hover{filter:brightness(1.12) saturate(1.05)}
+
+/* no CamelCode icon in the corner of the laptop's top bar (the name «كاملكود» stays) */
+.cc-mb-logo{display:none!important}
+
+/* hovering an open app's icon in the dock shows that app, like a real laptop; moving away returns to the app that was in front */
+.fx-peek{z-index:70!important;animation:fx-peekin .16s ease-out}
+.cc-wins.fx-peek-host{z-index:70!important}
+@keyframes fx-peekin{from{opacity:.4;transform:scale(.985)}to{opacity:1;transform:none}}
+.cc-dock .cc-app.fx-peeking{filter:brightness(1.15)}
+@media (prefers-reduced-motion:reduce){.fx-peek{animation:none}}
+
+/* the gold box over a dock icon («ابدأ هنا ...») is always a wide rectangle: its sentence stays on one line (Farhan 2026-11-19) */
+.cc-dock .cc-app.cue .cc-tip{width:max-content!important;max-width:none!important;min-width:0!important;padding:.55cqw 1.6cqw .65cqw!important}
+.cc-dock .cc-app.cue .cc-tip em{white-space:nowrap!important}
+.cc-dock .cc-app.cue .cc-tip b{white-space:nowrap!important}
+
+/* a question that has just appeared («سؤال جديد») waits until the popups on screen are finished (Farhan 2026-11-19) */
+body.fx-popup .qrow.qnew{display:none!important}
+
+/* the congratulations card also offers to start the lab again (Farhan 2026-11-19) */
+.pcard.cele .pc-foot{gap:12px;flex-wrap:wrap}
+.pcard.cele .fx-again{background:#fff!important;color:#0E1F39!important;border:2px solid #0E1F39!important;box-shadow:none!important}
+.pcard.cele .fx-again:hover{background:#f1ece3!important}
+
+/* the folder name and what the student types stay on ONE line of the command screen, also when the window is narrow (Farhan 2026-11-19) */
+.cs-log .cs-in{flex-wrap:nowrap!important}
+.cs-log .cs-in .inwrap{flex:1 1 0!important;min-width:0!important}
+.cs-log .cs-in .prompt.dyn{max-width:70%!important;flex:none}
+
+/* «شرح الأمر»: each part's explanation stays on one line (wide, not tall); the box uses the free width of the command screen,
+   and parts go to a second row only when they truly do not fit (Farhan 2026-11-19) */
+.cs .cs-chips{flex-wrap:wrap!important;justify-content:center!important}
+.cs .cs-chips .tk{flex:0 0 auto!important;max-width:none!important;min-width:0!important}
+.cs .cs-chips .tk small{white-space:nowrap!important;overflow-wrap:normal!important}
+.cs .cs-chips .tk small{width:auto!important;min-width:0!important;max-width:none!important;position:static!important}
+.cs .cs-chips{gap:.6cqw 1.8cqw!important}
+
+/* a command whose result is taller than the command screen is shown from its first line, with a bouncing
+   «مرّر للأسفل» pill that says there is more below (Farhan 2026-11-19) */
+.fx-more{position:absolute;left:50%;bottom:1cqw;transform:translateX(-50%);z-index:13;display:flex;align-items:center;gap:.5cqw;border:0;cursor:pointer;
+  background:#FCAD0F;color:#0E1F39;font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:max(11px,1.25cqw);line-height:1.5;
+  padding:.3cqw 1.2cqw;border-radius:999px;box-shadow:0 .8cqw 1.6cqw -.6cqw rgba(0,0,0,.6);white-space:nowrap;direction:rtl;animation:fx-morebob 1.2s ease-in-out infinite}
+.fx-more svg{width:1.3cqw;height:1.3cqw;min-width:12px;min-height:12px}
+@keyframes fx-morebob{50%{transform:translateX(-50%) translateY(.5cqw)}}
+@media (prefers-reduced-motion:reduce){.fx-more{animation:none}}
+
+/* the highlight on a word of the command screen (the current folder in the prompt) is a sliding underline, not a circle:
+   it grows slowly under the word, rests, fades and grows again (Farhan 2026-11-20) */
+.cs .cc-hl::after{left:0!important;right:0!important;top:auto!important;bottom:-.28em!important;height:3px!important;border:0!important;border-radius:3px!important;
+  box-shadow:none!important;background:#FFC94A!important;transform-origin:left center;animation:fx-ulloop 2.8s ease-in-out infinite both!important}
+@keyframes fx-ulloop{0%{transform:scaleX(0);opacity:1}40%{transform:scaleX(1);opacity:1}82%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+
+/* the notes app: a task can be ticked as done, or unticked, by clicking it (Farhan 2026-11-20) */
+.cc-note li{cursor:pointer;border-radius:.6cqw;padding:.15cqw .4cqw;margin:-.15cqw -.4cqw;transition:background .15s;user-select:none}
+.cc-note li:hover{background:rgba(14,31,57,.07)}
+.cc-note li::before{transition:background-color .2s,border-color .2s,transform .2s}
+.cc-note li:active::before{transform:scale(.85)}
+.cc-note li.ok>span,.cc-note li.ok{color:#5b6473}
+.cc-note li.fx-tick::before{animation:fx-tick .35s cubic-bezier(.3,1.7,.5,1)}
+@keyframes fx-tick{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
+/* Farhan 2026-11-20 (EH1 lab 5): the gold ring that marks the typing line no longer covers the last line of the
+   previous command's result: the typing line keeps a clear gap above it. */
+.cs-log .cs-in{margin-top:16px!important}
+/* Farhan 2026-11-20: the box «اكتب الأمر هنا» is only for the first command (see os.js) */
+body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
+
+/* Farhan 2026-11-20 (EH1 lab 5): «متابعة» cannot be pressed before the step's text has finished writing itself */
+.cc-cur.typing .cc-go{display:none!important}
+/* the copy button next to a command in the step's explanation (see os.js); only on the step on screen now */
+.fx-copy{display:none}
+.cc-cur .cc-txt .fx-copy{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin:0 3px;padding:1px 9px;border:1.5px solid #0E1F39;border-radius:99px;background:#FCAD0F;color:#0E1F39;
+  font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:.78em;line-height:1.7;cursor:pointer;direction:rtl;white-space:nowrap;transition:transform .12s,background .2s}
+.cc-cur .cc-txt .fx-copy svg{width:1.05em;height:1.05em;flex:none}
+.cc-cur .cc-txt .fx-copy:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.cc-cur .cc-txt .fx-copy:active{transform:translateY(1px)}
+.cc-cur .cc-txt .fx-copy.ok{background:#2E9E5B;border-color:#2E9E5B;color:#fff}
+.cc-cur.typing .cc-txt .fx-copy{display:none}
+/* the cue on a dock icon (bounce, gold ring, box above it): used to send the student to the browser first */
+.cc-dock .cc-app.fx-cue{position:relative;animation:fx-cue 1s ease-in-out infinite;z-index:5}
+.cc-dock .cc-app.fx-cue::after{content:"";position:absolute;inset:-5px;border:3px solid #FCAD0F;border-radius:16px;animation:fx-cuering 1.2s ease-out infinite}
+@keyframes fx-cue{50%{transform:translateY(-8px)}}
+@keyframes fx-cuering{from{opacity:1;transform:scale(.9)}to{opacity:0;transform:scale(1.35)}}
+.cc-dock .cc-app .fx-tip{position:absolute;bottom:128%;left:50%;transform:translateX(-50%);background:#FCAD0F;color:#0E1F39!important;font-family:"Montserrat Arabic",Tahoma,sans-serif;
+  font-weight:800!important;font-size:17px!important;line-height:1.5!important;padding:7px 14px;border-radius:12px;width:max-content;max-width:none;white-space:nowrap;text-align:center;direction:rtl;
+  box-shadow:0 10px 20px -8px rgba(0,0,0,.6);pointer-events:none}
+.cc-dock .cc-app .fx-tip::after{content:"";position:absolute;top:100%;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:#FCAD0F}
+.cc-dock .cc-app.fx-cue .cc-tip{display:none!important}
+@media (prefers-reduced-motion:reduce){.cc-dock .cc-app.fx-cue,.cc-dock .cc-app.fx-cue::after{animation:none}}
+
+/* Farhan 2026-11-20 (EH1 lab 5): the «شرح الأمر» box at the top of the command screen is written bigger */
+.cs .cs-chips .tk b{font-size:max(13px,1.6cqw)!important}
+.cs .cs-chips .tk small{font-size:max(12px,1.35cqw)!important;line-height:1.5!important}
+.cs .cs-chips:not(:empty)::before{font-size:max(12px,1.35cqw)!important}
+
+/* Farhan 2026-11-20 (EH1 lab 5): a finished step in the steps list (the right side) opens by itself while the mouse is
+   over it, showing its whole text, and closes again when the mouse leaves. */
+@media (hover:hover){
+  .cc-step:hover{opacity:1!important}
+  .cc-step:hover .cc-txt{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
+}
+
+/* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
+   Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */
+
+/* 1. the command screen takes the whole desktop (never side by side with the website) */
+body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs,body.cc-web .laptop.cc-os.cc-peek:not(.cc-web-shut) .lscreen .cs{left:1.4cqw!important;font-size:max(12px,1.55cqw)!important}
+body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-log,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-in,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .prompt,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .inwrap input,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .ghost{font-size:max(12px,1.55cqw)!important}
+body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-web .laptop.cc-peek .br.cc-embedded{right:1.4cqw!important}
+
+/* 2. the labels under the address («اسم الموقع», «اسم الصفحة»): one solid orange, close to the address,
+      the page moves down while they show (they never cover the site's menu), arrows always whole */
+.br-parts{z-index:30!important}
+.br-parts .br-part{top:1px!important;background:#FCAD0F!important;color:#0E1F39!important;border-color:#FCAD0F!important;box-shadow:0 6px 14px -8px rgba(14,31,57,.55)!important}
+.br-view{transition:padding-top .3s ease}
+.br-view:has(.br-parts.in){padding-top:24px;overflow:visible!important}
+
+/* 3. the site name and the page name in the address are underlined (no boxes). The line grows slowly under the
+      word, rests, fades and grows again. First the site's line, then its box, then the page's line, then its box. */
+.br-hostframe{display:none!important}
+.fx-mirror{position:absolute;box-sizing:border-box;white-space:pre;overflow:hidden;color:transparent;pointer-events:none;z-index:2;direction:ltr;text-align:left;user-select:none}
+.fx-w{position:relative;display:inline-block}
+.fx-w::after{content:"";position:absolute;left:0;right:0;top:50%;margin-top:.62em;height:3px;border-radius:3px;background:#0E1F39;transform-origin:left center;animation:fx-ulloop 2.8s ease-in-out infinite both}
+.fx-w.page::after{animation-delay:1.7s}
+.fx-w.off::after{display:none}
+@keyframes fx-ulloop{0%{transform:scaleX(0);opacity:1}40%{transform:scaleX(1);opacity:1}82%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.br-parts.in .br-part.site{animation-delay:1.1s,1.8s!important}
+.br-parts.in .br-part.page{animation-delay:2.8s,3.5s!important}
+@media (prefers-reduced-motion:reduce){.fx-w::after{animation:none}}
+
+/* 4. «مرّر للأسفل لرؤية باقي الصفحة» is gone for good after the student's first scroll down */
+.laptop.fx-scrolled .br-shint{display:none!important}
+
+/* Farhan 2026-11-20: the guide box under the page name in the address (see web.js). The site moves down while it
+   shows, so the box never covers the site's menu. */
+#laptop.fx-urltip-on .br-view{padding-top:40px!important;overflow:visible!important}
+.br-view .fx-urltip{position:absolute;top:5px;z-index:31;background:#FCAD0F;color:#0E1F39;font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;
+  font-size:16px;line-height:1.7;padding:1px 12px;border-radius:9px;white-space:nowrap;direction:rtl;pointer-events:none;box-shadow:0 6px 14px -8px rgba(14,31,57,.55);
+  animation:fx-urltipbob 1.4s ease-in-out infinite}
+.br-view .fx-urltip::before{content:"";position:absolute;top:-4px;left:var(--ax,50%);margin-left:-5px;width:10px;height:10px;background:#FCAD0F;transform:rotate(45deg);z-index:-1}
+.br-view .fx-urltip code{font-family:ui-monospace,Consolas,monospace;background:#0E1F39;color:#FFD36B;padding:0 7px;border-radius:5px;direction:ltr;unicode-bidi:isolate;font-size:15px}
+@keyframes fx-urltipbob{50%{transform:translateY(3px)}}
+@media (prefers-reduced-motion:reduce){.br-view .fx-urltip{animation:none}}
+
+/* Farhan 2026-11-20 (EH2 lab 1), see focus.js */
+/* the lines between an element's opening and closing lines light up with them */
+.br-code .ln.fx-mid{background:#fff4d1}
+/* the Arabic text of a comment reads right to left */
+.br-code .c .fx-ar{direction:rtl;unicode-bidi:isolate}
+</style>
+<script id="cc-touches-js">
+/* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
+   window; moving the mouse away returns to the app that was in front. Nothing in the lab changes: the window
+   is only lifted while the mouse is on the icon. A click still opens the app for real, as before. */
+(function () {
+  'use strict';
+  if (window.__farhanOS) return; window.__farhanOS = 1;
+  var cur = null, btn = null;
+  function winOf(b) {
+    var l = document.getElementById('laptop'), id = b.getAttribute('data-app'); if (!l || !id) return null;
+    if (id === 'term') return l.classList.contains('cc-closed') ? null : l.querySelector('.lscreen .cs');
+    if (id === 'web') return l.classList.contains('cc-web-shut') ? null : l.querySelector('.br.cc-embedded');
+    var w = l.querySelector('.cc-win[data-app="' + id + '"]'); return w && !w.classList.contains('cc-min') ? w : null;
+  }
+  /* the window is lifted above EVERY other window while the mouse is on its icon. Some windows live inside a holder
+     (.cc-wins) that sits under the command screen, so the holder is lifted with it. */
+  function stop() {
+    if (cur) { cur.classList.remove('fx-peek'); var h = cur.closest('.cc-wins'); if (h) h.classList.remove('fx-peek-host'); }
+    if (btn) btn.classList.remove('fx-peeking'); cur = btn = null;
+  }
+  document.addEventListener('mouseover', function (e) {
+    var b = e.target.closest ? e.target.closest('.cc-dock .cc-app') : null;
+    if (b === btn) return;
+    stop(); if (!b || !b.classList.contains('run')) return;
+    var w = winOf(b); if (!w) return;
+    cur = w; btn = b; w.classList.add('fx-peek'); b.classList.add('fx-peeking');
+    var host = w.closest('.cc-wins'); if (host) host.classList.add('fx-peek-host');
+  });
+  document.addEventListener('mouseout', function (e) {
+    if (!btn) return;
+    var to = e.relatedTarget; if (to && btn.contains(to)) return;
+    stop();
+  });
+  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.cc-dock .cc-app')) stop(); }, true);
+})();
+
+/* Farhan 2026-11-19: no user name and no computer name in any command screen («student@pc:»).
+   The prompt and the echoed command lines show only the folder we are in: Desktop, Desktop/folder ... */
+(function () {
+  'use strict';
+  if (window.__farhanPrompt) return; window.__farhanPrompt = 1;
+  var SEL = '.pe,.prompt:not(.dyn),.pu';
+  function clean(e) {
+    if (!e || e.children.length) return;
+    var t = e.textContent, n = e.classList.contains('pu') ? '' : t.replace(/^[^\s:@]+@[^\s:@]+:/, '').replace(/^~(?=[$\/]|$)/, 'Desktop').replace(/\$\s*$/, '');      /* and no «$» after the folder */
+    if (n !== t) e.textContent = n;
+  }
+  function sign(p) { [].forEach.call(p.childNodes, function (n) { if (n.nodeType === 3 && /^\s*\$\s*$/.test(n.textContent)) n.textContent = ''; }); }      /* the live prompt keeps its «$» as loose text */
+  function scan(root) {
+    if (root.matches && root.matches(SEL)) clean(root); if (root.querySelectorAll) [].forEach.call(root.querySelectorAll(SEL), clean);
+    if (root.matches && root.matches('.prompt.dyn')) sign(root); if (root.querySelectorAll) [].forEach.call(root.querySelectorAll('.prompt.dyn'), sign);
+  }
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      if (m.type === 'characterData') { var p = m.target.parentNode; if (p && p.matches && p.matches(SEL)) clean(p); return; }
+      [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) scan(n); else if (n.nodeType === 3 && n.parentNode && n.parentNode.matches && n.parentNode.matches(SEL)) clean(n.parentNode); });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  scan(document);
+})();
+
+/* Farhan 2026-11-19: a newly revealed question («سؤال جديد») does not show while a popup is on screen.
+   It appears a moment after the last popup has closed (so it does not flash between two popups), and is scrolled into view. */
+(function () {
+  'use strict';
+  if (window.__farhanQWait) return; window.__farhanQWait = 1;
+  var quietSince = 0;
+  setInterval(function () {
+    var b = document.body, open = !!document.querySelector('.overlay');
+    if (open) { quietSince = 0; b.classList.add('fx-popup'); return; }
+    if (!b.classList.contains('fx-popup')) return;
+    if (!quietSince) { quietSince = Date.now(); return; }
+    if (Date.now() - quietSince < 700) return;
+    b.classList.remove('fx-popup'); quietSince = 0;
+    var row = document.querySelector('.qrow.qnew'); if (row && row.scrollIntoView) try { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+  }, 150);
+})();
+
+/* Farhan 2026-11-19: the congratulations card (after all the questions) also has a button to start the lab again. */
+(function () {
+  'use strict';
+  if (window.__farhanAgain) return; window.__farhanAgain = 1;
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      [].forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType !== 1 || !n.classList.contains('overlay')) return;
+        var card = n.querySelector('.pcard.cele'), foot = card && card.querySelector('.pc-foot'), first = foot && foot.querySelector('button');
+        if (!foot || !first || foot.querySelector('.fx-again') || !(window.CC && CC.restart)) return;
+        var b = document.createElement('button'); b.type = 'button'; b.className = first.className + ' fx-again'; b.textContent = 'إعادة التدريب من البداية';
+        b.onclick = function () { n.remove(); try { CC.restart(); } catch (e) { } };
+        foot.appendChild(b);
+      });
+    });
+  }).observe(document.body, { childList: true });
+})();
+
+/* Farhan 2026-11-19: an error message on the command screen is shown from its START. The screen used to jump to
+   the bottom, so a long message was seen from its end. Now the screen scrolls so the first line of the newest
+   error is at the top of what is visible. */
+(function () {
+  'use strict';
+  if (window.__farhanErrTop) return; window.__farhanErrTop = 1;
+  function toTop(row) {
+    var log = row.closest('.cs-log'); if (!log) return;
+    var go = function () { if (!row.isConnected) return; var y = row.getBoundingClientRect().top - log.getBoundingClientRect().top, k = log.clientHeight / Math.max(1, log.getBoundingClientRect().height); log.scrollTop += y * k - 4; };
+    [40, 160, 420].forEach(function (ms) { setTimeout(go, ms); });      /* after the lab's own jump to the bottom */
+  }
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1 && n.classList.contains('errmsg')) toTop(n); }); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-19: when a command's result is taller than the command screen, the screen shows it from the
+   BEGINNING (the line of the command itself at the top), not from its end, and a bouncing pill says the student
+   can scroll down for the rest. The pill leaves at the bottom of the result or with the next command.
+   Long-running tools that print for many seconds keep the lab's own following of the output. */
+(function () {
+  'use strict';
+  if (window.__farhanOutTop) return; window.__farhanOutTop = 1;
+  var lastCmd = null, t0 = 0, timer = null;
+  function hint(log, on) {
+    var cs = log.closest('.cs'); if (!cs) return;
+    var h = cs.querySelector('.fx-more');
+    if (!on) { if (h) h.remove(); return; }
+    if (!h) {
+      h = document.createElement('button'); h.type = 'button'; h.className = 'fx-more';
+      h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><span>مرّر للأسفل لرؤية باقي النتيجة</span>';
+      h.onclick = function () { log.scrollBy({ top: log.clientHeight * .8, behavior: 'smooth' }); };
+      cs.appendChild(h);
+    }
+    if (!log.__fxMore) { log.__fxMore = 1; log.addEventListener('scroll', function () { if (log.scrollTop + log.clientHeight >= log.scrollHeight - 6) hint(log, false); }); }
+  }
+  function settle() {
+    var row = lastCmd; if (!row || !row.isConnected) return;
+    var log = row.closest('.cs-log'); if (!log) return;
+    if (Date.now() - t0 > 6500) return;                                    /* a long-running tool: the lab follows its output itself */
+    for (var n = row.nextElementSibling; n; n = n.nextElementSibling) if (n.classList.contains('errmsg')) return;   /* an error is already shown from its start */
+    var lr = log.getBoundingClientRect(), k = log.clientHeight / Math.max(1, lr.height), top = log.scrollTop + (row.getBoundingClientRect().top - lr.top) * k;
+    if (log.scrollHeight - top <= log.clientHeight + 4) { log.scrollTop = log.scrollHeight; return; }   /* it all fits: the newest command and its result are brought into view, also when the student had scrolled up */
+    log.scrollTop = Math.max(0, top - 3); hint(log, true);
+  }
+  new MutationObserver(function (ms) {
+    var touched = false;
+    ms.forEach(function (m) {
+      var host = m.target.nodeType === 1 ? m.target : m.target.parentNode; if (!host || !host.closest || !host.closest('.cs-log')) return;
+      [].forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType === 1 && n.classList.contains('cmdrow')) { lastCmd = n; t0 = Date.now(); var lg0 = host.closest('.cs-log'); hint(lg0, false); setTimeout(function () { lg0.scrollTop = lg0.scrollHeight; }, 20); }   /* the new command always comes into view first */
+        touched = true;
+      });
+    });
+    if (touched && lastCmd) { clearTimeout(timer); timer = setTimeout(settle, 450); }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-20: in the notes app a task is ticked as done, or unticked, by clicking it (or with Enter / Space). */
+(function () {
+  'use strict';
+  if (window.__farhanNotes) return; window.__farhanNotes = 1;
+  function toggle(li) {
+    li.classList.toggle('ok'); li.setAttribute('aria-checked', li.classList.contains('ok') ? 'true' : 'false');
+    li.classList.remove('fx-tick'); void li.offsetWidth; li.classList.add('fx-tick');
+  }
+  document.addEventListener('click', function (e) { var li = e.target.closest ? e.target.closest('.cc-note li') : null; if (li) toggle(li); });
+  document.addEventListener('keydown', function (e) { var li = e.target.closest ? e.target.closest('.cc-note li') : null; if (li && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle(li); } });
+  /* each task can be reached with the keyboard and is announced as a checkbox */
+  new MutationObserver(function () {
+    [].forEach.call(document.querySelectorAll('.cc-note li:not([role])'), function (li) { li.setAttribute('role', 'checkbox'); li.setAttribute('tabindex', '0'); li.setAttribute('aria-checked', li.classList.contains('ok') ? 'true' : 'false'); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): no «write the command here» signs for a command that has already been given,
+   whether it was typed or pasted.
+   1. While a command is running (the typing line is locked) or its result is still coming in, the gold ring and the
+      pointer on the typing line stay away. They come back only when the lab is ready for the next command.
+   2. The box «اكتب الأمر هنا ليتم تنفيذه على الحاسوب» is for the first command only: once the student has run any
+      command, it is not shown again (until the lab is restarted). */
+(function () {
+  'use strict';
+  if (window.__farhanCmdGuide) return; window.__farhanCmdGuide = 1;
+  function busy() { var i = document.querySelector('#laptop #cmd'); return !i || i.disabled || !!window.__fxBusy || !!document.querySelector('.cs-log .row.fx-hid'); }
+  function wrap() {
+    var G = window.CC && CC.guide; if (!G || !G.show || G.show.__fx) return;
+    var show = G.show;
+    G.show = function (get) {
+      var a = [].slice.call(arguments);
+      if (typeof get === 'function') a[0] = function () {
+        var e = get();
+        return (e && e.classList && e.classList.contains('inwrap') && busy()) ? null : e;
+      };
+      return show.apply(this, a);
+    };
+    G.show.__fx = 1;
+  }
+  wrap(); setInterval(wrap, 500);
+  var gen = null;
+  setInterval(function () {
+    var g = window.CC ? CC.gen : null;
+    if (g !== gen) { gen = g; document.body.classList.remove('fx-ran'); }              /* the lab was restarted */
+    if (document.querySelector('#laptop .cs-log .cmdrow')) document.body.classList.add('fx-ran');
+  }, 300);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): a copy button next to every command in the step's explanation (the right side).
+   One click copies the command, so the student can paste it on the command screen instead of typing it.
+   It appears once the step's text has finished typing, and only on the step that is on screen now. */
+(function () {
+  'use strict';
+  if (window.__farhanCopy) return; window.__farhanCopy = 1;
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
+  var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+  function copy(txt) {
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
+    var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+  }
+  setInterval(function () {
+    var cur = document.querySelector('.cc-cur'); if (!cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]]) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.innerHTML = IC + '<span>نسخ</span>';
+      b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copy(t);
+        b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ</span>'; }, 1500);
+        var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): a guide on the WEBSITE (a ring on a box of the page) is never drawn on top of the
+   command screen. While the command screen covers the website, the browser's icon in the dock bounces inside a gold
+   ring with a box «افتح المتصفح لتكمل الخطوة»; the ring on the page appears once the browser is in view. */
+(function () {
+  'use strict';
+  if (window.__farhanWebFirst) return; window.__farhanWebFirst = 1;
+  var need = 0;
+  function q(s) { return document.querySelector(s); }
+  function covered(e) {
+    var l = q('#laptop'), cs = q('#laptop .lscreen .cs'); if (!l || !cs || l.classList.contains('cc-closed')) return false;
+    var c = cs.getBoundingClientRect(); if (!c.width || !c.height || getComputedStyle(cs).display === 'none' || getComputedStyle(cs).visibility === 'hidden') return false;
+    var br = q('#laptop #br'), zc = parseInt(getComputedStyle(cs).zIndex, 10) || 0, zb = br ? parseInt(getComputedStyle(br).zIndex, 10) || 0 : 0;
+    if (br && zb > zc) return false;                                           /* the browser is the window in front */
+    var r = e.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    return x >= c.left && x <= c.right && y >= c.top && y <= c.bottom;
+  }
+  function wrap() {
+    var G = window.CC && CC.guide; if (!G || !G.show || G.show.__fxWeb) return;
+    var show = G.show;
+    G.show = function (get) {
+      var a = [].slice.call(arguments);
+      if (typeof get === 'function') a[0] = function () {
+        var e = get();
+        if (e && e.ccSite && covered(e)) { need = Date.now(); return null; }
+        return e;
+      };
+      return show.apply(this, a);
+    };
+    G.show.__fxWeb = 1; if (show.__fx) G.show.__fx = 1;
+  }
+  wrap(); setInterval(wrap, 500);
+  setInterval(function () {
+    var b = q('#laptop .cc-dock [data-app="web"]'); if (!b) return;
+    var on = Date.now() - need < 500 && !q('.overlay'), tip = b.querySelector('.fx-tip');
+    if (on) {
+      b.classList.add('fx-cue');
+      if (!tip) { tip = document.createElement('b'); tip.className = 'fx-tip'; tip.textContent = 'افتح المتصفح لتكمل الخطوة'; b.appendChild(tip); }
+    } else if (tip || b.classList.contains('fx-cue')) { b.classList.remove('fx-cue'); if (tip) tip.remove(); }
+  }, 200);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): the Tab key completes what the student is typing on the command screen, in every lab:
+   the command's name (dis + Tab = display), a file or folder name (read pas + Tab = read passwords.txt), and the other
+   parts of the command the step asks for once their first letters are typed (barq cam + Tab = barq camelcode.shop/admin).
+   With several matches it completes as far as they agree. It never runs anything and never types a part the student
+   has not started. A lab's own Tab completion (EH1 lab 2) is tried first. */
+(function () {
+  'use strict';
+  if (window.__farhanTab) return; window.__farhanTab = 1;
+  var cmds = null, ghost = null;
+  function labCmds() {
+    if (cmds) return cmds;
+    cmds = [];
+    [].forEach.call(document.scripts, function (s) {
+      if (s.id === 'cc-touches-js') return;
+      var m = /var CMDS = \[([^\]]*)\]/.exec(s.textContent || '');
+      if (m) m[1].replace(/'([^']+)'/g, function (_, w) { if (cmds.indexOf(w) < 0) cmds.push(w); });
+    });
+    return cmds;
+  }
+  /* the command the step asks for (the lab's faint hint), to complete its parts */
+  setInterval(function () {
+    var L = window.CC && CC.L; if (!L || !L.ghost || L.ghost.__fx) return;
+    var orig = L.ghost; L.ghost = function (t) { ghost = t || null; return orig.apply(this, arguments); }; L.ghost.__fx = 1; ghost = null;
+  }, 250);
+  function names(dirAbs) {
+    var fs = window.CC && CC.labFS, out = [];
+    try { var r = fs && fs.walk(dirAbs); if (r && r.node && r.node.kids) Object.keys(r.node.kids).forEach(function (k) { out.push(k); }); } catch (e) { }
+    return out;
+  }
+  function common(a) { var p = a[0] || ''; a.forEach(function (x) { while (x.toLowerCase().indexOf(p.toLowerCase()) !== 0) p = p.slice(0, -1); }); return p; }
+  function complete(v) {
+    var sp = v.lastIndexOf(' '), head = v.slice(0, sp + 1), cur = v.slice(sp + 1), isCmd = head.trim() === '', cand = [], pre = '';
+    var g = ghost ? ghost.split(/\s+/) : [], idx = head.trim() ? head.trim().split(/\s+/).length : 0;
+    if (isCmd) {
+      cand = labCmds().slice(); if (g[0] && cand.indexOf(g[0]) < 0) cand.push(g[0]);
+      if (!cur) return null;
+    } else {
+      var sl = cur.lastIndexOf('/'), fs = window.CC && CC.labFS, base = cur;
+      if (fs) {
+        try {
+          var dir = fs.cwd;
+          if (sl >= 0 && !/[.@]/.test(cur.slice(0, sl))) { pre = cur.slice(0, sl + 1); base = cur.slice(sl + 1); dir = fs.resolve(pre); }
+          cand = names(dir);
+        } catch (e) { cand = []; }
+      }
+      cur = base;
+      if (!pre && cur && g[idx] && g[0] && head.trim().split(/\s+/)[0] === g[0] && cand.indexOf(g[idx]) < 0) cand.push(g[idx]);   /* a part of the asked command, once started */
+    }
+    var hit = cand.filter(function (c) { return c.toLowerCase().indexOf(cur.toLowerCase()) === 0; });
+    if (!hit.length) return null;
+    if (hit.length === 1) return head + pre + hit[0] + (isCmd ? ' ' : '');
+    var p = common(hit); return p.length > cur.length ? head + pre + p : null;
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+    var i = e.target; if (!i || i.id !== 'cmd' || !i.closest || !i.closest('#laptop')) return;
+    e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (i.disabled) return;
+    var v = i.value, nv = null;
+    try { var L = window.CC && CC.L; if (L && L.tabFn) nv = L.tabFn(v); } catch (x) { nv = null; }
+    if (nv == null || nv === v) nv = complete(v);
+    if (nv == null || nv === v) return;
+    i.value = nv; try { i.setSelectionRange(nv.length, nv.length); } catch (x) { }
+    i.dispatchEvent(new Event('input', { bubbles: true }));
+  }, true);
+})();
+
+/* Farhan's shared add-on for every lab that has the website (browser) inside the laptop (see web.css).
+   It only looks at the page; it changes nothing in a lab's flow, wording or questions. */
+(function () {
+  'use strict';
+  if (window.__farhanWeb) return; window.__farhanWeb = 1;
+  function q(s) { return document.querySelector(s); }
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  var geo = { url: '', site: null, page: null }, scrolled = false;
+
+  /* the underlines: a see-through copy of the address text lies exactly over the address box, in the box's own
+     font, so the browser itself puts each line under its word, at any zoom */
+  function fitLines() {
+    var u = q('#br .br-url'), omni = u && u.parentNode, parts = q('.br-parts.in'); if (!u) return;
+    var m = omni.querySelector('.fx-mirror'), v = String(u.value), i = v.indexOf('/');
+    var hasSite = !!q('.br-parts.in .br-part.site'), hasPage = !!q('.br-parts.in .br-part.page');
+    var on = !!parts && (hasSite || hasPage) && document.activeElement !== u && !document.body.classList.contains('fx-own-labels');
+    if (!on || i < 0) { if (m) m.remove(); geo.url = ''; geo.site = geo.page = null; return; }
+    if (!m) { m = document.createElement('div'); m.className = 'fx-mirror'; m.setAttribute('aria-hidden', 'true'); omni.appendChild(m); geo.url = ''; }
+    var cs = getComputedStyle(u), key = v + '|' + hasSite + hasPage;
+    m.style.cssText = 'left:' + u.offsetLeft + 'px;top:' + u.offsetTop + 'px;width:' + u.offsetWidth + 'px;height:' + u.offsetHeight + 'px;' +
+      'font:' + cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily + ';line-height:' + u.clientHeight + 'px;letter-spacing:' + cs.letterSpacing + ';padding:0 ' + cs.paddingRight + ' 0 ' + cs.paddingLeft + ';border:0 solid transparent;border-left-width:' + cs.borderLeftWidth + ';';
+    if (geo.url !== key) {      /* a new address: the lines grow again from the start */
+      geo.url = key;
+      m.innerHTML = '<span class="fx-w site' + (hasSite ? '' : ' off') + '">' + esc(v.slice(0, i)) + '</span>/<span class="fx-w page' + (hasPage ? '' : ' off') + '">' + esc(v.slice(i + 1)) + '</span>';
+    }
+    ['site', 'page'].forEach(function (c) { var e = m.querySelector('.fx-w.' + c), r = e && e.getBoundingClientRect(); geo[c] = e && !e.classList.contains('off') && r.width ? (r.left + r.right) / 2 : null; });
+  }
+  /* each box sits exactly under its word: its arrow points at the middle of the word */
+  function centre(sel, cx) {
+    var b = q(sel), box = q('.br-parts'); if (!b || !box || cx == null) return;
+    var br = box.getBoundingClientRect(), k = box.offsetWidth / Math.max(1, br.width), left = Math.max(4, (cx - br.left) * k - b.offsetWidth / 2);
+    if (Math.abs(parseFloat(b.style.left || 0) - left) > 1) b.style.left = left.toFixed(1) + 'px';
+  }
+  setInterval(function () {
+    var l = q('#laptop'); if (!l || !q('#br')) return;
+    try { fitLines(); centre('.br-parts .br-part.site', geo.site); centre('.br-parts .br-part.page', geo.page); } catch (e) { }
+    if (!scrolled) { try { var fr = q('#br .br-f'), d = fr && fr.contentDocument, se = d && (d.scrollingElement || d.documentElement); if ((se && se.scrollTop > 8) || (fr && fr.contentWindow && fr.contentWindow.scrollY > 8)) scrolled = true; } catch (e) { } }
+    l.classList.toggle('fx-scrolled', scrolled);
+  }, 200);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): when a step asks the student to change the page name in the address, the lab no longer
+   empties the page name for him when he clicks the address bar. The address stays as it is («camelcode.shop/contact»):
+   the student deletes the current page name himself and types the new one. A small gold box under the address guides
+   him: first to click the page name, then to delete it, then to type the new name and press Enter. The lab's faint
+   typing hint still appears once the old name is deleted. */
+(function () {
+  'use strict';
+  if (window.__farhanUrlKeep) return; window.__farhanUrlKeep = 1;
+  var want = null, meas = null;
+  function q(s) { return document.querySelector(s); }
+  function bar() { return q('#laptop #br .br-url') || q('#laptop .br-url'); }
+  /* know which page name the step asks for: the lab tells its address bar through P.urlGhost */
+  setInterval(function () {
+    var P = window.CC && CC.P; if (!P || !P.urlGhost || P.urlGhost.__fx) return;
+    var orig = P.urlGhost;
+    P.urlGhost = function (t) { want = t || null; return orig.apply(this, arguments); };
+    P.urlGhost.__fx = 1; want = null;
+  }, 250);
+  /* the click on the address bar: keep the address the student sees */
+  document.addEventListener('focus', function (e) {
+    var u = e.target; if (!u || !u.classList || !u.classList.contains('br-url') || !want) return;
+    var before = null;
+    setTimeout(function () { before = u.value; }, 0);                       /* after the bar's own handler wrote the full address, before the lab empties the page name */
+    setTimeout(function () {
+      if (before == null || document.activeElement !== u || u.value === before) return;
+      if (before.indexOf(u.value) !== 0) return;                             /* only undo the emptying */
+      u.value = before;
+      try { u.setSelectionRange(before.length, before.length); } catch (x) { }
+      u.dispatchEvent(new Event('input', { bubbles: true }));
+    }, 8);
+  }, true);
+  function code(t) { return '<code>' + String(t).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }) + '</code>'; }
+  setInterval(function () {
+    var u = bar(), lap = q('#laptop'), view = q('#laptop #br .br-view'), tip = q('.fx-urltip');
+    var on = !!want && !!u && !!view && !q('.overlay') && lap && !lap.classList.contains('cc-web-shut') && u.getBoundingClientRect().width > 0;
+    if (!on) { if (tip) tip.remove(); if (lap) lap.classList.remove('fx-urltip-on'); return; }
+    var v = u.value || '', i = v.indexOf('/'), host = i < 0 ? v : v.slice(0, i), page = i < 0 ? '' : v.slice(i + 1), foc = document.activeElement === u, html;
+    if (page && want.indexOf(page) !== 0) html = foc ? 'احذف اسم الصفحة ' + code(page) + ' ثم اكتب ' + code(want) : 'اضغط على اسم الصفحة ' + code(page) + ' ثم احذفه واكتب ' + code(want);
+    else if (page === want) html = 'اضغط ' + code('Enter') + ' لفتح الصفحة';
+    else html = (foc ? 'اكتب' : 'اضغط هنا ثم اكتب') + ' اسم الصفحة الجديدة ' + code(want);
+    if (!tip) { tip = document.createElement('div'); tip.className = 'fx-urltip'; tip.setAttribute('role', 'status'); view.appendChild(tip); }
+    if (tip.__h !== html) { tip.__h = html; tip.innerHTML = html; }
+    lap.classList.add('fx-urltip-on');
+    /* under the page name, its arrow pointing up at it */
+    var r = u.getBoundingClientRect(), vr = view.getBoundingClientRect(), cs = getComputedStyle(u), k = r.width / Math.max(1, u.offsetWidth);
+    meas = meas || document.createElement('canvas').getContext('2d'); meas.font = cs.font;
+    var x0 = (r.left - vr.left) / k + (parseFloat(cs.paddingLeft) || 0) - u.scrollLeft;
+    var cx = x0 + meas.measureText(host + '/').width + Math.max(8, meas.measureText(page).width / 2);
+    var w = tip.offsetWidth, L = Math.max(4, Math.min(view.clientWidth - w - 4, cx - w / 2));
+    tip.style.left = L + 'px'; tip.style.setProperty('--ax', Math.max(12, Math.min(w - 12, cx - L)) + 'px');
+  }, 150);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): when the student sends a form on the site and the SAME page comes back (a wrong
+   password on the login page), the page no longer jumps to its top: it stays where the student was typing. */
+(function () {
+  'use strict';
+  if (window.__farhanKeepScroll) return; window.__farhanKeepScroll = 1;
+  var mark = null, lastDoc = null;
+  function q(s) { return document.querySelector(s); }
+  function path() { var u = q('#laptop .br-url'); return u ? (u.value || '') : ''; }
+  function sc(d) { return d.scrollingElement || d.documentElement; }
+  setInterval(function () {
+    var f = q('#laptop #br .br-f') || q('#laptop .br-f'), d = null;
+    try { d = f && f.contentDocument; } catch (e) { d = null; }
+    if (!d || !d.body) return;
+    if (d !== lastDoc) {
+      lastDoc = d;
+      var note = function () { mark = { y: sc(d).scrollTop, p: path(), t: Date.now() }; };
+      d.addEventListener('submit', note, true);
+      d.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('button, input[type=submit]')) note(); }, true);
+      d.addEventListener('keydown', function (e) { if (e.key === 'Enter') note(); }, true);
+      if (mark && mark.y > 4 && Date.now() - mark.t < 2500) mark.doc = d;       /* the page that came back after the send */
+    }
+    if (mark && mark.doc === d) {
+      if (Date.now() - mark.t > 3000 || path() !== mark.p) { mark = null; return; }
+      var s = sc(d);
+      if (s.scrollHeight - s.clientHeight >= mark.y - 2) {
+        if (Math.abs(s.scrollTop - mark.y) > 2) s.scrollTop = mark.y; else if (Date.now() - mark.t > 900) mark = null;
+      }
+    }
+  }, 50);
+})();
+
+/* Farhan 2026-11-20 (EH2 lab 1): the link between the page (right) and its code (left).
+   1. Hovering an element of the page that takes several code lines (a paragraph, a section) highlights ALL its lines:
+      the opening line, the content between, and the closing line. Before, only the first and last lines lit up.
+   2. In a step that is about ONE component (the <h1> line, the <img line), the highlight stays on that component, in
+      the code and on the page, for the whole step. Moving the mouse over other parts of the page or the code does not
+      change it. The free hovering comes back in the steps that ask for it.
+   3. Arabic comments in the code read from right to left: the Arabic text of a comment line is laid out as Arabic,
+      while the symbols <!-- and --> stay where code puts them. */
+(function () {
+  'use strict';
+  var FOCUS = { h1: 1, img: 1 }, lastDoc = null, wasLocked = false;
+  function q(s) { return document.querySelector(s); }
+  function code() { return q('#laptop .br-code'); }
+  function glowRow() { var c = code(), r = c && c.querySelector('.ln.glow'); return r && FOCUS[r.getAttribute('data-m')] ? r : null; }
+  function locked() { return !!glowRow(); }
+  function fdoc() { var f = q('#laptop .br-f'); try { return f && f.contentDocument; } catch (e) { return null; } }
+
+  /* 2. the student's own mouse does not move the highlight while a step is about one component */
+  function block(e) {
+    if (!e.isTrusted || !locked()) return;
+    var t = e.target; if (!t || !t.closest || !t.closest('.br-code .ln')) return;
+    e.stopPropagation();
+  }
+  document.addEventListener('mouseenter', block, true);
+  document.addEventListener('mouseleave', block, true);
+  function blockPage(e) { if (e.isTrusted && locked()) e.stopPropagation(); }
+
+  /* 1. every line of the element under the mouse */
+  function mid() {
+    var c = code(); if (!c) return;
+    var a = c.querySelector('.ln.hv'), b = c.querySelector('.ln.hv2'), lo = -1, hi = -1;
+    if (a && b) { lo = +a.getAttribute('data-i'); hi = +b.getAttribute('data-i'); if (lo > hi) { var t = lo; lo = hi; hi = t; } }
+    [].forEach.call(c.children, function (r) {
+      var i = +r.getAttribute('data-i'), on = i > lo && i < hi;
+      if (r.classList.contains('fx-mid') !== on) r.classList.toggle('fx-mid', on);
+    });
+  }
+
+  /* 3. Arabic comment lines */
+  function rtl() {
+    var c = code(); if (!c) return;
+    [].forEach.call(c.querySelectorAll('.ln .code .c:not([data-fx])'), function (s) {
+      s.setAttribute('data-fx', '1');
+      var t = s.textContent; if (!/[؀-ۿ]/.test(t)) return;
+      var m = /^(\s*(?:<!--\s?)?)([\s\S]*?)(\s?-->\s*)?$/.exec(t); if (!m) return;      /* indentation and <!-- stay outside the Arabic part */
+      s.textContent = '';
+      if (m[1]) s.appendChild(document.createTextNode(m[1]));
+      var b = document.createElement('span'); b.className = 'fx-ar'; b.setAttribute('dir', 'rtl'); b.textContent = m[2]; s.appendChild(b);
+      if (m[3]) s.appendChild(document.createTextNode(m[3]));
+    });
+  }
+
+  setInterval(function () {
+    var d = fdoc();
+    if (d && d !== lastDoc && d.defaultView) {
+      lastDoc = d;
+      d.defaultView.addEventListener('mouseover', blockPage, true);
+      d.defaultView.addEventListener('mouseleave', blockPage, true);
+      d.addEventListener('mouseleave', blockPage, true);
+    }
+    rtl(); mid();
+    var row = glowRow(), c = code();
+    if (row) {
+      wasLocked = true;
+      if (c) [].forEach.call(c.querySelectorAll('.ln.hv, .ln.hv2'), function (r) { r.classList.remove('hv', 'hv2'); });
+      if (d && d.body && !d.querySelector('.cc-hl')) row.dispatchEvent(new MouseEvent('mouseenter'));     /* the lab's own link: this line's element lights up on the page */
+    } else if (wasLocked) {
+      wasLocked = false;
+      var any = c && c.querySelector('.ln'); if (any) any.dispatchEvent(new MouseEvent('mouseleave'));     /* the step is over: the page highlight is released */
+    }
+  }, 200);
+})();
+</script>
+<!--/cc-touches-->
 </body>
 </html>

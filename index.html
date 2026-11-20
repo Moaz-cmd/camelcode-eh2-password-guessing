@@ -3664,7 +3664,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     e_wait: 'الأمر جاهز على الحاسوب، والهاتف ينتظرك.',
     tk_guess: 'خمّن', tk_password: 'كلمة السر', tk_len: 'عدد خانات كلمة السر', 
     r_start: 'عدد الاحتمالات: {total}',
-    r_found: 'وجدتها! كلمة السر: {pw}',
+    r_found: 'وجدتها! كلمة السر هي: {pw}',
     r_found2: 'بعد {n} محاولة',
     r_none: 'جرّب الحاسوب كل الاحتمالات ولم يجد كلمة السر. تحقّق من عدد الخانات ومما تتكون كلمة المرور (أرقام أم أحرف).',
     r_cap: 'أجرينا {n} محاولة من أصل {total}.',
@@ -3679,7 +3679,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     m_typo: 'الكلمة `{w}` غير صحيحة. اكتبها هكذا: `{fix}`',
     m_nopw: 'الأمر غير مكتمل: كلمة `guess` وحدها لا تكفي',
     m_order: 'ترتيب الأمر غير صحيح. يبدأ الأمر بالكلمة `guess` ثم `password`',
-    m_unknown: 'الأمر `{w}` غير صحيح. يبدأ الأمر بالكلمة `guess`',
+    m_unknown: 'الأمر `{w}` غير صحيح.',
     m_nolen: 'الأمر غير مكتمل: عدد الخانات غير موجود. كلمة السر على الهاتف من `{n}` خانات، فأضف `{lenx}` بعد `password`',
     m_nan: 'عدد الخانات `{w}` غير صحيح. اكتبه بالأرقام: كلمة السر على الهاتف من `{n}` خانات',
     m_len: 'عدد الخانات `{w}` غير صحيح. الأعداد المتاحة `4` و`6`',
@@ -5555,5 +5555,703 @@ window.CC_MISSION = {"stages":[{"label":"خمّن كلمة السر","keys":["t_
 /* the warning line is always ONE line (Moaz 2026-11-15, every lab): its text shrinks to the width it has, and grows back up to its normal size */
 (function(){var lastW=-1,lastT='';function fit(){try{var f=document.querySelector('.ethics'),s=f&&f.querySelector('span');if(!f||!s)return;var cs=getComputedStyle(f),w=f.clientWidth-(parseFloat(cs.paddingLeft)||0)-(parseFloat(cs.paddingRight)||0),t=s.textContent;if(w===lastW&&t===lastT)return;lastW=w;lastT=t;s.style.fontSize='';var nat=s.offsetWidth;if(w>0&&nat>w){var base=parseFloat(getComputedStyle(s).fontSize)||16;s.style.fontSize=Math.max(8,Math.floor(base*w/nat*10)/10)+'px';}}catch(e){}}(function loop(){fit();requestAnimationFrame(loop);})();if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){lastW=-1;fit();});})();
 </script>
+<!--cc-touches-->
+<style id="cc-touches">
+/* Farhan's shared add-on for every lab: small touches on the laptop's desktop and on the phone (2026-11-19). */
+
+/* the phone gets a little brighter while the mouse is over it */
+.phone{transition:filter .2s ease}
+.phone:hover{filter:brightness(1.12) saturate(1.05)}
+
+/* no CamelCode icon in the corner of the laptop's top bar (the name «كاملكود» stays) */
+.cc-mb-logo{display:none!important}
+
+/* hovering an open app's icon in the dock shows that app, like a real laptop; moving away returns to the app that was in front */
+.fx-peek{z-index:70!important;animation:fx-peekin .16s ease-out}
+.cc-wins.fx-peek-host{z-index:70!important}
+@keyframes fx-peekin{from{opacity:.4;transform:scale(.985)}to{opacity:1;transform:none}}
+.cc-dock .cc-app.fx-peeking{filter:brightness(1.15)}
+@media (prefers-reduced-motion:reduce){.fx-peek{animation:none}}
+
+/* the gold box over a dock icon («ابدأ هنا ...») is always a wide rectangle: its sentence stays on one line (Farhan 2026-11-19) */
+.cc-dock .cc-app.cue .cc-tip{width:max-content!important;max-width:none!important;min-width:0!important;padding:.55cqw 1.6cqw .65cqw!important}
+.cc-dock .cc-app.cue .cc-tip em{white-space:nowrap!important}
+.cc-dock .cc-app.cue .cc-tip b{white-space:nowrap!important}
+
+/* a question that has just appeared («سؤال جديد») waits until the popups on screen are finished (Farhan 2026-11-19) */
+body.fx-popup .qrow.qnew{display:none!important}
+
+/* the congratulations card also offers to start the lab again (Farhan 2026-11-19) */
+.pcard.cele .pc-foot{gap:12px;flex-wrap:wrap}
+.pcard.cele .fx-again{background:#fff!important;color:#0E1F39!important;border:2px solid #0E1F39!important;box-shadow:none!important}
+.pcard.cele .fx-again:hover{background:#f1ece3!important}
+
+/* the folder name and what the student types stay on ONE line of the command screen, also when the window is narrow (Farhan 2026-11-19) */
+.cs-log .cs-in{flex-wrap:nowrap!important}
+.cs-log .cs-in .inwrap{flex:1 1 0!important;min-width:0!important}
+.cs-log .cs-in .prompt.dyn{max-width:70%!important;flex:none}
+
+/* «شرح الأمر»: each part's explanation stays on one line (wide, not tall); the box uses the free width of the command screen,
+   and parts go to a second row only when they truly do not fit (Farhan 2026-11-19) */
+.cs .cs-chips{flex-wrap:wrap!important;justify-content:center!important}
+.cs .cs-chips .tk{flex:0 0 auto!important;max-width:none!important;min-width:0!important}
+.cs .cs-chips .tk small{white-space:nowrap!important;overflow-wrap:normal!important}
+.cs .cs-chips .tk small{width:auto!important;min-width:0!important;max-width:none!important;position:static!important}
+.cs .cs-chips{gap:.6cqw 1.8cqw!important}
+
+/* a command whose result is taller than the command screen is shown from its first line, with a bouncing
+   «مرّر للأسفل» pill that says there is more below (Farhan 2026-11-19) */
+.fx-more{position:absolute;left:50%;bottom:1cqw;transform:translateX(-50%);z-index:13;display:flex;align-items:center;gap:.5cqw;border:0;cursor:pointer;
+  background:#FCAD0F;color:#0E1F39;font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:max(11px,1.25cqw);line-height:1.5;
+  padding:.3cqw 1.2cqw;border-radius:999px;box-shadow:0 .8cqw 1.6cqw -.6cqw rgba(0,0,0,.6);white-space:nowrap;direction:rtl;animation:fx-morebob 1.2s ease-in-out infinite}
+.fx-more svg{width:1.3cqw;height:1.3cqw;min-width:12px;min-height:12px}
+@keyframes fx-morebob{50%{transform:translateX(-50%) translateY(.5cqw)}}
+@media (prefers-reduced-motion:reduce){.fx-more{animation:none}}
+
+/* the highlight on a word of the command screen (the current folder in the prompt) is a sliding underline, not a circle:
+   it grows slowly under the word, rests, fades and grows again (Farhan 2026-11-20) */
+.cs .cc-hl::after{left:0!important;right:0!important;top:auto!important;bottom:-.28em!important;height:3px!important;border:0!important;border-radius:3px!important;
+  box-shadow:none!important;background:#FFC94A!important;transform-origin:left center;animation:fx-ulloop 2.8s ease-in-out infinite both!important}
+@keyframes fx-ulloop{0%{transform:scaleX(0);opacity:1}40%{transform:scaleX(1);opacity:1}82%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+
+/* the notes app: a task can be ticked as done, or unticked, by clicking it (Farhan 2026-11-20) */
+.cc-note li{cursor:pointer;border-radius:.6cqw;padding:.15cqw .4cqw;margin:-.15cqw -.4cqw;transition:background .15s;user-select:none}
+.cc-note li:hover{background:rgba(14,31,57,.07)}
+.cc-note li::before{transition:background-color .2s,border-color .2s,transform .2s}
+.cc-note li:active::before{transform:scale(.85)}
+.cc-note li.ok>span,.cc-note li.ok{color:#5b6473}
+.cc-note li.fx-tick::before{animation:fx-tick .35s cubic-bezier(.3,1.7,.5,1)}
+@keyframes fx-tick{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
+/* Farhan 2026-11-20 (EH1 lab 5): the gold ring that marks the typing line no longer covers the last line of the
+   previous command's result: the typing line keeps a clear gap above it. */
+.cs-log .cs-in{margin-top:16px!important}
+/* Farhan 2026-11-20: the box «اكتب الأمر هنا» is only for the first command (see os.js) */
+body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
+
+/* Farhan 2026-11-20 (EH1 lab 5): «متابعة» cannot be pressed before the step's text has finished writing itself */
+.cc-cur.typing .cc-go{display:none!important}
+/* the copy button next to a command in the step's explanation (see os.js); only on the step on screen now */
+.fx-copy{display:none}
+.cc-cur .cc-txt .fx-copy{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin:0 3px;padding:1px 9px;border:1.5px solid #0E1F39;border-radius:99px;background:#FCAD0F;color:#0E1F39;
+  font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:.78em;line-height:1.7;cursor:pointer;direction:rtl;white-space:nowrap;transition:transform .12s,background .2s}
+.cc-cur .cc-txt .fx-copy svg{width:1.05em;height:1.05em;flex:none}
+.cc-cur .cc-txt .fx-copy:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.cc-cur .cc-txt .fx-copy:active{transform:translateY(1px)}
+.cc-cur .cc-txt .fx-copy.ok{background:#2E9E5B;border-color:#2E9E5B;color:#fff}
+.cc-cur.typing .cc-txt .fx-copy{display:none}
+/* the cue on a dock icon (bounce, gold ring, box above it): used to send the student to the browser first */
+.cc-dock .cc-app.fx-cue{position:relative;animation:fx-cue 1s ease-in-out infinite;z-index:5}
+.cc-dock .cc-app.fx-cue::after{content:"";position:absolute;inset:-5px;border:3px solid #FCAD0F;border-radius:16px;animation:fx-cuering 1.2s ease-out infinite}
+@keyframes fx-cue{50%{transform:translateY(-8px)}}
+@keyframes fx-cuering{from{opacity:1;transform:scale(.9)}to{opacity:0;transform:scale(1.35)}}
+.cc-dock .cc-app .fx-tip{position:absolute;bottom:128%;left:50%;transform:translateX(-50%);background:#FCAD0F;color:#0E1F39!important;font-family:"Montserrat Arabic",Tahoma,sans-serif;
+  font-weight:800!important;font-size:17px!important;line-height:1.5!important;padding:7px 14px;border-radius:12px;width:max-content;max-width:none;white-space:nowrap;text-align:center;direction:rtl;
+  box-shadow:0 10px 20px -8px rgba(0,0,0,.6);pointer-events:none}
+.cc-dock .cc-app .fx-tip::after{content:"";position:absolute;top:100%;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:#FCAD0F}
+.cc-dock .cc-app.fx-cue .cc-tip{display:none!important}
+@media (prefers-reduced-motion:reduce){.cc-dock .cc-app.fx-cue,.cc-dock .cc-app.fx-cue::after{animation:none}}
+
+/* Farhan 2026-11-20 (EH1 lab 5): the «شرح الأمر» box at the top of the command screen is written bigger */
+.cs .cs-chips .tk b{font-size:max(13px,1.6cqw)!important}
+.cs .cs-chips .tk small{font-size:max(12px,1.35cqw)!important;line-height:1.5!important}
+.cs .cs-chips:not(:empty)::before{font-size:max(12px,1.35cqw)!important}
+
+/* Farhan 2026-11-20 (EH1 lab 5): a finished step in the steps list (the right side) opens by itself while the mouse is
+   over it, showing its whole text, and closes again when the mouse leaves. */
+@media (hover:hover){
+  .cc-step:hover{opacity:1!important}
+  .cc-step:hover .cc-txt{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
+}
+
+/* Farhan 2026-11-19 (EH1 lab 1): the realistic cable (see cable.js). The wire: a soft outline, the white body, a thin highlight. */
+#cable.fx-real rect:not(.fx-keep){display:none}
+#cable.fx-real .fx-usb rect{display:inline}
+#cable.fx-real .w1{stroke:#b4bac4;stroke-width:12.2}
+#cable.fx-real .w2{stroke:#f3f5f8;stroke-width:10}
+#cable.fx-real .w3{stroke:#ffffff;stroke-width:2.4;opacity:.9}
+#cable.fx-real .fx-usb{filter:drop-shadow(0 1.5px 1.5px rgba(14,31,57,.22))}
+
+/* Farhan 2026-11-19 (EH1 lab 1): the bouncing gold box that points at the command box and shows the command to retype (see retry.js) */
+.fx-retip{display:flex!important;align-items:center;gap:.9cqw;max-width:none!important;width:max-content;white-space:nowrap;z-index:14!important}
+.fx-retip code{font-family:ui-monospace,Consolas,monospace;font-weight:800;font-size:1.05em;background:#0E1F39;color:#FCAD0F;border-radius:.6cqw;padding:.15cqw .9cqw;direction:ltr;unicode-bidi:isolate}
+</style>
+<script id="cc-touches-js">
+/* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
+   window; moving the mouse away returns to the app that was in front. Nothing in the lab changes: the window
+   is only lifted while the mouse is on the icon. A click still opens the app for real, as before. */
+(function () {
+  'use strict';
+  if (window.__farhanOS) return; window.__farhanOS = 1;
+  var cur = null, btn = null;
+  function winOf(b) {
+    var l = document.getElementById('laptop'), id = b.getAttribute('data-app'); if (!l || !id) return null;
+    if (id === 'term') return l.classList.contains('cc-closed') ? null : l.querySelector('.lscreen .cs');
+    if (id === 'web') return l.classList.contains('cc-web-shut') ? null : l.querySelector('.br.cc-embedded');
+    var w = l.querySelector('.cc-win[data-app="' + id + '"]'); return w && !w.classList.contains('cc-min') ? w : null;
+  }
+  /* the window is lifted above EVERY other window while the mouse is on its icon. Some windows live inside a holder
+     (.cc-wins) that sits under the command screen, so the holder is lifted with it. */
+  function stop() {
+    if (cur) { cur.classList.remove('fx-peek'); var h = cur.closest('.cc-wins'); if (h) h.classList.remove('fx-peek-host'); }
+    if (btn) btn.classList.remove('fx-peeking'); cur = btn = null;
+  }
+  document.addEventListener('mouseover', function (e) {
+    var b = e.target.closest ? e.target.closest('.cc-dock .cc-app') : null;
+    if (b === btn) return;
+    stop(); if (!b || !b.classList.contains('run')) return;
+    var w = winOf(b); if (!w) return;
+    cur = w; btn = b; w.classList.add('fx-peek'); b.classList.add('fx-peeking');
+    var host = w.closest('.cc-wins'); if (host) host.classList.add('fx-peek-host');
+  });
+  document.addEventListener('mouseout', function (e) {
+    if (!btn) return;
+    var to = e.relatedTarget; if (to && btn.contains(to)) return;
+    stop();
+  });
+  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.cc-dock .cc-app')) stop(); }, true);
+})();
+
+/* Farhan 2026-11-19: no user name and no computer name in any command screen («student@pc:»).
+   The prompt and the echoed command lines show only the folder we are in: Desktop, Desktop/folder ... */
+(function () {
+  'use strict';
+  if (window.__farhanPrompt) return; window.__farhanPrompt = 1;
+  var SEL = '.pe,.prompt:not(.dyn),.pu';
+  function clean(e) {
+    if (!e || e.children.length) return;
+    var t = e.textContent, n = e.classList.contains('pu') ? '' : t.replace(/^[^\s:@]+@[^\s:@]+:/, '').replace(/^~(?=[$\/]|$)/, 'Desktop').replace(/\$\s*$/, '');      /* and no «$» after the folder */
+    if (n !== t) e.textContent = n;
+  }
+  function sign(p) { [].forEach.call(p.childNodes, function (n) { if (n.nodeType === 3 && /^\s*\$\s*$/.test(n.textContent)) n.textContent = ''; }); }      /* the live prompt keeps its «$» as loose text */
+  function scan(root) {
+    if (root.matches && root.matches(SEL)) clean(root); if (root.querySelectorAll) [].forEach.call(root.querySelectorAll(SEL), clean);
+    if (root.matches && root.matches('.prompt.dyn')) sign(root); if (root.querySelectorAll) [].forEach.call(root.querySelectorAll('.prompt.dyn'), sign);
+  }
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      if (m.type === 'characterData') { var p = m.target.parentNode; if (p && p.matches && p.matches(SEL)) clean(p); return; }
+      [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) scan(n); else if (n.nodeType === 3 && n.parentNode && n.parentNode.matches && n.parentNode.matches(SEL)) clean(n.parentNode); });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  scan(document);
+})();
+
+/* Farhan 2026-11-19: a newly revealed question («سؤال جديد») does not show while a popup is on screen.
+   It appears a moment after the last popup has closed (so it does not flash between two popups), and is scrolled into view. */
+(function () {
+  'use strict';
+  if (window.__farhanQWait) return; window.__farhanQWait = 1;
+  var quietSince = 0;
+  setInterval(function () {
+    var b = document.body, open = !!document.querySelector('.overlay');
+    if (open) { quietSince = 0; b.classList.add('fx-popup'); return; }
+    if (!b.classList.contains('fx-popup')) return;
+    if (!quietSince) { quietSince = Date.now(); return; }
+    if (Date.now() - quietSince < 700) return;
+    b.classList.remove('fx-popup'); quietSince = 0;
+    var row = document.querySelector('.qrow.qnew'); if (row && row.scrollIntoView) try { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+  }, 150);
+})();
+
+/* Farhan 2026-11-19: the congratulations card (after all the questions) also has a button to start the lab again. */
+(function () {
+  'use strict';
+  if (window.__farhanAgain) return; window.__farhanAgain = 1;
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      [].forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType !== 1 || !n.classList.contains('overlay')) return;
+        var card = n.querySelector('.pcard.cele'), foot = card && card.querySelector('.pc-foot'), first = foot && foot.querySelector('button');
+        if (!foot || !first || foot.querySelector('.fx-again') || !(window.CC && CC.restart)) return;
+        var b = document.createElement('button'); b.type = 'button'; b.className = first.className + ' fx-again'; b.textContent = 'إعادة التدريب من البداية';
+        b.onclick = function () { n.remove(); try { CC.restart(); } catch (e) { } };
+        foot.appendChild(b);
+      });
+    });
+  }).observe(document.body, { childList: true });
+})();
+
+/* Farhan 2026-11-19: an error message on the command screen is shown from its START. The screen used to jump to
+   the bottom, so a long message was seen from its end. Now the screen scrolls so the first line of the newest
+   error is at the top of what is visible. */
+(function () {
+  'use strict';
+  if (window.__farhanErrTop) return; window.__farhanErrTop = 1;
+  function toTop(row) {
+    var log = row.closest('.cs-log'); if (!log) return;
+    var go = function () { if (!row.isConnected) return; var y = row.getBoundingClientRect().top - log.getBoundingClientRect().top, k = log.clientHeight / Math.max(1, log.getBoundingClientRect().height); log.scrollTop += y * k - 4; };
+    [40, 160, 420].forEach(function (ms) { setTimeout(go, ms); });      /* after the lab's own jump to the bottom */
+  }
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1 && n.classList.contains('errmsg')) toTop(n); }); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-19: when a command's result is taller than the command screen, the screen shows it from the
+   BEGINNING (the line of the command itself at the top), not from its end, and a bouncing pill says the student
+   can scroll down for the rest. The pill leaves at the bottom of the result or with the next command.
+   Long-running tools that print for many seconds keep the lab's own following of the output. */
+(function () {
+  'use strict';
+  if (window.__farhanOutTop) return; window.__farhanOutTop = 1;
+  var lastCmd = null, t0 = 0, timer = null;
+  function hint(log, on) {
+    var cs = log.closest('.cs'); if (!cs) return;
+    var h = cs.querySelector('.fx-more');
+    if (!on) { if (h) h.remove(); return; }
+    if (!h) {
+      h = document.createElement('button'); h.type = 'button'; h.className = 'fx-more';
+      h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><span>مرّر للأسفل لرؤية باقي النتيجة</span>';
+      h.onclick = function () { log.scrollBy({ top: log.clientHeight * .8, behavior: 'smooth' }); };
+      cs.appendChild(h);
+    }
+    if (!log.__fxMore) { log.__fxMore = 1; log.addEventListener('scroll', function () { if (log.scrollTop + log.clientHeight >= log.scrollHeight - 6) hint(log, false); }); }
+  }
+  function settle() {
+    var row = lastCmd; if (!row || !row.isConnected) return;
+    var log = row.closest('.cs-log'); if (!log) return;
+    if (Date.now() - t0 > 6500) return;                                    /* a long-running tool: the lab follows its output itself */
+    for (var n = row.nextElementSibling; n; n = n.nextElementSibling) if (n.classList.contains('errmsg')) return;   /* an error is already shown from its start */
+    var lr = log.getBoundingClientRect(), k = log.clientHeight / Math.max(1, lr.height), top = log.scrollTop + (row.getBoundingClientRect().top - lr.top) * k;
+    if (log.scrollHeight - top <= log.clientHeight + 4) { log.scrollTop = log.scrollHeight; return; }   /* it all fits: the newest command and its result are brought into view, also when the student had scrolled up */
+    log.scrollTop = Math.max(0, top - 3); hint(log, true);
+  }
+  new MutationObserver(function (ms) {
+    var touched = false;
+    ms.forEach(function (m) {
+      var host = m.target.nodeType === 1 ? m.target : m.target.parentNode; if (!host || !host.closest || !host.closest('.cs-log')) return;
+      [].forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType === 1 && n.classList.contains('cmdrow')) { lastCmd = n; t0 = Date.now(); var lg0 = host.closest('.cs-log'); hint(lg0, false); setTimeout(function () { lg0.scrollTop = lg0.scrollHeight; }, 20); }   /* the new command always comes into view first */
+        touched = true;
+      });
+    });
+    if (touched && lastCmd) { clearTimeout(timer); timer = setTimeout(settle, 450); }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-20: in the notes app a task is ticked as done, or unticked, by clicking it (or with Enter / Space). */
+(function () {
+  'use strict';
+  if (window.__farhanNotes) return; window.__farhanNotes = 1;
+  function toggle(li) {
+    li.classList.toggle('ok'); li.setAttribute('aria-checked', li.classList.contains('ok') ? 'true' : 'false');
+    li.classList.remove('fx-tick'); void li.offsetWidth; li.classList.add('fx-tick');
+  }
+  document.addEventListener('click', function (e) { var li = e.target.closest ? e.target.closest('.cc-note li') : null; if (li) toggle(li); });
+  document.addEventListener('keydown', function (e) { var li = e.target.closest ? e.target.closest('.cc-note li') : null; if (li && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle(li); } });
+  /* each task can be reached with the keyboard and is announced as a checkbox */
+  new MutationObserver(function () {
+    [].forEach.call(document.querySelectorAll('.cc-note li:not([role])'), function (li) { li.setAttribute('role', 'checkbox'); li.setAttribute('tabindex', '0'); li.setAttribute('aria-checked', li.classList.contains('ok') ? 'true' : 'false'); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): no «write the command here» signs for a command that has already been given,
+   whether it was typed or pasted.
+   1. While a command is running (the typing line is locked) or its result is still coming in, the gold ring and the
+      pointer on the typing line stay away. They come back only when the lab is ready for the next command.
+   2. The box «اكتب الأمر هنا ليتم تنفيذه على الحاسوب» is for the first command only: once the student has run any
+      command, it is not shown again (until the lab is restarted). */
+(function () {
+  'use strict';
+  if (window.__farhanCmdGuide) return; window.__farhanCmdGuide = 1;
+  function busy() { var i = document.querySelector('#laptop #cmd'); return !i || i.disabled || !!window.__fxBusy || !!document.querySelector('.cs-log .row.fx-hid'); }
+  function wrap() {
+    var G = window.CC && CC.guide; if (!G || !G.show || G.show.__fx) return;
+    var show = G.show;
+    G.show = function (get) {
+      var a = [].slice.call(arguments);
+      if (typeof get === 'function') a[0] = function () {
+        var e = get();
+        return (e && e.classList && e.classList.contains('inwrap') && busy()) ? null : e;
+      };
+      return show.apply(this, a);
+    };
+    G.show.__fx = 1;
+  }
+  wrap(); setInterval(wrap, 500);
+  var gen = null;
+  setInterval(function () {
+    var g = window.CC ? CC.gen : null;
+    if (g !== gen) { gen = g; document.body.classList.remove('fx-ran'); }              /* the lab was restarted */
+    if (document.querySelector('#laptop .cs-log .cmdrow')) document.body.classList.add('fx-ran');
+  }, 300);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): a copy button next to every command in the step's explanation (the right side).
+   One click copies the command, so the student can paste it on the command screen instead of typing it.
+   It appears once the step's text has finished typing, and only on the step that is on screen now. */
+(function () {
+  'use strict';
+  if (window.__farhanCopy) return; window.__farhanCopy = 1;
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
+  var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+  function copy(txt) {
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
+    var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+  }
+  setInterval(function () {
+    var cur = document.querySelector('.cc-cur'); if (!cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]]) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.innerHTML = IC + '<span>نسخ</span>';
+      b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copy(t);
+        b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ</span>'; }, 1500);
+        var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): a guide on the WEBSITE (a ring on a box of the page) is never drawn on top of the
+   command screen. While the command screen covers the website, the browser's icon in the dock bounces inside a gold
+   ring with a box «افتح المتصفح لتكمل الخطوة»; the ring on the page appears once the browser is in view. */
+(function () {
+  'use strict';
+  if (window.__farhanWebFirst) return; window.__farhanWebFirst = 1;
+  var need = 0;
+  function q(s) { return document.querySelector(s); }
+  function covered(e) {
+    var l = q('#laptop'), cs = q('#laptop .lscreen .cs'); if (!l || !cs || l.classList.contains('cc-closed')) return false;
+    var c = cs.getBoundingClientRect(); if (!c.width || !c.height || getComputedStyle(cs).display === 'none' || getComputedStyle(cs).visibility === 'hidden') return false;
+    var br = q('#laptop #br'), zc = parseInt(getComputedStyle(cs).zIndex, 10) || 0, zb = br ? parseInt(getComputedStyle(br).zIndex, 10) || 0 : 0;
+    if (br && zb > zc) return false;                                           /* the browser is the window in front */
+    var r = e.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    return x >= c.left && x <= c.right && y >= c.top && y <= c.bottom;
+  }
+  function wrap() {
+    var G = window.CC && CC.guide; if (!G || !G.show || G.show.__fxWeb) return;
+    var show = G.show;
+    G.show = function (get) {
+      var a = [].slice.call(arguments);
+      if (typeof get === 'function') a[0] = function () {
+        var e = get();
+        if (e && e.ccSite && covered(e)) { need = Date.now(); return null; }
+        return e;
+      };
+      return show.apply(this, a);
+    };
+    G.show.__fxWeb = 1; if (show.__fx) G.show.__fx = 1;
+  }
+  wrap(); setInterval(wrap, 500);
+  setInterval(function () {
+    var b = q('#laptop .cc-dock [data-app="web"]'); if (!b) return;
+    var on = Date.now() - need < 500 && !q('.overlay'), tip = b.querySelector('.fx-tip');
+    if (on) {
+      b.classList.add('fx-cue');
+      if (!tip) { tip = document.createElement('b'); tip.className = 'fx-tip'; tip.textContent = 'افتح المتصفح لتكمل الخطوة'; b.appendChild(tip); }
+    } else if (tip || b.classList.contains('fx-cue')) { b.classList.remove('fx-cue'); if (tip) tip.remove(); }
+  }, 200);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): the Tab key completes what the student is typing on the command screen, in every lab:
+   the command's name (dis + Tab = display), a file or folder name (read pas + Tab = read passwords.txt), and the other
+   parts of the command the step asks for once their first letters are typed (barq cam + Tab = barq camelcode.shop/admin).
+   With several matches it completes as far as they agree. It never runs anything and never types a part the student
+   has not started. A lab's own Tab completion (EH1 lab 2) is tried first. */
+(function () {
+  'use strict';
+  if (window.__farhanTab) return; window.__farhanTab = 1;
+  var cmds = null, ghost = null;
+  function labCmds() {
+    if (cmds) return cmds;
+    cmds = [];
+    [].forEach.call(document.scripts, function (s) {
+      if (s.id === 'cc-touches-js') return;
+      var m = /var CMDS = \[([^\]]*)\]/.exec(s.textContent || '');
+      if (m) m[1].replace(/'([^']+)'/g, function (_, w) { if (cmds.indexOf(w) < 0) cmds.push(w); });
+    });
+    return cmds;
+  }
+  /* the command the step asks for (the lab's faint hint), to complete its parts */
+  setInterval(function () {
+    var L = window.CC && CC.L; if (!L || !L.ghost || L.ghost.__fx) return;
+    var orig = L.ghost; L.ghost = function (t) { ghost = t || null; return orig.apply(this, arguments); }; L.ghost.__fx = 1; ghost = null;
+  }, 250);
+  function names(dirAbs) {
+    var fs = window.CC && CC.labFS, out = [];
+    try { var r = fs && fs.walk(dirAbs); if (r && r.node && r.node.kids) Object.keys(r.node.kids).forEach(function (k) { out.push(k); }); } catch (e) { }
+    return out;
+  }
+  function common(a) { var p = a[0] || ''; a.forEach(function (x) { while (x.toLowerCase().indexOf(p.toLowerCase()) !== 0) p = p.slice(0, -1); }); return p; }
+  function complete(v) {
+    var sp = v.lastIndexOf(' '), head = v.slice(0, sp + 1), cur = v.slice(sp + 1), isCmd = head.trim() === '', cand = [], pre = '';
+    var g = ghost ? ghost.split(/\s+/) : [], idx = head.trim() ? head.trim().split(/\s+/).length : 0;
+    if (isCmd) {
+      cand = labCmds().slice(); if (g[0] && cand.indexOf(g[0]) < 0) cand.push(g[0]);
+      if (!cur) return null;
+    } else {
+      var sl = cur.lastIndexOf('/'), fs = window.CC && CC.labFS, base = cur;
+      if (fs) {
+        try {
+          var dir = fs.cwd;
+          if (sl >= 0 && !/[.@]/.test(cur.slice(0, sl))) { pre = cur.slice(0, sl + 1); base = cur.slice(sl + 1); dir = fs.resolve(pre); }
+          cand = names(dir);
+        } catch (e) { cand = []; }
+      }
+      cur = base;
+      if (!pre && cur && g[idx] && g[0] && head.trim().split(/\s+/)[0] === g[0] && cand.indexOf(g[idx]) < 0) cand.push(g[idx]);   /* a part of the asked command, once started */
+    }
+    var hit = cand.filter(function (c) { return c.toLowerCase().indexOf(cur.toLowerCase()) === 0; });
+    if (!hit.length) return null;
+    if (hit.length === 1) return head + pre + hit[0] + (isCmd ? ' ' : '');
+    var p = common(hit); return p.length > cur.length ? head + pre + p : null;
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+    var i = e.target; if (!i || i.id !== 'cmd' || !i.closest || !i.closest('#laptop')) return;
+    e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (i.disabled) return;
+    var v = i.value, nv = null;
+    try { var L = window.CC && CC.L; if (L && L.tabFn) nv = L.tabFn(v); } catch (x) { nv = null; }
+    if (nv == null || nv === v) nv = complete(v);
+    if (nv == null || nv === v) return;
+    i.value = nv; try { i.setSelectionRange(nv.length, nv.length); } catch (x) { }
+    i.dispatchEvent(new Event('input', { bubbles: true }));
+  }, true);
+})();
+
+/* Farhan 2026-11-19, for labs with the phone: the student may type the phone's password with the real keyboard
+   too, and paste it (Ctrl+V), not only click the phone's keys. Each character presses the matching key on the
+   phone's own keyboard (so the lab works exactly as with clicks: same sounds, same checks). The phone takes the
+   typing after it is clicked, or whenever no text box on the page has the cursor. */
+(function () {
+  'use strict';
+  if (window.__farhanPhoneKeys) return; window.__farhanPhoneKeys = 1;
+  var active = false, BS = '⌫', SH = '⇧';
+  function phone() { return document.querySelector('.phone'); }
+  function shown(e) { return !!e && e.offsetParent !== null; }
+  function t(k) { try { return window.CC && CC.t ? CC.t(k) : ''; } catch (e) { return ''; } }
+  document.addEventListener('mousedown', function (e) {
+    var p = phone(); active = !!(p && p.contains(e.target));
+    if (active) { var a = document.activeElement; if (a && /^(INPUT|TEXTAREA)$/.test(a.tagName)) a.blur(); }
+  }, true);
+  function tap(p, label) {
+    var b = [].filter.call(p.querySelectorAll('.kbd .kk'), function (x) { return x.getAttribute('data-ch') === label; })[0];
+    if (!b) return false;
+    b.classList.add('press'); setTimeout(function () { b.classList.remove('press'); }, 130); b.click(); return true;
+  }
+  function has(p, label) { return [].some.call(p.querySelectorAll('.kbd .kk'), function (x) { return x.getAttribute('data-ch') === label; }); }
+  /* is the phone the place this typing is meant for? */
+  function mine(tg) {
+    var p = phone(); if (!p) return null;
+    var inBox = tg && (/^(INPUT|TEXTAREA|SELECT)$/.test(tg.tagName) || tg.isContentEditable);
+    if (inBox && !active) return null;                              /* the student is typing somewhere else (the command screen, an answer) */
+    if (document.querySelector('.overlay,.wk-bub')) return null;     /* a popup is open */
+    return p;
+  }
+  /* one key (a character, 'Backspace', 'Enter' or ' ') pressed on the phone; true when the phone took it */
+  function press(p, k) {
+    var field = p.querySelector('.pfield'), pad = p.querySelector('.keys');
+    if (shown(field)) {                                             /* the keyboard screen (letters, numbers, symbols) */
+      if (field.closest('.nokbd')) field.click();                   /* like tapping the field: the keyboard comes up */
+      if (k === 'Backspace') return tap(p, BS);
+      if (k === 'Enter') return tap(p, t('p_open'));
+      if (k === ' ') return tap(p, t('p_space'));
+      if (k.length !== 1) return false;
+      if (/[a-z]/i.test(k)) {
+        if (!has(p, 'q') && !has(p, 'Q')) tap(p, 'ABC');
+        if (!has(p, k)) tap(p, SH);                                 /* shift on for a capital, off for a small letter */
+        return tap(p, k);
+      }
+      if (/[0-9]/.test(k)) { if (!has(p, '1')) tap(p, '123'); return tap(p, k); }
+      if (tap(p, k)) return true;
+      tap(p, has(p, '123') ? '123' : has(p, '=+') ? '=+' : '123'); if (tap(p, k)) return true;
+      if (has(p, '=+')) { tap(p, '=+'); return tap(p, k); }
+      return false;
+    }
+    if (shown(pad)) {                                               /* the number pad */
+      var b = /^[0-9]$/.test(k) ? pad.querySelector('.key[data-k="' + k + '"]') : k === 'Backspace' ? pad.querySelector('.key[data-k="del"]') : null;
+      if (b) { b.click(); return true; }
+    }
+    return false;
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    var p = mine(e.target); if (p && press(p, e.key)) e.preventDefault();
+  }, true);
+  /* pasting: every character of the copied text is typed on the phone, one after the other */
+  document.addEventListener('paste', function (e) {
+    var p = mine(e.target); if (!p) return;
+    var txt = ''; try { txt = (e.clipboardData || window.clipboardData).getData('text') || ''; } catch (x) { }
+    txt = txt.replace(/[\r\n]+/g, '').trim(); if (!txt) return;
+    if (!shown(p.querySelector('.pfield')) && !shown(p.querySelector('.keys'))) return;
+    e.preventDefault();
+    txt.slice(0, 24).split('').forEach(function (ch) { press(p, ch); });
+  }, true);
+})();
+
+/* Farhan 2026-11-19 (EH1 lab 1): a realistic USB-C cable between the laptop and the phone.
+   Proportions follow a real cable: wire 1, metal tip about 1.9, plug body about 2.6 wide and 4.5 long,
+   then a strain relief that narrows from the body down to the wire. Both ends are the same plug.
+   The lab's own route decides where the cable runs; only its look and its two ends are redrawn. */
+(function () {
+  'use strict';
+  var CC = window.CC; if (!CC || !CC.cable || !CC.cable.draw || CC.cable.__fxReal) return;
+  var NS = 'http://www.w3.org/2000/svg';
+  /* sizes on the stage, at the laptop's scale (about 3 px for a real millimetre): wire 3.6 mm, plug body 12 x 20 mm,
+     strain relief 8 mm, metal tip 8.3 mm wide. S turns the plug's own small drawing units into those sizes. */
+  var S0 = 2.15, S = S0, WIRE = 11 / S0, BODY_W = 16, BODY_L = 27, RELIEF_L = 11, TIP_W = 11.5, TIP_L = 2.2;
+  function el(tag, at) { var e = document.createElementNS(NS, tag); for (var k in at) e.setAttribute(k, at[k]); return e; }
+
+  /* one plug, drawn pointing to the right (its metal tip at x = 0, the wire leaving at x = -(BODY_L + RELIEF_L)), then turned.
+     thin = the plug seen from its edge, as it looks in the side of a laptop from the front: about half as thick (6.5 mm against 12 mm). */
+  function plug(g, x, y, deg, thin, tipLen) {
+    var p = el('g', { transform: 'translate(' + x.toFixed(1) + ',' + y.toFixed(1) + ') rotate(' + deg + ') scale(' + S + ')' });
+    var b0 = -BODY_L, r0 = -(BODY_L + RELIEF_L), hw = BODY_W / 2 * (thin ? .56 : 1), w2 = WIRE / 2 + .5, rs = thin ? hw * .84 : hw * .58, th = TIP_W * (thin ? .34 : 1);
+    /* the metal tip: only a sliver shows, the rest is inside the port */
+    p.appendChild(el('rect', { x: -1, y: -th / 2, width: (tipLen || TIP_L) + 1, height: th, rx: thin ? 1 : 1.6, fill: 'url(#fx-metal)', stroke: '#8d949e', 'stroke-width': .6 }));
+    /* the strain relief: narrows from the body to the wire, with its ribs */
+    p.appendChild(el('path', { d: 'M' + b0 + ',' + (-rs) + ' L' + r0 + ',' + (-w2) + ' L' + r0 + ',' + w2 + ' L' + b0 + ',' + rs + ' Z', fill: 'url(#fx-body)', stroke: '#b3b9c3', 'stroke-width': .7, 'stroke-linejoin': 'round' }));
+    for (var i = 1; i <= 3; i++) { var rx = b0 - i * (RELIEF_L / 4), hh = rs - (rs - w2) * (i / 4); p.appendChild(el('line', { x1: rx, y1: -hh + .7, x2: rx, y2: hh - .7, stroke: '#aab1bb', 'stroke-width': .8, 'stroke-linecap': 'round' })); }
+    /* the plug body, with its soft edges, a highlight along the top and a faint seam near the tip */
+    p.appendChild(el('rect', { x: b0, y: -hw, width: BODY_L, height: hw * 2, rx: thin ? 2.6 : 4.2, fill: 'url(#fx-body)', stroke: '#b3b9c3', 'stroke-width': .8 }));
+    p.appendChild(el('rect', { x: b0 + 2.4, y: -hw + 1.2, width: BODY_L - 4.8, height: thin ? 1.4 : 2.2, rx: .9, fill: '#fff', opacity: .85 }));
+    p.appendChild(el('line', { x1: -3.4, y1: -hw + 1.6, x2: -3.4, y2: hw - 1.6, stroke: '#c5cad3', 'stroke-width': .7 }));
+    g.appendChild(p);
+  }
+
+  function corner(box, side) {
+    var m = box.querySelector('.fx-mark-' + side);
+    if (!m) { m = document.createElement('i'); m.className = 'fx-mark-' + side; m.style.cssText = 'position:absolute;left:0;' + side + ':0;width:1px;height:1px;opacity:0;pointer-events:none'; box.appendChild(m); }
+    var r = m.getBoundingClientRect(); return { x: r.left, y: side === 'top' ? r.top : r.bottom };
+  }
+
+  var draw0 = CC.cable.draw;
+  CC.cable.draw = function (laptop, phone, stage) {
+    draw0.apply(this, arguments);
+    try {
+      var s = CC.cable.svg, deck = laptop && laptop.querySelector('.deck'), di = laptop && laptop.querySelector('.deck-in'), lb = laptop && laptop.querySelector('.lbase');
+      var old = s && s.querySelector('.fx-usb'); if (old) old.remove();
+      if (s) s.classList.remove('fx-real');
+      if (!s || !deck || !di || !lb || !phone || !s.querySelector('path.wire')) return;
+      var dk = deck.getBoundingClientRect(), lr = lb.getBoundingClientRect(), pr = phone.getBoundingClientRect(), sr = stage.getBoundingClientRect();
+      if (!(pr.right <= dk.left + 4)) return;                                   /* side by side only; stacked keeps the lab's cable */
+      /* the same anchors as the lab: the middle of the laptop base's left edge, and the middle of the phone's bottom */
+      var inset = parseFloat(getComputedStyle(di).left) / Math.max(1, parseFloat(getComputedStyle(deck).width)); if (!isFinite(inset)) inset = 0.045;
+      var A = { x: dk.left + inset * dk.width - sr.left, y: dk.top - sr.top }, B = { x: lr.left + 1 - sr.left, y: lr.bottom - sr.top };
+      var sy = A.y + (B.y - A.y) * 0.5, wallX = A.x + (sy - A.y) / Math.max(1, B.y - A.y) * (B.x - A.x) + 1;
+      /* the laptop's real left edge on screen: the keyboard deck is tilted in 3D, so its two left corners are read from two
+         tiny invisible marks placed in those corners (exact at any size), not guessed */
+      var E1 = corner(di, 'top'), E2 = corner(di, 'bottom'); E1.x -= sr.left; E1.y -= sr.top; E2.x -= sr.left; E2.y -= sr.top;
+      sy = E1.y + (E2.y - E1.y) * 0.46; var edgeX = E1.x + (sy - E1.y) / Math.max(1, E2.y - E1.y) * (E2.x - E1.x); wallX = edgeX;
+      var prr = pr.right - sr.left, pb = pr.bottom - sr.top, cx = (pr.left + pr.right) / 2 - sr.left;
+      /* everything is sized from the laptop on screen, so the cable keeps its proportions at any window size */
+      var F = Math.max(.3, lr.width / 1400); S = S0 * F;
+      var PL = (BODY_L + RELIEF_L) * S, TL = TIP_L * S, x1 = edgeX + 5 * F - PL;                  /* where the wire leaves the laptop's plug */
+      if (x1 - prr < 16 * F) return;                                                /* no room for a real plug: keep the lab's cable */
+      var y1 = pb + TL - 1 + PL;                                             /* where the wire leaves the phone's plug */
+      /* the route: out of the laptop's plug, one soft turn down, a wide hanging loop under the phone, up into the phone's plug */
+      var gap = x1 - prr, r1 = Math.max(10 * F, Math.min(30 * F, gap - 8 * F)), xs = x1 - r1, r = Math.min(46 * F, Math.max(20 * F, (xs - cx) / 2 - 2));
+      var yB = Math.max(y1 + r + 6 * F, (lr.bottom - sr.top) + 30 * F), K = 0.55, n = function (v) { return v.toFixed(1); };
+      var d = 'M' + n(x1 + 2 * F) + ',' + n(sy) + ' L' + n(x1) + ',' + n(sy) +
+        ' C' + n(x1 - r1 * .7) + ',' + n(sy) + ' ' + n(xs) + ',' + n(sy + r1 * .35) + ' ' + n(xs) + ',' + n(sy + r1 * 1.25) +
+        ' L' + n(xs) + ',' + n(yB - r) +
+        ' C' + n(xs) + ',' + n(yB - r + K * r) + ' ' + n(xs - r + K * r) + ',' + n(yB) + ' ' + n(xs - r) + ',' + n(yB) +
+        ' L' + n(cx + r) + ',' + n(yB) +
+        ' C' + n(cx + r - K * r) + ',' + n(yB) + ' ' + n(cx) + ',' + n(yB - r + K * r) + ' ' + n(cx) + ',' + n(yB - r) +
+        ' L' + n(cx) + ',' + n(y1 - 2 * F);
+      s.querySelectorAll('path.wire').forEach(function (p) { p.setAttribute('d', d); p.style.strokeWidth = ((p.classList.contains('w1') ? 12.2 : p.classList.contains('w2') ? 10 : 2.4) * F).toFixed(2); });
+      s.classList.add('fx-real');
+      var g = el('g', { 'class': 'fx-usb' });
+      g.innerHTML = '<defs><linearGradient id="fx-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset=".55" stop-color="#f1f3f6"/><stop offset="1" stop-color="#d9dde3"/></linearGradient>' +
+        '<linearGradient id="fx-metal" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#eef0f3"/><stop offset=".5" stop-color="#b9bfc8"/><stop offset="1" stop-color="#8f96a1"/></linearGradient></defs>';
+      s.appendChild(g);
+      /* the laptop's end: the same plug as the phone's. It goes INTO the side of the laptop: the plug is pushed a little past the
+         laptop's slanted edge and everything past that edge is cut away, so no part of it lies on the laptop and no metal shows. */
+      var H = 400 * F, cut = function (y) { return E1.x + (y - E1.y) / Math.max(1, E2.y - E1.y) * (E2.x - E1.x) - 1; };
+      var cid = 'fx-side-clip', cp = el('clipPath', { id: cid, clipPathUnits: 'userSpaceOnUse' });
+      cp.appendChild(el('polygon', { points: [[-4000, sy - H], [cut(sy - H), sy - H], [cut(sy + H), sy + H], [-4000, sy + H]].map(function (q) { return q[0].toFixed(1) + ',' + q[1].toFixed(1); }).join(' ') }));
+      g.querySelector('defs').appendChild(cp);
+      var side = el('g', { 'clip-path': 'url(#' + cid + ')' }); g.appendChild(side);
+      plug(side, edgeX + 5 * F, sy, 0, false, 9);  /* into the laptop's left side */
+      plug(g, cx, pb + TL - 1, -90);             /* up into the phone's bottom */
+    } catch (e) { /* the cable stays as the lab drew it */ }
+  };
+  CC.cable.__fxReal = true;
+  try { if (CC.L && CC.P && CC.L.el && CC.P.el && CC.cable.svg) CC.cable.draw(CC.L.el, CC.P.el, document.getElementById('stage')); } catch (e) { }
+})();
+
+/* Farhan 2026-11-19 (EH1 lab 1): when the command the student ran does not fit the password he chose
+   («لم يناسب هذا الأمر كلمة السر التي اخترتها. جرّب أمراً آخر.»), the lab already lets him type again, but nothing on the
+   command screen says so. Now the student is guided: the cursor goes back to the command box, the faint hint of
+   the right command shows in it, and a bouncing gold box points at the box and shows the command to type.
+   The box leaves as soon as he starts typing. */
+(function () {
+  'use strict';
+  var CC = window.CC; if (!CC) return;
+  function q(s) { return document.querySelector(s); }
+  function wanted() {      /* the command the current step shows, e.g. guess password 6 Aa0 */
+    var best = '';
+    [].forEach.call(document.querySelectorAll('.cc-cur .cc-txt code, .cc-cur .cc-txt .tok'), function (e) { var s = e.textContent.trim(); if (/^guess\b/.test(s) && s.length > best.length) best = s; });
+    return best;
+  }
+  function drop() { var t = q('.fx-retip'); if (t) t.remove(); }
+  function guide() {
+    var L = CC.L, cs = q('#laptop .lscreen .cs'), inp = q('#laptop #cmd'), wrap = inp && inp.closest('.inwrap'); if (!L || !cs || !inp || !wrap) return;
+    var w = wanted();
+    try { L.enable(true); L.value(''); if (w && L.ghost) L.ghost(w); } catch (e) { }
+    var lg = q('#laptop #log'); if (lg) lg.scrollTop = 0;
+    inp.focus(); drop();
+    var tip = document.createElement('div'); tip.className = 'cc-cmdtip fx-retip'; tip.setAttribute('role', 'note');
+    tip.innerHTML = '<span>اكتب الأمر الصحيح هنا' + (w ? ':' : '') + '</span>' + (w ? '<code dir="ltr"></code>' : '');
+    if (w) tip.querySelector('code').textContent = w;
+    cs.appendChild(tip);
+    function place() {
+      if (!tip.isConnected) return;
+      var k = cs.clientWidth / Math.max(1, cs.getBoundingClientRect().width), cr = cs.getBoundingClientRect(), ir = wrap.getBoundingClientRect();
+      tip.style.top = Math.round((ir.bottom - cr.top) * k + 12) + 'px'; tip.style.left = Math.round((ir.left - cr.left) * k + 20) + 'px';
+    }
+    place(); setTimeout(place, 300);
+    var gone = function () { drop(); inp.removeEventListener('input', gone); };
+    inp.addEventListener('input', gone);
+  }
+  function hook() {
+    var L = CC.L;
+    if (L && typeof L.add === 'function' && !L.add.__fxRetry) {
+      var ad = L.add;
+      L.add = function (txt) {
+        var r = ad.apply(this, arguments);
+        try { if (txt && CC.t && String(txt) === CC.t('r_again')) setTimeout(guide, 350); } catch (e) { }
+        return r;
+      };
+      L.add.__fxRetry = 1;
+    }
+    var t = q('.fx-retip'), l = q('#laptop'); if (t && l && l.classList.contains('cc-closed')) drop();      /* the command screen was closed */
+  }
+  setInterval(hook, 400); hook();
+})();
+
+/* Farhan 2026-11-19 (EH1 lab 1): the strongest password the command screen shows at the end (for example xd7DfZ)
+   must open the phone when the student types it. The lab had already moved on to its last step by then and
+   refused every password. Now the password shown on the command screen opens the phone. */
+(function () {
+  'use strict';
+  var CC = window.CC; if (!CC) return;
+  var shownPw = '';
+  setInterval(function () {
+    var big = document.querySelectorAll('#laptop .cc-pwbig'), last = big.length ? big[big.length - 1].textContent.trim() : '';
+    if (last) shownPw = last;
+    var P = CC.P;
+    if (P && typeof P.onSubmit === 'function' && !P.onSubmit.__fxOpen) {
+      if (!last) shownPw = '';                                  /* a fresh start of the lab: nothing has been shown yet */
+      var f = P.onSubmit;
+      P.onSubmit = function (v) {
+        if (shownPw && v === shownPw && P.locked) { P.unlock(); return; }
+        return f.apply(this, arguments);
+      };
+      P.onSubmit.__fxOpen = 1;
+    }
+  }, 300);
+})();
+</script>
+<!--/cc-touches-->
 </body>
 </html>

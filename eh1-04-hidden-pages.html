@@ -6671,5 +6671,931 @@ window.CC_MISSION = {"stages":[{"label":"الموقع والصفحات","keys":[
 })();
 
 </script><!--/cc-addon-->
+<!--cc-touches-->
+<style id="cc-touches">
+/* Farhan's shared add-on for every lab: small touches on the laptop's desktop and on the phone (2026-11-19). */
+
+/* the phone gets a little brighter while the mouse is over it */
+.phone{transition:filter .2s ease}
+.phone:hover{filter:brightness(1.12) saturate(1.05)}
+
+/* no CamelCode icon in the corner of the laptop's top bar (the name «كاملكود» stays) */
+.cc-mb-logo{display:none!important}
+
+/* hovering an open app's icon in the dock shows that app, like a real laptop; moving away returns to the app that was in front */
+.fx-peek{z-index:70!important;animation:fx-peekin .16s ease-out}
+.cc-wins.fx-peek-host{z-index:70!important}
+@keyframes fx-peekin{from{opacity:.4;transform:scale(.985)}to{opacity:1;transform:none}}
+.cc-dock .cc-app.fx-peeking{filter:brightness(1.15)}
+@media (prefers-reduced-motion:reduce){.fx-peek{animation:none}}
+
+/* the gold box over a dock icon («ابدأ هنا ...») is always a wide rectangle: its sentence stays on one line (Farhan 2026-11-19) */
+.cc-dock .cc-app.cue .cc-tip{width:max-content!important;max-width:none!important;min-width:0!important;padding:.55cqw 1.6cqw .65cqw!important}
+.cc-dock .cc-app.cue .cc-tip em{white-space:nowrap!important}
+.cc-dock .cc-app.cue .cc-tip b{white-space:nowrap!important}
+
+/* a question that has just appeared («سؤال جديد») waits until the popups on screen are finished (Farhan 2026-11-19) */
+body.fx-popup .qrow.qnew{display:none!important}
+
+/* the congratulations card also offers to start the lab again (Farhan 2026-11-19) */
+.pcard.cele .pc-foot{gap:12px;flex-wrap:wrap}
+.pcard.cele .fx-again{background:#fff!important;color:#0E1F39!important;border:2px solid #0E1F39!important;box-shadow:none!important}
+.pcard.cele .fx-again:hover{background:#f1ece3!important}
+
+/* the folder name and what the student types stay on ONE line of the command screen, also when the window is narrow (Farhan 2026-11-19) */
+.cs-log .cs-in{flex-wrap:nowrap!important}
+.cs-log .cs-in .inwrap{flex:1 1 0!important;min-width:0!important}
+.cs-log .cs-in .prompt.dyn{max-width:70%!important;flex:none}
+
+/* «شرح الأمر»: each part's explanation stays on one line (wide, not tall); the box uses the free width of the command screen,
+   and parts go to a second row only when they truly do not fit (Farhan 2026-11-19) */
+.cs .cs-chips{flex-wrap:wrap!important;justify-content:center!important}
+.cs .cs-chips .tk{flex:0 0 auto!important;max-width:none!important;min-width:0!important}
+.cs .cs-chips .tk small{white-space:nowrap!important;overflow-wrap:normal!important}
+.cs .cs-chips .tk small{width:auto!important;min-width:0!important;max-width:none!important;position:static!important}
+.cs .cs-chips{gap:.6cqw 1.8cqw!important}
+
+/* a command whose result is taller than the command screen is shown from its first line, with a bouncing
+   «مرّر للأسفل» pill that says there is more below (Farhan 2026-11-19) */
+.fx-more{position:absolute;left:50%;bottom:1cqw;transform:translateX(-50%);z-index:13;display:flex;align-items:center;gap:.5cqw;border:0;cursor:pointer;
+  background:#FCAD0F;color:#0E1F39;font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:max(11px,1.25cqw);line-height:1.5;
+  padding:.3cqw 1.2cqw;border-radius:999px;box-shadow:0 .8cqw 1.6cqw -.6cqw rgba(0,0,0,.6);white-space:nowrap;direction:rtl;animation:fx-morebob 1.2s ease-in-out infinite}
+.fx-more svg{width:1.3cqw;height:1.3cqw;min-width:12px;min-height:12px}
+@keyframes fx-morebob{50%{transform:translateX(-50%) translateY(.5cqw)}}
+@media (prefers-reduced-motion:reduce){.fx-more{animation:none}}
+
+/* the highlight on a word of the command screen (the current folder in the prompt) is a sliding underline, not a circle:
+   it grows slowly under the word, rests, fades and grows again (Farhan 2026-11-20) */
+.cs .cc-hl::after{left:0!important;right:0!important;top:auto!important;bottom:-.28em!important;height:3px!important;border:0!important;border-radius:3px!important;
+  box-shadow:none!important;background:#FFC94A!important;transform-origin:left center;animation:fx-ulloop 2.8s ease-in-out infinite both!important}
+@keyframes fx-ulloop{0%{transform:scaleX(0);opacity:1}40%{transform:scaleX(1);opacity:1}82%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+
+/* the notes app: a task can be ticked as done, or unticked, by clicking it (Farhan 2026-11-20) */
+.cc-note li{cursor:pointer;border-radius:.6cqw;padding:.15cqw .4cqw;margin:-.15cqw -.4cqw;transition:background .15s;user-select:none}
+.cc-note li:hover{background:rgba(14,31,57,.07)}
+.cc-note li::before{transition:background-color .2s,border-color .2s,transform .2s}
+.cc-note li:active::before{transform:scale(.85)}
+.cc-note li.ok>span,.cc-note li.ok{color:#5b6473}
+.cc-note li.fx-tick::before{animation:fx-tick .35s cubic-bezier(.3,1.7,.5,1)}
+@keyframes fx-tick{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
+/* Farhan 2026-11-20 (EH1 lab 5): the gold ring that marks the typing line no longer covers the last line of the
+   previous command's result: the typing line keeps a clear gap above it. */
+.cs-log .cs-in{margin-top:16px!important}
+/* Farhan 2026-11-20: the box «اكتب الأمر هنا» is only for the first command (see os.js) */
+body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
+
+/* Farhan 2026-11-20 (EH1 lab 5): «متابعة» cannot be pressed before the step's text has finished writing itself */
+.cc-cur.typing .cc-go{display:none!important}
+/* the copy button next to a command in the step's explanation (see os.js); only on the step on screen now */
+.fx-copy{display:none}
+.cc-cur .cc-txt .fx-copy{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin:0 3px;padding:1px 9px;border:1.5px solid #0E1F39;border-radius:99px;background:#FCAD0F;color:#0E1F39;
+  font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:.78em;line-height:1.7;cursor:pointer;direction:rtl;white-space:nowrap;transition:transform .12s,background .2s}
+.cc-cur .cc-txt .fx-copy svg{width:1.05em;height:1.05em;flex:none}
+.cc-cur .cc-txt .fx-copy:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.cc-cur .cc-txt .fx-copy:active{transform:translateY(1px)}
+.cc-cur .cc-txt .fx-copy.ok{background:#2E9E5B;border-color:#2E9E5B;color:#fff}
+.cc-cur.typing .cc-txt .fx-copy{display:none}
+/* the cue on a dock icon (bounce, gold ring, box above it): used to send the student to the browser first */
+.cc-dock .cc-app.fx-cue{position:relative;animation:fx-cue 1s ease-in-out infinite;z-index:5}
+.cc-dock .cc-app.fx-cue::after{content:"";position:absolute;inset:-5px;border:3px solid #FCAD0F;border-radius:16px;animation:fx-cuering 1.2s ease-out infinite}
+@keyframes fx-cue{50%{transform:translateY(-8px)}}
+@keyframes fx-cuering{from{opacity:1;transform:scale(.9)}to{opacity:0;transform:scale(1.35)}}
+.cc-dock .cc-app .fx-tip{position:absolute;bottom:128%;left:50%;transform:translateX(-50%);background:#FCAD0F;color:#0E1F39!important;font-family:"Montserrat Arabic",Tahoma,sans-serif;
+  font-weight:800!important;font-size:17px!important;line-height:1.5!important;padding:7px 14px;border-radius:12px;width:max-content;max-width:none;white-space:nowrap;text-align:center;direction:rtl;
+  box-shadow:0 10px 20px -8px rgba(0,0,0,.6);pointer-events:none}
+.cc-dock .cc-app .fx-tip::after{content:"";position:absolute;top:100%;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:#FCAD0F}
+.cc-dock .cc-app.fx-cue .cc-tip{display:none!important}
+@media (prefers-reduced-motion:reduce){.cc-dock .cc-app.fx-cue,.cc-dock .cc-app.fx-cue::after{animation:none}}
+
+/* Farhan 2026-11-20 (EH1 lab 5): the «شرح الأمر» box at the top of the command screen is written bigger */
+.cs .cs-chips .tk b{font-size:max(13px,1.6cqw)!important}
+.cs .cs-chips .tk small{font-size:max(12px,1.35cqw)!important;line-height:1.5!important}
+.cs .cs-chips:not(:empty)::before{font-size:max(12px,1.35cqw)!important}
+
+/* Farhan 2026-11-20 (EH1 lab 5): a finished step in the steps list (the right side) opens by itself while the mouse is
+   over it, showing its whole text, and closes again when the mouse leaves. */
+@media (hover:hover){
+  .cc-step:hover{opacity:1!important}
+  .cc-step:hover .cc-txt{display:block!important;-webkit-line-clamp:unset!important;overflow:visible!important}
+}
+
+/* Farhan's motion add-on for EH1 lab 4: the «خلف الشاشة» card. The lab's own design is not changed. */
+.fx-card{position:absolute;z-index:60;width:452px;background:#0E1F39;color:#fff;border:2px solid #FCAD0F;border-radius:16px;
+  box-shadow:0 18px 40px -14px rgba(4,10,24,.75),0 0 0 4px rgba(252,173,15,.14);font-family:"Montserrat Arabic",Tahoma,sans-serif;direction:rtl;
+  opacity:0;transform:translateY(18px) scale(.96);pointer-events:none;transition:opacity .35s,transform .45s cubic-bezier(.3,1.4,.5,1)}
+.fx-card.show{opacity:1;transform:none;pointer-events:auto}
+.fx-card{left:-6px;bottom:-24px;width:392px}
+.fx-h{display:flex;align-items:center;gap:8px;padding:7px 12px 0}
+.fx-h b{font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:16px;color:#FCAD0F;white-space:nowrap}
+.fx-h b::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#7fc278;margin-inline-end:7px;animation:fx-blink 1.2s infinite}
+.fx-sub{flex:1;font-size:13.5px;color:#cfd8ea;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fx-sub code{font-family:Consolas,ui-monospace,monospace;direction:ltr;unicode-bidi:isolate;background:#1c3157;border-radius:5px;padding:0 5px;color:#ffd978}
+.fx-sub.ok{color:#a5e59f}.fx-sub.no{color:#ffb39c}
+.fx-x{border:0;background:#1c3157;color:#fff;width:22px;height:22px;border-radius:50%;font-size:14px;line-height:1;cursor:pointer}
+.fx-x:hover{background:#2a4476}
+.fx-scene{position:relative;width:100%;aspect-ratio:470/215;direction:ltr;
+  background-image:linear-gradient(30deg,transparent 49.2%,rgba(255,255,255,.05) 49.2%,rgba(255,255,255,.05) 50.8%,transparent 50.8%),linear-gradient(150deg,transparent 49.2%,rgba(255,255,255,.05) 49.2%,rgba(255,255,255,.05) 50.8%,transparent 50.8%);background-size:34px 20px}
+.fx-scene svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.fx-labs{position:absolute;inset:0;pointer-events:none}
+.fx-lab{position:absolute;transform:translate(-50%,-50%);white-space:nowrap;font-size:13px;font-weight:700;direction:rtl;color:#dfe7f5;transition:opacity .4s}
+.fx-lab.pill{background:#fff;color:#0E1F39;border-radius:999px;padding:0 8px;line-height:1.6;box-shadow:1.5px 2px 0 #FCAD0F}
+.fx-lab.mono{font-family:Consolas,ui-monospace,monospace;direction:ltr;font-size:12.5px}
+.fx-lab.off{opacity:0}
+.fx-lab.puff{color:#ff8f75;font-size:13px;animation:fx-puff .7s both}
+.fx-lab.puff.ok{color:#a5e59f}
+@keyframes fx-puff{from{opacity:1;transform:translate(-50%,-50%)}to{opacity:0;transform:translate(-50%,-220%)}}
+@keyframes fx-blink{50%{opacity:.35;transform:scale(1.4)}}
+.fx-stats{display:flex;gap:8px;padding:0 12px 6px}
+.fx-stats span{flex:1;background:#16284a;border:1px solid #2a4476;border-radius:9px;padding:2px 10px;font-size:12.5px;color:#b9c6de;white-space:nowrap;gap:8px;display:flex;justify-content:space-between;align-items:center}
+.fx-stats b{font-family:Consolas,ui-monospace,monospace;font-size:15px;color:#fff;direction:ltr;unicode-bidi:isolate}
+.fx-stats .hot b{color:#FCAD0F}
+.fx-stats b.tick{animation:fx-tick .2s}
+@keyframes fx-tick{from{transform:translateY(-4px);opacity:.4}}
+.fx-chips{display:flex;flex-wrap:wrap;gap:5px;padding:0 12px 10px;direction:ltr;min-height:0}
+.fx-chips i{font-style:normal;font-family:Consolas,ui-monospace,monospace;font-size:12.5px;border-radius:7px;padding:0 7px;line-height:1.7;background:#e9eef7;color:#0E1F39;animation:fx-chip .4s cubic-bezier(.3,1.6,.5,1) both}
+.fx-chips i.hid{background:#FCAD0F;font-weight:700}
+.fx-chips i.open{background:#9fd68f}
+@keyframes fx-chip{from{opacity:0;transform:translateY(8px) scale(.7)}}
+.fx-card.at-web .fx-stats{display:none}
+.fx-card .fx-h{cursor:default}
+
+/* the drawing */
+.fx-bx .sil{fill:#060d1c;stroke:#060d1c;stroke-width:2;stroke-linejoin:round}
+.fx-bx .ft{fill:var(--t);stroke:rgba(6,13,28,.25);stroke-width:.6;stroke-linejoin:round;transition:fill .4s}
+.fx-bx .fl{fill:var(--l);stroke:rgba(6,13,28,.25);stroke-width:.6;stroke-linejoin:round;transition:fill .4s}
+.fx-bx .fr{fill:var(--r);stroke:rgba(6,13,28,.25);stroke-width:.6;stroke-linejoin:round;transition:fill .4s}
+.fx-plate{--t:#24395f;--l:#1a2c4e;--r:#152442}
+.fx-plate.dark{--t:#182b4c;--l:#11203b;--r:#0d1930}
+.fx-srv{--t:#d6e5f8;--l:#a9c5ea;--r:#93b3de}
+.fx-tool{--t:#ffe6a3;--l:#fcbf3c;--r:#e9a41c}
+.fx-lap{--t:#eef1f6;--l:#c9cfda;--r:#b6bdca}
+.fx-lid{--t:#3a4660;--l:#2a3550;--r:#222c44}
+.fx-tile[data-st=pub]{--t:#fbf4e6;--l:#e4d6bd;--r:#d6c6aa}
+.fx-tile[data-st=ghost]{--t:#22375c;--l:#1a2c4e;--r:#15243f}
+.fx-tile[data-st=ghost] .ft{stroke:rgba(255,255,255,.45);stroke-dasharray:3 3}
+.fx-tile[data-st=found]{--t:#ffd45e;--l:#f0b020;--r:#d99a10}
+.fx-tile[data-st=open]{--t:#bfe6b0;--l:#8fcf7c;--r:#7abb68}
+.fx-tile text{font-family:Consolas,monospace;font-size:9px;font-weight:700;fill:rgba(255,255,255,.6);pointer-events:none}
+.fx-tile:not([data-st=ghost]) text{display:none}
+.fx-tile.pop{animation:fx-pop .6s cubic-bezier(.3,1.6,.5,1)}
+@keyframes fx-pop{35%{transform:translateY(-9px)}}
+.fx-ring{fill:none;stroke:#FCAD0F;stroke-width:2;opacity:0;transform-box:fill-box;transform-origin:center}
+.fx-ring.go{animation:fx-ring .7s ease-out}
+@keyframes fx-ring{from{opacity:.95;stroke-width:3.5}to{opacity:0;stroke-width:0;transform:scale(2)}}
+.fx-edge{fill:none;stroke:#8fa5cc;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;transition:opacity .4s}
+.fx-edge.run{stroke:#FCAD0F;stroke-dasharray:5 5;animation:fx-march .45s linear infinite}
+@keyframes fx-march{to{stroke-dashoffset:-10}}
+.fx-grp{transition:opacity .45s,transform .55s cubic-bezier(.3,1.4,.5,1)}
+.fx-off{opacity:0!important;transform:translateY(-14px)}
+.fx-spin{transform-box:fill-box;transform-origin:center}
+.fx-busy .fx-spin{animation:fx-spin 1s linear infinite}
+@keyframes fx-spin{to{transform:rotate(360deg)}}
+.fx-led{fill:#7fc278}
+.fx-busy .fx-led{animation:fx-blink .4s infinite}
+.fx-scr{fill:#fdf8ef;transition:fill .2s}
+.fx-scr.flash{fill:#ffd978}
+@media (prefers-reduced-motion:reduce){.fx-card *{animation-duration:.01s!important}}
+
+/* ---- Farhan 2026-11-18: the command screen takes the whole desktop (never side by side with the website) ---- */
+body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs,body.cc-web .laptop.cc-os.cc-peek:not(.cc-web-shut) .lscreen .cs{left:1.4cqw!important;font-size:max(11px,1.36cqw)!important}
+body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-log,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .cs-in,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .prompt,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .inwrap input,body.cc-web .laptop.cc-os:not(.cc-web-shut):not(.cc-closed) .lscreen .cs .ghost{font-size:max(11px,1.36cqw)!important}
+body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-web .laptop.cc-peek .br.cc-embedded{right:1.4cqw!important}
+
+/* ---- the tool's results slide in on the right of the laptop screen, beside the website ---- */
+body.cc-web .laptop.fx-res-on.fx-res-on.fx-res-on .br.cc-embedded.cc-embedded{right:calc(1.4cqw + 17.4cqw)!important}
+.fx-card .fx-chips{display:none}      /* the names are listed in the results panel instead */
+.fx-res{position:absolute;z-index:2;top:4cqw;bottom:7.2cqw;right:1.4cqw;width:16.6cqw;background:#0b1830;color:#dfe7f5;border:.16cqw solid #FCAD0F;border-radius:1cqw;
+  box-shadow:0 1.4cqw 3cqw -1cqw rgba(4,10,24,.7);display:flex;flex-direction:column;overflow:hidden;font-family:"Montserrat Arabic",Tahoma,sans-serif;direction:rtl;
+  transform:translateX(115%);opacity:0;transition:transform .55s cubic-bezier(.3,1.25,.5,1),opacity .3s}
+.fx-res.in{transform:none;opacity:1}
+.fx-res-h{padding:.7cqw .9cqw .5cqw;border-bottom:1px solid #22375c}
+.fx-res-h b{display:block;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:1.36cqw;color:#FCAD0F;line-height:1.3}
+.fx-res-h small{font-size:1cqw;color:#9fb0cf}
+.fx-res ul{list-style:none;margin:0;padding:.5cqw .7cqw;flex:1;overflow:auto;display:grid;gap:.4cqw;align-content:start;direction:ltr}
+.fx-res li{display:flex;align-items:center;justify-content:space-between;gap:.4cqw;background:#13233f;border-radius:.6cqw;padding:.25cqw .6cqw;font-family:Consolas,ui-monospace,monospace;font-size:1.32cqw;color:#8fe088;opacity:0;transform:translateX(30px)}
+.fx-res.in li{animation:fx-row .4s cubic-bezier(.3,1.3,.5,1) both}
+@keyframes fx-row{to{opacity:1;transform:none}}
+.fx-res li i{font-style:normal;font-family:"Montserrat Arabic",Tahoma,sans-serif;font-size:1cqw;border-radius:99px;padding:0 .55cqw;background:#22375c;color:#b9c6de;white-space:nowrap}
+.fx-res li.hid i{background:#FCAD0F;color:#0E1F39;font-weight:700}
+.fx-res li.seen{color:#fff;background:#1d4a2c}
+.fx-res li.seen i{background:#7fc278;color:#0E1F39}
+.fx-res p{margin:0;padding:.5cqw .8cqw .7cqw;font-size:.98cqw;line-height:1.6;color:#9fb0cf;border-top:1px solid #22375c}
+
+/* ---- the cue back to the browser when the tool has finished ---- */
+.cc-dock .cc-app.fx-cue{position:relative;animation:fx-cue 1s ease-in-out infinite;z-index:5}
+.cc-dock .cc-app.fx-cue::after{content:"";position:absolute;inset:-5px;border:3px solid #FCAD0F;border-radius:16px;animation:fx-cuering 1.2s ease-out infinite}
+@keyframes fx-cue{50%{transform:translateY(-8px)}}
+@keyframes fx-cuering{from{opacity:1;transform:scale(.9)}to{opacity:0;transform:scale(1.35)}}
+.cc-dock .cc-app .fx-tip{position:absolute;bottom:128%;left:50%;transform:translateX(-50%);background:#FCAD0F;color:#0E1F39;font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800!important;font-size:17px!important;line-height:1.5!important;color:#0E1F39!important;
+  padding:7px 14px;border-radius:12px;width:max-content;max-width:340px;white-space:normal;text-align:center;direction:rtl;box-shadow:0 10px 20px -8px rgba(0,0,0,.6);pointer-events:none}
+.fx-tip::after{content:"";position:absolute;top:100%;left:50%;margin-left:-7px;border:7px solid transparent;border-top-color:#FCAD0F}
+
+/* ---- Farhan 2026-11-18: the two labels under the address («اسم الموقع», «اسم الصفحة») ----
+   one solid colour (orange), and the page moves down while they show, so they never cover the site's menu */
+.br-parts .br-part{background:#FCAD0F!important;color:#0E1F39!important;border-color:#FCAD0F!important;box-shadow:0 6px 14px -8px rgba(14,31,57,.55)!important}
+.br-view{transition:padding-top .3s ease}
+.br-view:has(.br-parts.in){padding-top:30px}
+
+.laptop.fx-moved .br-parts .br-part:not(.page){display:none!important}
+.laptop.fx-moved .br-parts .br-part.page{white-space:nowrap}
+.laptop.fx-scrolled .br-shint{display:none!important}
+.laptop.fx-labels-gone .br-parts{display:none!important}
+.laptop.fx-labels-gone .br-view{padding-top:0!important}
+
+/* ---- Farhan 2026-11-18: the site name and the page name in the address are underlined (no boxes);
+   the line slides in, then a short orange glint keeps sliding along it ---- */
+.br-hostframe{border:0!important;box-shadow:none!important;border-radius:0!important;overflow:hidden;height:1.5em!important}
+.br-hostframe::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:3px;background:#0E1F39;transform-origin:left center;animation:fx-ul .55s cubic-bezier(.3,1,.4,1) both}
+.br-hostframe::before{content:"";position:absolute;bottom:0;left:0;width:34%;height:3px;border-radius:3px;background:#FCAD0F;z-index:1;animation:fx-ulglint 1.6s ease-in-out .7s infinite both}
+.br-hostframe.page::after{animation-delay:.35s}
+.br-hostframe.page::before{animation-delay:1.05s}
+@keyframes fx-ul{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes fx-ulglint{0%{transform:translateX(-110%);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateX(310%);opacity:0}}
+@media (prefers-reduced-motion:reduce){.br-hostframe::after,.br-hostframe::before{animation:none}.br-hostframe::before{display:none}}
+
+/* ---- Farhan 2026-11-18: one thing at a time: the line under the site name, then its box,
+   then the line under the page name, then its box ---- */
+.br-hostframe:not(.page)::after{animation-delay:0s!important}
+.br-parts.in .br-part.site{animation-delay:.6s,1.3s!important}
+.br-hostframe.page::after{animation-delay:1.25s!important}
+.br-parts.in .br-part.page{animation-delay:1.85s,2.55s!important}
+.br-hostframe:not(.page)::before{animation-delay:2.7s!important}
+.br-hostframe.page::before{animation-delay:3s!important}
+/* after the first move only the page name is explained: its line, then its box, without the wait */
+.laptop.fx-moved .br-hostframe.page::after{animation-delay:.1s!important}
+.laptop.fx-moved .br-parts.in .br-part.page{animation-delay:.7s,1.4s!important}
+.laptop.fx-moved .br-hostframe.page::before{animation-delay:1.6s!important}
+
+/* ---- Farhan 2026-11-18: the underline itself keeps repeating: it grows slowly under the text, rests, fades out, and grows again (no glint) ---- */
+.br-hostframe::before{display:none!important}
+.br-hostframe::after{animation:fx-ulloop 2.8s ease-in-out infinite both!important}
+@keyframes fx-ulloop{0%{transform:scaleX(0);opacity:1}40%{transform:scaleX(1);opacity:1}82%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+.br-hostframe:not(.page)::after{animation-delay:0s!important}
+.br-parts.in .br-part.site{animation-delay:1.1s,1.8s!important}
+.br-hostframe.page::after{animation-delay:1.7s!important}
+.br-parts.in .br-part.page{animation-delay:2.8s,3.5s!important}
+.laptop.fx-moved .br-hostframe.page::after{animation-delay:.1s!important}
+.laptop.fx-moved .br-parts.in .br-part.page{animation-delay:1.2s,1.9s!important}
+
+/* the two boxes sit closer to their underlines (Farhan 2026-11-18) */
+.br-parts .br-part{top:1px!important}
+.br-view:has(.br-parts.in){padding-top:24px}
+.br-hostframe{box-sizing:border-box!important;padding:0!important}
+
+/* ---- our own underlines replace the lab's frames (Farhan 2026-11-18) ---- */
+.br-hostframe{display:none!important}
+.fx-ul{position:absolute;top:50%;margin-top:.62em;height:3px;border-radius:3px;background:#0E1F39;pointer-events:none;z-index:2;transform-origin:left center;animation:fx-ulloop 2.8s ease-in-out infinite both}
+.fx-ul.page{animation-delay:1.7s}
+.laptop.fx-moved .fx-ul.page{animation-delay:.1s}
+@media (prefers-reduced-motion:reduce){.fx-ul{animation:none}}
+
+/* ---- the see-through copy of the address that carries the two underlines ---- */
+.fx-ul{display:none!important}
+.fx-mirror{position:absolute;box-sizing:border-box;white-space:pre;overflow:hidden;color:transparent;pointer-events:none;z-index:2;direction:ltr;text-align:left;user-select:none}
+.fx-w{position:relative;display:inline-block}
+.fx-w::after{content:"";position:absolute;left:0;right:0;top:50%;margin-top:.62em;height:3px;border-radius:3px;background:#0E1F39;transform-origin:left center;animation:fx-ulloop 2.8s ease-in-out infinite both}
+.fx-w.page::after{animation-delay:1.7s}
+.fx-w.off::after{display:none}
+.laptop.fx-moved .fx-w.page::after{animation-delay:.1s}
+@media (prefers-reduced-motion:reduce){.fx-w::after{animation:none}}
+
+/* the boxes' arrows stay whole above everything, also when the boxes bob up over the address bar's edge (Farhan 2026-11-18) */
+.br-view:has(.br-parts.in){overflow:visible!important}
+.br-parts{z-index:30!important}
+</style>
+<script id="cc-touches-js">
+/* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
+   window; moving the mouse away returns to the app that was in front. Nothing in the lab changes: the window
+   is only lifted while the mouse is on the icon. A click still opens the app for real, as before. */
+(function () {
+  'use strict';
+  if (window.__farhanOS) return; window.__farhanOS = 1;
+  var cur = null, btn = null;
+  function winOf(b) {
+    var l = document.getElementById('laptop'), id = b.getAttribute('data-app'); if (!l || !id) return null;
+    if (id === 'term') return l.classList.contains('cc-closed') ? null : l.querySelector('.lscreen .cs');
+    if (id === 'web') return l.classList.contains('cc-web-shut') ? null : l.querySelector('.br.cc-embedded');
+    var w = l.querySelector('.cc-win[data-app="' + id + '"]'); return w && !w.classList.contains('cc-min') ? w : null;
+  }
+  /* the window is lifted above EVERY other window while the mouse is on its icon. Some windows live inside a holder
+     (.cc-wins) that sits under the command screen, so the holder is lifted with it. */
+  function stop() {
+    if (cur) { cur.classList.remove('fx-peek'); var h = cur.closest('.cc-wins'); if (h) h.classList.remove('fx-peek-host'); }
+    if (btn) btn.classList.remove('fx-peeking'); cur = btn = null;
+  }
+  document.addEventListener('mouseover', function (e) {
+    var b = e.target.closest ? e.target.closest('.cc-dock .cc-app') : null;
+    if (b === btn) return;
+    stop(); if (!b || !b.classList.contains('run')) return;
+    var w = winOf(b); if (!w) return;
+    cur = w; btn = b; w.classList.add('fx-peek'); b.classList.add('fx-peeking');
+    var host = w.closest('.cc-wins'); if (host) host.classList.add('fx-peek-host');
+  });
+  document.addEventListener('mouseout', function (e) {
+    if (!btn) return;
+    var to = e.relatedTarget; if (to && btn.contains(to)) return;
+    stop();
+  });
+  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('.cc-dock .cc-app')) stop(); }, true);
+})();
+
+/* Farhan 2026-11-19: no user name and no computer name in any command screen («student@pc:»).
+   The prompt and the echoed command lines show only the folder we are in: Desktop, Desktop/folder ... */
+(function () {
+  'use strict';
+  if (window.__farhanPrompt) return; window.__farhanPrompt = 1;
+  var SEL = '.pe,.prompt:not(.dyn),.pu';
+  function clean(e) {
+    if (!e || e.children.length) return;
+    var t = e.textContent, n = e.classList.contains('pu') ? '' : t.replace(/^[^\s:@]+@[^\s:@]+:/, '').replace(/^~(?=[$\/]|$)/, 'Desktop').replace(/\$\s*$/, '');      /* and no «$» after the folder */
+    if (n !== t) e.textContent = n;
+  }
+  function sign(p) { [].forEach.call(p.childNodes, function (n) { if (n.nodeType === 3 && /^\s*\$\s*$/.test(n.textContent)) n.textContent = ''; }); }      /* the live prompt keeps its «$» as loose text */
+  function scan(root) {
+    if (root.matches && root.matches(SEL)) clean(root); if (root.querySelectorAll) [].forEach.call(root.querySelectorAll(SEL), clean);
+    if (root.matches && root.matches('.prompt.dyn')) sign(root); if (root.querySelectorAll) [].forEach.call(root.querySelectorAll('.prompt.dyn'), sign);
+  }
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      if (m.type === 'characterData') { var p = m.target.parentNode; if (p && p.matches && p.matches(SEL)) clean(p); return; }
+      [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1) scan(n); else if (n.nodeType === 3 && n.parentNode && n.parentNode.matches && n.parentNode.matches(SEL)) clean(n.parentNode); });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  scan(document);
+})();
+
+/* Farhan 2026-11-19: a newly revealed question («سؤال جديد») does not show while a popup is on screen.
+   It appears a moment after the last popup has closed (so it does not flash between two popups), and is scrolled into view. */
+(function () {
+  'use strict';
+  if (window.__farhanQWait) return; window.__farhanQWait = 1;
+  var quietSince = 0;
+  setInterval(function () {
+    var b = document.body, open = !!document.querySelector('.overlay');
+    if (open) { quietSince = 0; b.classList.add('fx-popup'); return; }
+    if (!b.classList.contains('fx-popup')) return;
+    if (!quietSince) { quietSince = Date.now(); return; }
+    if (Date.now() - quietSince < 700) return;
+    b.classList.remove('fx-popup'); quietSince = 0;
+    var row = document.querySelector('.qrow.qnew'); if (row && row.scrollIntoView) try { row.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { }
+  }, 150);
+})();
+
+/* Farhan 2026-11-19: the congratulations card (after all the questions) also has a button to start the lab again. */
+(function () {
+  'use strict';
+  if (window.__farhanAgain) return; window.__farhanAgain = 1;
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) {
+      [].forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType !== 1 || !n.classList.contains('overlay')) return;
+        var card = n.querySelector('.pcard.cele'), foot = card && card.querySelector('.pc-foot'), first = foot && foot.querySelector('button');
+        if (!foot || !first || foot.querySelector('.fx-again') || !(window.CC && CC.restart)) return;
+        var b = document.createElement('button'); b.type = 'button'; b.className = first.className + ' fx-again'; b.textContent = 'إعادة التدريب من البداية';
+        b.onclick = function () { n.remove(); try { CC.restart(); } catch (e) { } };
+        foot.appendChild(b);
+      });
+    });
+  }).observe(document.body, { childList: true });
+})();
+
+/* Farhan 2026-11-19: an error message on the command screen is shown from its START. The screen used to jump to
+   the bottom, so a long message was seen from its end. Now the screen scrolls so the first line of the newest
+   error is at the top of what is visible. */
+(function () {
+  'use strict';
+  if (window.__farhanErrTop) return; window.__farhanErrTop = 1;
+  function toTop(row) {
+    var log = row.closest('.cs-log'); if (!log) return;
+    var go = function () { if (!row.isConnected) return; var y = row.getBoundingClientRect().top - log.getBoundingClientRect().top, k = log.clientHeight / Math.max(1, log.getBoundingClientRect().height); log.scrollTop += y * k - 4; };
+    [40, 160, 420].forEach(function (ms) { setTimeout(go, ms); });      /* after the lab's own jump to the bottom */
+  }
+  new MutationObserver(function (ms) {
+    ms.forEach(function (m) { [].forEach.call(m.addedNodes, function (n) { if (n.nodeType === 1 && n.classList.contains('errmsg')) toTop(n); }); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-19: when a command's result is taller than the command screen, the screen shows it from the
+   BEGINNING (the line of the command itself at the top), not from its end, and a bouncing pill says the student
+   can scroll down for the rest. The pill leaves at the bottom of the result or with the next command.
+   Long-running tools that print for many seconds keep the lab's own following of the output. */
+(function () {
+  'use strict';
+  if (window.__farhanOutTop) return; window.__farhanOutTop = 1;
+  var lastCmd = null, t0 = 0, timer = null;
+  function hint(log, on) {
+    var cs = log.closest('.cs'); if (!cs) return;
+    var h = cs.querySelector('.fx-more');
+    if (!on) { if (h) h.remove(); return; }
+    if (!h) {
+      h = document.createElement('button'); h.type = 'button'; h.className = 'fx-more';
+      h.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg><span>مرّر للأسفل لرؤية باقي النتيجة</span>';
+      h.onclick = function () { log.scrollBy({ top: log.clientHeight * .8, behavior: 'smooth' }); };
+      cs.appendChild(h);
+    }
+    if (!log.__fxMore) { log.__fxMore = 1; log.addEventListener('scroll', function () { if (log.scrollTop + log.clientHeight >= log.scrollHeight - 6) hint(log, false); }); }
+  }
+  function settle() {
+    var row = lastCmd; if (!row || !row.isConnected) return;
+    var log = row.closest('.cs-log'); if (!log) return;
+    if (Date.now() - t0 > 6500) return;                                    /* a long-running tool: the lab follows its output itself */
+    for (var n = row.nextElementSibling; n; n = n.nextElementSibling) if (n.classList.contains('errmsg')) return;   /* an error is already shown from its start */
+    var lr = log.getBoundingClientRect(), k = log.clientHeight / Math.max(1, lr.height), top = log.scrollTop + (row.getBoundingClientRect().top - lr.top) * k;
+    if (log.scrollHeight - top <= log.clientHeight + 4) { log.scrollTop = log.scrollHeight; return; }   /* it all fits: the newest command and its result are brought into view, also when the student had scrolled up */
+    log.scrollTop = Math.max(0, top - 3); hint(log, true);
+  }
+  new MutationObserver(function (ms) {
+    var touched = false;
+    ms.forEach(function (m) {
+      var host = m.target.nodeType === 1 ? m.target : m.target.parentNode; if (!host || !host.closest || !host.closest('.cs-log')) return;
+      [].forEach.call(m.addedNodes, function (n) {
+        if (n.nodeType === 1 && n.classList.contains('cmdrow')) { lastCmd = n; t0 = Date.now(); var lg0 = host.closest('.cs-log'); hint(lg0, false); setTimeout(function () { lg0.scrollTop = lg0.scrollHeight; }, 20); }   /* the new command always comes into view first */
+        touched = true;
+      });
+    });
+    if (touched && lastCmd) { clearTimeout(timer); timer = setTimeout(settle, 450); }
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-20: in the notes app a task is ticked as done, or unticked, by clicking it (or with Enter / Space). */
+(function () {
+  'use strict';
+  if (window.__farhanNotes) return; window.__farhanNotes = 1;
+  function toggle(li) {
+    li.classList.toggle('ok'); li.setAttribute('aria-checked', li.classList.contains('ok') ? 'true' : 'false');
+    li.classList.remove('fx-tick'); void li.offsetWidth; li.classList.add('fx-tick');
+  }
+  document.addEventListener('click', function (e) { var li = e.target.closest ? e.target.closest('.cc-note li') : null; if (li) toggle(li); });
+  document.addEventListener('keydown', function (e) { var li = e.target.closest ? e.target.closest('.cc-note li') : null; if (li && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle(li); } });
+  /* each task can be reached with the keyboard and is announced as a checkbox */
+  new MutationObserver(function () {
+    [].forEach.call(document.querySelectorAll('.cc-note li:not([role])'), function (li) { li.setAttribute('role', 'checkbox'); li.setAttribute('tabindex', '0'); li.setAttribute('aria-checked', li.classList.contains('ok') ? 'true' : 'false'); });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): no «write the command here» signs for a command that has already been given,
+   whether it was typed or pasted.
+   1. While a command is running (the typing line is locked) or its result is still coming in, the gold ring and the
+      pointer on the typing line stay away. They come back only when the lab is ready for the next command.
+   2. The box «اكتب الأمر هنا ليتم تنفيذه على الحاسوب» is for the first command only: once the student has run any
+      command, it is not shown again (until the lab is restarted). */
+(function () {
+  'use strict';
+  if (window.__farhanCmdGuide) return; window.__farhanCmdGuide = 1;
+  function busy() { var i = document.querySelector('#laptop #cmd'); return !i || i.disabled || !!window.__fxBusy || !!document.querySelector('.cs-log .row.fx-hid'); }
+  function wrap() {
+    var G = window.CC && CC.guide; if (!G || !G.show || G.show.__fx) return;
+    var show = G.show;
+    G.show = function (get) {
+      var a = [].slice.call(arguments);
+      if (typeof get === 'function') a[0] = function () {
+        var e = get();
+        return (e && e.classList && e.classList.contains('inwrap') && busy()) ? null : e;
+      };
+      return show.apply(this, a);
+    };
+    G.show.__fx = 1;
+  }
+  wrap(); setInterval(wrap, 500);
+  var gen = null;
+  setInterval(function () {
+    var g = window.CC ? CC.gen : null;
+    if (g !== gen) { gen = g; document.body.classList.remove('fx-ran'); }              /* the lab was restarted */
+    if (document.querySelector('#laptop .cs-log .cmdrow')) document.body.classList.add('fx-ran');
+  }, 300);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): a copy button next to every command in the step's explanation (the right side).
+   One click copies the command, so the student can paste it on the command screen instead of typing it.
+   It appears once the step's text has finished typing, and only on the step that is on screen now. */
+(function () {
+  'use strict';
+  if (window.__farhanCopy) return; window.__farhanCopy = 1;
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
+  var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+  function copy(txt) {
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
+    var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+  }
+  setInterval(function () {
+    var cur = document.querySelector('.cc-cur'); if (!cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]]) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.innerHTML = IC + '<span>نسخ</span>';
+      b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copy(t);
+        b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ</span>'; }, 1500);
+        var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): a guide on the WEBSITE (a ring on a box of the page) is never drawn on top of the
+   command screen. While the command screen covers the website, the browser's icon in the dock bounces inside a gold
+   ring with a box «افتح المتصفح لتكمل الخطوة»; the ring on the page appears once the browser is in view. */
+(function () {
+  'use strict';
+  if (window.__farhanWebFirst) return; window.__farhanWebFirst = 1;
+  var need = 0;
+  function q(s) { return document.querySelector(s); }
+  function covered(e) {
+    var l = q('#laptop'), cs = q('#laptop .lscreen .cs'); if (!l || !cs || l.classList.contains('cc-closed')) return false;
+    var c = cs.getBoundingClientRect(); if (!c.width || !c.height || getComputedStyle(cs).display === 'none' || getComputedStyle(cs).visibility === 'hidden') return false;
+    var br = q('#laptop #br'), zc = parseInt(getComputedStyle(cs).zIndex, 10) || 0, zb = br ? parseInt(getComputedStyle(br).zIndex, 10) || 0 : 0;
+    if (br && zb > zc) return false;                                           /* the browser is the window in front */
+    var r = e.getBoundingClientRect(), x = r.left + r.width / 2, y = r.top + r.height / 2;
+    return x >= c.left && x <= c.right && y >= c.top && y <= c.bottom;
+  }
+  function wrap() {
+    var G = window.CC && CC.guide; if (!G || !G.show || G.show.__fxWeb) return;
+    var show = G.show;
+    G.show = function (get) {
+      var a = [].slice.call(arguments);
+      if (typeof get === 'function') a[0] = function () {
+        var e = get();
+        if (e && e.ccSite && covered(e)) { need = Date.now(); return null; }
+        return e;
+      };
+      return show.apply(this, a);
+    };
+    G.show.__fxWeb = 1; if (show.__fx) G.show.__fx = 1;
+  }
+  wrap(); setInterval(wrap, 500);
+  setInterval(function () {
+    var b = q('#laptop .cc-dock [data-app="web"]'); if (!b) return;
+    var on = Date.now() - need < 500 && !q('.overlay'), tip = b.querySelector('.fx-tip');
+    if (on) {
+      b.classList.add('fx-cue');
+      if (!tip) { tip = document.createElement('b'); tip.className = 'fx-tip'; tip.textContent = 'افتح المتصفح لتكمل الخطوة'; b.appendChild(tip); }
+    } else if (tip || b.classList.contains('fx-cue')) { b.classList.remove('fx-cue'); if (tip) tip.remove(); }
+  }, 200);
+})();
+
+/* Farhan 2026-11-20 (EH1 lab 5): the Tab key completes what the student is typing on the command screen, in every lab:
+   the command's name (dis + Tab = display), a file or folder name (read pas + Tab = read passwords.txt), and the other
+   parts of the command the step asks for once their first letters are typed (barq cam + Tab = barq camelcode.shop/admin).
+   With several matches it completes as far as they agree. It never runs anything and never types a part the student
+   has not started. A lab's own Tab completion (EH1 lab 2) is tried first. */
+(function () {
+  'use strict';
+  if (window.__farhanTab) return; window.__farhanTab = 1;
+  var cmds = null, ghost = null;
+  function labCmds() {
+    if (cmds) return cmds;
+    cmds = [];
+    [].forEach.call(document.scripts, function (s) {
+      if (s.id === 'cc-touches-js') return;
+      var m = /var CMDS = \[([^\]]*)\]/.exec(s.textContent || '');
+      if (m) m[1].replace(/'([^']+)'/g, function (_, w) { if (cmds.indexOf(w) < 0) cmds.push(w); });
+    });
+    return cmds;
+  }
+  /* the command the step asks for (the lab's faint hint), to complete its parts */
+  setInterval(function () {
+    var L = window.CC && CC.L; if (!L || !L.ghost || L.ghost.__fx) return;
+    var orig = L.ghost; L.ghost = function (t) { ghost = t || null; return orig.apply(this, arguments); }; L.ghost.__fx = 1; ghost = null;
+  }, 250);
+  function names(dirAbs) {
+    var fs = window.CC && CC.labFS, out = [];
+    try { var r = fs && fs.walk(dirAbs); if (r && r.node && r.node.kids) Object.keys(r.node.kids).forEach(function (k) { out.push(k); }); } catch (e) { }
+    return out;
+  }
+  function common(a) { var p = a[0] || ''; a.forEach(function (x) { while (x.toLowerCase().indexOf(p.toLowerCase()) !== 0) p = p.slice(0, -1); }); return p; }
+  function complete(v) {
+    var sp = v.lastIndexOf(' '), head = v.slice(0, sp + 1), cur = v.slice(sp + 1), isCmd = head.trim() === '', cand = [], pre = '';
+    var g = ghost ? ghost.split(/\s+/) : [], idx = head.trim() ? head.trim().split(/\s+/).length : 0;
+    if (isCmd) {
+      cand = labCmds().slice(); if (g[0] && cand.indexOf(g[0]) < 0) cand.push(g[0]);
+      if (!cur) return null;
+    } else {
+      var sl = cur.lastIndexOf('/'), fs = window.CC && CC.labFS, base = cur;
+      if (fs) {
+        try {
+          var dir = fs.cwd;
+          if (sl >= 0 && !/[.@]/.test(cur.slice(0, sl))) { pre = cur.slice(0, sl + 1); base = cur.slice(sl + 1); dir = fs.resolve(pre); }
+          cand = names(dir);
+        } catch (e) { cand = []; }
+      }
+      cur = base;
+      if (!pre && cur && g[idx] && g[0] && head.trim().split(/\s+/)[0] === g[0] && cand.indexOf(g[idx]) < 0) cand.push(g[idx]);   /* a part of the asked command, once started */
+    }
+    var hit = cand.filter(function (c) { return c.toLowerCase().indexOf(cur.toLowerCase()) === 0; });
+    if (!hit.length) return null;
+    if (hit.length === 1) return head + pre + hit[0] + (isCmd ? ' ' : '');
+    var p = common(hit); return p.length > cur.length ? head + pre + p : null;
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || e.shiftKey || e.ctrlKey || e.altKey || e.metaKey) return;
+    var i = e.target; if (!i || i.id !== 'cmd' || !i.closest || !i.closest('#laptop')) return;
+    e.preventDefault(); e.stopPropagation(); if (e.stopImmediatePropagation) e.stopImmediatePropagation();
+    if (i.disabled) return;
+    var v = i.value, nv = null;
+    try { var L = window.CC && CC.L; if (L && L.tabFn) nv = L.tabFn(v); } catch (x) { nv = null; }
+    if (nv == null || nv === v) nv = complete(v);
+    if (nv == null || nv === v) return;
+    i.value = nv; try { i.setSelectionRange(nv.length, nv.length); } catch (x) { }
+    i.dispatchEvent(new Event('input', { bubbles: true }));
+  }, true);
+})();
+
+/* Farhan's motion add-on for EH1 lab 4 (design test). It only watches what the lab already does
+   (a page opened in the browser, the lines the tool prints) and draws it as a small live scene:
+   the request leaves the laptop, reaches the shop's server, and the answer comes back.
+   It changes nothing in the lab's flow, wording or layout. */
+(function () {
+  'use strict';
+  if (!window.CC) return;
+  var CC = window.CC, W = 470, H = 215, OX = 270, OY = 8, U = 15, CX = U * 0.866, CY = U * 0.5, NS = 'http://www.w3.org/2000/svg';
+  function P(x, y, z) { return [OX + (x - y) * CX, OY + (x + y) * CY - (z || 0) * U]; }
+  function f(n) { return n.toFixed(1); }
+  function pts(a) { return a.map(function (p) { return f(p[0]) + ',' + f(p[1]); }).join(' '); }
+  function box(x, y, z, w, d, h, cls, extra) {
+    var top = [P(x, y, z + h), P(x + w, y, z + h), P(x + w, y + d, z + h), P(x, y + d, z + h)],
+      left = [P(x, y + d, z + h), P(x + w, y + d, z + h), P(x + w, y + d, z), P(x, y + d, z)],
+      right = [P(x + w, y, z + h), P(x + w, y + d, z + h), P(x + w, y + d, z), P(x + w, y, z)],
+      sil = [P(x, y, z + h), P(x + w, y, z + h), P(x + w, y, z), P(x + w, y + d, z), P(x, y + d, z), P(x, y + d, z + h)];
+    return '<g class="fx-bx ' + (cls || '') + '"><polygon class="sil" points="' + pts(sil) + '"/><polygon class="fl" points="' + pts(left) + '"/><polygon class="fr" points="' + pts(right) + '"/><polygon class="ft" points="' + pts(top) + '"/>' + (extra || '') + '</g>';
+  }
+  function rpath(w, r) {
+    var s = w.map(function (p) { return P(p[0], p[1], 0); }), d = 'M' + f(s[0][0]) + ',' + f(s[0][1]);
+    for (var i = 1; i < s.length - 1; i++) {
+      var a = s[i - 1], b = s[i], c = s[i + 1], v1 = [a[0] - b[0], a[1] - b[1]], v2 = [c[0] - b[0], c[1] - b[1]],
+        l1 = Math.hypot(v1[0], v1[1]), l2 = Math.hypot(v2[0], v2[1]), k1 = Math.min(r, l1 / 2) / l1, k2 = Math.min(r, l2 / 2) / l2;
+      d += ' L' + f(b[0] + v1[0] * k1) + ',' + f(b[1] + v1[1] * k1) + ' Q' + f(b[0]) + ',' + f(b[1]) + ' ' + f(b[0] + v2[0] * k2) + ',' + f(b[1] + v2[1] * k2);
+    }
+    var e = s[s.length - 1]; return d + ' L' + f(e[0]) + ',' + f(e[1]);
+  }
+
+  var CARD = false;   /* Farhan 2026-11-18: the small «خلف الشاشة» window is off; set true to bring it back */
+  var card, svg, labs, TILE = {}, hidden = [], pub = [], st = { mode: '', running: false, tried: 0, total: 0, found: {}, opened: {}, order: [], hideT: 0 };
+  function pages() {
+    var all = Object.keys((CC.site && CC.site.pages) || {}).map(function (p) { return p.replace(/^\//, ''); });
+    var hid = ((CC.shop && CC.shop.hidden) || []).map(function (p) { return p.replace(/^\//, ''); });
+    hidden = all.filter(function (p) { return hid.indexOf(p) > -1; }); pub = all.filter(function (p) { return hid.indexOf(p) < 0; });
+  }
+  function tile(name, x, y, z, state) {
+    var w = 2.3, d = 1.4, h = .22, c = P(x + w / 2, y + d / 2, z + h); TILE[name] = c;
+    return '<g class="fx-tile" data-p="' + name + '" data-st="' + state + '">' + box(x, y, z, w, d, h, '', '<text x="' + f(c[0]) + '" y="' + f(c[1] + 3) + '" text-anchor="middle">?</text>') + '<ellipse class="fx-ring" cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" rx="20" ry="11.5"/></g>';
+  }
+  function lab(p, html, cls, dx, dy) {
+    var e = document.createElement('div'); e.className = 'fx-lab ' + (cls || ''); e.innerHTML = html;
+    e.style.left = ((p[0] + (dx || 0)) / W * 100) + '%'; e.style.top = ((p[1] + (dy || 0)) / H * 100) + '%'; labs.appendChild(e); return e;
+  }
+  function build() {
+    pages(); TILE = {};
+    card = document.createElement('div'); card.className = 'fx-card';
+    card.innerHTML = '<div class="fx-h"><b>خلف الشاشة</b><span class="fx-sub"></span><button class="fx-x" aria-label="إغلاق">×</button></div>' +
+      '<div class="fx-scene"><svg viewBox="0 0 ' + W + ' ' + H + '"></svg><div class="fx-labs"></div></div>' +
+      '<div class="fx-stats"><span>أسماء جُرّبت <b class="fx-t">0</b></span><span class="hot">صفحات موجودة <b class="fx-f">0</b></span></div><div class="fx-chips"></div>';
+    svg = card.querySelector('svg'); labs = card.querySelector('.fx-labs');
+    var s = '<defs><marker id="fx-ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M1 1.5L9 5 1 8.5z" fill="#8fa5cc"/></marker></defs>';
+    s += '<g class="fx-grp" id="fx-hid">' + box(-7.2, 7.4, 0, 8, 4, .3, 'fx-plate dark');
+    var hx = [-6.9, -4.3, -1.7], hy = [7.8, 9.7];
+    hidden.slice(0, 6).forEach(function (n, i) { s += tile(n, hx[i % 3], hy[(i / 3) | 0], .3, 'ghost'); });
+    s += '</g>';
+    s += '<path class="fx-edge" d="' + rpath([[4, 11.8], [4, 13.2]], 6) + '"/><path class="fx-edge" stroke-dasharray="3 4" d="' + rpath([[2.2, 10], [.9, 10]], 6) + '"/>';
+    s += '<path class="fx-edge" id="fx-d" marker-end="url(#fx-ah)" marker-start="url(#fx-ah)" d="' + rpath([[14, 8.3], [14, 10], [5.95, 10]], 9) + '"/>';
+    s += '<path class="fx-edge fx-off" id="fx-lk" marker-end="url(#fx-ah)" d="' + rpath([[11.8, 6], [10.4, 6]], 6) + '"/>';
+    s += '<path class="fx-edge fx-off" id="fx-kw" marker-end="url(#fx-ah)" d="' + rpath([[7.7, 6], [4, 6], [4, 8.05]], 9) + '"/>';
+    var led = '';
+    [0, 1, 2].forEach(function (i) { var c = P(3.35, 11.2, 1.7 - i * .42); led += '<circle class="fx-led" cx="' + f(c[0]) + '" cy="' + f(c[1]) + '" r="1.4" style="animation-delay:' + (i * .13) + 's"/>'; });
+    s += '<g id="fx-srv">' + box(2.3, 8.3, 0, 3.4, 3.4, .25, 'fx-plate') + box(2.8, 8.8, .25, 2.4, 2.4, 1.7, 'fx-srv', led) + '</g>';
+    s += '<g id="fx-pub">' + box(1.2, 13.3, 0, 5.6, 4, .3, 'fx-plate');
+    var px = [1.5, 4.1], py = [13.7, 15.6];
+    pub.slice(0, 4).forEach(function (n, i) { s += tile(n, px[i % 2], py[(i / 2) | 0], .3, 'pub'); });
+    s += '</g>';
+    var kc = P(9, 6, 1.5);
+    s += '<g class="fx-grp fx-off" id="fx-tool">' + box(7.9, 4.9, 0, 2.2, 2.2, 1.5, 'fx-tool', '<g transform="translate(' + f(kc[0]) + ',' + f(kc[1] - 1) + ')"><circle class="fx-spin" r="8" fill="none" stroke="#0E1F39" stroke-width="1.1" stroke-dasharray="3 3.5" opacity=".6"/><circle r="3.8" cx="-.8" cy="-.8" fill="#fff8" stroke="#0E1F39" stroke-width="1.5"/><path d="M2 2l3.2 3.2" stroke="#0E1F39" stroke-width="1.8" stroke-linecap="round"/></g>') + '</g>';
+    var scr = [P(12.95, 5.3, .58), P(15.05, 5.3, .58), P(15.05, 5.3, 1.86), P(12.95, 5.3, 1.86)];
+    s += '<g>' + box(12, 4, 0, 4, 4, .3, 'fx-plate') + box(12.8, 5.3, .3, 2.4, 1.7, .14, 'fx-lap') + box(12.8, 5.14, .44, 2.4, .16, 1.5, 'fx-lid', '<polygon class="fx-scr" points="' + pts(scr) + '"/>') + '</g><g id="fx-pk"></g>';
+    svg.innerHTML = s;
+    lab(P(14, 6, 0), 'حاسوبك', '', 26, 44);
+    lab(P(4, 10, 2.2), 'خادم المتجر', '', 0, -9);
+    lab(P(4, 15.3, 0), 'صفحات عامة', '', 62, 30);
+    lab(P(-3.2, 9.4, 0), 'صفحات مخفية', '', -20, -42);
+    lab(P(9, 6, 1.5), 'كاشف', 'pill fx-ltool off', 0, -22);
+    card.querySelector('.fx-x').onclick = function () { card.classList.remove('show'); st.closed = true; };
+    card.addEventListener('mouseenter', function () { clearTimeout(st.hideT); });
+    card.addEventListener('mouseleave', function () { if (st.mode === 'web') autoHide(2200); });
+    Object.keys(st.found).forEach(function (n) { setTile(n, st.opened[n] ? 'open' : 'found'); });
+    chips();
+  }
+  function mount(mode) {
+    var host = document.querySelector('#laptop'); if (!host) return false;
+    if (!card || !card.isConnected && !svg) build();
+    if (card.parentNode !== host) { if (getComputedStyle(host).position === 'static') host.style.position = 'relative'; host.appendChild(card); }
+    card.classList.toggle('at-term', mode === 'term'); card.classList.toggle('at-web', mode !== 'term'); st.mode = mode;
+    var tool = mode === 'term';
+    ['fx-tool', 'fx-lk', 'fx-kw'].forEach(function (id) { svg.querySelector('#' + id).classList.toggle('fx-off', !tool); });
+    card.querySelector('.fx-ltool').classList.toggle('off', !tool);
+    clearTimeout(st.hideT); requestAnimationFrame(function () { card.classList.add('show'); });
+    return true;
+  }
+  function autoHide() { }   /* the card sits on the laptop's keyboard, where it covers nothing: it stays */
+  function sub(html, cls) { var e = card.querySelector('.fx-sub'); e.className = 'fx-sub ' + (cls || ''); e.innerHTML = html; }
+  function setTile(name, state, pop) {
+    var g = svg.querySelector('.fx-tile[data-p="' + name + '"]'); if (!g) return;
+    if (state && !(g.getAttribute('data-st') === 'open' && state === 'found')) g.setAttribute('data-st', state);
+    if (pop) { var r = g.querySelector('.fx-ring'); g.classList.remove('pop'); r.classList.remove('go'); void g.getBoundingClientRect(); g.classList.add('pop'); r.classList.add('go'); }
+  }
+  function chips() {
+    var box = card.querySelector('.fx-chips'), have = {};
+    [].forEach.call(box.children, function (c) { have[c.textContent] = c; });
+    Object.keys(st.found).forEach(function (n) {
+      var c = have['/' + n]; if (!c) { c = document.createElement('i'); c.textContent = '/' + n; box.appendChild(c); }
+      c.className = hidden.indexOf(n) > -1 ? (st.opened[n] ? 'hid open' : 'hid') : '';
+    });
+  }
+  function count(sel, v) { var b = card.querySelector(sel); if (b.textContent !== v) { b.textContent = v; b.classList.remove('tick'); void b.offsetWidth; b.classList.add('tick'); } }
+  var COL = { req: '#f3a15d', ok: '#7fc278', no: '#e0553d' };
+  function fly(edge, o) {
+    o = o || {};
+    return new Promise(function (res) {
+      var path = svg.querySelector('#' + edge), len = path.getTotalLength(), dur = o.dur || 700, t0 = null;
+      var c = document.createElementNS(NS, 'circle'); c.setAttribute('r', o.r || 3.6); c.setAttribute('fill', COL[o.kind || 'req']); c.setAttribute('stroke', '#060d1c'); c.setAttribute('stroke-width', 1);
+      svg.querySelector('#fx-pk').appendChild(c);
+      var tag = o.label ? lab([0, 0], o.label, 'pill mono') : null;
+      (function step(t) {
+        if (t0 === null) t0 = t;
+        var k = Math.min(1, (t - t0) / dur), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, p = path.getPointAtLength((o.rev ? 1 - e : e) * len);
+        c.setAttribute('cx', p.x); c.setAttribute('cy', p.y);
+        if (tag) { tag.style.left = (p.x / W * 100) + '%'; tag.style.top = ((p.y - 13) / H * 100) + '%'; }
+        if (k < 1) requestAnimationFrame(step); else { c.remove(); if (tag) tag.remove(); res(); }
+      })(performance.now());
+    });
+  }
+  function puff(txt, ok) { var e = lab(P(4, 10, 2.6), txt, 'puff' + (ok ? ' ok' : ''), (Math.random() - .5) * 22, -14); setTimeout(function () { e.remove(); }, 720); }
+  function flash() { var s = svg.querySelector('.fx-scr'); s.classList.add('flash'); setTimeout(function () { s.classList.remove('flash'); }, 300); }
+
+  /* a page opened (or tried) in the browser */
+  function nav(path) {
+    if (st.running) return;
+    var name = String(path || '').replace(/^\//, '') || 'home', has = !!(CC.site.pages && CC.site.pages['/' + name]);
+    emit('nav', name);
+    if (!CARD) { pages(); if (has) { st.found[name] = true; if (hidden.indexOf(name) > -1) st.opened[name] = true; emit('open', name); } return; }
+    if (!mount('web')) return;
+    if (st.closed) { card.classList.remove('show'); return; }
+    sub('طلب الصفحة <code>/' + name.replace(/[<>&]/g, '') + '</code>'); flash();
+    fly('fx-d', { dur: 620, label: '/' + name }).then(function () {
+      if (has) {
+        st.found[name] = true; if (hidden.indexOf(name) > -1) st.opened[name] = true;
+        setTile(name, hidden.indexOf(name) > -1 ? 'open' : null, true); puff('✓', true); sub('الرد: الصفحة موجودة', 'ok'); chips(); emit('open', name);
+      } else { puff('✗'); sub('الرد: الصفحة غير موجودة', 'no'); }
+      return fly('fx-d', { dur: 560, rev: true, kind: has ? 'ok' : 'no' });
+    }).then(function () { autoHide(2400); });
+  }
+  /* the lines the tool prints */
+  function busy(on) { ['fx-tool', 'fx-srv'].forEach(function (id) { svg.querySelector('#' + id).classList.toggle('fx-busy', on); }); ['fx-lk', 'fx-kw'].forEach(function (id) { svg.querySelector('#' + id).classList.toggle('run', on); }); }
+  function start() {
+    st.closed = false; pages();
+    st.running = true; st.tried = 0; st.hits = 0;
+    try { st.total = (CC.labFS.read('/pages.txt') || '').split('\n').filter(Boolean).length; } catch (e) { st.total = 0; }
+    st.order = []; st.done = false; emit('start');
+    if (!CARD || !mount('term')) return;
+    count('.fx-t', '0' + (st.total ? ' / ' + st.total : '')); count('.fx-f', '0'); sub('الأداة تجرّب الأسماء واحداً واحداً'); busy(true);
+  }
+  function tried(name, has) {
+    if (!st.running) start();
+    st.tried++; var n = st.tried;
+    if (has) { st.hits++; st.found[name] = true; st.order.push(name); }
+    if (!CARD || !card) return;
+    count('.fx-t', st.tried + (st.total ? ' / ' + st.total : '')); if (has) { count('.fx-f', String(st.hits)); chips(); }
+    fly('fx-lk', { dur: 170, r: 2.8 }).then(function () { return fly('fx-kw', { dur: 300, r: 2.8 }); }).then(function () {
+      if (has) { setTile(name, hidden.indexOf(name) > -1 ? 'found' : null, true); puff('✓', true); fly('fx-d', { dur: 420, rev: true, kind: 'ok', r: 3 }); }
+      else if (n % 4 === 0) puff('✗');
+    });
+  }
+  function finish() { st.running = false; st.done = true; emit('finish'); setTimeout(function () { if (!card) return; busy(false); sub('انتهى البحث: الصفحات الملوّنة موجودة في الموقع', 'ok'); }, 700); }
+  function emit(ev, a) { try { if (window.FX && FX['on' + ev]) FX['on' + ev](a); } catch (e) { } }
+  function logLine(txt, cls) {
+    txt = String(txt || ''); var m = /^\/(\S+)\s+\[(Found|Not found)\]/.exec(txt);
+    if (m) return tried(m[1], m[2] === 'Found');
+    if (!st.running && /info/.test(cls || '') && /pages\.txt/.test(txt) && !/\[/.test(txt)) return start();
+    if (st.running && txt === 'Finished') finish();
+  }
+
+  /* hook the lab's own callbacks (they are set again when the lab restarts) */
+  function hook() {
+    var Pn = CC.P, L = CC.L;
+    if (Pn && typeof Pn.onPage === 'function' && !Pn.onPage.__fx) {
+      var op = Pn.onPage; Pn.onPage = function (path) { try { nav(path); } catch (e) { } return op.apply(this, arguments); }; Pn.onPage.__fx = 1;
+    }
+    if (L && typeof L.add === 'function' && !L.add.__fx) {
+      var ad = L.add; L.add = function (txt, cls) { try { logLine(txt, cls); } catch (e) { } return ad.apply(this, arguments); }; L.add.__fx = 1;
+      if (card && !card.isConnected) { card = null; svg = null; st.running = false; st.found = {}; st.opened = {}; }
+    }
+  }
+  setInterval(hook, 350); hook();
+  window.FXTest = { nav: nav, logLine: logLine, st: st };
+  window.FX = { st: st, isHidden: function (n) { return hidden.indexOf(n) > -1; } };
+})();
+
+/* Farhan 2026-11-18, on top of motion.js:
+   1. the command screen takes the whole desktop (CSS in flow.css);
+   2. when the tool has finished, a cue on the browser's icon invites the student back to the website;
+   3. back on the website, the tool's results slide in on the right of the laptop screen, so the student
+      does not need to return to the command screen to read the page names. */
+(function () {
+  'use strict';
+  if (!window.FX) return;
+  var st = FX.st, resOn = false;
+  function q(s) { return document.querySelector(s); }
+  function cue(on) {
+    var b = q('.cc-dock [data-app="web"]'); if (!b) return;
+    var br = q('#br'); if (on && br && br.classList.contains('cc-front')) on = false;      /* already on the website */
+    b.classList.toggle('fx-cue', on); var tip = b.querySelector('.fx-tip');
+    if (on && !tip) { tip = document.createElement('b'); tip.className = 'fx-tip'; tip.textContent = 'عُد إلى المتصفح وافتح الصفحات التي وجدتها الأداة'; b.appendChild(tip); }
+    if (!on && tip) tip.remove();
+  }
+  function resEl() {
+    var ls = q('#laptop .lscreen'); if (!ls) return null;
+    var p = ls.querySelector('.fx-res');
+    if (!p) {
+      p = document.createElement('div'); p.className = 'fx-res';
+      p.innerHTML = '<div class="fx-res-h"><b>نتائج أداة كاشف</b><small>الصفحات الموجودة في الموقع</small></div><ul></ul><p>اكتب اسم الصفحة في عنوان الموقع لتفتحها.</p>';
+      ls.appendChild(p);
+    }
+    return p;
+  }
+  function label(n) { return st.opened[n] ? '✓ فتحتها' : FX.isHidden(n) ? 'مخفية' : 'عامة'; }
+  function fill() {
+    var p = resEl(); if (!p) return;
+    p.querySelector('ul').innerHTML = (st.order || []).map(function (n, i) {
+      return '<li class="' + (FX.isHidden(n) ? 'hid' : '') + (st.opened[n] ? ' seen' : '') + '" data-p="' + n + '" style="animation-delay:' + (0.25 + i * 0.07).toFixed(2) + 's"><span>/' + n + '</span><i>' + label(n) + '</i></li>';
+    }).join('');
+  }
+  function show() {
+    var p = resEl(), l = q('#laptop'); if (!p || !l) return;
+    fill(); l.classList.add('fx-res-on'); p.classList.remove('in'); void p.offsetWidth; p.classList.add('in');
+    setTimeout(function () { window.dispatchEvent(new Event('resize')); }, 80);
+  }
+  FX.onstart = function () { resOn = false; cue(false); var l = q('#laptop'), p = q('.fx-res'); if (l) l.classList.remove('fx-res-on'); if (p) p.classList.remove('in'); };
+  FX.onfinish = function () { fill(); setTimeout(function () { cue(true); }, 900); };
+  FX.onopen = function (name) {
+    var li = q('.fx-res li[data-p="' + name + '"]');
+    if (li && FX.isHidden(name)) { li.classList.add('seen'); li.querySelector('i').textContent = label(name); }
+  };
+  /* Farhan 2026-11-18: once the student has moved to another page, the «اسم الموقع» label goes and the
+     «اسم الصفحة» label says what to notice */
+  /* the underlines are our own (Farhan 2026-11-18). A see-through copy of the address text lies exactly over the
+     address box, in the box's own font, so the browser itself puts each line under its word, at any zoom.
+     The lab's frames are hidden (flow.css). */
+  var geo = { url: '', site: null, page: null };
+  function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+  function fitLines() {
+    var u = q('#br .br-url'), omni = u && u.parentNode, parts = q('.br-parts.in'); if (!u) return;
+    var m = omni.querySelector('.fx-mirror'), on = !!parts && !gone && document.activeElement !== u, v = String(u.value), i = v.indexOf('/');
+    if (!on || i < 0) { if (m) m.remove(); geo.url = ''; geo.site = geo.page = null; return; }
+    if (!m) { m = document.createElement('div'); m.className = 'fx-mirror'; m.setAttribute('aria-hidden', 'true'); omni.appendChild(m); geo.url = ''; }
+    var cs = getComputedStyle(u), key = v + '|' + (moved ? 1 : 0);
+    m.style.cssText = 'left:' + u.offsetLeft + 'px;top:' + u.offsetTop + 'px;width:' + u.offsetWidth + 'px;height:' + u.offsetHeight + 'px;' +
+      'font:' + cs.fontStyle + ' ' + cs.fontWeight + ' ' + cs.fontSize + ' ' + cs.fontFamily + ';line-height:' + u.clientHeight + 'px;letter-spacing:' + cs.letterSpacing + ';padding:0 ' + cs.paddingRight + ' 0 ' + cs.paddingLeft + ';border:0 solid transparent;border-left-width:' + cs.borderLeftWidth + ';';
+    if (geo.url !== key) {      /* a new address: the lines grow again from the start */
+      geo.url = key;
+      m.innerHTML = '<span class="fx-w site' + (moved ? ' off' : '') + '">' + esc(v.slice(0, i)) + '</span>/<span class="fx-w page">' + esc(v.slice(i + 1)) + '</span>';
+    }
+    ['site', 'page'].forEach(function (c) { var e = m.querySelector('.fx-w.' + c), r = e && e.getBoundingClientRect(); geo[c] = e && !e.classList.contains('off') && r.width ? (r.left + r.right) / 2 : null; });
+  }
+  function centre(sel, cx) {
+    var b = q(sel), box = q('.br-parts'); if (!b || !box || cx == null) return;
+    var br = box.getBoundingClientRect(), k = box.offsetWidth / Math.max(1, br.width), left = Math.max(4, (cx - br.left) * k - b.offsetWidth / 2);
+    if (Math.abs(parseFloat(b.style.left || 0) - left) > 1) b.style.left = left.toFixed(1) + 'px';
+  }
+  var scrolled = false;
+  var firstPage = null, moved = false, MOVED_TXT = 'اسم الصفحة يتغيّر كلما زرت صفحة جديدة';
+  var lastPage = 'home', changes = 0, gone = false;     /* 1st move to another page: the sentence; 2nd move: the labels are gone */
+  FX.onnav = function (name) { if (name !== lastPage) { changes++; lastPage = name; } if (changes >= 1) moved = true; if (changes >= 2) gone = true; };
+  setInterval(function () {
+    var l = q('#laptop'); if (!l) return;
+    if (!l.isConnected || !q('.br-parts')) return;
+    try { fitLines(); } catch (e) { }
+    l.classList.toggle('fx-moved', moved);
+    l.classList.toggle('fx-labels-gone', gone);
+    /* «مرّر للأسفل...»: gone for good after the student's first scroll down (Farhan 2026-11-18) */
+    if (!scrolled) { try { var fr = q('#br .br-f'), d = fr && fr.contentDocument, se = d && (d.scrollingElement || d.documentElement); if ((se && se.scrollTop > 8) || (fr && fr.contentWindow && fr.contentWindow.scrollY > 8)) scrolled = true; } catch (e) { } }
+    l.classList.toggle('fx-scrolled', scrolled);
+    if (!moved) { var u = q('#br .br-url'), pth = u ? String(u.value).replace(/^[^\/]*\/?/, '') : ''; if (u && document.activeElement !== u && pth && pth !== 'home') moved = true; }   /* any page other than the first one */
+    if (moved) { var pg = q('.br-parts .br-part.page'); if (pg && pg.textContent !== MOVED_TXT) pg.textContent = MOVED_TXT; }
+    /* each box sits exactly under its word: its arrow points at the middle of the word */
+    centre('.br-parts .br-part.site', geo.site); centre('.br-parts .br-part.page', geo.page);
+  }, 200);
+  setInterval(function () {
+    if (!st.done) return;
+    var br = q('#br'), l = q('#laptop'); if (!br || !l) return;
+    var onWeb = br.classList.contains('cc-front') || l.classList.contains('cc-closed');
+    if (onWeb && !resOn) { resOn = true; cue(false); show(); }
+    if (!onWeb && resOn) resOn = false;
+  }, 300);
+})();
+</script>
+<!--/cc-touches-->
 </body>
 </html>
