@@ -2763,7 +2763,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     inp.addEventListener('input', ghostRender);
     L.ghost = function (target) {
       if (ghostTimer) CC.clearEvery(ghostTimer);
-      ghostTimer = null; ghostTarget = target; L._gl = 0; ghostRender();
+      ghostTimer = null; ghostTarget = target; L.ghostTarget = target || null; L._gl = 0; ghostRender();   /* L.ghostTarget: the command the student should type next (the «نسخ الأمر» button follows it) */
       if (!target) return;
       var pause = 0;
       ghostTimer = CC.every(function () {
@@ -7184,7 +7184,9 @@ body.cc-web .laptop.fx-res-on.fx-res-on.fx-res-on .br.cc-embedded.cc-embedded{ri
   }, 300);
 })();
 
-/* Farhan 2026-11-20 (EH1 lab 5): a copy button next to every command in the step's explanation (the right side).
+/* Farhan 2026-11-20 (EH1 lab 5): a copy button next to the command in the step's explanation (the right side).
+   Moaz 2026-11-20: ONLY on the command the student is supposed to type next (the lab's faint hint, L.ghostTarget), never on
+   a command that is only named or given as an example. No hint, no button.
    One click copies the command, so the student can paste it on the command screen instead of typing it.
    It appears once the step's text has finished typing, and only on the step that is on screen now. */
 (function () {
@@ -7198,12 +7200,17 @@ body.cc-web .laptop.fx-res-on.fx-res-on.fx-res-on .br.cc-embedded.cc-embedded{ri
     var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
     document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
   }
+  function norm(s) { return String(s || '').replace(/[⁦-⁩‎‏]/g, '').replace(/\s+/g, ' ').trim(); }
+  function next() { var L = window.CC && CC.L; return L ? norm(L.ghostTarget !== undefined ? L.ghostTarget : window.__ccNext) : ''; }
   setInterval(function () {
-    var cur = document.querySelector('.cc-cur'); if (!cur || cur.classList.contains('typing')) return;
+    var want = next();
+    /* a button whose command is no longer the next one goes away */
+    [].forEach.call(document.querySelectorAll('.fx-copy'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
+    var cur = document.querySelector('.cc-cur'); if (!want || !cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
-      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]]) return;
+      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]] || norm(t) !== want) return;
       if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.innerHTML = IC + '<span>نسخ الأمر</span>';
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.setAttribute('data-cmd', norm(t)); b.innerHTML = IC + '<span>نسخ الأمر</span>';
       b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
       b.addEventListener('click', function (e) {
         e.stopPropagation(); e.preventDefault(); copy(t);
@@ -7279,7 +7286,7 @@ body.cc-web .laptop.fx-res-on.fx-res-on.fx-res-on .br.cc-embedded.cc-embedded{ri
   /* the command the step asks for (the lab's faint hint), to complete its parts */
   setInterval(function () {
     var L = window.CC && CC.L; if (!L || !L.ghost || L.ghost.__fx) return;
-    var orig = L.ghost; L.ghost = function (t) { ghost = t || null; return orig.apply(this, arguments); }; L.ghost.__fx = 1; ghost = null;
+    var orig = L.ghost; L.ghost = function (t) { ghost = t || null; window.__ccNext = ghost; return orig.apply(this, arguments); }; L.ghost.__fx = 1; ghost = null;
   }, 250);
   function names(dirAbs) {
     var fs = window.CC && CC.labFS, out = [];
