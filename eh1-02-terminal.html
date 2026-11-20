@@ -3475,7 +3475,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
         if (ok) {
           Q.done[it.id] = true; row.classList.add('done'); row.classList.remove('qnew');
           inp.disabled = true; send.disabled = true;
-          fb.className = 'qfb ok'; fb.textContent = '✓ ' + CC.t('q_ok');
+          fb.className = 'qfb ok'; fb.textContent = '✓ ' + (CC.okPhrase ? CC.okPhrase(it.id) : CC.t('q_ok'));   /* a different phrase for each question (Moaz 2026-11-20) */
           progress(); CC.emit('score', { id: it.id, correct: true });
           if (Q.onCorrect) Q.onCorrect(it.id);
           if (gatedDone() && Q.onAll) Q.onAll();
@@ -6333,6 +6333,32 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
     i.value = nv; try { i.setSelectionRange(nv.length, nv.length); } catch (x) { }
     i.dispatchEvent(new Event('input', { bubbles: true }));
   }, true);
+})();
+
+/* Moaz 2026-11-20, every lab: the message under a correct answer comes from a pool, and every question of the lab gets a
+   different one (shuffled each time the lab opens, so students side by side see different ones). questions-panel.js asks
+   CC.okPhrase(question id); the same question keeps its phrase. More than 8 questions would start the pool again. */
+(function () {
+  'use strict';
+  if (!window.CC || CC.okPhrase) return;
+  var POOL = [
+    'إجابة رائعة! أحسنت',
+    'صحيح! عمل ممتاز',
+    'أحسنت! إجابة صحيحة',
+    'ممتاز! أنت تفكر مثل الهاكر',
+    'عمل رائع! استمر',
+    'صحيح تماماً! رائع',
+    'أحسنت! واصل التقدم',
+    'إجابة موفّقة! أحسنت'
+  ];
+  var bag = [], given = {};
+  function refill() { bag = POOL.slice(); for (var i = bag.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)), t = bag[i]; bag[i] = bag[j]; bag[j] = t; } }
+  CC.okPhrases = POOL;
+  CC.okPhrase = function (id) {
+    if (id != null && given[id]) return given[id];
+    if (!bag.length) refill();
+    var p = bag.pop(); if (id != null) given[id] = p; return p;
+  };
 })();
 
 /* Farhan 2026-11-20 (EH1 lab 2): `create file.txt 10` used to put all the files on the desktop at once.
