@@ -15,11 +15,11 @@ permissions:
   pages: write
   id-token: write
 
-# Allow only one concurrent deployment. Cancel an in-progress deploy when a newer push arrives so the
-# latest content always wins and rapid successive pushes do not fail (they show as cancelled, not failed).
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# Do NOT cancel in-progress runs: cancelling mid-upload can leave the deploy step with no artifact.
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # Single deploy job since we're just deploying
