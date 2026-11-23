@@ -4100,8 +4100,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
 
 /* Lab EH2-05: الرسائل والروابط المزيفة (13-17). With the permission of the CamelCode security team and of Khaled himself, the student
    tests whether Khaled notices a fake message. He runs the tool «صنّارة» (`sinnara`, a simple counterpart of menu tools such as zphisher):
-   picks the page to copy (the fictional game «لعبة المكعّبات», cubes.example), tries Localhost then a Tunnel (the link
-   <words>-NN.tunnel.example), types Khaled's email, picks one of three messages and presses «إرسال». Khaled's phone (left) gets the
+   picks the page to copy (the fictional game «لعبة المكعّبات», cubes.example) and gets a link that any device can open
+   (<words>-NN.example; how the link reaches the internet is never named, Moaz 2026-11-23), types Khaled's email, picks one of three messages and presses «إرسال». Khaled's phone (left) gets the
    notification; he opens the mail, taps the link and types his username and password into the copy; the terminal shows his IP and
    details, saves them in auth/ and sends him on to the real site. Questions come from what the tool saved. Everything is fictional,
    every address is a reserved .example one (DESIGN.md section 39). Protection: the congratulations card and «شرح مختصر».
@@ -4115,7 +4115,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>@']*[A-Za-z0-9_\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
   }
 
-  var REAL = 'cubes.example', MAIL = 'khaled@mail.example', USER = 'khaled2013', LOCAL = '127.0.0.1:8080';
+  var REAL = 'cubes.example', MAIL = 'khaled@mail.example', USER = 'khaled2013';
   /* every start gets its own link, password and IP, so a class cannot copy answers (the same characteristics every time) */
   var WORDS = ['brave-fox', 'blue-dune', 'quick-star', 'silver-moon', 'happy-cloud', 'swift-wave'];
   var PWS = ['Dune4521', 'Falcon2014', 'Camel7788', 'Star9090', 'Sand3366', 'Moon5812'];
@@ -4158,7 +4158,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابتك قبل التحقق',
-    q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر Link في نتيجة أداة صنّارة بعد أن اخترت Tunnel، أو إلى الرابط تحت الزر في رسالة خالد.',
+    q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر Link في نتيجة أداة صنّارة، أو إلى الرابط تحت الزر في رسالة خالد.',
     q2: 'ما كلمة السر التي كتبها خالد في الصفحة المزيفة؟ (استخدم شاشة الأوامر فقط)', q2h: 'اقرأ الملف باستخدام الأمر read auth/usernames.dat، وانظر إلى السطر Password.',
     q3: 'ما عنوان IP لجهاز خالد؟', q3h: 'اقرأ الملف auth/ip.txt باستخدام الأمر read، أو انظر إلى السطر Victim\'s IP في شاشة الأوامر.',
     q4: 'بعد أن ضغط خالد على «تسجيل الدخول»، نقلته الأداة إلى الموقع الحقيقي. ما اسم الموقع الحقيقي للعبة؟', q4h: 'انظر إلى عنوان الموقع في أعلى متصفح هاتف خالد، بعد أن ضغط على تسجيل الدخول.',
@@ -4167,10 +4167,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     /* task lines */
     t_intro: 'طلب **فريق الأمن** في أكاديمية كاملكود أن تختبر: هل ينتبه الطالب **خالد** للرسائل المزيفة؟ خالد **وافق** على التجربة، ولديه حساب في **لعبة المكعّبات** (`cubes.example`). بجانب الحاسوب **هاتف خالد**.',
     t_tool: 'شغّل **أداة صنّارة** في [[term]] **شاشة الأوامر**، اكتب الأمر `sinnara`',
-    t_site: 'تعرض الأداة **قائمة الصفحات** التي تستطيع نسخها. خالد يلعب **لعبة المكعّبات**، فاكتب الرقم `1` ثم اضغط `Enter`.',
-    t_local: 'تسأل الأداة الآن: **أين نشغّل الصفحة المزيفة؟** جرّب أولاً **Localhost**: اكتب `1` ثم اضغط `Enter`.',
-    t_localseen: 'لاحظ الرابط `' + LOCAL + '`: هذا الرابط يعمل على **حاسوبك فقط**، ولا يستطيع **خالد** أن يفتحه من هاتفه.',
-    t_tunnel: 'اختر الآن **Tunnel**: اكتب `2` ثم اضغط `Enter`، لتصنع الأداة **رابطاً** يفتح الصفحة من **أي جهاز** في الإنترنت.',
+    t_site: 'تعرض الأداة **قائمة الصفحات** التي تستطيع نسخها. خالد يلعب **لعبة المكعّبات**، فاكتب الرقم `1` ثم اضغط `Enter`، لتنسخ الأداة صفحتها وتصنع لها **رابطاً** يفتحه أي جهاز.',
     t_link: 'صنعت الأداة **رابط الصفحة المزيفة**. لاحظ **اسم الموقع** فيه: إنه ليس `cubes.example`، لكن الصفحة **تشبه** صفحة اللعبة تماماً.',
     t_email: 'اكتب **البريد الإلكتروني** لخالد `' + MAIL + '` ثم اضغط `Enter`.',
     t_msg: 'اختر **رسالة** من القائمة: اكتب رقم الرسالة التي تريدها (`1` أو `2` أو `3`) ثم اضغط `Enter`.',
@@ -4205,8 +4202,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     intro: 'في هذا التدريب ستتعلم كيف يصنع الهاكر **صفحة تسجيل دخول مزيفة** تشبه صفحة موقع حقيقي، ثم يرسل رابطها في **رسالة**، ليكتب الضحية فيها **اسم المستخدم** و**كلمة السر**.\n\nطلب **فريق الأمن** في أكاديمية كاملكود هذا الاختبار، و**خالد وافق** عليه. لا نختبر أي شخص **بدون إذنه**.',
     tool_h: 'أداة صنّارة',
     tool: 'سنستخدم أداة اسمها `sinnara` (صنّارة). مثل الصيّاد الذي يضع **طُعماً** في الصنّارة ليصطاد السمكة، تصنع الأداة **طُعماً**: نسخة من صفحة تسجيل الدخول، ورابطاً يفتحها، ورسالة تقنع الضحية بالضغط عليه.\n\nالأداة تعمل **بالقوائم**: تعرض خيارات **مرقّمة**، فنكتب **رقم** الخيار الذي نريده ثم نضغط `Enter`.',
-    link_h: 'Localhost و Tunnel',
-    link: '**Localhost** يعني هذا الحاسوب فقط، فالرابط `' + LOCAL + '` لا يفتح إلا على **حاسوبك**.\n\n**Tunnel** يعني **نفقاً**: طريق يوصل الصفحة التي تعمل على حاسوبك إلى **الإنترنت**، فيستطيع أي جهاز أن يفتح الرابط.\n\nانتبه إلى **اسم الموقع** في الرابط: الصفحة تشبه صفحة اللعبة، لكن العنوان **مختلف**.',
+    link_h: 'رابط الصفحة المزيفة',
+    link: 'تعمل الصفحة المزيفة على **حاسوبك**، والأداة تعطيك **رابطاً** يستطيع **أي جهاز** أن يفتحها منه، مثل هاتف خالد.\n\nانتبه إلى **اسم الموقع** في الرابط: الصفحة تشبه صفحة اللعبة، لكن العنوان **مختلف**.',
     msg_h: 'الرسالة',
     msg: 'الرسالة المزيفة تحاول أن تجعل الضحية **يضغط بسرعة** دون أن يفكر: **هدية** مجانية، أو **تهديد** بإغلاق الحساب، أو **دعوة من صديق**.\n\nفي كل رسالة **زر** يفتح رابط الصفحة المزيفة.',
     caught_h: 'وصلت البيانات',
@@ -4225,8 +4222,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     w4: 'هنا الأسئلة. أجب عنها بما تجده في نتيجة الأداة وفي هاتف خالد.', w6: 'زر «؟» يساعدك في فهم مكونات الدرس وكيفية التفاعل معها.',
     /* instructor reference panel (condensed from the popups and the steps) */
     rs_h: 'السيناريو', rs: 'أنت الآن **هاكر أخلاقي** في أكاديمية كاملكود. طلب منك **فريق الأمن** أن تختبر هل ينتبه **خالد** للرسائل المزيفة، و**خالد وافق**. تشغّل **أداة صنّارة** لتصنع نسخة من صفحة تسجيل الدخول في **لعبة المكعّبات**، وترسل رابطها إلى بريد خالد في **رسالة**. يضغط خالد على الرابط ويكتب **اسم المستخدم** و**كلمة السر**، فتصل إليك.',
-    r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها، و**رسالة** فيها الرابط.\n- تعمل **بالقوائم**: نكتب **رقم** الخيار ثم نضغط `Enter`.\n- الاستخدام: `sinnara`\n   - `1`: صفحة **لعبة المكعّبات**.\n   - `1`: **Localhost**، و`2`: **Tunnel**.\n   - ثم **بريد الضحية**، ثم **رقم الرسالة**، ثم زر **إرسال**.',
-    r2_h: 'Localhost و Tunnel', r2: '- **Localhost** (`' + LOCAL + '`): الرابط يفتح على **هذا الحاسوب فقط**.\n- **Tunnel**: نفق يوصل الصفحة إلى **الإنترنت**، فيفتحها **أي جهاز**.\n- رابط الصفحة المزيفة **ليس** `cubes.example`، مع أن الصفحة **تشبه** الحقيقية.',
+    r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها، و**رسالة** فيها الرابط.\n- تعمل **بالقوائم**: نكتب **رقم** الخيار ثم نضغط `Enter`.\n- الاستخدام: `sinnara`\n   - `1`: صفحة **لعبة المكعّبات**، فتصنع الأداة **رابطاً** لها.\n   - ثم **بريد الضحية**، ثم **رقم الرسالة**، ثم زر **إرسال**.',
+    r2_h: 'رابط الصفحة المزيفة', r2: '- الصفحة المزيفة تعمل على **حاسوب الهاكر**، والأداة تعطيه **رابطاً** يفتحه **أي جهاز**.\n- رابط الصفحة المزيفة **ليس** `cubes.example`، مع أن الصفحة **تشبه** الحقيقية.',
     r3_h: 'الرسالة', r3: '- تجعل الضحية **يضغط بسرعة**: **هدية** مجانية، أو **تهديد** بإغلاق الحساب، أو **دعوة من صديق**.\n- المرسل `cubes.team@mail.example` وليس من موقع اللعبة `cubes.example`.',
     r4_h: 'البيانات', r4: '- عندما يفتح الضحية الرابط تحفظ الأداة عنوان **IP** لجهازه في `auth/ip.txt`.\n- عندما يكتب بياناته تحفظ **اسم المستخدم** و**كلمة السر** في `auth/usernames.dat`.\n- ثم تنقله إلى **الموقع الحقيقي** فلا ينتبه.',
     r5_h: 'الحماية', r5: '- انظر إلى **عنوان الموقع** قبل أن تكتب كلمة السر.\n- انظر إلى **عنوان المرسل**.\n- لا تضغط على روابط **الهدايا والتهديدات**: افتح الموقع بنفسك.\n- فعّل **التحقق بخطوتين**: حتى لو عرف الهاكر كلمة السر، يحتاج إلى **رمز** يصل إلى هاتفك.\n- أخبر شخصاً بالغاً عندما تشك في رسالة.'
@@ -4243,7 +4240,6 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
 
   /* the tool's menus (English, like the real tools; the step texts explain them) */
   var SITES = [['Cubes Game', REAL], ['Social Platform', 'social.example'], ['Video Platform', 'video.example'], ['Game Store', 'store.example']];
-  var HOSTS = [['Localhost', '(this computer only)'], ['Tunnel', '(any device on the internet)']];
   var MSGS = [['Free gift', 'gift'], ['Account warning', 'warn'], ['Friend invite', 'friend']];
   function pad(s, n) { s = String(s); while (s.length < n) s += ' '; return s; }
 
@@ -4254,8 +4250,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     var st = {
       armed: false, busy: false, q: [], finishing: false, finished: false,
       tool: 'off',              /* off | site | host | email | msg | send | wait */
-      local: false, link: null, tpl: null, sent: false, visited: false, captured: false, readUsers: false,
-      linkName: pick(WORDS) + '-' + (10 + Math.floor(Math.random() * 89)) + '.tunnel.example',
+      link: null, tpl: null, sent: false, visited: false, captured: false, readUsers: false,
+      linkName: pick(WORDS) + '-' + (10 + Math.floor(Math.random() * 89)) + '.example',
       pw: pick(PWS), ip: '192.0.2.' + (20 + Math.floor(Math.random() * 200))      /* 192.0.2.x is a documentation range: it belongs to nobody */
     };
     var ok = function () { return g === CC.gen; };
@@ -4308,7 +4304,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     async function until(fn) { while (!fn()) { if (!(await CC.sleep(150, g))) return false; } return true; }
 
     /* ---- the terminal ---- */
-    var MENU = { site: '[-] Select an option :', host: '[-] Select an option :', email: '[-] Victim email :', msg: '[-] Select an option :' };
+    var MENU = { site: '[-] Select an option :', email: '[-] Victim email :', msg: '[-] Select an option :' };
     function prompt() { L.setPrompt('', MENU[st.tool] || fs.prompt()); }
     var BT = CC.basicTerm({ L: L, P: P, fs: fs, prompt: prompt });
     function out(lines, cls) { lines.forEach(function (t) { L.add(t, cls || 'txt'); }); }
@@ -4317,11 +4313,6 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       out(['', '[::] Select a page to copy [::]', '']);
       SITES.forEach(function (s, i) { L.add('[0' + (i + 1) + '] ' + pad(s[0], 17) + s[1], 'txt'); });
       L.add('', 'txt'); st.tool = 'site'; prompt();
-    }
-    function menuHost() {
-      out(['', '[::] Where to run the page [::]', '']);
-      HOSTS.forEach(function (h, i) { L.add('[0' + (i + 1) + '] ' + pad(h[0], 12) + h[1], 'txt'); });
-      L.add('', 'txt'); st.tool = 'host'; prompt();
     }
     function menuMsg() {
       out(['', '[::] Select a message [::]', '']);
@@ -4393,27 +4384,14 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
         var k = choice(raw, SITES.length); if (!k) return bad();
         if (k !== 1) return bad(CC.t('m_site'));
         L.add('[-] Copying the page of ' + REAL + '...', 'dim');
-        if (!(await CC.sleep(700, g))) return { err: '' };
-        menuHost(); return { info: { cmd: 'site' } };
-      }
-      if (st.tool === 'host') {
-        var h = choice(raw, HOSTS.length); if (!h) return bad();
-        if (h === 1) {
-          L.add('[-] Starting the page on Localhost...', 'dim');
-          if (!(await CC.sleep(900, g))) return { err: '' };
-          L.add('[-] Link : ' + LOCAL, 'ok');
-          L.add('[!] This link opens on this computer only.', 'warn');
-          st.local = true; menuHost(); return { info: { cmd: 'local' } };
-        }
-        L.add('[-] Starting the page...', 'dim');
         if (!(await CC.sleep(800, g))) return { err: '' };
-        L.add('[-] Starting the Tunnel...', 'dim');
+        L.add('[-] Starting the page...', 'dim');
         if (!(await CC.sleep(1100, g))) return { err: '' };
         L.add('[-] Link : ' + st.linkName, 'ok');
         st.link = st.linkName;
         out(['', '[::] Send the link [::]', '']);
         st.tool = 'email'; prompt();
-        return { info: { cmd: 'tunnel' } };
+        return { info: { cmd: 'site' } };
       }
       if (st.tool === 'email') {
         var m = raw.trim().toLowerCase();
@@ -4452,7 +4430,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
         L.follow();
         L.add(CC.t('sn_start'), 'info ar');
         if (!(await CC.sleep(900, g))) return { err: '' };
-        st.local = false; st.link = null;
+        st.link = null;
         menuSite();
         return { info: { cmd: 'sinnara' } };
       }
@@ -4506,21 +4484,6 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     if (st.tool === 'site') {
       L.task(CC.t('t_site')); L.ghost('1'); guideCmd();
       if (!(await until(function () { return st.tool !== 'site'; }))) return;
-    }
-    if (!st.link) {
-      if (!st.local) {
-        L.task(CC.t('t_local')); L.ghost('1'); guideCmd();
-        if (!(await until(function () { return st.local || st.link || st.tool === 'off'; }))) return;
-      }
-      if (!st.link && st.local) {
-        CC.guide.hide(); L.ghost(null);
-        L.task(CC.t('t_localseen'));
-        if (!(await CC.stepWait(g))) return;
-        if (!st.link) {
-          L.task(CC.t('t_tunnel')); L.ghost('2'); guideCmd();
-          if (!(await until(function () { return !!st.link; }))) return;
-        }
-      }
     }
     if (!(await until(function () { return !!st.link; }))) return;       /* a student who left the tool runs it again: wait for the link */
     CC.guide.hide(); L.ghost(null);
@@ -4584,7 +4547,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"التمهيد","keys":["t_intro"]},{"label":"صنع الصفحة المزيفة","keys":["t_tool","t_site","t_local","t_localseen","t_tunnel","t_link"]},{"label":"إرسال الرسالة","keys":["t_email","t_msg","t_send","t_watch","t_caught"]},{"label":"البيانات والأسئلة","keys":["t_read","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**.","cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
+window.CC_MISSION = {"stages":[{"label":"التمهيد","keys":["t_intro"]},{"label":"صنع الصفحة المزيفة","keys":["t_tool","t_site","t_link"]},{"label":"إرسال الرسالة","keys":["t_email","t_msg","t_send","t_watch","t_caught"]},{"label":"البيانات والأسئلة","keys":["t_read","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**.","cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
