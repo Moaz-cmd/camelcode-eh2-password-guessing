@@ -4103,7 +4103,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
    picks the page to copy (the fictional game «لعبة المكعّبات», cubes.example) and gets a link that any device can open
    (<words>-NN.example; how the link reaches the internet is never named, Moaz 2026-11-23), types Khaled's email, picks one of three messages and presses «إرسال». Khaled's phone (left) gets the
    notification; he opens the mail, taps the link and types his username and password into the copy; the terminal shows his IP and
-   details, saves them in auth/ and sends him on to the real site. Questions come from what the tool saved. Everything is fictional,
+   details at once, saves them in account.txt on the Desktop and sends him on to the real site. Questions come from what the tool saved. Everything is fictional,
    every address is a reserved .example one (DESIGN.md section 39). Protection: the congratulations card and «شرح مختصر».
    Strings first, then the file system, then the tool, then the flow. */
 (function () {
@@ -4159,8 +4159,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابتك قبل التحقق',
     q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر Link في نتيجة أداة صنّارة، أو إلى الرابط تحت الزر في رسالة خالد.',
-    q2: 'ما كلمة السر التي كتبها خالد في الصفحة المزيفة؟ (استخدم شاشة الأوامر فقط)', q2h: 'اقرأ الملف باستخدام الأمر read auth/usernames.dat، وانظر إلى السطر Password.',
-    q3: 'ما عنوان IP لجهاز خالد؟', q3h: 'اقرأ الملف auth/ip.txt باستخدام الأمر read، أو انظر إلى السطر Victim\'s IP في شاشة الأوامر.',
+    q2: 'ما كلمة السر التي كتبها خالد في الصفحة المزيفة؟ (استخدم شاشة الأوامر فقط)', q2h: 'انظر إلى السطر Password في شاشة الأوامر، أو اقرأ الملف باستخدام الأمر read account.txt.',
+    q3: 'ما عنوان IP لجهاز خالد؟', q3h: 'انظر إلى السطر Victim\'s IP في شاشة الأوامر، أو اقرأ الملف account.txt باستخدام الأمر read.',
     q4: 'بعد أن ضغط خالد على «تسجيل الدخول»، نقلته الأداة إلى الموقع الحقيقي. ما اسم الموقع الحقيقي للعبة؟', q4h: 'انظر إلى عنوان الموقع في أعلى متصفح هاتف خالد، بعد أن ضغط على تسجيل الدخول.',
     /* tokens explained under the command */
     tk_sn: 'اسم الأداة', tk_clear: 'امسح الشاشة',
@@ -4174,7 +4174,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     t_send: 'اقرأ **الرسالة** التي ستصل إلى خالد، ثم اضغط زر **إرسال** تحتها في **شاشة الأوامر**.',
     t_watch: 'انظر إلى **هاتف خالد**: وصلته **رسالتك**! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
     t_caught: 'لاحظ: وصل إلى **شاشة الأوامر** عنوان **IP** لجهاز خالد، ثم **اسم المستخدم** و**كلمة السر** اللذان كتبهما. بعدها نقلته الأداة إلى **الموقع الحقيقي**، فلم ينتبه لشيء!',
-    t_read: 'حفظت الأداة البيانات في الملف `usernames.dat` داخل المجلد `auth`. اقرأه باستخدام الأمر `read auth/usernames.dat`',
+    t_read: 'حفظت الأداة بيانات خالد أيضاً في الملف `account.txt` على **سطح المكتب**. اقرأه باستخدام الأمر `read account.txt`',
     t_q: 'أجب عن **أسئلة التحدي** على يسار الشاشة.',
     t_done: 'أحسنت! أنهيت التدريب.',
     e_wait: 'أداة صنّارة تنتظر خالد...',
@@ -4191,7 +4191,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     m_nf_s: 'لم يتم العثور على `{w}`. هل تقصد `{s}`؟ تأكد من الاسم باستخدام الأمر `display`.',
     m_case: 'لم يتم العثور على `{w}`. أسماء الملفات تتأثر بحالة الأحرف (كبيرة أو صغيرة)، والاسم الصحيح هو `{real}`.',
     m_sn_args: 'أداة صنّارة لا تحتاج إلى خيارات أو كلمات بعدها، فهي تسألك بنفسها. اكتب `sinnara` فقط.',
-    m_sn_done: 'انتهت التجربة: حفظت أداة صنّارة بيانات خالد في المجلد `auth`. اقرأها باستخدام الأمر `read auth/usernames.dat`',
+    m_sn_done: 'انتهت التجربة: حفظت أداة صنّارة بيانات خالد في الملف `account.txt` على سطح المكتب. اقرأه باستخدام الأمر `read account.txt`',
     m_num: 'اكتب **رقم** الخيار فقط كما يظهر في القائمة (مثل `1`)، ثم اضغط `Enter`.',
     m_site: 'خالد يلعب **لعبة المكعّبات**، لذلك نختار الصفحة رقم `1`.',
     m_mail_at: 'البريد الإلكتروني يجب أن يحتوي على `@`، مثل `' + MAIL + '`.',
@@ -4225,13 +4225,14 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها، و**رسالة** فيها الرابط.\n- تعمل **بالقوائم**: نكتب **رقم** الخيار ثم نضغط `Enter`.\n- الاستخدام: `sinnara`\n   - `1`: صفحة **لعبة المكعّبات**، فتصنع الأداة **رابطاً** لها.\n   - ثم **بريد الضحية**، ثم **رقم الرسالة**، ثم زر **إرسال**.',
     r2_h: 'رابط الصفحة المزيفة', r2: '- الصفحة المزيفة تعمل على **حاسوب الهاكر**، والأداة تعطيه **رابطاً** يفتحه **أي جهاز**.\n- رابط الصفحة المزيفة **ليس** `cubes.example`، مع أن الصفحة **تشبه** الحقيقية.',
     r3_h: 'الرسالة', r3: '- تجعل الضحية **يضغط بسرعة**: **هدية** مجانية، أو **تهديد** بإغلاق الحساب، أو **دعوة من صديق**.\n- المرسل `cubes.team@mail.example` وليس من موقع اللعبة `cubes.example`.',
-    r4_h: 'البيانات', r4: '- عندما يفتح الضحية الرابط تحفظ الأداة عنوان **IP** لجهازه في `auth/ip.txt`.\n- عندما يكتب بياناته تحفظ **اسم المستخدم** و**كلمة السر** في `auth/usernames.dat`.\n- ثم تنقله إلى **الموقع الحقيقي** فلا ينتبه.',
+    r4_h: 'البيانات', r4: '- عندما يفتح الضحية الرابط يظهر عنوان **IP** لجهازه في **شاشة الأوامر** فوراً.\n- عندما يكتب بياناته يظهر **اسم المستخدم** و**كلمة السر** فوراً، وتحفظها الأداة في الملف `account.txt` على **سطح المكتب**.\n- ثم تنقله إلى **الموقع الحقيقي** فلا ينتبه.',
     r5_h: 'الحماية', r5: '- انظر إلى **عنوان الموقع** قبل أن تكتب كلمة السر.\n- انظر إلى **عنوان المرسل**.\n- لا تضغط على روابط **الهدايا والتهديدات**: افتح الموقع بنفسك.\n- فعّل **التحقق بخطوتين**: حتى لو عرف الهاكر كلمة السر، يحتاج إلى **رمز** يصل إلى هاتفك.\n- أخبر شخصاً بالغاً عندما تشك في رسالة.'
   });
 
   /* [LAB] ================= THE FILE SYSTEM ================= */
   CC.fsHome = '/'; CC.fsRootName = 'Desktop';
-  CC.fsSeed = CC.fsD({});                               /* the tool makes the folder auth when the details arrive (as zphisher does) */
+  CC.fsSeed = CC.fsD({});                               /* the tool writes account.txt on the Desktop when the details arrive */
+  CC.deskFilesOn = true;                                /* the Desktop's files show as icons on the laptop's desktop (engine/brand-addon.js) */
 
   /* [LAB] ================= COMMANDS ================= */
   var CMDS = ['display', 'enter', 'back', 'read', 'create', 'sinnara', 'clear', 'help'];   /* every command of the terminal lab still works (engine/terminal-basics.js) */
@@ -4247,6 +4248,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
   async function flow(ctx) {
     var g = ctx.g, L = ctx.L, P = ctx.P, self = CC.mode === 'self';
     var fs = CC.newFS();
+    CC.labFS = fs;
     var st = {
       armed: false, busy: false, q: [], finishing: false, finished: false,
       tool: 'off',              /* off | site | host | email | msg | send | wait */
@@ -4352,22 +4354,19 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       var done = await V.play(g, {
         visit: function () {
           if (!ok()) return;
-          if (!fs.walk('/auth').node) fs.root.kids.auth = CC.fsD({});
-          fs.write('/auth/ip.txt', 'IP: ' + st.ip);
+          fs.write('/account.txt', 'IP: ' + st.ip);                 /* everything goes to account.txt on the Desktop, never named in the terminal (Moaz 2026-11-23) */
           st.visited = true;
           out(['', '[-] Victim IP Found !'], 'ok');
           L.add("[-] Victim's IP : " + st.ip, 'ok');
-          L.add('[-] Saved in : auth/ip.txt', 'dim');
           L.add('', 'txt'); L.add('[-] Waiting for Login Info...', 'dim');
         },
         creds: function () {
           if (!ok()) return;
-          fs.write('/auth/usernames.dat', 'Site: ' + REAL + '\nUsername: ' + USER + '\nPassword: ' + st.pw);
+          fs.write('/account.txt', 'Site: ' + REAL + '\nUsername: ' + USER + '\nPassword: ' + st.pw + '\nIP: ' + st.ip);
           st.captured = true;
           out(['', '[-] Login info Found !!'], 'ok');
           L.add('[-] Username : ' + USER, 'ok');
           L.add('[-] Password : ' + st.pw, 'ok');
-          L.add('[-] Saved in : auth/usernames.dat', 'dim');
           L.add('[-] Victim sent to the real site : ' + REAL, 'dim');
         }
       });
@@ -4436,7 +4435,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
       }
       var bt = BT.run(c, args, viaLinux);
       if (bt) {
-        if (bt.info && bt.info.cmd === 'read' && /\/auth\/usernames\.dat$/.test(bt.info.abs || '')) st.readUsers = true;
+        if (bt.info && bt.info.cmd === 'read' && /^\/account\.txt$/.test(bt.info.abs || '')) st.readUsers = true;
         return bt;
       }
       return { err: CC.t('m_unknown') };
@@ -4525,7 +4524,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
     idleQ(false);
     ['q1', 'q2', 'q3', 'q4'].forEach(function (id) { CC.Q.reveal(id); });
     if (!st.readUsers) {
-      L.task(CC.t('t_read')); L.ghost('read auth/usernames.dat'); guideCmd();
+      L.task(CC.t('t_read')); L.ghost('read account.txt'); guideCmd();
       if (!(await until(function () { return st.readUsers; }))) return;
     }
     CC.guide.hide(); L.ghost(null);
@@ -5418,7 +5417,7 @@ window.CC_MISSION = {"stages":[{"label":"التمهيد","keys":["t_intro"]},{"l
     var t = text != null ? text : CC.labFS && CC.labFS.read(path || '/' + name); $('.cc-ftxt', w).textContent = t == null ? '' : t;
     front(w);
   }
-  setInterval(function () { var l = lapEl(); if (l && WEB) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
+  setInterval(function () { var l = lapEl(); if (l && (WEB || CC.deskFilesOn)) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
   /* ---- the browser app (body.cc-web) ---- */
   function webIc(l) { return dockIc(l, 'web'); }
   function openWeb() {
@@ -5514,7 +5513,7 @@ window.CC_MISSION = {"stages":[{"label":"التمهيد","keys":["t_intro"]},{"l
     setTimeout(function () { l.classList.remove('cc-noanim'); }, 1200);     /* also when the page is in a background tab (no frames drawn) */
     var cs = $('.cs', l); if (cs) cs.setAttribute('data-name', TERM);
     var br = WEB && $('.cc-brw', l);
-    if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
+    if ((br || CC.deskFilesOn) && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* CC.deskFilesOn: a lab that is not a website lab asks for the icons too (EH2 lab 5: account.txt, 2026-11-23) */   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
     if (br) {
       l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* the browser starts closed in every lab, challenges too (Moaz 2026-11-14: never open by default) */
       var strip = $('.br-strip', br);
