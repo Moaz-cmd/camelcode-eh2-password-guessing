@@ -4541,8 +4541,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var LOCK = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
   function loginBody(user) {
     return '<section class="lgw"><div class="lgx">' +
-      '<div class="lgb"><div class="lgb-t">' + LOGO + '<span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></div>' +
-      '<p class="lgb-p">خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
       '<div class="lgc"><h1>تسجيل الدخول</h1><p class="lgs">أدخل اسم المستخدم وكلمة السر للدخول إلى حسابك.</p>' +
       '<form method="post" action="/login"><label for="u">اسم المستخدم</label><div class="fld">' + I.user + '<input id="u" name="username" dir="ltr" autocomplete="off" spellcheck="false" value="' + esc(user || '') + '"></div>' +
       '<label for="p">كلمة السر</label><div class="fld">' + LOCK + '<input id="p" name="password" type="password" dir="ltr" autocomplete="off"></div>' +
@@ -4665,7 +4663,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.amt-row{padding:0 20px}.amt-row input{max-width:260px;font-size:1.2rem;font-weight:800}.trf .err{margin:12px 20px 0}.trb{padding:16px 20px 0}',
     '.msg.ok{border-top:4px solid var(--pos)}.mi.ok{color:var(--pos);background:#E6F2EC}.rcp{list-style:none;margin:16px 0 20px;padding:0;text-align:start;border:1px solid var(--line);border-radius:10px}.rcp li{display:flex;justify-content:space-between;gap:12px;padding:10px 16px;border-bottom:1px solid #EEF1F6}.rcp li:last-child{border-bottom:0}.rcp small{color:var(--mut);font-weight:700}',
     '.lgw{min-height:calc(100vh - 74px);display:flex;align-items:center;justify-content:center;padding:16px 24px;background:radial-gradient(circle at 12% 18%,#DDE6F2,transparent 46%),radial-gradient(circle at 88% 90%,#EAF0F7,transparent 40%),var(--bg)}',
-    '.lgx{display:grid;grid-template-columns:1fr 1.08fr;width:100%;max-width:860px;min-height:0;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(15,42,74,.08),0 34px 70px -34px rgba(15,42,74,.5)}',
+    '.lgx{width:100%;max-width:440px;border-radius:16px;overflow:hidden;background:#fff;border:1px solid var(--line);border-top:4px solid var(--teal);box-shadow:0 1px 2px rgba(15,42,74,.08),0 28px 60px -32px rgba(15,42,74,.45)}',     /* only the login form (Moaz 2026-11-24: no navy panel beside it) */
     '.lgb{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:18px;padding:24px 30px;color:#fff;background:linear-gradient(155deg,#0F2A4A 0%,#1A3D66 58%,#2C5D94 100%)}',
     '.lgb::before{content:"";position:absolute;width:380px;height:380px;top:-170px;left:-150px;border-radius:50%;border:1px solid rgba(255,255,255,.13);box-shadow:0 0 0 56px rgba(255,255,255,.035),0 0 0 112px rgba(255,255,255,.025)}',
     '.lgb::after{content:"";position:absolute;width:260px;height:260px;bottom:-110px;right:-80px;border-radius:50%;background:radial-gradient(circle,rgba(143,179,230,.38),transparent 68%)}',
