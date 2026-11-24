@@ -4571,7 +4571,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '</div><aside class="side">' +
       '<div class="dcard"><div class="dc-t"><span>بطاقة الخصم</span><b class="dc-bank">' + BANK.name + '</b></div><div class="chip"></div><div class="dc-n"><bdi>•••• •••• •••• ' + a.card + '</bdi></div><div class="dc-b"><span>' + a.name + '</span><span>منذ ' + a.since + '</span></div></div>' +
       '<div class="pnl info"><div class="pt"><h2>تفاصيل الحساب</h2></div><ul><li>' + I.user + '<span><small>الاسم</small>' + a.name + '</span></li><li>' + I.branch + '<span><small>الفرع</small>' + a.branch + '</span></li><li>' + I.cal + '<span><small>عميل منذ</small>' + a.since + '</span></li></ul></div>' +
-      '<a class="btn wide" href="/transfer">' + CAT.transfer + ' تحويل إلى مستفيد</a>' +
+      '<a class="btn wide" href="/transfer">' + CAT.transfer + ' تحويل إلى حساب</a>' +
       '</aside></div></section>');
   }
 
@@ -4582,9 +4582,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         '<span class="bnm"><b>' + b.name + '</b><small><bdi dir="ltr">' + b.iban + '</bdi> · ' + b.bank + '</small></span><i class="bck"></i></label>';
     }).join('');
     return page('/transfer',
-      '<section class="ph1"><div class="w"><div><h1>التحويل إلى مستفيد</h1><p>اختر المستفيد واكتب المبلغ.</p></div></div></section>' +
+      '<section class="ph1"><div class="w"><div><h1>التحويل إلى حساب</h1><p>اختر الحساب واكتب المبلغ.</p></div></div></section>' +
       '<section class="sec"><div class="trw"><form method="post" action="/transfer" class="pnl trf">' +
-      '<div class="pt"><h2>المستفيدون</h2><span class="mut">الرصيد المتاح <bdi>' + money(BANK.st.bal) + '</bdi> ر.ق</span></div><div class="bens">' + list + '</div>' +
+      '<div class="pt"><h2>الحسابات</h2><span class="mut">الرصيد المتاح <bdi>' + money(BANK.st.bal) + '</bdi> ر.ق</span></div><div class="bens">' + list + '</div>' +
       '<div class="amt-row"><label for="amt">المبلغ (ر.ق)</label><input id="amt" name="amount" dir="ltr" inputmode="numeric" autocomplete="off" value="' + esc(amt || '') + '" placeholder="0"></div>' +
       '{{error}}<div class="trb"><button class="btn" type="submit">' + CAT.transfer + ' تحويل</button></div></form></div></section>');
   }
@@ -4592,7 +4592,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var d = BANK.st.done, b = BANK.bens.filter(function (x) { return x.id === d.ben; })[0];
     return page('/transfer',
       '<section class="sec"><div class="msg ok"><span class="mi ok">' + I.ok + '</span><h1>تم التحويل بنجاح</h1>' +
-      '<ul class="rcp"><li><small>المستفيد</small><b>' + b.name + '</b></li><li><small>المبلغ</small><b><bdi>' + money(d.amount) + '</bdi> ر.ق</b></li>' +
+      '<ul class="rcp"><li><small>إلى حساب</small><b>' + b.name + '</b></li><li><small>المبلغ</small><b><bdi>' + money(d.amount) + '</bdi> ر.ق</b></li>' +
       '<li><small>رقم العملية</small><b id="ref"><bdi dir="ltr">' + d.ref + '</bdi></b></li><li><small>الرصيد المتبقي</small><b><bdi>' + money(BANK.st.bal) + '</bdi> ر.ق</b></li></ul>' +
       '<a class="btn" href="/home">العودة إلى الحساب</a></div></section>');
   }
@@ -4717,7 +4717,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (path === '/transfer' && st.in) {
         var ben = String(data.ben || ''), raw = digits(data.amount), amt = /^\d+$/.test(raw) ? Number(raw) : NaN;
         st.sel = ben; st.amt = String(data.amount || '');
-        var err = !ben ? 'اختر المستفيد أولاً.' : !raw ? 'اكتب المبلغ الذي تريد تحويله.' : !(amt > 0) ? 'المبلغ يجب أن يكون رقماً أكبر من صفر.' : amt > st.bal ? 'المبلغ أكبر من الرصيد المتاح.' : '';
+        var err = !ben ? 'اختر الحساب أولاً.' : !raw ? 'اكتب المبلغ الذي تريد تحويله.' : !(amt > 0) ? 'المبلغ يجب أن يكون رقماً أكبر من صفر.' : amt > st.bal ? 'المبلغ أكبر من الرصيد المتاح.' : '';
         if (err) { CC.site.error = '<p class="err">' + err + '</p>'; return { page: '/transfer', error: true }; }
         var b = BANK.bens.filter(function (x) { return x.id === ben; })[0];
         st.bal -= amt;
@@ -4934,7 +4934,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة صنّارة** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
     t_ans1: 'أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة** الآن!',     /* Moaz 2026-11-24 */
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي وصلت إلى شاشة الأوامر.',
-    t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر المستفيد **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
+    t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر حساب **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
     t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
     t_done: 'أحسنت! أنهيت التدريب.',
     e_wait: 'أداة صنّارة تنتظر أن يفتح صالح الرابط...',
@@ -4981,7 +4981,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها من أي جهاز، ثم **تنتظر** وتعرض ما يكتبه الضحية.\n- الاستخدام: `' + EX + '`\n   - `sinnara`: اسم الأداة.\n   - `' + LOGIN + '`: عنوان صفحة تسجيل الدخول.\n- الرابط: `' + FAKE + '` **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**.',
     r2_h: 'الرسالة المزيفة', r2: '- **من:** «البنك الإلكتروني» لكن العنوان `' + FROM_A + '` ليس من موقع البنك.\n- **إلى:** `' + SALEH + '`.\n- النص يخيف الضحية ويجعله **يستعجل**: «تم اختراق حسابك، غيّر كلمة السر **فوراً**»، وفيه **الرابط**.',
     r3_h: 'ماذا حدث عند صالح', r3: '- فتح الرسالة وضغط على **الرابط**، فوصل إلى الصفحة المزيفة.\n- كتب **اسم المستخدم** و**كلمة السر**، فظهرت في **شاشة الأوامر** فوراً وحُفظت في `account.txt` على سطح المكتب.\n- ظهرت له رسالة **خطأ تقني**، فلم ينتبه.',
-    r4_h: 'الدخول والتحويل', r4: '- ندخل إلى `' + LOGIN + '` بالبيانات المسروقة.\n- نضغط **التحويل**، ونختار **مستفيداً**، ونكتب **المبلغ**، ثم **تحويل**.',
+    r4_h: 'الدخول والتحويل', r4: '- ندخل إلى `' + LOGIN + '` بالبيانات المسروقة.\n- نضغط **التحويل**، ونختار **الحساب**، ونكتب **المبلغ**، ثم **تحويل**.',
     r5_h: 'الحماية', r5: '- انظر إلى **عنوان المرسل**: البنك يرسل من موقعه هو، لا من عنوان آخر.\n- انظر إلى **عنوان الموقع** قبل أن تكتب كلمة السر: `' + BANK.host + '` وليس عنواناً يشبهه.\n- **البنك لا يطلب كلمة السر** عبر البريد الإلكتروني أبداً.\n- لا تضغط على الروابط في الرسائل العاجلة: **افتح موقع البنك بنفسك**.\n- فعّل **التحقق بخطوتين**: حتى لو عرف الهاكر كلمة السر، يحتاج إلى **رمز** يصل إلى هاتفك.\n- رسالة تخيفك وتطلب منك أن تستعجل **علامة خطر**.'
   });
 
