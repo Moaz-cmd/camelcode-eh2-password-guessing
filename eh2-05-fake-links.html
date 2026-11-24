@@ -4523,7 +4523,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var NAV = [['/home', 'الرئيسية', 'home'], ['/transfer', 'التحويل', 'transfer']];
   function head(cur) {
     var logo = '<a class="logo" href="' + (BANK.st && BANK.st.in ? '/home' : '/login') + '"><span class="lg-bar"></span><span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></a>';
-    if (!BANK.st || !BANK.st.in) return '<header class="hd"><div class="w">' + logo + '<div class="who"><span class="hi">' + I.shield + ' الدخول إلى حسابك</span></div></div></header>';
+    if (!BANK.st || !BANK.st.in) return '<header class="hd"><div class="w">' + logo + '</div></header>';     /* signed out: only the logo (Moaz 2026-11-24: no «الدخول إلى حسابك») */
     var nav = '<nav>' + NAV.map(function (n) { return '<a href="' + n[0] + '"' + (n[0] === cur ? ' class="on"' : '') + '>' + (n[2] === 'transfer' ? CAT.transfer : I[n[2]]) + n[1] + '</a>'; }).join('') + '</nav>';
     return '<header class="hd"><div class="w">' + logo + nav +
       '<div class="who"><span class="av">' + BANK.acc.first.charAt(0) + '</span><span class="hi">مرحبًا، <b>' + BANK.acc.first + '</b></span><a class="lo" href="/logout">' + I.out + 'تسجيل الخروج</a></div></div></header>';
