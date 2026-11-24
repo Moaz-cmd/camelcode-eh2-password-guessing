@@ -4519,16 +4519,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     car: ico('<path d="M5 16V12l2-5h10l2 5v4z"/><circle cx="8" cy="16.5" r="1.6"/><circle cx="16" cy="16.5" r="1.6"/><path d="M5 12h14"/>')
   };
 
+  /* the bank's logo (Moaz 2026-11-24: his ChatGPT logo, a temple with columns, redrawn as SVG: sharp at any size, white on the dark panels) */
+  var LOGO = '<svg class="lgm" viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M50 21.5 83 40.5v3.5H17v-3.5zM50 27.5 70.5 39.5h-41z"/><path fill="var(--lgacc,#6F9BD8)" d="M50 31 61.5 37.6h-23z"/><rect fill="currentColor" x="22" y="46" width="56" height="3.6" rx="1"/><g fill="currentColor"><rect x="25.5" y="51" width="9.5" height="2.2" rx=".8"/><rect x="27" y="52" width="6.5" height="16.5"/><rect x="25.5" y="67.5" width="9.5" height="2.4" rx=".8"/><rect x="39" y="51" width="9.5" height="2.2" rx=".8"/><rect x="40.5" y="52" width="6.5" height="16.5"/><rect x="39" y="67.5" width="9.5" height="2.4" rx=".8"/><rect x="52.5" y="51" width="9.5" height="2.2" rx=".8"/><rect x="54" y="52" width="6.5" height="16.5"/><rect x="52.5" y="67.5" width="9.5" height="2.4" rx=".8"/><rect x="66" y="51" width="9.5" height="2.2" rx=".8"/><rect x="67.5" y="52" width="6.5" height="16.5"/><rect x="66" y="67.5" width="9.5" height="2.4" rx=".8"/></g><rect fill="var(--lgacc,#6F9BD8)" x="20.5" y="72" width="59" height="3.4" rx="1"/><rect fill="currentColor" x="16.5" y="77" width="67" height="4.8" rx="1.2"/></svg>';
   /* ---------- page parts ---------- */
   var NAV = [['/home', 'الرئيسية', 'home'], ['/transfer', 'التحويل', 'transfer']];
   function head(cur) {
-    var logo = '<a class="logo" href="' + (BANK.st && BANK.st.in ? '/home' : '/login') + '"><span class="lg-bar"></span><span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></a>';
+    var logo = '<a class="logo" href="' + (BANK.st && BANK.st.in ? '/home' : '/login') + '">' + LOGO + '<span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></a>';
     if (!BANK.st || !BANK.st.in) return '<header class="hd"><div class="w">' + logo + '</div></header>';     /* signed out: only the logo (Moaz 2026-11-24: no «الدخول إلى حسابك») */
     var nav = '<nav>' + NAV.map(function (n) { return '<a href="' + n[0] + '"' + (n[0] === cur ? ' class="on"' : '') + '>' + (n[2] === 'transfer' ? CAT.transfer : I[n[2]]) + n[1] + '</a>'; }).join('') + '</nav>';
     return '<header class="hd"><div class="w">' + logo + nav +
       '<div class="who"><span class="av">' + BANK.acc.first.charAt(0) + '</span><span class="hi">مرحبًا، <b>' + BANK.acc.first + '</b></span><a class="lo" href="/logout">' + I.out + 'تسجيل الخروج</a></div></div></header>';
   }
-  var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><div class="flogo"><span class="lg-bar"></span><b>' + BANK.name + '</b></div><p>خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
+  var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><div class="flogo">' + LOGO + '<b>' + BANK.name + '</b></div><p>خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
     '<div><h4>تواصل معنا</h4><span>' + I.phone + ' <bdi dir="ltr">' + BANK.phone + '</bdi></span><span>' + I.mail + ' <bdi dir="ltr">' + BANK.email + '</bdi></span><span>' + I.clock + ' خدمة العملاء على مدار الساعة</span></div></div>' +
     '</footer>';
   function page(cur, body) { return head(cur) + '<main>' + body + '</main>' + FOOT; }
@@ -4539,7 +4541,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var LOCK = '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
   function loginBody(user) {
     return '<section class="lgw"><div class="lgx">' +
-      '<div class="lgb"><div class="lgb-t"><span class="lg-bar"></span><span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></div>' +
+      '<div class="lgb"><div class="lgb-t">' + LOGO + '<span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></div>' +
       '<p class="lgb-p">خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
       '<div class="lgc"><h1>تسجيل الدخول</h1><p class="lgs">أدخل اسم المستخدم وكلمة السر للدخول إلى حسابك.</p>' +
       '<form method="post" action="/login"><label for="u">اسم المستخدم</label><div class="fld">' + I.user + '<input id="u" name="username" dir="ltr" autocomplete="off" spellcheck="false" value="' + esc(user || '') + '"></div>' +
@@ -4556,7 +4558,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     tx.forEach(function (t) { if (t[3] > 0) inc += t[3]; else out -= t[3]; });
     var rows = tx.map(function (t) {
       var pos = t[3] > 0;
-      return '<tr><td class="dt">' + t[0] + '</td><td class="ds"><span class="cat">' + CAT[t[2]] + '</span><span>' + t[1] + (t[4] ? '<small class="tref">رقم العملية <bdi dir="ltr">' + t[4] + '</bdi></small>' : '') + '</span></td>' +
+      return '<tr><td class="ds"><span class="cat">' + CAT[t[2]] + '</span><span>' + t[1] + (t[4] ? '<small class="tref">رقم العملية <bdi dir="ltr">' + t[4] + '</bdi></small>' : '') + '</span></td>' +
         '<td class="amt ' + (pos ? 'pos' : 'neg') + '"><bdi>' + (pos ? '+' : '−') + money(t[3]) + '</bdi> <small>ر.ق</small></td></tr>';
     }).join('');
     return page('/home',
@@ -4568,7 +4570,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<div class="af"><div><span class="fi in">' + I.down + '</span><span><small>الإيداعات في أكتوبر</small><b><bdi>' + money(inc) + '</bdi> ر.ق</b></span></div>' +
       '<div><span class="fi outx">' + I.up + '</span><span><small>المصروفات في أكتوبر</small><b><bdi>' + money(out) + '</bdi> ر.ق</b></span></div>' +
       '<div><span class="fi nb">' + I.list + '</span><span><small>عدد العمليات</small><b>' + tx.length + ' عمليات</b></span></div></div></div>' +
-      '<div class="pnl"><div class="pt"><h2>آخر العمليات</h2><span class="mut">أكتوبر 2026</span></div><table class="tb"><thead><tr><th>التاريخ</th><th>الوصف</th><th>المبلغ</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="pnl"><div class="pt"><h2>آخر العمليات</h2><span class="mut">أكتوبر 2026</span></div><table class="tb"><thead><tr><th>الوصف</th><th>المبلغ</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '</div><aside class="side">' +
       '<div class="dcard"><div class="dc-t"><span>بطاقة الخصم</span><b class="dc-bank">' + BANK.name + '</b></div><div class="chip"></div><div class="dc-n"><bdi>•••• •••• •••• ' + a.card + '</bdi></div><div class="dc-b"><span>' + a.name + '</span><span>منذ ' + a.since + '</span></div></div>' +
       '<div class="pnl info"><div class="pt"><h2>تفاصيل الحساب</h2></div><ul><li>' + I.user + '<span><small>الاسم</small>' + a.name + '</span></li><li>' + I.branch + '<span><small>الفرع</small>' + a.branch + '</span></li><li>' + I.cal + '<span><small>عميل منذ</small>' + a.since + '</span></li></ul></div>' +
@@ -4643,6 +4645,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '@media(max-width:980px){.lay{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}.side .tip{grid-column:1/-1}}',
     '@media(max-width:700px){.who .lo{display:none}.af{grid-template-columns:1fr}.af>div+div{border-inline-start:0;border-top:1px solid var(--line)}.side{grid-template-columns:1fr}.ft .cols{grid-template-columns:1fr}.bv{font-size:1.9rem}.logo small{display:none}}'
   ].join('\n');
+  CSS += '\n' + '.lgm{flex:none;width:44px;height:44px;color:var(--teal)}.ft .lgm,.lgb .lgm{color:#fff;--lgacc:#8FB3E6}.ft .lgm{width:34px;height:34px}.lgb-t .lgm{width:52px;height:52px}';
   /* this lab's pages: login, menu, transfer, receipt (same palette) */
   CSS += '\n' + [
     '.ds .tref{display:block;font-size:.78rem;font-weight:700;color:var(--mut)}',
@@ -4764,13 +4767,35 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var S = null;
   V.reset = function () { var o = $('#vlap'); if (o) o.remove(); document.body.classList.remove('cc-vic', 'cc-vic-in'); S = null; };
 
+  /* Saleh's desktop (Moaz 2026-11-24: "more realistic with multiple apps"): folders and files of a store manager on the desktop, a full dock.
+     They pop in one after another when the laptop appears. Nothing here changes by day (no clock). */
+  function g(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
+  var GL = {
+    web: g('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 2.6 3 14.4 0 17M12 3.5c-3 2.6-3 14.4 0 17"/>'),
+    files: g('<path d="M3.5 7a2 2 0 012-2h4l2 2.5h7a2 2 0 012 2V17a2 2 0 01-2 2h-13a2 2 0 01-2-2z"/>'),
+    photos: g('<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/>'),
+    notes: g('<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>'),
+    calc: g('<rect x="5.5" y="3.5" width="13" height="17" rx="2"/><path d="M8.5 7.5h7"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/>'),
+    cal: g('<rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'),
+    music: g('<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>'),
+    set: g('<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M6 6l1.8 1.8M16.2 16.2L18 18M18 6l-1.8 1.8M7.8 16.2L6 18"/>')
+  };
+  var DOCK_APPS = [['vl-app-web', 'web'], ['vl-app-mail', null], ['vl-app-files', 'files'], ['vl-app-photos', 'photos'], ['vl-app-notes', 'notes'], ['vl-app-calc', 'calc'], ['vl-app-cal', 'cal'], ['vl-app-music', 'music'], ['vl-app-set', 'set']];
+  var DOCK = '<div class="vl-dock">' + DOCK_APPS.map(function (a, i) { return '<span class="vl-app ' + a[0] + '" style="--d:' + (i * 70) + 'ms">' + (a[1] ? GL[a[1]] : MAIL_IC) + '</span>'; }).join('') + '</div>';
+  var FOLDER = '<svg viewBox="0 0 48 48"><path d="M4 12a3 3 0 013-3h12l4 5h18a3 3 0 013 3v22a3 3 0 01-3 3H7a3 3 0 01-3-3z" fill="#F39B22"/><path d="M4 19a3 3 0 013-3h34a3 3 0 013 3v20a3 3 0 01-3 3H7a3 3 0 01-3-3z" fill="#FCAD0F"/></svg>';
+  var DOC = '<svg viewBox="0 0 48 48"><path d="M12 4h17l9 9v29a2 2 0 01-2 2H12a2 2 0 01-2-2V6a2 2 0 012-2z" fill="#fff"/><path d="M29 4v9h9" fill="#D0DBD3"/><path d="M16 22h16M16 28h16M16 34h10" stroke="#8D99AD" stroke-width="2.4" stroke-linecap="round"/></svg>';
+  var SHEET = '<svg viewBox="0 0 48 48"><path d="M12 4h17l9 9v29a2 2 0 01-2 2H12a2 2 0 01-2-2V6a2 2 0 012-2z" fill="#E6F4EA"/><path d="M29 4v9h9" fill="#B9DEC4"/><path d="M15 20h18v16H15zM15 26h18M15 31h18M21 20v16M27 20v16" fill="none" stroke="#2E8B57" stroke-width="1.8"/></svg>';
+  var PIC = '<svg viewBox="0 0 48 48"><rect x="6" y="9" width="36" height="30" rx="4" fill="#DCE8FB"/><circle cx="17" cy="19" r="4" fill="#F5B13D"/><path d="M8 36l11-11 8 8 6-5 9 8" fill="#5B8DEF"/></svg>';
+  var DESK_ITEMS = [[FOLDER, 'مبيعات المتجر'], [FOLDER, 'فواتير الموردين'], [FOLDER, 'صور المنتجات'], [SHEET, 'جرد المخزون'], [DOC, 'طلبات الأسبوع'], [PIC, 'شعار المتجر']];
+  var DESK = '<div class="vl-desk">' + DESK_ITEMS.map(function (d, i) { return '<span class="vl-di" style="--d:' + (250 + i * 90) + 'ms">' + d[0] + '<small>' + d[1] + '</small></span>'; }).join('') + '</div>';
+
   /* build the laptop beside the hacker's */
   V.show = function (mail) {
     V.reset();
     var root = document.createElement('div'); root.id = 'vlap'; root.className = 'vlap desk';     /* he starts on his desktop: no window open (Moaz 2026-11-24) */
     root.innerHTML = '<span class="tag victim">' + esc(CC.t('tag_vic')) + '</span><div class="vl-lid"><span class="vl-cam"></span><div class="vl-scr">' +
       '<div class="vl-mb"><b>' + esc(CC.t('vl_os')) + '</b></div>' +
-      '<div class="vl-dock"><span class="vl-app vl-app-mail" title="' + esc(CC.t('vl_mail')) + '">' + MAIL_IC + '</span><span class="vl-app vl-app-web"></span><span class="vl-app vl-app-files"></span><span class="vl-app vl-app-notes"></span></div>' +
+      DESK + DOCK +
       '<div class="vl-note"><span class="vl-note-ic">' + MAIL_IC + '</span><div><small>' + esc(CC.t('vl_mail')) + '</small><b class="vl-nf"></b><span class="vl-ns"></span></div></div>' +
       '<div class="vl-win vl-mail"><div class="vl-bar"><i></i><i></i><i></i><b>' + esc(CC.t('vl_mail')) + '</b></div><div class="vl-mbody"></div></div>' +
       '<div class="vl-win vl-brw"><div class="vl-bar"><i></i><i></i><i></i><div class="vl-url" dir="ltr"></div></div><div class="vl-page"><iframe title="page" tabindex="-1"></iframe></div></div>' +
@@ -4920,8 +4945,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابتك قبل التحقق',
     q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر Link في نتيجة أداة صنّارة في شاشة الأوامر.',
     q2: 'ما كلمة السر التي كتبها صالح في الصفحة المزيفة؟', q2h: 'انظر إلى السطر Password في شاشة الأوامر، أو اقرأ الملف account.txt على سطح المكتب.',
-    q3: 'منذ أي سنة وصالح عميل لدى البنك؟', q3h: 'سجّل الدخول إلى حساب صالح، وانظر إلى «عميل منذ» في «تفاصيل الحساب».',     /* Moaz 2026-11-24: replaces the balance question */
-    q4: 'ما رقم العملية الذي ظهر بعد التحويل؟', q4h: 'انظر إلى «رقم العملية» في الصفحة بعد عملية التحويل، أو في سجل «آخر العمليات» في الصفحة الرئيسية.',     /* Moaz 2026-11-24 */
+    q3: 'ما رقم العملية الذي ظهر بعد التحويل؟', q3h: 'انظر إلى «رقم العملية» في الصفحة بعد عملية التحويل، أو في سجل «آخر العمليات» في الصفحة الرئيسية.',     /* Moaz 2026-11-24 */
+    q4: 'منذ أي سنة وصالح عميل لدى البنك؟', q4h: 'سجّل الدخول إلى حساب صالح، وانظر إلى «عميل منذ» في «تفاصيل الحساب».',     /* Moaz 2026-11-24: replaces the balance question */
     /* tokens explained under the command */
     tk_fk: 'اسم الأداة', tk_url: 'عنوان صفحة تسجيل الدخول', tk_clear: 'امسح الشاشة',
     /* task lines */
@@ -4937,8 +4962,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة صنّارة** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
     t_ans1: 'الآن أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة**',     /* Moaz 2026-11-24 */
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في **البنك الإلكتروني** باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي ظهرت في **شاشة الأوامر** أو في الملف `account.txt`',     /* Moaz 2026-11-24 */
-    t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر حساب **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
-    t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
+    t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط على صفحة **التحويل** في أعلى الموقع، واختر حساب **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',     /* Moaz 2026-11-24 */
+    t_q: 'أحسنت! الآن أجب عن **أسئلة التحدي** على يسار الشاشة.',     /* Moaz 2026-11-24 */
     t_done: 'أحسنت! أنهيت التدريب.',
     e_wait: 'أداة صنّارة تنتظر أن يفتح صالح الرابط...',
     /* the tool's own Arabic line (no banner, DESIGN.md section 34) */
@@ -5111,8 +5136,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     CC.Q.init([
       { id: 'q1', q: iso(CC.t('q1')), answers: [FAKE], check: function (v) { var x = norm(v).replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, ''); return x === FAKE || x === BANK.fake; }, hint: iso(CC.t('q1h')), hidden: true },
       { id: 'q2', q: iso(CC.t('q2')), answers: [BANK.pass], check: function (v) { return String(v || '').trim() === BANK.pass; }, hint: iso(CC.t('q2h')), hidden: true },
-      { id: 'q3', q: iso(CC.t('q3')), answers: [BANK.acc.since], check: function (v) { return norm(v).replace(/[^0-9]/g, '') === BANK.acc.since; }, hint: iso(CC.t('q3h')), hidden: true },
-      { id: 'q4', q: iso(CC.t('q4')), answers: function () { return [BANK.st.ref]; }, check: function (v) { return !!BANK.st.done && norm(v).replace(/[^0-9]/g, '') === BANK.st.ref; }, hint: iso(CC.t('q4h')), hidden: true }
+      { id: 'q3', q: iso(CC.t('q3')), answers: function () { return [BANK.st.ref]; }, check: function (v) { return !!BANK.st.done && norm(v).replace(/[^0-9]/g, '') === BANK.st.ref; }, hint: iso(CC.t('q3h')), hidden: true },
+      { id: 'q4', q: iso(CC.t('q4')), answers: [BANK.acc.since], check: function (v) { return norm(v).replace(/[^0-9]/g, '') === BANK.acc.since; }, hint: iso(CC.t('q4h')), hidden: true }
     ]);
 
     /* the four questions end the lab: the moment they are all answered it finishes */
@@ -5215,7 +5240,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       await V.hide(g); st.vicOn = false;
       /* the email is sent: its window goes to the background and the bank site comes to the front for the login */
       var mn = MAIL.win && MAIL.win.querySelector('.cc-win-min'); if (mn && MAIL.win.isConnected) mn.click();
-      var wb = document.querySelector('#laptop .cc-app[data-app="web"]'); if (wb && document.querySelector('#laptop.cc-web-shut')) wb.click();
+      var wb = document.querySelector('#laptop .cc-app[data-app="web"]'); if (wb) wb.click();     /* the bank site in front again (the terminal came forward on «إرسال») */
     }
 
     /* ---- the terminal ---- */
@@ -5289,6 +5314,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     /* ---- the bank site ---- */
     BANK.onLogin = function () { st.logged = true; };
+    P.onPage = function (path) { st.path = path; };
     BANK.onTransfer = function () { st.moved = true; };
 
     /* ---- setup ---- */
@@ -5374,14 +5400,16 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       L.task(CC.t('t_login'));
       if (!(await until(function () { return st.logged; }))) return;
     }
-    CC.Q.reveal('q3');
+    CC.Q.reveal('q4');
     if (!st.moved) {
       L.task(CC.t('t_transfer'));
       if (P.glowLink) P.glowLink('/transfer');
+      /* a spotlight with a pointer on «التحويل» until the transfer page opens (Moaz 2026-11-24, both modes) */
+      CC.guide.show(function () { return P.pageLink ? P.pageLink('/transfer') : null; }, { force: true, until: function () { return st.path === '/transfer'; } });
       if (!(await until(function () { return st.moved; }))) return;
-      if (P.glowLink) P.glowLink(null);
+      if (P.glowLink) P.glowLink(null); CC.guide.hide();
     }
-    CC.Q.reveal('q4');
+    CC.Q.reveal('q3');
     idleQ(false);
     CC.free = true; L.task(CC.t('t_q')); L.expl('');
     if (CC.Q.allDone()) CC.Q.onAll();
@@ -7144,7 +7172,7 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 .vlap:not(.desk) .vl-dock{opacity:0}
 .vl-app{width:5.6cqw;height:5.6cqw;border-radius:1.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#5A6880,#2A3953)}
 .vl-app svg{width:62%;height:62%}
-.vl-app-mail{background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-app-web{background:linear-gradient(145deg,#3B6CBC,#295AA6)}.vl-app-files{background:linear-gradient(145deg,#F5B13D,#E08E0B)}.vl-app-notes{background:linear-gradient(145deg,#FCE7A8,#F5C84C)}
+.vl-app-mail{background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-app-web{background:linear-gradient(145deg,#3B6CBC,#295AA6)}.vl-app-files{background:linear-gradient(145deg,#5AA0F2,#2F74D0)}.vl-app-notes{background:linear-gradient(145deg,#FCD46A,#F2A90F);color:#5A3B00}.vl-app-photos{background:linear-gradient(145deg,#F472B6,#C026D3)}.vl-app-calc{background:linear-gradient(145deg,#5A6880,#2A3953)}.vl-app-cal{background:linear-gradient(145deg,#F87171,#DC2626)}.vl-app-music{background:linear-gradient(145deg,#FB7185,#E11D48)}.vl-app-set{background:linear-gradient(145deg,#94A3B8,#64748B)}
 .vl-note{position:absolute;top:6cqw;left:2.4cqw;z-index:6;width:44cqw;display:flex;gap:1.4cqw;align-items:center;padding:1.4cqw 1.8cqw;border-radius:2cqw;background:rgba(250,250,252,.97);color:#111;box-shadow:0 1.6cqw 4cqw -1cqw rgba(0,0,0,.45);transform:translateX(-120%);opacity:0;transition:transform .55s cubic-bezier(.2,.9,.3,1.15),opacity .4s}
 .vl-note.on{transform:none;opacity:1}
 .vl-note-ic{flex:none;width:5.6cqw;height:5.6cqw;border-radius:1.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-note-ic svg{width:62%;height:62%}
@@ -7164,6 +7192,21 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 .cs-log .row.sn-spot{position:relative;border-radius:6px;outline:2px solid #FCAD0F;outline-offset:3px;background:rgba(252,173,15,.12);box-shadow:0 0 0 6px rgba(252,173,15,.18),0 0 22px 6px rgba(252,173,15,.35);animation:snspot 1.6s ease-in-out infinite}
 @keyframes snspot{50%{box-shadow:0 0 0 9px rgba(252,173,15,.08),0 0 30px 10px rgba(252,173,15,.5)}}
 @media (prefers-reduced-motion:reduce){.cs-log .row.sn-spot{animation:none}}
+
+/* Saleh's desktop: the store manager's folders and files, and a full dock; they pop in one after another (Moaz 2026-11-24) */
+.vl-dock{gap:1cqw;padding:.9cqw 1.3cqw}
+.vl-app{width:4.6cqw;height:4.6cqw;border-radius:1.2cqw}
+.vl-app svg{width:60%;height:60%}
+.vl-desk{position:absolute;top:6.5cqw;right:2.2cqw;z-index:1;display:grid;grid-template-columns:repeat(2,9.4cqw);gap:1.6cqw .6cqw;direction:rtl}
+.vlap:not(.desk) .vl-desk{opacity:.0}
+.vl-di{display:flex;flex-direction:column;align-items:center;gap:.5cqw;color:#fff;text-align:center}
+.vl-di svg{width:5.4cqw;height:5.4cqw;filter:drop-shadow(0 .3cqw .5cqw rgba(0,0,0,.35))}
+.vl-di small{font-size:1.45cqw;font-weight:700;line-height:1.3;text-shadow:0 1px 2px rgba(0,0,0,.6)}
+.vlap .vl-di,.vlap .vl-app{opacity:0;transform:scale(.6)}
+body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cubic-bezier(.2,.9,.3,1.3) forwards;animation-delay:calc(var(--d) + 350ms)}
+@keyframes vlpop{to{opacity:1;transform:none}}
+.vl-scr{background:radial-gradient(circle at 75% 20%,rgba(120,170,255,.35),transparent 45%),radial-gradient(circle at 20% 85%,rgba(56,120,160,.45),transparent 50%),linear-gradient(160deg,#2E5470,#142533)}
+@media (prefers-reduced-motion:reduce){.vlap .vl-di,.vlap .vl-app{opacity:1;transform:none;animation:none!important}}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's

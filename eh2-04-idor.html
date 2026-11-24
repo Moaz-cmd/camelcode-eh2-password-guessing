@@ -4535,14 +4535,16 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   };
   /* no pictogram (Moaz 2026-11-22: «more professional or no icon»): the logo is the bank's name set in type, with a small gold bar */
 
+  /* the bank's logo (Moaz 2026-11-24: his ChatGPT logo, a temple with columns, redrawn as SVG: sharp at any size, white on the dark panels) */
+  var LOGO = '<svg class="lgm" viewBox="0 0 100 100" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="M50 21.5 83 40.5v3.5H17v-3.5zM50 27.5 70.5 39.5h-41z"/><path fill="var(--lgacc,#6F9BD8)" d="M50 31 61.5 37.6h-23z"/><rect fill="currentColor" x="22" y="46" width="56" height="3.6" rx="1"/><g fill="currentColor"><rect x="25.5" y="51" width="9.5" height="2.2" rx=".8"/><rect x="27" y="52" width="6.5" height="16.5"/><rect x="25.5" y="67.5" width="9.5" height="2.4" rx=".8"/><rect x="39" y="51" width="9.5" height="2.2" rx=".8"/><rect x="40.5" y="52" width="6.5" height="16.5"/><rect x="39" y="67.5" width="9.5" height="2.4" rx=".8"/><rect x="52.5" y="51" width="9.5" height="2.2" rx=".8"/><rect x="54" y="52" width="6.5" height="16.5"/><rect x="52.5" y="67.5" width="9.5" height="2.4" rx=".8"/><rect x="66" y="51" width="9.5" height="2.2" rx=".8"/><rect x="67.5" y="52" width="6.5" height="16.5"/><rect x="66" y="67.5" width="9.5" height="2.4" rx=".8"/></g><rect fill="var(--lgacc,#6F9BD8)" x="20.5" y="72" width="59" height="3.4" rx="1"/><rect fill="currentColor" x="16.5" y="77" width="67" height="4.8" rx="1.2"/></svg>';
   /* ---------- page parts ---------- */
   function head() {
     var me = BANK.acc[BANK.me];
-    return '<header class="hd"><div class="w"><a class="logo" href="' + BANK.home() + '"><span class="lg-bar"></span><span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></a>' +
+    return '<header class="hd"><div class="w"><a class="logo" href="' + BANK.home() + '">' + LOGO + '<span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></a>' +
       /* no menu (Moaz 2026-11-22: no «حسابي» link; the site has only the account page) */
       '<div class="who" id="who"><span class="av">' + me.first.charAt(0) + '</span><span class="hi">مرحبًا، <b>' + me.first + '</b></span><span class="lo">' + I.out + 'تسجيل الخروج</span></div></div></header>';
   }
-  var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><div class="flogo"><span class="lg-bar"></span><b>' + BANK.name + '</b></div><p>خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
+  var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><div class="flogo">' + LOGO + '<b>' + BANK.name + '</b></div><p>خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
     '<div><h4>تواصل معنا</h4><span>' + I.phone + ' <bdi dir="ltr">' + BANK.phone + '</bdi></span><span>' + I.mail + ' <bdi dir="ltr">' + BANK.email + '</bdi></span><span>' + I.clock + ' خدمة العملاء على مدار الساعة</span></div></div>' +
     '</footer>';
   function page(body) { return head() + '<main>' + body + '</main>' + FOOT.replace('{{home}}', BANK.home()); }
@@ -4553,7 +4555,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     a.tx.forEach(function (t) { if (t[3] > 0) inc += t[3]; else out -= t[3]; });
     var rows = a.tx.map(function (t) {
       var pos = t[3] > 0;
-      return '<tr><td class="dt">' + t[0] + '</td><td class="ds"><span class="cat">' + CAT[t[2]] + '</span>' + t[1] + '</td>' +
+      return '<tr><td class="ds"><span class="cat">' + CAT[t[2]] + '</span>' + t[1] + '</td>' +
         '<td class="amt ' + (pos ? 'pos' : 'neg') + '"><bdi>' + (pos ? '+' : '−') + money(t[3]) + '</bdi> <small>ر.ق</small></td></tr>';
     }).join('');
     return page(
@@ -4566,7 +4568,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<div class="af"><div><span class="fi in">' + I.down + '</span><span><small>الإيداعات في أكتوبر</small><b><bdi>' + money(inc) + '</bdi> ر.ق</b></span></div>' +
       '<div><span class="fi outx">' + I.up + '</span><span><small>المصروفات في أكتوبر</small><b><bdi>' + money(out) + '</bdi> ر.ق</b></span></div>' +
       '<div><span class="fi nb">' + I.list + '</span><span><small>عدد العمليات</small><b>' + a.tx.length + ' عمليات</b></span></div></div></div>' +
-      '<div class="pnl"><div class="pt"><h2>آخر العمليات</h2><span class="mut">أكتوبر 2026</span></div><table class="tb"><thead><tr><th>التاريخ</th><th>الوصف</th><th>المبلغ</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      '<div class="pnl"><div class="pt"><h2>آخر العمليات</h2><span class="mut">أكتوبر 2026</span></div><table class="tb"><thead><tr><th>الوصف</th><th>المبلغ</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '</div><aside class="side">' +
       '<div class="dcard"><div class="dc-t"><span>بطاقة الخصم</span><b class="dc-bank">' + BANK.name + '</b></div><div class="chip"></div><div class="dc-n"><bdi>•••• •••• •••• ' + a.card + '</bdi></div><div class="dc-b"><span><small>حامل البطاقة</small>' + a.name + '</span><span><small>تنتهي</small><bdi>09/29</bdi></span></div></div>' +
       '<div class="pnl info"><div class="pt"><h2>تفاصيل الحساب</h2></div><ul><li>' + I.user + '<span><small>الاسم</small>' + a.name + '</span></li><li>' + I.branch + '<span><small>الفرع</small>' + a.branch + '</span></li><li>' + I.cal + '<span><small>تاريخ فتح الحساب</small>' + a.since + '</span></li><li>' + I.coin + '<span><small>العملة</small>الريال القطري (ر.ق)</span></li></ul></div>' +
@@ -4620,6 +4622,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '@media(max-width:980px){.lay{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}.side .tip{grid-column:1/-1}}',
     '@media(max-width:700px){.who .lo{display:none}.af{grid-template-columns:1fr}.af>div+div{border-inline-start:0;border-top:1px solid var(--line)}.side{grid-template-columns:1fr}.ft .cols{grid-template-columns:1fr}.bv{font-size:1.9rem}.logo small{display:none}}'
   ].join('\n');
+  CSS += '\n' + '.lgm{flex:none;width:44px;height:44px;color:var(--teal)}.ft .lgm,.lgb .lgm{color:#fff;--lgacc:#8FB3E6}.ft .lgm{width:34px;height:34px}.lgb-t .lgm{width:52px;height:52px}';
 
   /* ---------- the pages ---------- */
   var pages = {};
@@ -6872,7 +6875,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, faker: 1, clear: 1, help: 1 };   /* faker: EH2 lab 5 (2026-11-24) */
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, sinnara: 1, clear: 1, help: 1 };   /* sinnara: EH2 lab 5 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
