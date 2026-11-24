@@ -4593,7 +4593,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   /* the fake copy's answer after the victim signs in (drawn on the victim's laptop only) */
   BANK.errorHtml = function () {
     var was = BANK.st; BANK.st = { in: false };
-    var h = page('/login', '<section class="sec"><div class="msg"><span class="mi">' + I.warn + '</span><h1>حدث خطأ فني</h1><p>نعتذر، لا يمكن الوصول إلى هذه الصفحة الآن. يرجى المحاولة مرة أخرى لاحقاً.</p></div></section>');
+    var h = page('/login', '<section class="sec"><div class="msg"><span class="mi">' + I.warn + '</span><h1>حدث خطأ تقني</h1><p>نعتذر، لا يمكن الوصول إلى هذه الصفحة الآن. يرجى المحاولة مرة أخرى لاحقاً.</p></div></section>');
     BANK.st = was; return h;
   };
 
@@ -4714,7 +4714,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
    His inbox gets the email the student wrote; his mouse opens it, hovers the link (the real address shows at the bottom, like a real
    browser), clicks it, and types his username and password (dots) into the fake copy of the bank's login page at
    bank-urgent-password.example/login. The copy is drawn from the bank's own page code (CC.bank.loginHtml + CC.bank.css), so it looks
-   exactly the same. After «تسجيل الدخول» the copy shows «حدث خطأ فني», then the laptop leaves. Everything is fictional. */
+   exactly the same. After «تسجيل الدخول» the copy shows «حدث خطأ تقني», then the laptop leaves. Everything is fictional. */
 (function () {
   'use strict';
   var CC = window.CC, $ = CC.$;
@@ -4842,7 +4842,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
    3. The email app «البريد» on the hacker's laptop: the student types Saleh's address, a subject and the text himself (faint typing hints),
       pretending to be the bank («حسابك تعرّض للاختراق، غيّر كلمة السر فوراً» + the link), and presses «إرسال».
    4. Saleh's laptop appears beside the hacker's (victim.js): he opens the email, clicks the link, types his username and password into the copy,
-      and gets «حدث خطأ فني». faker prints the details at once and saves them in account.txt on the Desktop.
+      and gets «حدث خطأ تقني». faker prints the details at once and saves them in account.txt on the Desktop.
    5. The student signs in to the real bank with them (no code step) and transfers money to one of Saleh's beneficiaries.
    Protection is taught in «شرح مختصر» only (Moaz 2026-11-24). Everything is fictional; every address is a reserved .example one, or
    camelcode.shop (CamelCode's own name, DESIGN.md section 39). Strings first, then the file system, the mail app, the tool, the flow. */
@@ -4899,7 +4899,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** `' + FAKE + '` في آخرها.',
     t_send: 'اقرأ رسالتك مرة أخرى، ثم اضغط زر **إرسال**.',
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
-    t_caught: 'لاحظ: وصل إلى **شاشة الأوامر** **اسم المستخدم** و**كلمة السر** اللذان كتبهما صالح، وحفظتهما الأداة في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ فني**، فلم ينتبه لشيء!',
+    t_caught: 'لاحظ: وصل إلى **شاشة الأوامر** **اسم المستخدم** و**كلمة السر** اللذان كتبهما صالح، وحفظتهما الأداة في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني**، فلم ينتبه لشيء!',
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي وصلت إلى شاشة الأوامر.',
     t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر المستفيد **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
     t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
@@ -4931,7 +4931,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     mail_h: 'الرسالة المزيفة',
     mail: 'الآن نكتب رسالة إلى صالح، ونتظاهر فيها أننا **البنك**.\n\nالرسالة المزيفة تحاول أن تجعل الضحية **يخاف** و**يستعجل**، فيضغط على الرابط **دون أن يفكر**: «حسابك تعرّض للاختراق»، «غيّر كلمة السر **فوراً**».\n\nلاحظ خانة **من**: الاسم «البنك الإلكتروني»، لكن العنوان `' + FROM_A + '` **ليس** من موقع البنك.',
     caught_h: 'وصلت البيانات',
-    caught: 'كتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فوصلت إليك مباشرة. ثم ظهرت له رسالة **خطأ فني**، فظن أن الموقع معطّل فقط.\n\nالآن تستطيع أن تدخل إلى **حسابه الحقيقي** في البنك بهذه البيانات.',
+    caught: 'كتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فوصلت إليك مباشرة. ثم ظهرت له رسالة **خطأ تقني**، فظن أن الموقع معطّل فقط.\n\nالآن تستطيع أن تدخل إلى **حسابه الحقيقي** في البنك بهذه البيانات.',
     replay: 'إعادة التدريب',
     /* congratulations card */
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
@@ -4947,7 +4947,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     rs_h: 'السيناريو', rs: 'أنت الآن **هاكر أخلاقي** في أكاديمية كاملكود. طلب منك **فريق الأمن** أن تختبر هل ينتبه **صالح**، مدير **متجر كاملكود**، للرسائل المزيفة، و**صالح وافق**. تصنع **نسخة مزيفة** من صفحة تسجيل الدخول في **البنك الإلكتروني** بأداة **faker**، وترسل رابطها إلى صالح في **رسالة** تتظاهر فيها أنك البنك. يكتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فتصل إليك، فتدخل إلى حسابه **وتحوّل** المال.',
     r1_h: 'أداة faker', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها من أي جهاز، ثم **تنتظر** وتعرض ما يكتبه الضحية.\n- الاستخدام: `' + EX + '`\n   - `faker`: اسم الأداة.\n   - `' + LOGIN + '`: عنوان صفحة تسجيل الدخول.\n- الرابط: `' + FAKE + '` **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**.',
     r2_h: 'الرسالة المزيفة', r2: '- **من:** «البنك الإلكتروني» لكن العنوان `' + FROM_A + '` ليس من موقع البنك.\n- **إلى:** `' + SALEH + '`.\n- النص يخيف الضحية ويجعله **يستعجل**: «تم اختراق حسابك، غيّر كلمة السر **فوراً**»، وفيه **الرابط**.',
-    r3_h: 'ماذا حدث عند صالح', r3: '- فتح الرسالة وضغط على **الرابط**، فوصل إلى الصفحة المزيفة.\n- كتب **اسم المستخدم** و**كلمة السر**، فظهرت في **شاشة الأوامر** فوراً وحُفظت في `account.txt` على سطح المكتب.\n- ظهرت له رسالة **خطأ فني**، فلم ينتبه.',
+    r3_h: 'ماذا حدث عند صالح', r3: '- فتح الرسالة وضغط على **الرابط**، فوصل إلى الصفحة المزيفة.\n- كتب **اسم المستخدم** و**كلمة السر**، فظهرت في **شاشة الأوامر** فوراً وحُفظت في `account.txt` على سطح المكتب.\n- ظهرت له رسالة **خطأ تقني**، فلم ينتبه.',
     r4_h: 'الدخول والتحويل', r4: '- ندخل إلى `' + LOGIN + '` بالبيانات المسروقة.\n- نضغط **التحويل**، ونختار **مستفيداً**، ونكتب **المبلغ**، ثم **تحويل**.',
     r5_h: 'الحماية', r5: '- انظر إلى **عنوان المرسل**: البنك يرسل من موقعه هو، لا من عنوان آخر.\n- انظر إلى **عنوان الموقع** قبل أن تكتب كلمة السر: `' + BANK.host + '` وليس عنواناً يشبهه.\n- **البنك لا يطلب كلمة السر** عبر البريد الإلكتروني أبداً.\n- لا تضغط على الروابط في الرسائل العاجلة: **افتح موقع البنك بنفسك**.\n- فعّل **التحقق بخطوتين**: حتى لو عرف الهاكر كلمة السر، يحتاج إلى **رمز** يصل إلى هاتفك.\n- رسالة تخيفك وتطلب منك أن تستعجل **علامة خطر**.'
   });
