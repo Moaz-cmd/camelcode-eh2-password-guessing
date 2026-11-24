@@ -4518,7 +4518,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* ---------- small pictures ---------- */
   function art(c1, c2, inner) {
-    return '<div class="art" style="background:linear-gradient(135deg,' + c1 + ',' + c2 + ')"><svg viewBox="0 0 120 80" aria-hidden="true">' + inner + '</svg></div>';
+    return '<div class="art"><svg viewBox="0 0 120 80" aria-hidden="true">' + inner + '</svg></div>';
   }
   function consoleArt(c1, c2, body) {
     return art(c1, c2, '<ellipse cx="60" cy="68" rx="40" ry="5" fill="rgba(0,0,0,.22)"/><rect x="14" y="24" width="92" height="38" rx="10" fill="' + body + '"/><rect x="14" y="24" width="92" height="12" rx="6" fill="rgba(255,255,255,.1)"/><rect x="24" y="40" width="46" height="5" rx="2.5" fill="rgba(255,255,255,.35)"/><circle cx="90" cy="46" r="6.5" fill="rgba(255,255,255,.3)"/><circle cx="90" cy="46" r="2.5" fill="#FCAD0F"/>');
@@ -4572,10 +4572,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
   /* a football boot pointing left, at (x, y), colour c, studs underneath */
   function bootG(x, y, s, c, lace) {
-    return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')"><path d="M44 2h14v20H4c-3 0-4-3-2-5l8-6c4-3 10-4 16-4h6l4-5z" fill="' + c + '"/>' +
-      '<path d="M44 2h14v6H40z" fill="rgba(255,255,255,.18)"/><path d="M26 7l4 6M31 6l4 6M36 5l4 6" stroke="' + (lace || '#fff') + '" stroke-width="1.6" stroke-linecap="round"/>' +
-      '<path d="M2 22h56v3H2z" fill="#0E1F39"/><path d="M8 25v3M18 25v3M28 25v3M44 25v3M54 25v3" stroke="#0E1F39" stroke-width="2.6" stroke-linecap="round"/>' +
-      '<path d="M12 15c8-2 18-2 30 0" stroke="#FCAD0F" stroke-width="2.2" fill="none" stroke-linecap="round"/></g>';
+    /* a low, sleek boot seen from the side, toe to the left: upper, collar, a mesh panel, laces, a sole plate and studs (no brand marks) */
+    return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')">' +
+      '<path d="M3 21c-1.6 0-2.4-1.6-1.4-3C4 14.6 8 13 13 12.4l13-1.6c3.4-.4 6-2 8.4-4.6L39 1.6c.8-.9 2-1.4 3.2-1.2l13 1.6c1.8.2 3 1.8 2.8 3.6L57 21z" fill="' + c + '"/>' +
+      '<path d="M41 1.4l14.6 1.8c1.6.2 2.6 1.6 2.4 3.2l-.3 2.4C52 8 46 7.4 39.4 3.4z" fill="rgba(255,255,255,.16)"/>' +
+      '<path d="M5 18.6c10-2.6 28-3.2 51-1.4" stroke="rgba(255,255,255,.22)" stroke-width="1.2" fill="none"/>' +
+      '<path d="M22 11.6l2.4 3.4M26.6 10.6l2.4 3.4M31 9l2.4 3.2" stroke="' + (lace || '#fff') + '" stroke-width="1.3" stroke-linecap="round"/>' +
+      '<path d="M1.2 21h56.6v2.2c0 .8-.6 1.4-1.4 1.4H4.4c-1.8 0-3.2-1.6-3.2-3.6z" fill="#16a34a"/>' +
+      '<path d="M7 24.6v2.6M14 24.6v2.6M21 24.6v2.6M40 24.6v2.6M47 24.6v2.6M54 24.6v2.6" stroke="#111827" stroke-width="2.4" stroke-linecap="round"/></g>';
   }
   /* a shirt with a number */
   function shirtG(x, y, s, c, trim, num) {
@@ -4583,16 +4587,19 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<path d="M14 0c1.5 4 5 6 9 6s7.5-2 9-6" stroke="' + trim + '" stroke-width="2.4" fill="none"/><path d="M0 8l6 12M46 8l-6 12" stroke="' + trim + '" stroke-width="2"/>' +
       '<text x="23" y="34" text-anchor="middle" font-size="15" font-weight="800" fill="' + trim + '" font-family="Montserrat,sans-serif">' + num + '</text></g>';
   }
-  var bootArt = art('#1B2F52', '#295AA6', '<ellipse cx="60" cy="70" rx="44" ry="4" fill="rgba(0,0,0,.28)"/><circle cx="60" cy="38" r="30" fill="rgba(252,173,15,.12)"/>' + bootG(26, 30, 1.15, '#F4F6FA', '#0E1F39'));
-  var kidsBootArt = art('#E7EEE9', '#C9D6CD', '<ellipse cx="60" cy="70" rx="40" ry="4" fill="rgba(14,31,57,.18)"/>' + bootG(30, 34, 1, '#8DC63F', '#0E1F39'));
-  var matchBallArt = art('#8DC63F', '#3E8A2E', '<g fill="rgba(255,255,255,.08)"><rect x="0" width="15" height="80"/><rect x="30" width="15" height="80"/><rect x="60" width="15" height="80"/><rect x="90" width="15" height="80"/></g>' +
-    '<g fill="none" stroke="rgba(255,255,255,.7)" stroke-width="1.3"><rect x="6" y="8" width="108" height="64" rx="1"/><path d="M60 8v64"/><circle cx="60" cy="40" r="15"/></g><ellipse cx="62" cy="58" rx="13" ry="3" fill="rgba(0,0,0,.25)"/>' + ballG(60, 40, 15));
+  var bootArt = art('', '', '<ellipse cx="60" cy="68" rx="42" ry="3.5" fill="rgba(0,0,0,.14)"/>' + bootG(26, 32, 1.15, '#111827', '#ffffff'));
+  var kidsBootArt = art('', '', '<ellipse cx="60" cy="68" rx="38" ry="3.5" fill="rgba(0,0,0,.14)"/>' + bootG(30, 35, 1, '#16a34a', '#ffffff'));
+  var matchBallArt = art('', '', '<ellipse cx="60" cy="70" rx="20" ry="3.5" fill="rgba(0,0,0,.16)"/>' + ballG(60, 40, 24));
   var trainBallArt = art('#F39B22', '#FCAD0F', '<ellipse cx="60" cy="70" rx="34" ry="4" fill="rgba(0,0,0,.2)"/>' + ballG(40, 48, 14) + ballG(72, 52, 12) +
     '<path d="M86 66l8-26 8 26z" fill="#0E1F39"/><path d="M89 56h10M91.5 48h5" stroke="#fff" stroke-width="2"/>');
-  var glovesArt = art('#91278E', '#295AA6', '<ellipse cx="60" cy="72" rx="36" ry="3.6" fill="rgba(0,0,0,.25)"/>' +
-    '<g fill="#F4F6FA"><path d="M30 70V52l-6-10v-16a3 3 0 016 0v12V18a3 3 0 016 0v18V15a3 3 0 016 0v21V19a3 3 0 016 0v24c0 10-4 18-8 27z"/>' +
-    '<path d="M66 70V52l-6-10v-16a3 3 0 016 0v12V18a3 3 0 016 0v18V15a3 3 0 016 0v21V19a3 3 0 016 0v24c0 10-4 18-8 27z"/></g>' +
-    '<path d="M30 60h20M66 60h20" stroke="#FCAD0F" stroke-width="5"/>');
+  /* a goalkeeper glove: palm, four fingers, a thumb and a wrist strap */
+  function gloveG(x, y, flip) {
+    return '<g transform="translate(' + x + ' ' + y + ')' + (flip ? ' scale(-1 1)' : '') + '">' +
+      '<rect x="-12" y="-20" width="5.4" height="17" rx="2.7" fill="#1F2937"/><rect x="-6" y="-24" width="5.4" height="21" rx="2.7" fill="#1F2937"/><rect x="0" y="-23" width="5.4" height="20" rx="2.7" fill="#1F2937"/><rect x="6" y="-19" width="5.4" height="16" rx="2.7" fill="#1F2937"/>' +
+      '<rect x="-12.5" y="-7" width="24" height="22" rx="7" fill="#1F2937"/><rect x="-18" y="-4" width="6" height="13" rx="3" transform="rotate(-28 -15 2)" fill="#1F2937"/>' +
+      '<rect x="-12" y="11" width="23" height="9" rx="2.5" fill="#16a34a"/><path d="M-9 15.5h17" stroke="#fff" stroke-width="1.2" opacity=".6"/></g>';
+  }
+  var glovesArt = art('', '', '<ellipse cx="60" cy="72" rx="34" ry="3.2" fill="rgba(0,0,0,.14)"/>' + gloveG(44, 46, false) + gloveG(78, 46, true));
   var kitArt = art('#0E1F39', '#1B2F52', '<ellipse cx="60" cy="74" rx="34" ry="3" fill="rgba(0,0,0,.3)"/>' + shirtG(37, 14, 1, '#8A1538', '#fff', '10'));
   var keeperArt = art('#E7EEE9', '#D0DBD3', '<ellipse cx="60" cy="74" rx="34" ry="3" fill="rgba(14,31,57,.18)"/>' + shirtG(37, 14, 1, '#FCAD0F', '#0E1F39', '1'));
   /* a sports water bottle with a gold cap and a flip straw */
@@ -4603,8 +4610,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var bagArt = art('#8DC63F', '#3E8A2E', '<ellipse cx="60" cy="70" rx="44" ry="4" fill="rgba(0,0,0,.25)"/>' +
     '<path d="M42 30c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="#0E1F39" stroke-width="4"/><rect x="16" y="28" width="88" height="40" rx="18" fill="#0E1F39"/>' +
     '<path d="M24 40h72" stroke="#FCAD0F" stroke-width="3" stroke-dasharray="5 4"/><circle cx="34" cy="54" r="7" fill="#fff"/><path d="M34 50.5l3.3 2.4-1.2 3.8h-4.2l-1.2-3.8z" fill="#0E1F39"/>');
-  var heroArt = '<svg class="heroart" viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="38" fill="rgba(252,173,15,.12)"/><ellipse cx="60" cy="72" rx="46" ry="4" fill="rgba(0,0,0,.28)"/>' +
+  var heroArtOld = '<svg class="heroart" viewBox="0 0 120 80" aria-hidden="true"><circle cx="60" cy="40" r="38" fill="rgba(252,173,15,.12)"/><ellipse cx="60" cy="72" rx="46" ry="4" fill="rgba(0,0,0,.28)"/>' +
     bootG(14, 36, 1, '#F4F6FA', '#0E1F39') + ballG(88, 54, 14) + '</svg>';
+
+  /* the hero's featured product: a big studio shot of the boot on a light floor */
+  var heroShot = '<svg viewBox="0 0 120 80" aria-hidden="true"><ellipse cx="60" cy="66" rx="46" ry="4" fill="rgba(0,0,0,.14)"/>' + bootG(16, 30, 1.5, '#111827', '#ffffff') + '</svg>';
 
   var PRODUCTS = {
     boots: [
@@ -4626,8 +4636,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     ]
   };
   function card(it) {
-    return '<article class="pc"><div class="phw">' + it.a + '<span class="tag"><b>' + it.p + '</b> ر.ق</span></div><div class="pb"><h3>' + it.n + '</h3>' +
-      '<p class="d">' + it.d + '</p><span class="av2">متوفر</span></div></article>';     /* the price keeps «ر.ق» in every lab (Moaz 2026-11-13) */
+    return '<article class="pc"><div class="phw">' + it.a + '</div><div class="pb"><h3>' + it.n + '</h3><p class="d">' + it.d + '</p>' +
+      '<div class="pr"><b>' + it.p + ' ر.ق</b><span class="av2">متوفر</span></div></div></article>';     /* the price keeps «ر.ق» in every lab (Moaz 2026-11-13) */
   }
   function grid(list) { return '<div class="grid">' + list.map(card).join('') + '</div>'; }
 
@@ -4637,109 +4647,87 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     return '<header class="hd"><div class="w"><a class="logo" href="/home">' + logoImg + '</a><nav>' +
       NAV.map(function (n) { return '<a href="' + n[0] + '"' + (n[0] === active ? ' class="on"' : '') + '>' + n[1] + '</a>'; }).join('') + '</nav></div></header>';
   }
-  var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><p>أحذية وكرات وأطقم ومعدات لكل لاعب، مع خدمة مميزة وأسعار ممتازة.</p></div>' +
+  var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><h4>' + SHOP.name + '</h4><p>أحذية وكرات وأطقم ومعدات لكل لاعب، مع خدمة مميزة وأسعار ممتازة.</p></div>' +
     '<div><h4>الصفحات</h4><a href="/home">الرئيسية</a><a href="/products">المنتجات</a><a href="/about">من نحن</a><a href="/contact">تواصل</a><a href="/login">تسجيل الدخول</a></div>' +
     '<div><h4>معلومات المتجر</h4><span>' + I.pin + ' ' + SHOP.address + '</span><span>' + I.clock + ' يومياً من 10 صباحاً إلى 10 مساءً</span><span>' + I.card + ' الدفع ببطاقة أو عند الاستلام</span></div></div>' +
     '</footer>';
-  var STRIP = '<div class="strip"><div class="w"><span>' + I.truck + ' توصيل مجاني داخل الدوحة للطلبات فوق 200 ر.ق</span><span>' + I.ball + ' أطقم كاملة للفرق والمدارس</span></div></div>';
+  var STRIP = '<div class="strip">توصيل مجاني داخل الدوحة للطلبات فوق 200 ر.ق</div>';
   function page(active, body) { return STRIP + head(active) + '<main>' + body + '</main>' + FOOT; }
   function crumb(t) { return ''; }     /* no breadcrumb bar on the website (Moaz 2026-11-13) */
 
   /* CamelCode brand (Brand Book 2025; Moaz 2026-11-12): cream page, navy and gold, sage lines, Montserrat Arabic text, Baloo Bhaijaan 2 titles, Roboto digits.
      The fonts come from the lab page itself (engine/targets/browser.js copies its @font-face rules into the site). */
   var CSS = [
-    ':root{--navy:#0E1F39;--navy2:#1B2F52;--gold:#FCAD0F;--lgold:#F39B22;--cream:#FCF5F0;--sage:#D0DBD3;--sage2:#E7EEE9;--purple:#91278E;--green:#8DC63F;--blue:#295AA6;--txt:#0E1F39;--mut:#4A5A73;--line:#D0DBD3;--r:16px}',
-    '*{box-sizing:border-box}html{font-size:18px}body{margin:0;font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:var(--cream);color:var(--txt);line-height:1.8}',
-    'h1,h2,h3,h4{font-family:"CC Digits","Baloo Bhaijaan 2","Montserrat Arabic",Tajawal,sans-serif;color:var(--navy);line-height:1.35}',
-    'a{color:inherit;text-decoration:none}.w{max-width:1100px;margin:0 auto;padding:0 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}',
-    /* header: white bar, the official logo lockup unchanged, navy menu with a gold active tab */
-    '.hd{position:relative;z-index:5;background:#fff;border-bottom:3px solid var(--gold);box-shadow:0 6px 18px -14px rgba(14,31,57,.5)}.hd .w{flex-wrap:nowrap}.hd nav{flex-wrap:nowrap;white-space:nowrap;min-width:0}@media(max-width:900px){.hd .w{column-gap:16px!important}.hd nav{gap:2px!important}.hd nav a{padding:6px 10px!important;font-size:.9rem!important}.hd .logo img{height:38px!important}}@media(max-width:760px){.hd .w{column-gap:10px!important;padding-left:12px!important;padding-right:12px!important}.hd nav a{padding:5px 7px!important;font-size:.8rem!important}.hd .logo img{height:32px!important}}.hd .w{min-height:72px;padding-top:8px;padding-bottom:8px}',
-    '.logo{display:flex;align-items:center;gap:12px;font-weight:800;font-size:1.05rem;color:var(--navy)}.logo img{height:46px;width:auto;display:block}.logo small{display:block;font-size:.8rem;font-weight:700;color:var(--mut);line-height:1.2;direction:ltr;text-align:right}.logo .shop{border-inline-start:2px solid var(--sage);padding-inline-start:12px;line-height:1.3}',
-    '.hd .w{justify-content:flex-start;column-gap:40px}nav{display:flex;gap:12px;flex-wrap:wrap}nav a{padding:6px 16px;border-radius:99px;font-weight:700;color:var(--navy)}nav a:hover{background:var(--sage2)}nav a.on{background:var(--navy);color:#fff;box-shadow:inset 0 -3px 0 var(--gold)}',
-    'main{min-height:60vh}.sec{max-width:1100px;margin:0 auto;padding:30px 20px}.sec.n{max-width:900px}.sec h2{margin:0 0 4px;font-size:1.6rem;font-weight:800}.sec h2::before{content:"<";color:var(--lgold);font-weight:800;margin-inline-end:10px;display:inline-block}.sec .lead{margin:6px 0 16px;color:var(--mut)}',
-    /* hero: brand navy with the logo chevrons */
-    '.hero{position:relative;overflow:hidden;background:var(--navy);color:#fff}.hero::before,.hero::after{content:"";position:absolute;width:80px;height:80px;border:16px solid var(--lgold);border-radius:6px}.hero::before{top:-26px;left:-20px;border-right:0;border-bottom:0;transform:rotate(-45deg)}.hero::after{bottom:-30px;right:46px;border-left:0;border-top:0;transform:rotate(-45deg)}',
-    '.hero .w{position:relative;z-index:1;padding:46px 20px}.hero .tx{flex:1 1 360px}.hero h1{margin:0 0 10px;font-size:2.5rem;font-weight:800;color:#fff}.hero h1 em{font-style:normal;color:var(--gold)}.hero p{margin:0 0 22px;color:#D7E0EE;font-size:1.1rem;max-width:520px}.hero .heroart{flex:0 1 340px;width:340px;max-width:100%;height:auto}',
-    '.btn{display:inline-block;padding:11px 26px;border-radius:99px;background:var(--gold);color:var(--navy);font-weight:800;border:0;font-family:inherit;font-size:1rem;box-shadow:0 4px 0 var(--lgold)}.btn.o{background:none;border:2px solid #fff;color:#fff;box-shadow:none;margin-inline-start:10px}',
-    '.cats{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}.cat{display:flex;align-items:center;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:14px 16px;font-weight:800}.cat:hover{border-color:var(--gold)}.cat .ic{width:2.3em;height:2.3em;padding:.5em;border-radius:12px;background:var(--navy);color:var(--gold)}.cat small{display:block;color:var(--mut);font-weight:500}',
-    /* product cards */
-    '.grid{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;align-items:stretch}.grid .pc{flex:0 0 230px;max-width:100%}.pc{display:flex;flex-direction:column;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 10px 22px -18px rgba(14,31,57,.6)}',
-    '.art{height:170px;display:grid;place-items:center;position:relative}.art svg{width:86%;height:auto}.art.cov svg{position:absolute;inset:0;width:100%;height:100%}.art.game{align-items:start}.art.game svg{position:absolute;inset:0;width:100%;height:100%}.gt{position:relative;z-index:2;margin-top:20px;padding:0 12px;font-weight:800;font-size:1.25rem;text-align:center;color:#fff;text-shadow:0 2px 6px rgba(0,0,0,.5)}',
-    '.pb{flex:1;display:flex;flex-direction:column;padding:12px 16px 16px}.pb h3{margin:0 0 8px;font-size:1.15rem}.pr{display:flex;justify-content:space-between;align-items:center;border-top:1.5px solid var(--sage2);padding-top:10px;margin-top:auto}.pr b{font-size:1.25rem;color:var(--navy)}.av2{font-size:.82rem;font-weight:800;color:#3F6B12;background:rgba(141,198,63,.18);border:1px solid rgba(141,198,63,.6);border-radius:99px;padding:0 12px}',
-    '.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;align-items:stretch}.feat div{display:flex;gap:12px;align-items:center;background:var(--navy);color:#fff;border-radius:var(--r);padding:14px 16px}.feat .ic{width:2.2em;height:2.2em;color:var(--gold)}.feat b{display:block;color:#fff}.feat span{color:#D7E0EE;font-size:.92rem}',
-    '.crumb{background:var(--sage2);border-bottom:1px solid var(--line);color:var(--mut);font-size:.9rem}.crumb .w{justify-content:flex-start;gap:8px;padding-top:8px;padding-bottom:8px}.crumb b{color:var(--navy)}.crumb span{color:var(--lgold);font-weight:800}',
-    '.txt p{color:var(--mut);max-width:780px;margin:0 0 12px}.more{color:var(--blue);font-weight:800;white-space:nowrap}',
-    '.vals{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin-top:10px}.story+.vals{margin-top:26px}.vals div{background:#fff;border:1.5px solid var(--line);border-top:4px solid var(--gold);border-radius:var(--r);padding:16px}.vals .ic{width:2em;height:2em;color:var(--navy);margin-bottom:4px}.vals b{display:block}.vals span{color:var(--mut);font-size:.95rem}',
-    '.team{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}.mem{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:20px;text-align:center}.mem .av{width:84px;height:84px;margin:0 auto 10px;border-radius:50%;overflow:hidden;border:3px solid var(--gold)}.avp{display:block;width:100%;height:100%}.mem h3{margin:0;font-size:1.15rem}.mem span{color:var(--mut);font-size:.95rem}',
-    '.info{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}@media(min-width:900px){.info{grid-template-columns:repeat(4,1fr)}}.info div{display:flex;align-items:flex-start;gap:12px;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:16px 18px}.info .ic{width:1.6em;height:1.6em;margin-top:.15em;color:var(--lgold)}',
-    /* contact cards: icon, title and value share one right edge; the email and phone stay left-to-right but sit on the same edge (Moaz 2026-11-12) */
-    '.info div>span{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:4px;color:var(--mut);line-height:1.5}.info b{display:block;color:var(--navy);line-height:1.5}.info bdi{display:block;direction:ltr;unicode-bidi:isolate;white-space:nowrap}',
-    /* contact page: cards and panels centred (Moaz 2026-11-13, replaces the shared right edge) */
-    '.info div{flex-direction:column;align-items:center;text-align:center}.info div>span{flex:none;align-items:center}.info .ic{margin-top:0}.ct .pnl{text-align:center}.ct .hrs td,.ct .hrs td:last-child{text-align:center}',
-    '.pnl{background:#fff;border:1.5px solid var(--line);border-radius:var(--r);padding:18px 20px;margin-top:18px}.pnl h3{margin:0 0 8px}.pnl p{margin:0;color:var(--mut)}.hrs{width:100%;border-collapse:collapse}.hrs td{padding:10px 4px;border-bottom:1px solid var(--sage2);color:var(--mut)}.hrs tr:last-child td{border:0}.hrs td:last-child{text-align:end;color:var(--navy);font-weight:700}',
-    '.two{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px;align-items:stretch}.two .pnl{margin:0}',
-    '.emp{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px;margin-top:14px}.big{display:block;background:#fff;border:1.5px solid var(--line);border-radius:18px;padding:24px}.big:hover{border-color:var(--gold)}.big .ic{width:2.6em;height:2.6em;padding:.6em;border-radius:14px;background:var(--navy);color:var(--gold);margin-bottom:10px}.big h3{margin:0 0 4px;font-size:1.3rem}.big p{margin:0 0 10px;color:var(--mut)}.big span{color:var(--blue);font-weight:800}',
-    /* staff portal */
-    '.box{max-width:440px;margin:36px auto;background:#fff;border:1.5px solid var(--line);border-top:6px solid var(--navy);border-radius:20px;padding:28px;box-shadow:0 18px 40px -26px rgba(14,31,57,.6)}.box .lg{display:grid;place-items:center;margin-bottom:10px}.box .lg img{height:46px;width:auto}.box h1{margin:0 0 4px;font-size:1.6rem;text-align:center}.box p.s{margin:0 0 16px;color:var(--mut);text-align:center}',
-    '.box label{display:block;font-weight:700;margin:12px 0 4px}.box input{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--cream);color:var(--navy);font-family:inherit;font-size:1rem;direction:ltr;text-align:left}.box input:focus{outline:3px solid rgba(252,173,15,.6);border-color:var(--gold)}.box .btn{width:100%;margin-top:18px;cursor:pointer}',
-    /* password generator: admin panel messages */
-    '.msg{border-inline-start:4px solid var(--gold);padding:8px 12px;margin:0 0 10px;background:var(--cream);border-radius:0 10px 10px 0;color:var(--mut)}.msg b{color:var(--navy)}.msg:last-child{margin-bottom:0}.pnl h3 .ic{color:var(--lgold)}',
-    '.err{margin:12px 0 0;padding:9px 12px;border-radius:10px;background:#FDECEC;border:1px solid #F3B4B4;color:#B42318;font-weight:700}',
-    /* new staff guide */
-    '.guide{max-width:780px;margin:0 auto}.guide h2{font-size:1.4rem}.wel{display:flex;gap:12px;align-items:center;background:var(--navy);color:#fff;border-radius:var(--r);padding:14px 18px;margin-bottom:12px}.wel b{color:#fff}.wel .note{color:#D7E0EE}.wel .ic{width:2.4em;height:2.4em;color:var(--gold)}',
-    '.cred{background:#fff;border:2px dashed var(--gold);border-radius:var(--r);padding:6px 18px;margin:14px 0}.cred div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--sage2)}.cred div:last-child{border:0}.cred code{font-family:ui-monospace,Consolas,monospace;direction:ltr;background:var(--navy);padding:2px 12px;border-radius:8px;color:var(--gold);font-size:1.05rem}',
-    '.guide ol,.guide ul{color:var(--mut);padding-inline-start:22px}.guide li{margin-bottom:6px}.guide li::marker{color:var(--lgold);font-weight:800}.note{color:var(--mut);font-size:.95rem}.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:8px 0 18px}.nums div{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:10px 14px}.nums b{display:block;color:var(--navy);font-size:1.2rem}.nums span{color:var(--mut);font-size:.92rem}',
-    /* staff panel */
-    '.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}.bar h2::before{display:none}.chp{background:var(--navy);color:#fff;border-radius:99px;padding:3px 14px;font-weight:700}.out{color:var(--blue);font-weight:700}.warn{background:#FFF4DB;border:1.5px solid var(--gold);color:#7A4B00;border-radius:12px;padding:10px 14px;margin-bottom:16px;font-weight:700}',
-    '.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}.kp div{background:var(--navy);border-radius:var(--r);padding:12px 16px}.kp b{display:block;font-size:1.6rem;color:var(--gold)}.kp span{color:#D7E0EE;font-size:.92rem}',
-    '.emp .big .btn{display:inline-block;margin-top:12px;padding:10px 22px;border-radius:999px;background:var(--gold);color:var(--navy);font-weight:800}.emp .big:hover .btn{filter:brightness(1.05)}' +
-    '.tb{width:100%;border-collapse:separate;border-spacing:0;background:#fff;border:1.5px solid var(--line);border-radius:14px;overflow:hidden;font-variant-numeric:tabular-nums}.tb th,.tb td{padding:11px 14px;text-align:start;border-bottom:1px solid var(--sage2)}.tb tr:last-child td{border-bottom:0}.tb th{background:var(--navy);color:#fff;font-size:.95rem}.tb td:first-child{min-width:6em;font-weight:700}.tb td:nth-child(n+2),.tb th:nth-child(n+2){text-align:center}.tb td.pf{color:#3F6B12;font-weight:800}.tb tbody tr:nth-child(even){background:var(--cream)}',
-    '.rem{margin:16px 0 0;padding:12px 18px;background:#fff;border:1.5px solid var(--line);border-radius:14px;color:var(--mut)}.rem b{color:var(--navy)}.rem ul{margin:6px 0 0;padding-inline-start:20px}',
-    /* footer: navy, the logo on a white plate (brand guideline) */
-    '.ft{background:var(--navy);margin-top:34px;color:#D7E0EE;border-top:4px solid var(--gold)}.ft .cols{display:grid;grid-template-columns:1.5fr 1fr 1.4fr;gap:30px;align-items:start;padding-top:28px;padding-bottom:16px}.ft .cols>div{display:flex;flex-direction:column;gap:7px;font-size:.93rem}',
-    '.ft .logo{background:#fff;border-radius:12px;padding:8px 12px;align-self:flex-start}.ft .logo img{height:40px}.ft h4{margin:0 0 4px;color:var(--gold);font-size:1.05rem}.ft a,.ft span{color:#D7E0EE}.ft a:hover{color:#fff;text-decoration:underline}.ft span{display:flex;align-items:center;gap:8px}.ft span .ic{color:var(--gold)}.ft p{margin:4px 0 0}.ft .sub{border-top:1px solid rgba(255,255,255,.15);padding-top:12px;padding-bottom:16px;font-size:.88rem}',
-    /* pictures */
-    '.pic{border-radius:var(--r);overflow:hidden;border:1.5px solid var(--line);background:#fff;display:flex}.scene{display:block;width:100%;height:100%}.story{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center}.story .txt{max-width:none}.story .pic{aspect-ratio:400/260}',
-    '@media(max-width:900px){.story,.two{grid-template-columns:1fr}nav a{padding:6px 10px;font-size:.95rem}}@media(max-width:560px){.info{grid-template-columns:1fr}.tb th,.tb td{padding:9px 6px;font-size:.88rem}.kp{grid-template-columns:1fr 1fr}}',
-    '@media(max-width:700px){.hero h1{font-size:1.9rem}.ft .cols{grid-template-columns:1fr}.hero .heroart{display:none}.hd .w{justify-content:flex-start;gap:6px}.logo{justify-content:flex-start}nav{width:100%;justify-content:space-between;gap:2px}nav a{padding:6px 7px;font-size:.88rem;white-space:nowrap}}',
-    '@media(max-width:700px){.hero::before,.hero::after{width:46px;height:46px;border-width:10px}.hero::before{top:-20px;left:-16px}.hero::after{bottom:-22px;right:16px}.hero .w{padding:34px 20px 52px}}',     /* narrow: smaller chevrons in the corners, clear of the title and the buttons (Moaz 2026-11-14, every site) */
-    '.info .mgr small{display:block;color:var(--mut);font-size:.8rem;line-height:1.5;margin-top:2px}.info .mgr{grid-column:1/-1}@media(min-width:900px){.info{grid-template-columns:repeat(3,1fr)}}',
-    /* EH2 mini challenge (Moaz 2026-11-24): its own layout, not the games shop's. A green strip, a navy header, a football-pitch hero,
-       square tiles, product cards with a price badge on the picture, a full-width band, side-by-side team cards, a list of contact rows, a light footer. */
-    'body{background:#F6F8F4}.strip{background:#14532D;color:#E6F4EA;font-size:.8rem}.strip .w{justify-content:space-between;padding-top:5px;padding-bottom:5px;flex-wrap:nowrap}.strip span{display:flex;align-items:center;gap:6px;white-space:nowrap}.strip .ic{color:var(--gold)}',
-    '.hd{background:var(--navy);border-bottom:0;box-shadow:none}.hd .w{justify-content:space-between!important}.hd .logo{background:#fff;border-radius:10px;padding:5px 10px}.hd .logo img{height:38px}.hd nav{gap:4px}.hd nav a{color:#fff;border-radius:0;padding:8px 14px;background:none!important;box-shadow:none}.hd nav a:hover{color:var(--gold)}.hd nav a.on{color:var(--gold);background:none;box-shadow:inset 0 -3px 0 var(--gold)}',
-    '.hero{background:#1F7A3A;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 70px,rgba(0,0,0,0) 70px 140px)}.hero::before{width:220px;height:220px;border:3px solid rgba(255,255,255,.25);border-radius:50%;top:50%;left:12%;transform:translateY(-50%)}.hero::after{width:0;height:100%;border:0;border-left:3px solid rgba(255,255,255,.25);border-radius:0;top:0;bottom:auto;right:auto;left:calc(12% + 110px);transform:none}',
-    '.hero .w{padding:54px 20px 44px}.kick{display:inline-block;background:var(--gold);color:var(--navy);font-weight:800;font-size:.8rem;border-radius:6px;padding:2px 12px;margin-bottom:10px}.hero h1 em{color:var(--gold)}.hero p{color:#E6F4EA}.btn{border-radius:10px;box-shadow:none}.btn.o{border-radius:10px}',
-    '.hs{display:flex;gap:26px;margin-top:22px;flex-wrap:wrap}.hs span{display:flex;flex-direction:column;color:#E6F4EA;font-size:.85rem;line-height:1.3}.hs b{font-size:1.6rem;color:#fff;font-family:"CC Digits","Baloo Bhaijaan 2",sans-serif}.hero .heroart{background:rgba(255,255,255,.95);border-radius:50%;padding:22px;width:300px;flex-basis:300px}',
-    '.sec h2::before{content:"";width:8px;height:1.1em;background:var(--green);border-radius:3px;vertical-align:-.15em;margin-inline-end:10px}.sec h2{font-size:1.5rem}',
-    '.cats{grid-template-columns:repeat(4,1fr)}.cat{flex-direction:column;justify-content:center;text-align:center;gap:8px;background:linear-gradient(160deg,#fff,#EEF5EA);border:0;border-bottom:4px solid var(--green);border-radius:12px;padding:20px 12px;min-height:140px}.cat .ic{width:2.8em;height:2.8em;background:#1F7A3A;color:#fff;border-radius:50%}',
-    '.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));justify-content:stretch;gap:16px}.grid .pc{flex:none}.pc{border:0;border-radius:12px;box-shadow:0 2px 0 #E2E8DE,0 12px 24px -20px rgba(14,31,57,.5)}',
-    '.phw{position:relative;margin:10px 10px 0;border-radius:10px;overflow:hidden}.phw .art{height:150px}.tag{position:absolute;top:8px;left:8px;background:var(--gold);color:var(--navy);border-radius:8px;padding:0 10px;font-size:.85rem;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.2)}.tag b{font-size:1rem}',
-    '.pb{padding:10px 14px 14px}.pb h3{margin:0 0 2px;font-size:1.05rem}.pb .d{margin:0 0 10px;color:var(--mut);font-size:.85rem;line-height:1.6}.pb .av2{align-self:flex-start;margin-top:auto}',
-    '.band{background:var(--navy);margin:34px 0 6px}.band .feat{max-width:1100px;margin:0 auto;padding:4px 20px;grid-template-columns:repeat(4,1fr);gap:0}.band .feat div{border-radius:0;background:none;padding:18px 16px;border-inline-start:1px solid rgba(255,255,255,.12)}.band .feat div:first-child{border:0}',
-    '.vals div{border:0;border-inline-start:5px solid var(--green);border-radius:10px}.story .pic{border:0;border-radius:12px}',
-    '.team{grid-template-columns:repeat(2,1fr)}.mem{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:16px;row-gap:0;text-align:start;border:0;border-inline-start:5px solid var(--gold);border-radius:12px;padding:14px 18px}.mem .av{grid-row:span 2;margin:0;flex:none;width:72px;height:72px;border:3px solid #1F7A3A}.mem h3{font-size:1.05rem;align-self:end}.mem span{display:block;align-self:start}',
-    '.info{grid-template-columns:1fr!important;gap:0;background:#fff;border-radius:12px;overflow:hidden}.info div{flex-direction:row!important;align-items:center!important;text-align:start!important;border:0;border-bottom:1px solid var(--sage2);border-radius:0;padding:14px 18px}.info div:last-child{border-bottom:0}.info div>span{align-items:flex-start!important;flex:1!important}.info .ic{color:#1F7A3A;width:1.8em;height:1.8em}.info .mgr{background:#FFF7E6}.ct .pnl,.ct .hrs td,.ct .hrs td:last-child{text-align:start!important}.ct .hrs td:last-child{text-align:end!important}',
-    '.pnl{border:0;border-radius:12px}.box{border:0;border-top:6px solid #1F7A3A;border-radius:12px}',
-    '.ft{background:#E7EEE9;color:var(--navy);border-top:6px solid #1F7A3A}.ft a,.ft span,.ft p{color:var(--navy)}.ft h4{color:#1F7A3A}.ft span .ic{color:#1F7A3A}',
-    '@media(max-width:900px){.cats{grid-template-columns:repeat(2,1fr)}.band .feat{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:1fr}.hero::before,.hero::after{display:none}}',
-    '@media(max-width:760px){.hd .w{justify-content:flex-start!important;column-gap:8px!important}.hd .logo{padding:2px 5px}.hd .logo img{height:26px!important}.hd nav{gap:0!important}.hd nav a{padding:5px 4px!important;font-size:.76rem!important}}',
-    '@media(max-width:700px){.strip span+span{display:none}.hero .heroart{display:none}.band .feat{grid-template-columns:1fr}.band .feat div{border-inline-start:0;border-top:1px solid rgba(255,255,255,.12)}}'
+    /* EH2 mini challenge (Moaz 2026-11-24): a clean, professional sports store. White page, dark ink, one green accent, products on a studio grey. */
+    ':root{--ink:#0B1220;--mut:#5B6472;--line:#E6E8EC;--soft:#F4F5F7;--acc:#0F7A3D;--acc2:#E8F3EC;--navy:#0E1F39;--gold:#FCAD0F;--r:12px}',
+    '*{box-sizing:border-box}html{font-size:16px}body{margin:0;font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#fff;color:var(--ink);line-height:1.7;-webkit-font-smoothing:antialiased}',
+    'h1,h2,h3,h4{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;color:var(--ink);line-height:1.3;font-weight:800;margin:0}a{color:inherit;text-decoration:none}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}',
+    '.w{max-width:1180px;margin:0 auto;padding:0 32px;display:flex;align-items:center;justify-content:space-between;gap:24px}',
+    /* strip and header (DESIGN.md section 43: scrolls away, one row) */
+    '.strip{background:var(--navy);color:#E5E9F0;font-size:.8rem;text-align:center;padding:7px 16px;letter-spacing:.01em}',
+    '.hd{position:relative;z-index:5;background:#fff;border-bottom:1px solid var(--line)}.hd .w{min-height:74px;flex-wrap:nowrap}.hd nav{display:flex;gap:6px;flex-wrap:nowrap;white-space:nowrap;min-width:0}',
+    '.logo{display:flex;align-items:center}.logo img{height:40px;width:auto;display:block}',
+    '.hd nav a{padding:8px 14px;font-weight:600;font-size:.95rem;color:#374151;border-radius:8px}.hd nav a:hover{color:var(--ink);background:var(--soft)}.hd nav a.on{color:var(--ink);box-shadow:inset 0 -2px 0 var(--acc);border-radius:0}',
+    '.hd nav a[href="/login"]{border:1px solid var(--line);border-radius:8px;margin-inline-start:10px}.hd nav a[href="/login"].on{box-shadow:none;border-color:var(--ink)}',
+    '@media(max-width:900px){.hd .w{padding:0 18px;gap:12px}.hd nav{gap:0}.hd nav a{padding:6px 9px;font-size:.88rem}.logo img{height:34px}}',
+    '@media(max-width:760px){.hd .w{padding:0 12px;gap:8px}.hd nav a{padding:5px 5px;font-size:.78rem}.hd nav a[href="/login"]{margin-inline-start:4px}.logo img{height:26px}}',
+    'main{min-height:60vh}.sec{max-width:1180px;margin:0 auto;padding:44px 32px}.sec.n{max-width:960px}',
+    '.sh{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:18px}.sec h2{font-size:1.55rem}.sec .lead{margin:6px 0 20px;color:var(--mut)}.lnk{color:var(--acc);font-weight:700;font-size:.95rem;white-space:nowrap}',
+    /* hero */
+    '.hero{background:var(--soft);border-bottom:1px solid var(--line)}.hero .w{padding-top:56px;padding-bottom:56px;align-items:center}.hero .tx{flex:1 1 440px;max-width:540px}',
+    '.kick{display:inline-block;color:var(--acc);font-weight:800;font-size:.85rem;margin-bottom:10px}.hero h1{font-size:2.6rem;line-height:1.25;margin-bottom:14px}.hero p{margin:0 0 26px;color:var(--mut);font-size:1.08rem}',
+    '.cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap}.btn{display:inline-block;padding:12px 28px;border-radius:10px;background:var(--ink);color:#fff;font-weight:700;border:0;font-family:inherit;font-size:1rem;cursor:pointer}.btn:hover{background:#1F2937}',
+    '.feature{flex:0 1 440px;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 24px 48px -32px rgba(11,18,32,.35)}.shot{background:linear-gradient(180deg,#EEF0F3,#E3E6EA);padding:18px 28px}.shot svg{display:block;width:100%;height:auto}',
+    '.fi{display:flex;flex-direction:column;padding:14px 20px 18px}.fi span{color:var(--acc);font-size:.8rem;font-weight:800}.fi b{font-size:1.1rem}.fi em{font-style:normal;font-weight:800;color:var(--ink)}',
+    /* categories */
+    '.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.cat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--soft);border-radius:var(--r);padding:26px 12px;font-weight:700;text-align:center;border:1px solid transparent}.cat:hover{border-color:var(--line);background:#fff}',
+    '.cat .ic{width:2.2em;height:2.2em;color:var(--ink)}.cat small{display:block;color:var(--mut);font-weight:500;font-size:.85rem}',
+    /* products */
+    '.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.pc{display:flex;flex-direction:column;background:#fff}.phw{border-radius:var(--r);overflow:hidden;background:var(--soft)}',
+    '.art{aspect-ratio:4/3;display:grid;place-items:center;background:var(--soft)}.art svg{width:82%;height:auto}',
+    '.pb{display:flex;flex-direction:column;padding:12px 2px 0;flex:1}.pb h3{font-size:1rem;font-weight:700}.pb .d{margin:2px 0 10px;color:var(--mut);font-size:.88rem;line-height:1.6}',
+    '.pr{display:flex;align-items:center;justify-content:space-between;margin-top:auto}.pr b{font-size:1.05rem;font-weight:800}.av2{font-size:.8rem;font-weight:700;color:var(--acc);display:flex;align-items:center;gap:6px}.av2::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc)}',
+    /* features band */
+    '.band{border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:8px 0 0}.feat{max-width:1180px;margin:0 auto;padding:6px 32px;display:grid;grid-template-columns:repeat(4,1fr)}',
+    '.feat div{display:flex;gap:14px;align-items:center;padding:22px 14px}.feat .ic{width:2.4em;height:2.4em;padding:.55em;border-radius:50%;background:var(--acc2);color:var(--acc)}.feat b{display:block;font-size:.95rem}.feat span{color:var(--mut);font-size:.86rem;line-height:1.5}',
+    '.band+.sec{padding-top:44px!important}.txt h2{margin-bottom:10px}.txt p{color:var(--mut);max-width:760px;margin:0 0 12px}.more{color:var(--acc);font-weight:700;white-space:nowrap}',
+    /* about */
+    '.story{display:grid;grid-template-columns:1.1fr 1fr;gap:40px;align-items:center}.story h2{margin-bottom:12px}.pic{border-radius:16px;overflow:hidden;display:flex;aspect-ratio:400/260}.scene{display:block;width:100%;height:100%}',
+    '.facts{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden}.facts div{background:#fff;padding:24px 22px;display:flex;flex-direction:column;gap:2px}.facts b{font-size:1.6rem;font-weight:800;color:var(--ink)}.facts span{color:var(--mut);font-size:.9rem}' +
+    '.vals{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:36px}.vals div{background:var(--soft);border-radius:var(--r);padding:20px}.vals .ic{width:1.8em;height:1.8em;color:var(--acc);margin-bottom:6px}.vals b{display:block;margin-bottom:2px}.vals span{color:var(--mut);font-size:.92rem}',
+    '.team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.mem{border:1px solid var(--line);border-radius:var(--r);padding:22px 16px;text-align:center;background:#fff}.mem .av{width:76px;height:76px;margin:0 auto 12px;border-radius:50%;overflow:hidden}.avp{display:block;width:100%;height:100%}.mem h3{font-size:1rem;font-weight:700}.mem span{display:block;color:var(--mut);font-size:.88rem;margin-top:2px}',
+    /* contact */
+    '.info{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.info div{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}.info .ic{width:1.5em;height:1.5em;color:var(--acc);margin-top:.15em}',
+    '.info div>span{display:flex;flex-direction:column;gap:2px;color:var(--mut);line-height:1.5;min-width:0}.info b{color:var(--ink);font-weight:700}.info bdi{direction:ltr;unicode-bidi:isolate;white-space:nowrap;color:var(--ink)}.info .mgr{grid-column:1/-1;background:var(--acc2);border-color:transparent}.info .mgr small{color:var(--mut);font-size:.85rem}',
+    '.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;align-items:stretch}.pnl{border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;background:#fff}.pnl h3{font-size:1.05rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}.pnl p{margin:0;color:var(--mut)}',
+    '.hrs{width:100%;border-collapse:collapse}.hrs td{padding:10px 0;border-bottom:1px solid var(--line);color:var(--mut)}.hrs tr:last-child td{border:0}.hrs td:last-child{text-align:end;color:var(--ink);font-weight:700}',
+    /* login and the manager panel */
+    '.box{max-width:420px;margin:56px auto;border:1px solid var(--line);border-radius:16px;padding:32px;box-shadow:0 24px 48px -36px rgba(11,18,32,.4)}.box h1{font-size:1.5rem;text-align:center}.box p.s{margin:6px 0 18px;color:var(--mut);text-align:center;font-size:.95rem}',
+    '.box label{display:block;font-weight:700;font-size:.9rem;margin:14px 0 6px}.box input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid #D1D5DB;background:#fff;color:var(--ink);font-family:inherit;font-size:1rem;direction:ltr;text-align:left}.box input:focus{outline:3px solid rgba(15,122,61,.2);border-color:var(--acc)}.box .btn{width:100%;margin-top:20px}',
+    '.err{margin:14px 0 0;padding:10px 12px;border-radius:10px;background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C;font-weight:700;font-size:.92rem}',
+    '.bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}.msg{border-inline-start:3px solid var(--acc);padding:10px 14px;margin:0 0 10px;background:var(--soft);border-radius:0 8px 8px 0;color:var(--mut)}.msg b{color:var(--ink)}.msg:last-child{margin-bottom:0}.pnl h3 .ic{color:var(--acc)}',
+    /* footer */
+    '.ft{background:var(--ink);margin-top:56px;color:#B8C0CC}.ft .cols{display:grid;grid-template-columns:1.6fr 1fr 1.4fr;gap:36px;align-items:start;padding-top:40px;padding-bottom:40px}.ft .cols>div{display:flex;flex-direction:column;gap:8px;font-size:.92rem}',
+    '.ft h4{color:#fff;font-size:1rem;margin-bottom:4px}.ft a,.ft span,.ft p{color:#B8C0CC}.ft a:hover{color:#fff}.ft span{display:flex;align-items:center;gap:8px}.ft span .ic{color:#fff}.ft p{margin:0;max-width:320px}',
+    /* narrow */
+    '@media(max-width:980px){.grid,.cats{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:repeat(2,1fr)}.feat{grid-template-columns:repeat(2,1fr)}.hero .w{flex-wrap:wrap}.story{grid-template-columns:1fr}}',
+    '@media(max-width:700px){.w,.sec{padding-left:18px;padding-right:18px}.hero h1{font-size:1.9rem}.feature{display:none}.info,.two,.vals,.ft .cols{grid-template-columns:1fr}.feat{grid-template-columns:1fr}.grid{gap:14px}}'
   ].join('\n');
 
   var pages = {};
   pages['/home'] = { title: SHOP.name + ' | الرئيسية', html: page('/home',
-    '<section class="hero"><div class="w"><div class="tx"><span class="kick">موسم 2025 / 2026</span><h1>كل ما يحتاجه اللاعب في <em>مكان واحد</em></h1><p>أحذية وكرات وأطقم ومعدات لكل لاعب، من الناشئين إلى المحترفين.</p><a class="btn" href="/products">تصفح المنتجات</a><a class="btn o" href="/about">تعرّف علينا</a><div class="hs"><span><b>+40</b>فريقاً ومدرسة</span><span><b>14</b>يوماً لتبديل المقاس</span><span><b>9</b>منتجات مختارة</span></div></div>' + heroArt + '</div></section>' +
-    '<section class="sec"><h2>تسوّق حسب القسم</h2><p class="lead">اختر القسم الذي يناسبك.</p><div class="cats">' +
+    '<section class="hero"><div class="w"><div class="tx"><span class="kick">الموسم الجديد</span><h1>كل ما يحتاجه اللاعب في مكان واحد</h1><p>أحذية وكرات وأطقم ومعدات أصلية لكل لاعب، من فرق الناشئين إلى الأندية.</p><div class="cta"><a class="btn" href="/products">تسوّق الآن</a><a class="lnk" href="/about">تعرّف علينا ←</a></div></div>' +
+    '<div class="feature"><div class="shot">' + heroShot + '</div><div class="fi"><span>الأكثر طلباً</span><b>حذاء سبيد للملاعب</b><em>349 ر.ق</em></div></div></div></section>' +
+    '<section class="sec"><div class="sh"><h2>تسوّق حسب القسم</h2></div><div class="cats">' +
     '<a class="cat" href="/products">' + I.shoe + '<span>الأحذية<small>حذاءان</small></span></a><a class="cat" href="/products">' + I.ball + '<span>الكرات<small>نوعان</small></span></a><a class="cat" href="/products">' + I.shirt + '<span>الأطقم<small>قطعتان</small></span></a><a class="cat" href="/products">' + I.glove + '<span>المعدات<small>ثلاث قطع</small></span></a></div></section>' +
-    '<section class="sec" style="padding-top:0"><h2>أبرز منتجاتنا</h2><p class="lead">منتجات يختارها فريقنا لك.</p>' + grid([PRODUCTS.boots[0], PRODUCTS.balls[0], PRODUCTS.kit[0]]) + '</section>' +
+    '<section class="sec" style="padding-top:0"><div class="sh"><h2>الأكثر مبيعاً</h2><a class="lnk" href="/products">عرض كل المنتجات ←</a></div>' + grid([PRODUCTS.boots[0], PRODUCTS.balls[0], PRODUCTS.kit[0], PRODUCTS.gear[0]]) + '</section>' +
     '<section class="band"><div class="feat"><div>' + I.shield + '<span><b>تبديل المقاس</b>خلال 14 يوماً</span></div><div>' + I.truck + '<span><b>توصيل سريع</b>إلى باب بيتك</span></div><div>' + I.card + '<span><b>دفع مرن</b>ببطاقة أو عند الاستلام</span></div><div>' + I.ball + '<span><b>طلبات الفرق</b>أطقم كاملة للفرق والمدارس</span></div></div></section>' +
     '<section class="sec txt" style="padding-top:0"><h2>عن المتجر</h2><p>بدأ ' + SHOP.name + ' كمحل صغير لمحبي كرة القدم، وأصبح اليوم وجهة اللاعبين والفرق في المدينة. <a class="more" href="/about">اقرأ قصتنا ←</a></p></section>') };
   pages['/products'] = { title: 'المنتجات | ' + SHOP.name, html: page('/products',
     crumb('المنتجات') + '<section class="sec"><h2>المنتجات</h2><p class="lead">جميع المنتجات متوفرة في المتجر.</p>' +
     grid(PRODUCTS.boots.concat(PRODUCTS.balls, PRODUCTS.kit, PRODUCTS.gear)) + '</section>') };
   pages['/about'] = { title: 'من نحن | ' + SHOP.name, html: page('/about',
-    crumb('من نحن') + '<section class="sec"><div class="story"><div class="txt"><h2>قصتنا</h2><p>بدأ ' + SHOP.name + ' كمحل صغير لمحبي كرة القدم، وكبر ليصبح وجهة اللاعبين والفرق في المدينة. نختار منتجاتنا بعناية، ونساعد كل لاعب في العثور على الحذاء والمقاس المناسب له.</p><p>نؤمن أن كرة القدم للجميع، لذلك نوفر مستلزمات لكل الأعمار، من فرق الناشئين إلى الأندية.</p></div><div class="pic">' + storeArt + '</div></div>' +
+    crumb('من نحن') + '<section class="sec"><div class="story"><div class="txt"><h2>قصتنا</h2><p>بدأ ' + SHOP.name + ' كمحل صغير لمحبي كرة القدم، وكبر ليصبح وجهة اللاعبين والفرق في المدينة. نختار منتجاتنا بعناية، ونساعد كل لاعب في العثور على الحذاء والمقاس المناسب له.</p><p>نؤمن أن كرة القدم للجميع، لذلك نوفر مستلزمات لكل الأعمار، من فرق الناشئين إلى الأندية.</p></div><div class="facts"><div><b>2016</b><span>سنة افتتاح المتجر</span></div><div><b>+40</b><span>فريقاً ومدرسة نجهّزها</span></div><div><b>14 يوماً</b><span>لتبديل المقاس</span></div><div><b>الدوحة</b><span>شارع الملاعب</span></div></div></div>' +
     '<div class="vals"><div>' + I.star + '<b>الجودة</b><span>نجرّب كل حذاء وكرة قبل أن يصل إلى الرف.</span></div><div>' + I.shield + '<b>الأمانة</b><span>ننصحك بالمقاس الصحيح، دون مبالغة.</span></div><div>' + I.heart + '<b>خدمة العملاء</b><span>نساعدك قبل الشراء وبعده.</span></div></div></section>' +
     '<section class="sec" style="padding-top:0"><h2>فريقنا</h2><p class="lead">الأشخاص الذين يقفون خلف المتجر.</p><div class="team">' +
     '<div class="mem"><div class="av">' + avatar('#3b2a1c', '#295AA6', '#e0ac80') + '</div><h3>' + SHOP.owner + '</h3><span>مالك المتجر</span></div>' +
@@ -5421,12 +5409,18 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       { id: 'q2', q: CC.t('q2'), answers: ['زعتر', 'Zaatar'], check: function (v) { var t = low(v).replace(/^(القط|قطه|قطّه|القطة)\s+/, ''); return t === 'زعتر' || ALIAS[t] === 'zaatar'; }, hint: CC.t('q2h') },
       { id: 'q3', q: CC.t('q3'), answers: ['1992'], check: function (v) { return String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).trim() === String(T.born); }, hint: CC.t('q3h') },
       { id: 'q4', q: iso(CC.t('q4')), answers: [EMAIL], check: function (v) { return low(v).replace(/\s+/g, '') === EMAIL; }, hint: CC.t('q4h') },
-      { id: 'q5', q: CC.t('q5'), answers: [SHOP.realPassword], hint: iso(CC.t('q5h')), gate: false },
-      { id: 'q6', q: CC.t('q6'), answers: [SHOP.staffCode], check: function (v) { return low(v) === SHOP.staffCode.toLowerCase(); }, hint: CC.t('q6h'), gate: false }
+      { id: 'q5', q: CC.t('q5'), answers: [SHOP.realPassword], hint: iso(CC.t('q5h')), gate: false, hidden: true },
+      { id: 'q6', q: CC.t('q6'), answers: [SHOP.staffCode], check: function (v) { return low(v) === SHOP.staffCode.toLowerCase(); }, hint: CC.t('q6h'), gate: false, hidden: true }
     ]);
 
     /* all six questions are shown from the start; answering all of them ends the challenge */
-    CC.Q.onAll = function () {};
+    /* the questions come in quiet steps, with no new instruction (Moaz 2026-11-24): 1 to 4 at the start; 5 once 1 to 4 are right and the
+       generator has saved a list; 6 once the student has logged in */
+    function more() {
+      if (CC.Q.done.q1 && CC.Q.done.q2 && CC.Q.done.q3 && CC.Q.done.q4 && st.genCount) CC.Q.reveal('q5');
+      if (st.loggedIn) CC.Q.reveal('q6');
+    }
+    CC.Q.onAll = function () { more(); };
     (function () {
       var items = CC.Q.items, shown = false;
       CC.Q.onFull = function () {
@@ -5472,7 +5466,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       L.add(iso(CC.t('pg_done', { n: fmt(rr.count) })), 'info ar');
       L.add(iso(CC.t('pg_saved', { f: rr.file })), 'info ar');
       L.expl(''); st.busy = false; L.enable(true);
-      st.genCount = rr.count;
+      st.genCount = rr.count; more();
     }
 
     /* ---- barq: the right account stops at the hit (when the list has it); any other account runs the whole list and finds nothing ---- */
@@ -5597,7 +5591,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     });
 
     /* the panel's question needs the login; questions 5 and 6 are already shown in challenge 3 */
-    P.onPost = function () {};
+    P.onPost = function (path, data, res) { if (path === '/login' && res && res.go) { st.loggedIn = true; more(); } };
 
     /* ---- start: the desktop with the browser and the terminal closed (engine, mission.plain); one instruction ---- */
     prompt(); L.enable(true); L.expl('');
