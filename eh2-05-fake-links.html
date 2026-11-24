@@ -5252,7 +5252,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var toOk = function () { var x = fld('.ml-to'); return st.sent || (!!x && x.value.trim().toLowerCase() === SALEH); };
       var suOk = function () { var x = fld('.ml-subj'); return st.sent || (!!x && x.value.trim().length >= 3); };
       var boOk = function () { var x = fld('.ml-body'); return st.sent || (!!x && x.value.toLowerCase().indexOf(BANK.fake) >= 0); };
-      if (!toOk()) { L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return; }
+      if (!toOk()) { L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
+        CC.guide.hide(); if (!st.sent && !(await CC.stepWait(g))) return; }     /* the address is right: «متابعة» before the subject (Moaz 2026-11-24) */
       CC.guide.hide();
       if (!suOk()) { L.task(CC.t('t_subj')); hints.push(fieldHint(fld('.ml-subj'), H_SUBJ)); guideFld('.ml-subj', function () { var x = fld('.ml-subj'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(suOk))) return; }
       CC.guide.hide();
