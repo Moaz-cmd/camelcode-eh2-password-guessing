@@ -4583,39 +4583,39 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* ---------- the look: deep teal, white cards on light grey, gold as a small accent (its own palette, not a real bank's) ---------- */
   var CSS = [
-    ':root{--teal:#0B3A3B;--teal2:#145457;--teal3:#1F6F70;--gold:#D9A441;--bg:#F2F4F5;--card:#fff;--txt:#1B2B2C;--mut:#66787A;--line:#E1E7E8;--soft:#F7F9F9;--pos:#17784F;--neg:#B5402C;--r:12px}',
+    ':root{--teal:#0F2A4A;--teal2:#1A3D66;--teal3:#2C5D94;--gold:#8FB3E6;--bg:#F2F4F8;--card:#fff;--txt:#1B2433;--mut:#667589;--line:#E1E6EE;--soft:#F7F9FC;--pos:#17784F;--neg:#B5402C;--r:12px}',
     '*{box-sizing:border-box}html{font-size:17px}body{margin:0;font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:var(--bg);color:var(--txt);line-height:1.65;-webkit-font-smoothing:antialiased}',
     'h1,h2,h3,h4{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;color:var(--teal);line-height:1.35;margin:0;font-weight:800}',
     'a{color:inherit;text-decoration:none}bdi{unicode-bidi:isolate}.w{max-width:1140px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}small{display:block;color:var(--mut);font-size:.76rem;font-weight:600;line-height:1.4}',
     /* header: white, a thin teal line on top, the active menu item underlined in gold */
     '.hd{position:sticky;top:0;z-index:5;background:#fff;border-top:4px solid var(--teal);border-bottom:1px solid var(--line)}.hd .w{min-height:70px}',
-    '.logo{display:flex;align-items:center;gap:10px}.lg-bar{width:5px;height:38px;border-radius:3px;background:linear-gradient(180deg,var(--gold),#B8862F);flex:none}.logo b{display:block;font-size:1.12rem;color:var(--teal);line-height:1.2;font-weight:800}.logo small{font-weight:600;font-size:.72rem}',
+    '.logo{display:flex;align-items:center;gap:10px}.lg-bar{width:5px;height:38px;border-radius:3px;background:linear-gradient(180deg,var(--gold),#5E8FD1);flex:none}.logo b{display:block;font-size:1.12rem;color:var(--teal);line-height:1.2;font-weight:800}.logo small{font-weight:600;font-size:.72rem}',
     'nav{display:flex;gap:4px;align-self:stretch}nav a{display:flex;align-items:center;gap:7px;padding:0 14px;font-weight:700;color:var(--mut);border-bottom:3px solid transparent;margin-bottom:-1px}nav a:hover{color:var(--teal)}nav a.on{color:var(--teal);border-bottom-color:var(--gold)}nav a.on .ic{color:var(--teal3)}',
     '.who{display:flex;align-items:center;gap:10px}.who .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#fff;font-weight:800;font-size:1rem}.who .hi{font-size:.88rem;font-weight:600;color:var(--mut);white-space:nowrap}.who .hi b{font-size:.95rem;color:var(--teal);font-weight:800}.who .lo{display:flex;align-items:center;gap:5px;font-size:.78rem;font-weight:700;color:var(--mut);border-inline-start:1px solid var(--line);padding-inline-start:12px;margin-inline-start:4px}',
     /* page title */
-    '.ph1{background:var(--teal);color:#fff;background-image:linear-gradient(120deg,rgba(255,255,255,.04) 0 40%,transparent 40%),linear-gradient(90deg,var(--teal),var(--teal2))}.ph1 .w{padding-top:20px;padding-bottom:20px}.ph1 h1{color:#fff;font-size:1.5rem}.ph1 p{margin:2px 0 0;color:#BFD6D5;font-size:.9rem}',
+    '.ph1{background:var(--teal);color:#fff;background-image:linear-gradient(120deg,rgba(255,255,255,.04) 0 40%,transparent 40%),linear-gradient(90deg,var(--teal),var(--teal2))}.ph1 .w{padding-top:20px;padding-bottom:20px}.ph1 h1{color:#fff;font-size:1.5rem}.ph1 p{margin:2px 0 0;color:#BFCCE0;font-size:.9rem}',
     '.sec{max-width:1140px;margin:0 auto;padding:24px}.lay{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;align-items:start}.main{display:flex;flex-direction:column;gap:20px;min-width:0}.side{display:flex;flex-direction:column;gap:20px;min-width:0}',
     /* the account summary card */
-    '.acct{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 2px rgba(11,58,59,.06),0 8px 24px -18px rgba(11,58,59,.35)}',
+    '.acct{background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:0 1px 2px rgba(15,42,74,.06),0 8px 24px -18px rgba(15,42,74,.35)}',
     '.ah{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 22px;background:var(--soft);border-bottom:1px solid var(--line)}.an{display:flex;align-items:center;gap:8px;font-weight:800;color:var(--teal)}.an .ic{color:var(--gold)}.ano{font-size:.85rem;font-weight:600;color:var(--mut)}.ano b{font-family:ui-monospace,Consolas,monospace;color:var(--teal);font-size:1.05rem;letter-spacing:1px;margin-inline-start:6px}',
     '.ab{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;padding:20px 22px 18px}.bv{font-size:2.3rem;font-weight:800;color:var(--teal);letter-spacing:.3px;line-height:1.2;font-variant-numeric:tabular-nums}.bv span{font-size:1rem;color:var(--mut);font-weight:700}.aown{text-align:start;min-width:150px}.aown b{font-size:1.1rem;color:var(--txt)}',
     '.af{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-top:1px solid var(--line)}.af>div{display:flex;align-items:center;gap:11px;padding:14px 22px}.af>div+div{border-inline-start:1px solid var(--line)}.af b{display:block;font-size:.98rem;color:var(--txt);white-space:nowrap}',
-    '.fi{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center}.fi .ic{width:1.1em;height:1.1em}.fi.in{background:#E6F2EC;color:var(--pos)}.fi.outx{background:#F7E9E6;color:var(--neg)}.fi.nb{background:#EEF3F3;color:var(--teal3)}',
+    '.fi{width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center}.fi .ic{width:1.1em;height:1.1em}.fi.in{background:#E6F2EC;color:var(--pos)}.fi.outx{background:#F7E9E6;color:var(--neg)}.fi.nb{background:#EEF2F8;color:var(--teal3)}',
     /* panels and the transactions table */
-    '.pnl{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 2px rgba(11,58,59,.06)}.pt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line)}.pt h2{font-size:1.05rem}.mut{color:var(--mut);font-size:.82rem;font-weight:600}',
-    '.tb{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.tb th{background:var(--soft);color:var(--mut);font-size:.76rem;font-weight:700;text-align:start;padding:9px 20px;border-bottom:1px solid var(--line)}.tb td{padding:12px 20px;border-bottom:1px solid #EEF2F2;font-weight:600;font-size:.94rem}.tb tr:last-child td{border-bottom:0}.tb td.dt{color:var(--mut);font-size:.84rem;white-space:nowrap}.tb th:last-child,.tb td.amt{text-align:end;white-space:nowrap}.amt.pos{color:var(--pos)}.amt.neg{color:var(--txt)}.amt small{display:inline;font-size:.75rem}',
-    '.ds{display:flex;align-items:center}.cat{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;margin-inline-end:11px;background:#EEF3F3;color:var(--teal3);flex:none}.cat .ic{width:1em;height:1em}',
+    '.pnl{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:0 1px 2px rgba(15,42,74,.06)}.pt{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line)}.pt h2{font-size:1.05rem}.mut{color:var(--mut);font-size:.82rem;font-weight:600}',
+    '.tb{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.tb th{background:var(--soft);color:var(--mut);font-size:.76rem;font-weight:700;text-align:start;padding:9px 20px;border-bottom:1px solid var(--line)}.tb td{padding:12px 20px;border-bottom:1px solid #EEF1F6;font-weight:600;font-size:.94rem}.tb tr:last-child td{border-bottom:0}.tb td.dt{color:var(--mut);font-size:.84rem;white-space:nowrap}.tb th:last-child,.tb td.amt{text-align:end;white-space:nowrap}.amt.pos{color:var(--pos)}.amt.neg{color:var(--txt)}.amt small{display:inline;font-size:.75rem}',
+    '.ds{display:flex;align-items:center}.cat{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;margin-inline-end:11px;background:#EEF2F8;color:var(--teal3);flex:none}.cat .ic{width:1em;height:1em}',
     /* the debit card */
-    '.dcard{position:relative;overflow:hidden;aspect-ratio:1.586;border-radius:14px;padding:18px 20px;color:#fff;background:radial-gradient(circle at 88% 12%,rgba(217,164,65,.28),transparent 42%),linear-gradient(140deg,#155254,#0B3A3B 60%,#082A2B);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 14px 28px -18px rgba(8,42,43,.9)}',
-    '.dc-t{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:#CFE0DF;font-size:.9rem}.dc-bank{font-size:.82rem;color:#fff;font-weight:800;letter-spacing:.2px}.chip{width:42px;height:30px;border-radius:6px;background:linear-gradient(135deg,#EFD08A,#BF8F38);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}',
-    '.dc-n{font-family:ui-monospace,Consolas,monospace;font-size:1.1rem;letter-spacing:2px;direction:ltr;text-align:left}.dc-b{display:flex;justify-content:space-between;font-weight:700;font-size:.88rem}.dc-b small{color:#9DBDBB;font-size:.66rem}',
-    '.info ul{list-style:none;margin:0;padding:8px 20px 14px;display:grid}.info li{display:flex;align-items:center;gap:12px;font-weight:700;padding:9px 0;border-bottom:1px solid #EEF2F2}.info li:last-child{border-bottom:0}.info li .ic{width:1.9em;height:1.9em;padding:.42em;border-radius:50%;background:#EEF3F3;color:var(--teal3)}',
-    '.tip{display:flex;gap:12px;align-items:flex-start;background:#FBF6EA;border:1px solid #EEDDB6;border-radius:var(--r);padding:14px 16px;color:#5E4A1E;font-size:.88rem}.tip b{display:block;color:#5E4A1E}.tip .ic{width:1.6em;height:1.6em;color:#B98A2E;margin-top:.1em}',
+    '.dcard{position:relative;overflow:hidden;aspect-ratio:1.586;border-radius:14px;padding:18px 20px;color:#fff;background:radial-gradient(circle at 88% 12%,rgba(143,179,230,.28),transparent 42%),linear-gradient(140deg,#183B62,#0F2A4A 60%,#0A1D34);display:flex;flex-direction:column;justify-content:space-between;box-shadow:0 14px 28px -18px rgba(10,29,52,.9)}',
+    '.dc-t{display:flex;justify-content:space-between;align-items:center;font-weight:700;color:#CFD9E8;font-size:.9rem}.dc-bank{font-size:.82rem;color:#fff;font-weight:800;letter-spacing:.2px}.chip{width:42px;height:30px;border-radius:6px;background:linear-gradient(135deg,#C9DCF7,#6E9BD8);box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}',
+    '.dc-n{font-family:ui-monospace,Consolas,monospace;font-size:1.1rem;letter-spacing:2px;direction:ltr;text-align:left}.dc-b{display:flex;justify-content:space-between;font-weight:700;font-size:.88rem}.dc-b small{color:#9DB0CC;font-size:.66rem}',
+    '.info ul{list-style:none;margin:0;padding:8px 20px 14px;display:grid}.info li{display:flex;align-items:center;gap:12px;font-weight:700;padding:9px 0;border-bottom:1px solid #EEF1F6}.info li:last-child{border-bottom:0}.info li .ic{width:1.9em;height:1.9em;padding:.42em;border-radius:50%;background:#EEF2F8;color:var(--teal3)}',
+    '.tip{display:flex;gap:12px;align-items:flex-start;background:#EFF5FD;border:1px solid #CFE0F5;border-radius:var(--r);padding:14px 16px;color:#1F3F6B;font-size:.88rem}.tip b{display:block;color:#1F3F6B}.tip .ic{width:1.6em;height:1.6em;color:#5A88C9;margin-top:.1em}',
     /* «الحساب غير موجود» */
-    '.msg{max-width:540px;margin:34px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:36px 30px;box-shadow:0 1px 2px rgba(11,58,59,.06),0 12px 30px -22px rgba(11,58,59,.4)}.msg .mi{display:inline-grid;place-items:center;width:76px;height:76px;border-radius:50%;margin-bottom:14px;background:#EEF3F3;color:var(--teal)}.msg .mi .ic{width:2.2em;height:2.2em}.msg h1{font-size:1.45rem;margin-bottom:6px}.msg p{color:var(--mut);margin:0 0 22px}',
+    '.msg{max-width:540px;margin:34px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:36px 30px;box-shadow:0 1px 2px rgba(15,42,74,.06),0 12px 30px -22px rgba(15,42,74,.4)}.msg .mi{display:inline-grid;place-items:center;width:76px;height:76px;border-radius:50%;margin-bottom:14px;background:#EEF2F8;color:var(--teal)}.msg .mi .ic{width:2.2em;height:2.2em}.msg h1{font-size:1.45rem;margin-bottom:6px}.msg p{color:var(--mut);margin:0 0 22px}',
     '.btn{display:inline-block;padding:10px 26px;border-radius:8px;background:var(--teal);color:#fff;font-weight:800}.btn:hover{background:var(--teal2)}',
     /* footer */
-    '.ft{background:#0A2F30;color:#A9C3C2;margin-top:30px}.ft .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start;padding-top:26px;padding-bottom:26px}.ft .cols>div{display:flex;flex-direction:column;gap:7px;font-size:.88rem}.flogo{display:flex;align-items:center;gap:10px}.flogo .lg-bar{height:30px}.flogo b{color:#fff;font-size:1.05rem}.ft p{margin:4px 0 0}',
+    '.ft{background:#0B2038;color:#A9B9CF;margin-top:30px}.ft .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start;padding-top:26px;padding-bottom:26px}.ft .cols>div{display:flex;flex-direction:column;gap:7px;font-size:.88rem}.flogo{display:flex;align-items:center;gap:10px}.flogo .lg-bar{height:30px}.flogo b{color:#fff;font-size:1.05rem}.ft p{margin:4px 0 0}',
     '.ft h4{color:#fff;font-size:.95rem;margin-bottom:4px}.ft a:hover{color:#fff;text-decoration:underline}.ft span{display:flex;align-items:center;gap:8px}.ft span .ic{color:var(--gold)}',
     '@media(max-width:980px){.lay{grid-template-columns:1fr}.side{display:grid;grid-template-columns:1fr 1fr}.side .tip{grid-column:1/-1}}',
     '@media(max-width:700px){.who .lo{display:none}.af{grid-template-columns:1fr}.af>div+div{border-inline-start:0;border-top:1px solid var(--line)}.side{grid-template-columns:1fr}.ft .cols{grid-template-columns:1fr}.bv{font-size:1.9rem}.logo small{display:none}}'
@@ -5769,6 +5769,9 @@ window.CC_MISSION = {"stages":[{"label":"الحساب والعنوان","keys":[
       ['C', '÷', '×', '−', '7', '8', '9', '+', '4', '5', '6', '=', '1', '2', '3', '0', '.'].map(function (k) { return '<button type="button" data-k="' + k + '"' + (k === '=' ? ' class="eq"' : /[÷×−+C]/.test(k) ? ' class="op"' : k === '0' ? ' class="z"' : '') + '>' + k + '</button>'; }).join('') +
       '</div></div>'
   };
+  /* a lab's own apps in the dock (EH2 lab 5: «البريد», 2026-11-24): CC.labApps = [{ id, label, icon: '<svg...>', html, init(win) }], set by lab-logic.js
+     before this file runs; they go right after the browser and the terminal. Other labs set nothing and keep their dock. */
+  (CC.labApps || []).forEach(function (a) { APPS.splice(WEB ? 2 : 1, 0, { id: a.id, label: a.label, lab: a }); IC[a.id] = a.icon; WIN[a.id] = a.html || ''; });
   function lapEl() { return $('#laptop'); }
   /* the desktop inside the laptop changed width (terminal opened or closed): fit its icons again when the slide ends */
   function refitDesk() {
@@ -5867,7 +5870,7 @@ window.CC_MISSION = {"stages":[{"label":"الحساب والعنوان","keys":[
     var t = text != null ? text : CC.labFS && CC.labFS.read(path || '/' + name); $('.cc-ftxt', w).textContent = t == null ? '' : t;
     front(w);
   }
-  setInterval(function () { var l = lapEl(); if (l && WEB) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
+  setInterval(function () { var l = lapEl(); if (l && (WEB || CC.deskFilesOn)) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
   /* ---- the browser app (body.cc-web) ---- */
   function webIc(l) { return dockIc(l, 'web'); }
   function openWeb() {
@@ -5905,6 +5908,7 @@ window.CC_MISSION = {"stages":[{"label":"الحساب والعنوان","keys":[
       $('.cc-win-min', w).onclick = function (e) { e.stopPropagation(); w.classList.add('cc-min'); frontTop(l); };
       w.addEventListener('mousedown', function () { front(w); });
       if (id === 'calc') calc(w);
+      if (a.lab && a.lab.init) setTimeout(function () { a.lab.init(w); }, 0);   /* a lab's own app fills its window (CC.labApps) */
       wins.appendChild(w);
     } else if (w.classList.contains('cc-min')) {
       w.classList.remove('cc-min'); w.classList.remove('cc-back'); void w.offsetWidth; w.classList.add('cc-back');
@@ -5963,7 +5967,7 @@ window.CC_MISSION = {"stages":[{"label":"الحساب والعنوان","keys":[
     setTimeout(function () { l.classList.remove('cc-noanim'); }, 1200);     /* also when the page is in a background tab (no frames drawn) */
     var cs = $('.cs', l); if (cs) cs.setAttribute('data-name', TERM);
     var br = WEB && $('.cc-brw', l);
-    if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
+    if ((br || CC.deskFilesOn) && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* CC.deskFilesOn: a lab that is not a website lab asks for the icons too (EH2 lab 5: account.txt, 2026-11-23) */   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
     if (br) {
       l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* the browser starts closed in every lab, challenges too (Moaz 2026-11-14: never open by default) */
       var strip = $('.br-strip', br);
@@ -5986,7 +5990,7 @@ window.CC_MISSION = {"stages":[{"label":"الحساب والعنوان","keys":[
     var wins = document.createElement('div'); wins.className = 'cc-wins'; scr.appendChild(wins);
     var dock = document.createElement('div'); dock.className = 'cc-dock';
     var apps = cs ? APPS : APPS.filter(function (a) { return a.id !== 'term'; });   /* a laptop with no terminal (a planner website lab) has no terminal app */
-    dock.innerHTML = apps.map(function (a) { return '<button type="button" class="cc-app" data-app="' + a.id + '" aria-label="' + a.label + '">' + IC[a.id] + '<span>' + a.label + '</span>' + (a.id === 'term' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + SPOT_B + '</em></i>' : a.id === 'web' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>افتح المتصفح لتصل إلى موقع المتجر</em></i>' : '') + '</button>'; }).join('');
+    dock.innerHTML = apps.map(function (a) { return '<button type="button" class="cc-app" data-app="' + a.id + '" aria-label="' + a.label + '">' + IC[a.id] + '<span>' + a.label + '</span>' + (a.id === 'term' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + SPOT_B + '</em></i>' : a.id === 'web' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + ((M && M.openBrowserTip) || 'افتح المتصفح لتصل إلى موقع المتجر') + '</em></i>' : '') + '</button>'; }).join('');
     dock.addEventListener('click', function (e) { var b = e.target.closest('.cc-app'); if (b) openWin(b.getAttribute('data-app')); });
     scr.appendChild(dock);
     if (cs) cs.addEventListener('mousedown', function () { front(cs); });
@@ -6605,6 +6609,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
    (it used to switch to the Arabic UI font, and the code chips inside it were smaller). */
 .cs-log .row.bad,.cs-log .errmsg,.cs-err{font-family:var(--f-mono,ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace)!important;font-size:inherit!important}
 .cs-log .row.bad *,.cs-log .errmsg *,.cs-err *{font-family:inherit!important;font-size:inherit!important}
+/* one «ابدأ هنا» at a time (Moaz 2026-11-24, every lab): a closed browser keeps its icon cued until it is opened again; when a step then needs
+   the terminal, the terminal's cue wins and the other icons' tip, ring, pointer and glow step aside until the terminal is open (they come back by themselves) */
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) .cc-tip,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::before,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::after{display:none!important}
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) svg{animation:none!important;transform:none!important;box-shadow:0 .5cqw 1cqw -.4cqw rgba(0,0,0,.5)!important}
 
 /* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
    Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */
@@ -6862,7 +6872,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, faker: 1, clear: 1, help: 1 };   /* faker: EH2 lab 5 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
