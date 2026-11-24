@@ -4452,7 +4452,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 /* Lab EH2-05 (الرسائل والروابط المزيفة): the fictional online bank «البنك الإلكتروني» at bank.example, the same site and look as EH2 lab 4
    (labs/eh2/04-account-pages/site.js: its icons and CSS are copied unchanged). This lab's own parts: a public login page (/login, username and
    password, no code step: Moaz 2026-11-24), the account of the CamelCode store manager «صالح سعيد التميمي» (/home), a transfer page with his
-   beneficiaries (/transfer) and the receipt (/done). The fake copy of /login that the tool faker makes is drawn from the same code on the victim's
+   beneficiaries (/transfer) and the receipt (/done). The fake copy of /login that the tool sinnara makes is drawn from the same code on the victim's
    laptop (CC.bank.loginHtml, CC.bank.css) at bank-urgent-password.example/login, a reserved .example address.
    Everything is static (fixed dates, no counters). Every form works (no dead field). No copyright line and no «secure» badge (DESIGN.md section 39). */
 (function () {
@@ -4870,11 +4870,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 /* Lab EH2-05: الرسائل والروابط المزيفة (13-17), rebuilt 2026-11-24 (Moaz). With the CamelCode security team's permission, the student tests
    whether «صالح سعيد التميمي», the manager of the CamelCode store (the OSINT and password generator labs), notices a fake email.
    1. The browser opens on the bank's login page (bank.example/login, site.js: the EH2 lab 4 bank).
-   2. The tool faker (`faker bank.example/login`, one argument) copies that page and prints the link bank-urgent-password.example/login.
+   2. The tool sinnara (`sinnara bank.example/login`, one argument) copies that page and prints the link bank-urgent-password.example/login.
    3. The email app «البريد» on the hacker's laptop: the student types Saleh's address, a subject and the text himself (faint typing hints),
       pretending to be the bank («حسابك تعرّض للاختراق، غيّر كلمة السر فوراً» + the link), and presses «إرسال».
    4. Saleh's laptop appears beside the hacker's (victim.js): he opens the email, clicks the link, types his username and password into the copy,
-      and gets «حدث خطأ تقني». faker prints the details at once and saves them in account.txt on the Desktop.
+      and gets «حدث خطأ تقني». sinnara prints the details at once and saves them in account.txt on the Desktop.
    5. The student signs in to the real bank with them (no code step) and transfers money to one of Saleh's beneficiaries.
    Protection is taught in «شرح مختصر» only (Moaz 2026-11-24). Everything is fictional; every address is a reserved .example one, or
    camelcode.shop (CamelCode's own name, DESIGN.md section 39). Strings first, then the file system, the mail app, the tool, the flow. */
@@ -4887,7 +4887,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>@#']*[A-Za-z0-9_\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
   }
 
-  var LOGIN = BANK.host + '/login', FAKE = BANK.fake + '/login', EX = 'faker ' + LOGIN;
+  var LOGIN = BANK.host + '/login', FAKE = BANK.fake + '/login', EX = 'sinnara ' + LOGIN;
   var SALEH = 'saleh.altamimi@camelcode.shop', FROM_N = BANK.name, FROM_A = 'security@bank-alerts.example';
   var BEN = BANK.bens.filter(function (b) { return b.id === BANK.target; })[0];
   var H_SUBJ = 'تنبيه عاجل تم اختراق حساب البنك';     /* Moaz 2026-11-24 */
@@ -4911,11 +4911,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     ml_e_subj: 'اكتب موضوع الرسالة.',
     ml_e_body: 'اكتب نص الرسالة أولاً.',
     ml_e_link: 'ضع رابط الصفحة المزيفة ' + FAKE + ' في نص الرسالة، حتى يضغط عليه صالح.',
-    ml_e_tool: 'شغّل أداة faker أولاً، لتصنع الصفحة المزيفة ورابطها.',
+    ml_e_tool: 'شغّل أداة صنّارة أولاً، لتصنع الصفحة المزيفة ورابطها.',
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابتك قبل التحقق',
-    q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة faker؟', q1h: 'انظر إلى السطر Link في نتيجة أداة faker في شاشة الأوامر.',
+    q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر Link في نتيجة أداة صنّارة في شاشة الأوامر.',
     q2: 'ما كلمة السر التي كتبها صالح في الصفحة المزيفة؟', q2h: 'انظر إلى السطر Password في شاشة الأوامر، أو اقرأ الملف account.txt على سطح المكتب.',
     q3: 'كم كان الرصيد المتاح في حساب صالح قبل التحويل؟', q3h: 'انظر إلى «الرصيد المتاح» في صفحة الحساب، أو إلى «الرصيد المتبقي» بعد التحويل وأضف إليه المبلغ الذي حوّلته.',
     q4: 'ما رقم العملية الذي ظهر بعد التحويل؟', q4h: 'انظر إلى «رقم العملية» في صفحة «تم التحويل بنجاح».',
@@ -4923,25 +4923,25 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     tk_fk: 'اسم الأداة', tk_url: 'عنوان صفحة تسجيل الدخول', tk_clear: 'امسح الشاشة',
     /* task lines */
     t_look: 'هذه صفحة **تسجيل الدخول** في **البنك الإلكتروني**. لاحظ عنوانها في الأعلى: `' + LOGIN + '`. سنصنع **نسخة مزيفة** منها تشبهها تماماً للحصول على **معلومات حساب بنك صالح**',     /* Moaz 2026-11-24 */
-    t_faker: 'شغّل **أداة faker** في [[term]] **شاشة الأوامر** لتصنع نسخة مزيفة من صفحة تسجيل الدخول، اكتب الأمر `' + EX + '`',
+    t_sinnara: 'شغّل **أداة صنّارة** في [[term]] **شاشة الأوامر** لتصنع نسخة مزيفة من صفحة تسجيل الدخول، اكتب الأمر `' + EX + '`',
     t_link: 'صنعت الأداة **رابط الصفحة المزيفة** `' + FAKE + '`. لاحظ أنه **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**. الأداة الآن **تنتظر** أن يفتح صالح الرابط.',
     t_mail: 'افتح تطبيق **البريد** في أسفل شاشة الحاسوب، لنكتب **رسالة تصيد احتيالي** إلى **صالح**.',     /* Moaz 2026-11-24 */
     t_to: 'اضغط على خانة **إلى**، واكتب البريد الإلكتروني لصالح: `' + SALEH + '`',
     t_subj: 'اكتب **موضوع** الرسالة في خانة **الموضوع**، مثل: «' + H_SUBJ + '»',
-    t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة faker: `' + FAKE + '`',     /* Moaz 2026-11-24 (a «نسخ الرابط» button follows the link) */
+    t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة صنّارة: `' + FAKE + '`',     /* Moaz 2026-11-24 (a «نسخ الرابط» button follows the link) */
     t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
-    t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة faker** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
+    t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة صنّارة** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي وصلت إلى شاشة الأوامر.',
     t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر المستفيد **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
     t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
     t_done: 'أحسنت! أنهيت التدريب.',
-    e_wait: 'أداة faker تنتظر أن يفتح صالح الرابط...',
+    e_wait: 'أداة صنّارة تنتظر أن يفتح صالح الرابط...',
     /* the tool's own Arabic line (no banner, DESIGN.md section 34) */
-    fk_start: 'أداة faker: تصنع نسخة مزيفة من صفحة تسجيل الدخول، ورابطاً يفتحها',
+    fk_start: 'أداة صنّارة: تصنع نسخة مزيفة من صفحة تسجيل الدخول، ورابطاً يفتحها',
     /* help */
     h_t: 'الأوامر المتاحة:',
-    h_f: 'أداة faker تصنع نسخة مزيفة من صفحة تسجيل الدخول ورابطاً يفتحها، ثم تنتظر وتعرض ما يكتبه الضحية فيها', h_fa: 'الصيغة: faker website/login',
+    h_f: 'أداة صنّارة تصنع نسخة مزيفة من صفحة تسجيل الدخول ورابطاً يفتحها، ثم تنتظر وتعرض ما يكتبه الضحية فيها', h_fa: 'الصيغة: sinnara website/login',
     h_fb: 'حيث نستبدل website/login بعنوان صفحة تسجيل الدخول في الموقع',
     /* wrong commands: one specific message per mistake */
     m_unknown: 'أمر غير معروف. اكتب `help` لعرض قائمة الأوامر.',
@@ -4949,17 +4949,17 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_nf_s: 'لم يتم العثور على `{w}`. هل تقصد `{s}`؟ تأكد من الاسم باستخدام الأمر `display`.',
     m_case: 'لم يتم العثور على `{w}`. أسماء الملفات تتأثر بحالة الأحرف (كبيرة أو صغيرة)، والاسم الصحيح هو `{real}`.',
     m_f_none: 'الأمر غير مكتمل: لم تحدد عنوان صفحة تسجيل الدخول. الصيغة الصحيحة: `' + EX + '`',
-    m_f_extra: 'الأمر فيه كلمات زائدة. أداة faker تأخذ جزءاً واحداً فقط: عنوان صفحة تسجيل الدخول. الصيغة الصحيحة: `' + EX + '`',
-    m_f_opt: 'الخيار `{w}` غير موجود. أداة faker لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `' + EX + '`',
+    m_f_extra: 'الأمر فيه كلمات زائدة. أداة صنّارة تأخذ جزءاً واحداً فقط: عنوان صفحة تسجيل الدخول. الصيغة الصحيحة: `' + EX + '`',
+    m_f_opt: 'الخيار `{w}` غير موجود. أداة صنّارة لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `' + EX + '`',
     m_f_nopage: 'اكتب عنوان **صفحة تسجيل الدخول** كاملاً، مع `/login` بعد اسم الموقع. الصيغة الصحيحة: `' + EX + '`',
     m_f_page: 'الصفحة `{w}` ليست صفحة تسجيل الدخول. صفحة تسجيل الدخول هي `' + LOGIN + '`. الصيغة الصحيحة: `' + EX + '`',
     m_f_site: 'لم يتم العثور على الموقع `{w}`. موقع البنك في هذا التدريب هو `' + BANK.host + '`. الصيغة الصحيحة: `' + EX + '`',
-    m_f_done: 'انتهت التجربة: حفظت أداة faker بيانات صالح في الملف `account.txt` على سطح المكتب. اقرأه باستخدام الأمر `read account.txt`',
+    m_f_done: 'انتهت التجربة: حفظت أداة صنّارة بيانات صالح في الملف `account.txt` على سطح المكتب. اقرأه باستخدام الأمر `read account.txt`',
     /* lesson popups (typed letter by letter, self-paced only) */
     intro_h: 'الرسائل والروابط المزيفة',
     intro: 'في هذا التدريب ستتعلم كيف يصنع الهاكر **صفحة تسجيل دخول مزيفة** تشبه صفحة موقع حقيقي، ثم يرسل رابطها في **رسالة بريد إلكتروني** يتظاهر فيها أنه **البنك**، ليكتب الضحية فيها **اسم المستخدم** و**كلمة السر**.\n\nطلب **فريق الأمن** في أكاديمية كاملكود أن نختبر هل ينتبه **صالح**، مدير **متجر كاملكود**، للرسائل المزيفة، و**صالح وافق** على التجربة. لا نختبر أي شخص **بدون إذنه**.',
-    faker_h: 'أداة faker',
-    faker: 'سنستخدم أداة اسمها `faker`. تأخذ الأداة **عنوان صفحة تسجيل الدخول**، فتصنع منها **نسخة مزيفة** تشبهها تماماً، وتعطينا **رابطاً** يفتح هذه النسخة من أي جهاز.\n\nيتكوّن الأمر من جزأين:\n\n`faker`: اسم الأداة.\n\n`' + LOGIN + '`: عنوان صفحة تسجيل الدخول التي نريد نسخها.',
+    sinnara_h: 'أداة صنّارة',
+    sinnara: 'سنستخدم أداة اسمها `sinnara` (صنّارة). تأخذ الأداة **عنوان صفحة تسجيل الدخول**، فتصنع منها **نسخة مزيفة** تشبهها تماماً، وتعطينا **رابطاً** يفتح هذه النسخة من أي جهاز.\n\nيتكوّن الأمر من جزأين:\n\n`sinnara`: اسم الأداة.\n\n`' + LOGIN + '`: عنوان صفحة تسجيل الدخول التي نريد نسخها.',
     mail_h: 'الرسالة المزيفة',
     mail: 'الآن نكتب رسالة إلى صالح، ونتظاهر فيها أننا **البنك**.\n\nالرسالة المزيفة تحاول أن تجعل الضحية **يخاف** و**يستعجل**، فيضغط على الرابط **دون أن يفكر**: «حسابك تعرّض للاختراق»، «غيّر كلمة السر **فوراً**».\n\nلاحظ خانة **من**: الاسم «البنك الإلكتروني»، لكن العنوان `' + FROM_A + '` **ليس** من موقع البنك.',
     caught_h: 'وصلت البيانات',
@@ -4976,8 +4976,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     w1: 'هنا تبدّل بين «تعلم ذاتي» و«تعلم بإشراف مدرب».', w2: 'هذا حاسوبك (جهاز الهاكر): فيه المتصفح وشاشة الأوامر والبريد.',
     w3: 'هنا الأسئلة. أجب عنها بما تجده في شاشة الأوامر وفي موقع البنك.', w6: 'زر «؟» يساعدك في فهم مكونات الدرس وكيفية التفاعل معها.',
     /* instructor reference panel (condensed from the popups and the steps) */
-    rs_h: 'السيناريو', rs: 'أنت الآن **هاكر أخلاقي** في أكاديمية كاملكود. طلب منك **فريق الأمن** أن تختبر هل ينتبه **صالح**، مدير **متجر كاملكود**، للرسائل المزيفة، و**صالح وافق**. تصنع **نسخة مزيفة** من صفحة تسجيل الدخول في **البنك الإلكتروني** بأداة **faker**، وترسل رابطها إلى صالح في **رسالة** تتظاهر فيها أنك البنك. يكتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فتصل إليك، فتدخل إلى حسابه **وتحوّل** المال.',
-    r1_h: 'أداة faker', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها من أي جهاز، ثم **تنتظر** وتعرض ما يكتبه الضحية.\n- الاستخدام: `' + EX + '`\n   - `faker`: اسم الأداة.\n   - `' + LOGIN + '`: عنوان صفحة تسجيل الدخول.\n- الرابط: `' + FAKE + '` **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**.',
+    rs_h: 'السيناريو', rs: 'أنت الآن **هاكر أخلاقي** في أكاديمية كاملكود. طلب منك **فريق الأمن** أن تختبر هل ينتبه **صالح**، مدير **متجر كاملكود**، للرسائل المزيفة، و**صالح وافق**. تصنع **نسخة مزيفة** من صفحة تسجيل الدخول في **البنك الإلكتروني** بأداة **صنّارة**، وترسل رابطها إلى صالح في **رسالة** تتظاهر فيها أنك البنك. يكتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فتصل إليك، فتدخل إلى حسابه **وتحوّل** المال.',
+    r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** يفتحها من أي جهاز، ثم **تنتظر** وتعرض ما يكتبه الضحية.\n- الاستخدام: `' + EX + '`\n   - `sinnara`: اسم الأداة.\n   - `' + LOGIN + '`: عنوان صفحة تسجيل الدخول.\n- الرابط: `' + FAKE + '` **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**.',
     r2_h: 'الرسالة المزيفة', r2: '- **من:** «البنك الإلكتروني» لكن العنوان `' + FROM_A + '` ليس من موقع البنك.\n- **إلى:** `' + SALEH + '`.\n- النص يخيف الضحية ويجعله **يستعجل**: «تم اختراق حسابك، غيّر كلمة السر **فوراً**»، وفيه **الرابط**.',
     r3_h: 'ماذا حدث عند صالح', r3: '- فتح الرسالة وضغط على **الرابط**، فوصل إلى الصفحة المزيفة.\n- كتب **اسم المستخدم** و**كلمة السر**، فظهرت في **شاشة الأوامر** فوراً وحُفظت في `account.txt` على سطح المكتب.\n- ظهرت له رسالة **خطأ تقني**، فلم ينتبه.',
     r4_h: 'الدخول والتحويل', r4: '- ندخل إلى `' + LOGIN + '` بالبيانات المسروقة.\n- نضغط **التحويل**، ونختار **مستفيداً**، ونكتب **المبلغ**، ثم **تحويل**.',
@@ -4986,7 +4986,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* [LAB] ================= THE FILE SYSTEM ================= */
   CC.fsHome = '/'; CC.fsRootName = 'Desktop';
-  CC.fsSeed = CC.fsD({});                               /* faker writes account.txt on the Desktop when the details arrive */
+  CC.fsSeed = CC.fsD({});                               /* sinnara writes account.txt on the Desktop when the details arrive */
 
   /* [LAB] ================= THE MAIL APP («البريد», a dock app of the hacker's laptop: engine CC.labApps) ================= */
   var MAILIC = '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#2F6FD6"/><rect x="9" y="13" width="30" height="22" rx="4" fill="#fff"/><path d="M10.5 15.5L24 26l13.5-10.5" fill="none" stroke="#2F6FD6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -5065,7 +5065,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }, 300);
 
   /* [LAB] ================= COMMANDS ================= */
-  var CMDS = ['display', 'enter', 'back', 'read', 'create', 'faker', 'clear', 'help'];   /* every command of the terminal lab still works (engine/terminal-basics.js) */
+  var CMDS = ['display', 'enter', 'back', 'read', 'create', 'sinnara', 'clear', 'help'];   /* every command of the terminal lab still works (engine/terminal-basics.js) */
   var LINUX = { ls: 'display', cd: 'enter', cat: 'read', touch: 'create' };
   var digits = function (s) { return String(s).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }); };
 
@@ -5077,7 +5077,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     BANK.reset(); V.reset();
     var st = {
       armed: false, busy: false, q: [], finishing: false, finished: false,
-      tool: 'off',                /* off | wait (faker waits for the victim) | done */
+      tool: 'off',                /* off | wait (sinnara waits for the victim) | done */
       link: false, sent: false, captured: false, logged: false, moved: false,
       ip: '192.0.2.' + (20 + Math.floor(Math.random() * 200)), balBefore: BANK.acc.bal
     };
@@ -5196,8 +5196,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function prompt() { L.setPrompt('', fs.prompt()); }
     var BT = CC.basicTerm({ L: L, P: P, fs: fs, prompt: prompt });
 
-    async function faker(url) {
-      L.clearChips(); if (!(await L.chips([['faker', CC.t('tk_fk')], [LOGIN, CC.t('tk_url')]], g, self ? 1000 : 0))) return false;
+    async function sinnara(url) {
+      L.clearChips(); if (!(await L.chips([['sinnara', CC.t('tk_fk')], [LOGIN, CC.t('tk_url')]], g, self ? 1000 : 0))) return false;
       L.follow();
       L.add(CC.t('fk_start'), 'info ar');
       if (!(await CC.sleep(1000, g))) return false;
@@ -5222,14 +5222,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (c === 'help') {
         var hb = CC.el('div', 'hlp'), ht = CC.el('div', 'hl-t'); ht.textContent = CC.t('h_t'); hb.appendChild(ht);
         var tb = CC.el('div', 'hl-b'), td = CC.el('div', 'hl-d'), tn = CC.el('span', 'hl-c'), tx = CC.el('div', 'hl-x'), tx2 = CC.el('div', 'hl-x');
-        tn.textContent = 'faker'; td.appendChild(tn); td.appendChild(document.createTextNode(iso(CC.t('h_f')))); tb.appendChild(td);
+        tn.textContent = 'sinnara'; td.appendChild(tn); td.appendChild(document.createTextNode(iso(CC.t('h_f')))); tb.appendChild(td);
         tx.textContent = iso(CC.t('h_fa')); tb.appendChild(tx); tx2.textContent = iso(CC.t('h_fb')); tb.appendChild(tx2); hb.appendChild(tb);
         BT.help(hb);
         L.addEl(hb);
         return { info: { cmd: 'help' } };
       }
       if (c === 'clear') { L.clearLog(); return { info: { cmd: 'clear' }, chips: [['clear', CC.t('tk_clear')]] }; }
-      if (c === 'faker') {
+      if (c === 'sinnara') {
         for (i = 0; i < args.length; i++) if (/^-/.test(args[i])) return { err: CC.t('m_f_opt', { w: args[i] }) };
         if (!args.length) return { err: CC.t('m_f_none') };
         if (args.length > 1) return { err: CC.t('m_f_extra') };
@@ -5239,9 +5239,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (host !== BANK.host) return { err: CC.t('m_f_site', { w: host }) };
         if (!pg) return { err: CC.t('m_f_nopage') };
         if (pg !== '/login') return { err: CC.t('m_f_page', { w: u }) };
-        var done = await faker(u);
+        var done = await sinnara(u);
         if (!done) return { err: '' };
-        return { info: { cmd: 'faker' } };
+        return { info: { cmd: 'sinnara' } };
       }
       var bt = BT.run(c, args, viaLinux);
       if (bt) return bt;
@@ -5256,7 +5256,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var r = await run(raw); if (!ok()) return;
       if (r.err) L.err(r.err);
       else if (r.chips) { L.clearChips(); await L.chips(r.chips, g, 0); if (!ok()) return; }
-      if (st.tool === 'wait') { if (r.info) { st.q.push(r.info); CC.fire('cmd'); } return; }   /* faker keeps running until the details arrive: creds() frees the line */
+      if (st.tool === 'wait') { if (r.info) { st.q.push(r.info); CC.fire('cmd'); } return; }   /* sinnara keeps running until the details arrive: creds() frees the line */
       st.busy = false; L.enable(true);
       if (r.info) { st.q.push(r.info); CC.fire('cmd'); }
     });
@@ -5282,13 +5282,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     while (!qs('#laptop.cc-os') || qs('#laptop.cc-web-shut')) { if (!(await CC.sleep(200, g))) return; }
     if (!(await CC.sleep(500, g))) return;
     var bar0 = qs('#br .br-omni'); if (bar0) bar0.classList.add('urlflash');
-    if (P.urlParts) P.urlParts(true);
-    var go0 = await CC.stepWait(g); var b1 = qs('#br .br-omni'); if (b1) b1.classList.remove('urlflash'); if (P.urlParts) P.urlParts(false); if (!go0) return;
+    /* no «اسم الموقع» / «اسم الصفحة» labels in this lab (Moaz 2026-11-24): only the address glows */
+    var go0 = await CC.stepWait(g); var b1 = qs('#br .br-omni'); if (b1) b1.classList.remove('urlflash'); if (!go0) return;
 
-    /* 2. faker */
-    await CC.say('faker'); if (!ok()) return;
+    /* 2. sinnara */
+    await CC.say('sinnara'); if (!ok()) return;
     if (!st.link) {
-      L.task(CC.t('t_faker')); L.ghost(EX); guideCmd();
+      L.task(CC.t('t_sinnara')); L.ghost(EX); guideCmd();
       if (!(await until(function () { return st.link; }))) return;
     }
     CC.guide.hide(); L.ghost(null);
@@ -5367,7 +5367,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"الصفحة المزيفة","keys":["t_look","t_faker","t_link"]},{"label":"الرسالة","keys":["t_mail","t_to","t_subj","t_body","t_send"]},{"label":"الضحية","keys":["t_watch","t_caught"]},{"label":"حساب البنك","keys":["t_login","t_transfer","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"سنصنع **صفحة تسجيل دخول مزيفة** تشبه صفحة **البنك الإلكتروني**، ونرسلها إلى **صالح** مدير **متجر كاملكود**، لنتحكم بحسابه في البنك. افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب لترى صفحة **تسجيل الدخول** في البنك.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة faker**."};
+window.CC_MISSION = {"stages":[{"label":"الصفحة المزيفة","keys":["t_look","t_sinnara","t_link"]},{"label":"الرسالة","keys":["t_mail","t_to","t_subj","t_body","t_send"]},{"label":"الضحية","keys":["t_watch","t_caught"]},{"label":"حساب البنك","keys":["t_login","t_transfer","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"سنصنع **صفحة تسجيل دخول مزيفة** تشبه صفحة **البنك الإلكتروني**، ونرسلها إلى **صالح** مدير **متجر كاملكود**، لنتحكم بحسابه في البنك. افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب لترى صفحة **تسجيل الدخول** في البنك.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**."};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
@@ -7329,7 +7329,7 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, faker: 1, clear: 1, help: 1 };   /* faker: EH2 lab 5 (2026-11-24) */
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, sinnara: 1, clear: 1, help: 1 };   /* sinnara: EH2 lab 5 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
