@@ -4928,17 +4928,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_mail: 'افتح تطبيق **البريد** في أسفل شاشة الحاسوب، لنكتب **رسالة تصيد احتيالي** إلى **صالح**.',     /* Moaz 2026-11-24 */
     t_to: 'اضغط على خانة **إلى**، واكتب البريد الإلكتروني لصالح: `' + SALEH + '`',
     t_subj: 'اكتب **عنوان الإيميل** في خانة **الموضوع**، مثل: «' + H_SUBJ + '»',     /* Moaz 2026-11-24 */
-    t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة صنّارة: `' + FAKE + '`',     /* Moaz 2026-11-24 (a «نسخ الرابط» button follows the link) */
+    t_body: 'اكتب **نص الرسالة** وتظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة صنّارة: `' + FAKE + '`',     /* Moaz 2026-11-24 */
     t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
     t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة صنّارة** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
+    t_ans1: 'أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة** الآن!',     /* Moaz 2026-11-24 */
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي وصلت إلى شاشة الأوامر.',
     t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر المستفيد **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
     t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
     t_done: 'أحسنت! أنهيت التدريب.',
     e_wait: 'أداة صنّارة تنتظر أن يفتح صالح الرابط...',
     /* the tool's own Arabic line (no banner, DESIGN.md section 34) */
-    fk_start: 'أداة صنّارة: تصنع نسخة مزيفة من صفحة تسجيل الدخول، ورابطاً يفتحها',
+    fk_start: 'أداة صنّارة: تصنع نسخة مزيفة من صفحة تسجيل الدخول، ورابطاً للوصول إليها',     /* Moaz 2026-11-24 */
     /* help */
     h_t: 'الأوامر المتاحة:',
     h_f: 'أداة صنّارة تصنع نسخة مزيفة من صفحة تسجيل الدخول ورابطاً يفتحها، ثم تنتظر وتعرض ما يكتبه الضحية فيها', h_fa: 'الصيغة: sinnara website/login',
@@ -5009,28 +5010,40 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     gh.className = 'ml-ghost'; gh.setAttribute('aria-hidden', 'true'); hid.className = 'hid'; gh.appendChild(hid); gh.appendChild(rest);
     if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
     box.appendChild(gh);
+    var area = el.tagName === 'TEXTAREA', lastKey = '';
     function place() {           /* the ghost sits exactly over the field, with the field's own font, padding and direction */
-      var cs = getComputedStyle(el);
-      ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'textAlign', 'direction', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'].forEach(function (k) { gh.style[k] = cs[k]; });
+      var cs = getComputedStyle(el), key = [el.offsetLeft, el.offsetTop, el.offsetWidth, el.offsetHeight, el.clientWidth, cs.fontSize].join(',');
+      if (key === lastKey) return; lastKey = key;
+      ['fontFamily', 'fontSize', 'fontWeight', 'lineHeight', 'letterSpacing', 'wordSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'textAlign', 'direction', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'].forEach(function (k) { gh.style[k] = cs[k]; });
       gh.style.left = el.offsetLeft + 'px'; gh.style.top = el.offsetTop + 'px'; gh.style.width = el.offsetWidth + 'px'; gh.style.height = el.offsetHeight + 'px';
-      gh.style.whiteSpace = el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'pre';
+      gh.style.whiteSpace = area ? 'pre-wrap' : 'pre';
+      gh.style.overflowWrap = area ? 'break-word' : 'normal';
+      /* a textarea's scrollbar takes width from its text: the ghost leaves the same room, so its lines wrap at the same place */
+      var sb = el.offsetWidth - el.clientWidth - (parseFloat(cs.borderLeftWidth) || 0) - (parseFloat(cs.borderRightWidth) || 0);
+      if (sb > 0) { var side = cs.direction === 'rtl' ? 'paddingLeft' : 'paddingRight'; gh.style[side] = ((parseFloat(cs[side]) || 0) + sb) + 'px'; }
     }
     var n = 0, pause = 0;
     function draw() {
-      var v = el.value, shown = text.slice(0, n);
+      var v = el.value;
       if (text.indexOf(v) !== 0) { gh.style.visibility = 'hidden'; return; }      /* a different text: the hint steps aside */
       gh.style.visibility = 'visible';
-      hid.textContent = v; rest.textContent = shown.length > v.length ? shown.slice(v.length) : '';
-      gh.scrollTop = el.scrollTop;
+      /* empty: the hint types itself on a loop. Once the student types (and it still matches), the rest shows whole and still,
+         so nothing flickers or restarts under his letters (Moaz 2026-11-24: "smooth while the student is typing") */
+      var rest = v ? text.slice(v.length) : text.slice(0, n);
+      if (hid.textContent !== v) hid.textContent = v;
+      if (restEl.textContent !== rest) restEl.textContent = rest;
+      gh.scrollTop = el.scrollTop; gh.scrollLeft = el.scrollLeft;
     }
-    place();
+    var restEl = rest;
+    place(); draw();
     var t = setInterval(function () {
       if (!el.isConnected) { clearInterval(t); gh.remove(); return; }
-      if (n < text.length) n++; else if (++pause > 16) { n = 0; pause = 0; }
+      if (!el.value) { if (n < text.length) n++; else if (++pause > 16) { n = 0; pause = 0; } }
+      else { n = text.length; pause = 0; }                                         /* while he types, the loop waits; it starts again from the start if he empties the field */
       place(); draw();
     }, 85);
     el.addEventListener('input', draw); el.addEventListener('scroll', draw);
-    return function () { clearInterval(t); el.removeEventListener('input', draw); gh.remove(); };
+    return function () { clearInterval(t); el.removeEventListener('input', draw); el.removeEventListener('scroll', draw); gh.remove(); };
   }
 
   /* «نسخ الرابط» beside the fake link in the message step (Moaz 2026-11-24): the engine's «نسخ الأمر» look (.fx-copy, engine/touches/os.js);
@@ -5141,7 +5154,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
     MAIL.bind = function (w) {
       var to = w.querySelector('.ml-to'), su = w.querySelector('.ml-subj'), bo = w.querySelector('.ml-body');
-      [to, su, bo].forEach(function (x) { x.addEventListener('keydown', function (e) { e.stopPropagation(); }); x.addEventListener('input', function () { var e = fld('.ml-err'); if (e) e.textContent = ''; }); });
+      [to, su, bo].forEach(function (x) { x.addEventListener('keydown', function (e) { e.stopPropagation(); }); x.addEventListener('input', function () { MAIL.typedAt = Date.now(); var e = fld('.ml-err'); if (e) e.textContent = ''; }); });
       if (st.sent) { to.value = SALEH; su.value = MAIL.subj || ''; bo.value = MAIL.body || ''; sentState(w); return; }
       w.querySelector('.ml-send').onclick = function () {
         if (st.sent) return;
@@ -5209,7 +5222,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (!(await CC.sleep(900, g))) return false;
       L.add('[-] Starting the page...', 'dim');
       if (!(await CC.sleep(1100, g))) return false;
-      L.add('[-] Link : ' + FAKE, 'ok');
+      st.linkRow = L.add('[-] Link : ' + FAKE, 'ok sn-link');
       L.add('', 'txt');
       L.add('[-] Waiting for the victim to open the link...', 'dim');
       L.expl(CC.t('e_wait'));
@@ -5297,7 +5310,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
     CC.guide.hide(); L.ghost(null);
     L.task(CC.t('t_link'));
-    if (!(await CC.stepWait(g))) return;
+    var lr = st.linkRow; if (lr && lr.isConnected) { lr.classList.add('sn-spot'); lr.scrollIntoView({ block: 'nearest' }); }     /* a spotlight on the link line while the step talks about it (Moaz 2026-11-24) */
+    var goL = await CC.stepWait(g); if (lr) lr.classList.remove('sn-spot'); if (!goL) return;
 
     /* 3. the email */
     await CC.say('mail'); if (!ok()) return;
@@ -5313,9 +5327,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       }
       if (!(await CC.sleep(300, g))) return;
       var toOk = function () { var x = fld('.ml-to'); return st.sent || (!!x && x.value.trim().toLowerCase() === SALEH); };
-      var suOk = function () { var x = fld('.ml-subj'); return st.sent || (!!x && x.value.trim().length >= 3); };
-      var boOk = function () { var x = fld('.ml-body'); return st.sent || (!!x && x.value.toLowerCase().indexOf(BANK.fake) >= 0); };
-      if (!toOk()) { copyBtn = { text: SALEH, label: 'نسخ البريد', field: '.ml-to' }; L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
+      /* a field is done only when the student has finished typing in it: the whole suggested text, or he left the field, or 2 s without a key
+         (Moaz 2026-11-24: the subject step used to end after 3 letters, while he was still typing) */
+      var settled = function (x, full) { return x.value.trim() === full || document.activeElement !== x || Date.now() - (MAIL.typedAt || 0) > 2000; };
+      var suOk = function () { var x = fld('.ml-subj'); return st.sent || (!!x && x.value.trim().length >= 3 && settled(x, H_SUBJ)); };
+      var boOk = function () { var x = fld('.ml-body'); return st.sent || (!!x && x.value.toLowerCase().indexOf(BANK.fake) >= 0 && settled(x, H_BODY)); };
+      if (!toOk()) { L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
         copyBtn = null; CC.guide.hide(); if (!st.sent && !(await CC.stepWait(g))) return; }     /* the address is right: «متابعة» before the subject (Moaz 2026-11-24) */
       CC.guide.hide();
       if (!suOk()) { L.task(CC.t('t_subj')); hints.push(fieldHint(fld('.ml-subj'), H_SUBJ)); guideFld('.ml-subj', function () { var x = fld('.ml-subj'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(suOk))) return; }
@@ -5339,6 +5356,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     CC.Q.reveal('q1'); CC.Q.reveal('q2');
     if (!(await CC.stepWait(g))) return;
     await CC.say('caught'); if (!ok()) return;
+    /* answer the two questions that just appeared before going on to the bank (Moaz 2026-11-24) */
+    var two = function () { return !!(CC.Q.done.q1 && CC.Q.done.q2); };
+    if (!two()) { L.task(CC.t('t_ans1')); if (!(await until(two))) return; }
 
     /* 5. sign in to the real bank, then transfer */
     if (!st.logged) {
@@ -5371,7 +5391,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"الصفحة المزيفة","keys":["t_look","t_sinnara","t_link"]},{"label":"الرسالة","keys":["t_mail","t_to","t_subj","t_body","t_send"]},{"label":"الضحية","keys":["t_watch","t_caught"]},{"label":"حساب البنك","keys":["t_login","t_transfer","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"سنصنع **صفحة تسجيل دخول مزيفة** تشبه صفحة **البنك الإلكتروني**، ونرسلها إلى **صالح** مدير **متجر كاملكود**، لنتحكم بحسابه في البنك. افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب لترى صفحة **تسجيل الدخول** في البنك.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**."};
+window.CC_MISSION = {"stages":[{"label":"الصفحة المزيفة","keys":["t_look","t_sinnara","t_link"]},{"label":"الرسالة","keys":["t_mail","t_to","t_subj","t_body","t_send"]},{"label":"الضحية","keys":["t_watch","t_caught","t_ans1"]},{"label":"حساب البنك","keys":["t_login","t_transfer","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"سنصنع **صفحة تسجيل دخول مزيفة** تشبه صفحة **البنك الإلكتروني**، ونرسلها إلى **صالح** مدير **متجر كاملكود**، لنتحكم بحسابه في البنك. افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب لترى صفحة **تسجيل الدخول** في البنك.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**."};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
@@ -7131,6 +7151,10 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 .cc-cur .cc-txt .fx-link:active{transform:translateY(1px)}
 .cc-cur .cc-txt .fx-link.ok{background:#2E9E5B;border-color:#2E9E5B;color:#fff}
 .cc-cur.typing .cc-txt .fx-link{display:none}
+/* the spotlight on sinnara's «Link» line while the step talks about it (Moaz 2026-11-24): a gold frame and glow around the line, pulsing */
+.cs-log .row.sn-spot{position:relative;border-radius:6px;outline:2px solid #FCAD0F;outline-offset:3px;background:rgba(252,173,15,.12);box-shadow:0 0 0 6px rgba(252,173,15,.18),0 0 22px 6px rgba(252,173,15,.35);animation:snspot 1.6s ease-in-out infinite}
+@keyframes snspot{50%{box-shadow:0 0 0 9px rgba(252,173,15,.08),0 0 30px 10px rgba(252,173,15,.5)}}
+@media (prefers-reduced-motion:reduce){.cs-log .row.sn-spot{animation:none}}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
