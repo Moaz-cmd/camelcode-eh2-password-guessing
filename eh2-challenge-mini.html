@@ -5252,7 +5252,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
 })();
 
 /* EH2 mini challenge (Moaz 2026-11-24): OSINT -> password generator -> Barq, in their natural order, on a new website: camelcode.shop as a football gear
-   shop (site.js) and the OSINT websites about its manager «يوسف أحمد العطار» (sites.js). Three instructions, one per phase (DESIGN.md section 34):
+   shop (site.js) and the OSINT websites about its manager «يوسف أحمد العطار» (sites.js). One instruction, «هدفك اليوم», shown at once with all six questions (Moaz 2026-11-24; DESIGN.md section 34 otherwise):
    1. gather his information in the browser (questions 1 to 4: name, pet, birth year, work email);
    2. run `password generator` with what was gathered (nothing is given: a wrong answer makes a list without his password);
    3. run `barq` with that list on camelcode.shop/login, log in, and answer questions 5 and 6.
@@ -5288,10 +5288,8 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     q4: 'ما البريد الإلكتروني لمدير التسويق في العمل؟', q4h: 'ابحث في صفحات **موقع المتجر** نفسه.',
     q5: 'ما كلمة المرور التي وجدتها أداة برق لحساب مدير التسويق؟', q5h: 'شغّل **أداة برق** على **صفحة تسجيل الدخول** مع **بريد مدير التسويق** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة شيئاً، فتأكد من المعلومات التي أدخلتها في المولّد.',
     q6: 'ما كود الخصم الخاص بالموظفين؟', q6h: 'سجّل الدخول إلى حساب مدير التسويق، ثم اقرأ **الرسائل الداخلية** في لوحة التحكم.',
-    /* the three instructions (one per phase; Moaz rewords them) */
-    t_p1: '**التحدي الأول:** هدفك هو **مدير التسويق** في متجر `camelcode.shop`. افتح **المتصفح** [[web]] واجمع عنه **معلومات** من **الإنترنت**، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
-    t_p2: '**التحدي الثاني:** افتح **شاشة الأوامر** [[term]] واستخدم **أداة مولّد كلمات المرور** لتصنع **قائمة كلمات مرور** من المعلومات التي جمعتها عن مدير التسويق. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
-    t_p3: '**التحدي الثالث:** استخدم **أداة برق** مع **القائمة** التي صنعتها لتجد **كلمة مرور** حساب مدير التسويق، ثم **سجّل الدخول** إلى الموقع وأجب عن **الأسئلة الجديدة**.',
+    /* one instruction, shown at once (Moaz 2026-11-24: «هدفك اليوم», not «التحدي الأول والثاني») */
+    t_goal: '**هدفك اليوم:** اختراق حساب **مدير التسويق** في متجر `camelcode.shop`. اجمع عنه **معلومات** من **الإنترنت** باستخدام **المتصفح** [[web]]، ثم استخدم **أداة مولّد كلمات المرور** و**أداة برق** في **شاشة الأوامر** [[term]] لتجد **كلمة مروره**، وسجّل الدخول إلى الموقع وأجب عن **أسئلة التحدي**. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
     t_done: 'أحسنت! أنهيت التحدي المصغّر.',
     e_gen: 'المولّد يبني قائمة كلمات المرور...', e_run: 'أداة برق تجرّب كلمات المرور الآن...',
     /* tokens explained under a command */
@@ -5413,7 +5411,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     var ok = function () { return g === CC.gen; };
     var fs = CC.newFS();
     CC.labFS = fs;                                       /* the desktop shows passwords.txt once it exists */
-    var st = { phase: 1, armed: true, busy: false, gen: null, genCount: 0 };
+    var st = { armed: true, busy: false, gen: null, genCount: 0 };
     CC.free = true; CC.barqUnlocked = false;
     if (CC.site.resetLogin) CC.site.resetLogin();       /* a fresh run never starts already logged in */
 
@@ -5423,12 +5421,12 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       { id: 'q2', q: CC.t('q2'), answers: ['زعتر', 'Zaatar'], check: function (v) { var t = low(v).replace(/^(القط|قطه|قطّه|القطة)\s+/, ''); return t === 'زعتر' || ALIAS[t] === 'zaatar'; }, hint: CC.t('q2h') },
       { id: 'q3', q: CC.t('q3'), answers: ['1992'], check: function (v) { return String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).trim() === String(T.born); }, hint: CC.t('q3h') },
       { id: 'q4', q: iso(CC.t('q4')), answers: [EMAIL], check: function (v) { return low(v).replace(/\s+/g, '') === EMAIL; }, hint: CC.t('q4h') },
-      { id: 'q5', q: CC.t('q5'), answers: [SHOP.realPassword], hint: iso(CC.t('q5h')), gate: false, hidden: true },
-      { id: 'q6', q: CC.t('q6'), answers: [SHOP.staffCode], check: function (v) { return low(v) === SHOP.staffCode.toLowerCase(); }, hint: CC.t('q6h'), gate: false, hidden: true }
+      { id: 'q5', q: CC.t('q5'), answers: [SHOP.realPassword], hint: iso(CC.t('q5h')), gate: false },
+      { id: 'q6', q: CC.t('q6'), answers: [SHOP.staffCode], check: function (v) { return low(v) === SHOP.staffCode.toLowerCase(); }, hint: CC.t('q6h'), gate: false }
     ]);
 
-    /* questions 1 to 4 open challenge 2; all six end the challenge */
-    CC.Q.onAll = function () { if (st.phase === 1) phase2(); };
+    /* all six questions are shown from the start; answering all of them ends the challenge */
+    CC.Q.onAll = function () {};
     (function () {
       var items = CC.Q.items, shown = false;
       CC.Q.onFull = function () {
@@ -5475,7 +5473,6 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       L.add(iso(CC.t('pg_saved', { f: rr.file })), 'info ar');
       L.expl(''); st.busy = false; L.enable(true);
       st.genCount = rr.count;
-      if (st.phase === 2) phase3();
     }
 
     /* ---- barq: the right account stops at the hit (when the list has it); any other account runs the whole list and finds nothing ---- */
@@ -5602,27 +5599,11 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     /* the panel's question needs the login; questions 5 and 6 are already shown in challenge 3 */
     P.onPost = function () {};
 
-    async function phase2() {
-      st.phase = 2;
-      if (!(await CC.sleep(900, g))) return;
-      CC.emit('step', { id: 'phase2' });
-      L.task(CC.t('t_p2')); L.expl('');
-      if (st.genCount) phase3();                         /* the list was already made before questions 1 to 4 were done */
-    }
-    async function phase3() {
-      if (st.phase === 3) return;
-      st.phase = 3;
-      if (!(await CC.sleep(900, g))) return;
-      CC.Q.reveal('q5'); CC.Q.reveal('q6');
-      CC.emit('step', { id: 'phase3' });
-      L.task(CC.t('t_p3')); L.expl('');
-    }
-
     /* ---- start: the desktop with the browser and the terminal closed (engine, mission.plain); one instruction ---- */
     prompt(); L.enable(true); L.expl('');
     P.setSite(CC.site);
     CC.emit('step', { id: 'start' });
-    L.task(CC.t('t_p1'));
+    L.task(CC.t('t_goal'));
   }
 
   CC.start({
@@ -5636,7 +5617,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: جمع المعلومات","keys":["t_p1"]},{"label":"التحدي الثاني: مولّد كلمات المرور","keys":["t_p2"]},{"label":"التحدي الثالث: حساب مدير التسويق","keys":["t_p3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
+window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys":["t_goal"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
