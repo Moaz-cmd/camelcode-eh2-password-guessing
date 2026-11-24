@@ -4480,7 +4480,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var SHOP = CC.shop = {
     name: 'متجر كاملكود لمستلزمات كرة القدم',
     host: 'camelcode.shop',
-    owner: 'خالد ناصر', manager: 'يوسف أحمد العطار', managerFirst: 'يوسف', support: 'فيصل محمد', sales: 'عمر حسن',   /* pending */
+    owner: 'خالد ناصر الحداد', manager: 'يوسف أحمد العطار', managerFirst: 'يوسف', support: 'فيصل محمد الخطيب', sales: 'عمر حسن النجار',   /* full three-part names (Moaz 2026-11-24) */   /* pending */
     email: 'info@camelcode.shop', managerEmail: 'yousef.alattar@camelcode.shop', phone: '+974 0000 0000', address: 'شارع الملاعب، الدوحة'   /* pending */
   };
   /* the account the challenge breaks into is the manager's; his password is his cat's name + his birth year (pending, Moaz 2026-11-24 plan) */
@@ -4595,9 +4595,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '<path d="M30 60h20M66 60h20" stroke="#FCAD0F" stroke-width="5"/>');
   var kitArt = art('#0E1F39', '#1B2F52', '<ellipse cx="60" cy="74" rx="34" ry="3" fill="rgba(0,0,0,.3)"/>' + shirtG(37, 14, 1, '#8A1538', '#fff', '10'));
   var keeperArt = art('#E7EEE9', '#D0DBD3', '<ellipse cx="60" cy="74" rx="34" ry="3" fill="rgba(14,31,57,.18)"/>' + shirtG(37, 14, 1, '#FCAD0F', '#0E1F39', '1'));
-  var shinArt = art('#295AA6', '#0E1F39', '<ellipse cx="60" cy="72" rx="34" ry="3.4" fill="rgba(0,0,0,.3)"/>' +
-    '<path d="M38 14h18c3 0 5 2 5 5v38c0 8-6 13-14 13s-14-5-14-13V19c0-3 2-5 5-5z" fill="#F4F6FA"/><path d="M68 14h18c3 0 5 2 5 5v38c0 8-6 13-14 13s-14-5-14-13V19c0-3 2-5 5-5z" fill="#F4F6FA"/>' +
-    '<path d="M40 30h14M70 30h14" stroke="#FCAD0F" stroke-width="4" stroke-linecap="round"/><path d="M47 40v18M77 40v18" stroke="#295AA6" stroke-width="3" stroke-linecap="round"/>');
+  /* a sports water bottle with a gold cap and a flip straw */
+  var bottleArt = art('#295AA6', '#0E1F39', '<ellipse cx="60" cy="72" rx="26" ry="3.4" fill="rgba(0,0,0,.3)"/><circle cx="60" cy="42" r="30" fill="rgba(252,173,15,.1)"/>' +
+    '<rect x="44" y="24" width="32" height="48" rx="9" fill="#F4F6FA"/><rect x="44" y="40" width="32" height="18" fill="#8DC63F"/><path d="M48 30v36" stroke="rgba(255,255,255,.7)" stroke-width="3" stroke-linecap="round"/>' +
+    '<rect x="48" y="14" width="24" height="12" rx="4" fill="#FCAD0F"/><path d="M60 14V6h8" stroke="#0E1F39" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+    '<path d="M50 62h20" stroke="#0E1F39" stroke-width="2" opacity=".3"/>');
   var bagArt = art('#8DC63F', '#3E8A2E', '<ellipse cx="60" cy="70" rx="44" ry="4" fill="rgba(0,0,0,.25)"/>' +
     '<path d="M42 30c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="#0E1F39" stroke-width="4"/><rect x="16" y="28" width="88" height="40" rx="18" fill="#0E1F39"/>' +
     '<path d="M24 40h72" stroke="#FCAD0F" stroke-width="3" stroke-dasharray="5 4"/><circle cx="34" cy="54" r="7" fill="#fff"/><path d="M34 50.5l3.3 2.4-1.2 3.8h-4.2l-1.2-3.8z" fill="#0E1F39"/>');
@@ -4619,13 +4621,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     ],
     gear: [
       { n: 'قفازات حارس المرمى', d: 'قبضة قوية في كل الأجواء.', p: '119', a: glovesArt },
-      { n: 'واقي الساق', d: 'حماية خفيفة لكل مباراة.', p: '45', a: shinArt },
+      { n: 'زجاجة الماء الرياضية', d: 'تحفظ الماء بارداً طوال التمرين.', p: '35', a: bottleArt },
       { n: 'الحقيبة الرياضية', d: 'مكان للحذاء والكرة والملابس.', p: '99', a: bagArt }
     ]
   };
   function card(it) {
-    return '<article class="pc">' + it.a + '<div class="pb"><h3>' + it.n + '</h3>' +
-      '<div class="pr"><span class="av2">متوفر</span><span><b>' + it.p + '</b> ر.ق</span></div></div></article>';     /* the price keeps «ر.ق» in every lab (Moaz 2026-11-13) */
+    return '<article class="pc"><div class="phw">' + it.a + '<span class="tag"><b>' + it.p + '</b> ر.ق</span></div><div class="pb"><h3>' + it.n + '</h3>' +
+      '<p class="d">' + it.d + '</p><span class="av2">متوفر</span></div></article>';     /* the price keeps «ر.ق» in every lab (Moaz 2026-11-13) */
   }
   function grid(list) { return '<div class="grid">' + list.map(card).join('') + '</div>'; }
 
@@ -4639,7 +4641,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '<div><h4>الصفحات</h4><a href="/home">الرئيسية</a><a href="/products">المنتجات</a><a href="/about">من نحن</a><a href="/contact">تواصل</a><a href="/login">تسجيل الدخول</a></div>' +
     '<div><h4>معلومات المتجر</h4><span>' + I.pin + ' ' + SHOP.address + '</span><span>' + I.clock + ' يومياً من 10 صباحاً إلى 10 مساءً</span><span>' + I.card + ' الدفع ببطاقة أو عند الاستلام</span></div></div>' +
     '</footer>';
-  function page(active, body) { return head(active) + '<main>' + body + '</main>' + FOOT; }
+  var STRIP = '<div class="strip"><div class="w"><span>' + I.truck + ' توصيل مجاني داخل الدوحة للطلبات فوق 200 ر.ق</span><span>' + I.ball + ' أطقم كاملة للفرق والمدارس</span></div></div>';
+  function page(active, body) { return STRIP + head(active) + '<main>' + body + '</main>' + FOOT; }
   function crumb(t) { return ''; }     /* no breadcrumb bar on the website (Moaz 2026-11-13) */
 
   /* CamelCode brand (Brand Book 2025; Moaz 2026-11-12): cream page, navy and gold, sage lines, Montserrat Arabic text, Baloo Bhaijaan 2 titles, Roboto digits.
@@ -4700,16 +4703,37 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '@media(max-width:900px){.story,.two{grid-template-columns:1fr}nav a{padding:6px 10px;font-size:.95rem}}@media(max-width:560px){.info{grid-template-columns:1fr}.tb th,.tb td{padding:9px 6px;font-size:.88rem}.kp{grid-template-columns:1fr 1fr}}',
     '@media(max-width:700px){.hero h1{font-size:1.9rem}.ft .cols{grid-template-columns:1fr}.hero .heroart{display:none}.hd .w{justify-content:flex-start;gap:6px}.logo{justify-content:flex-start}nav{width:100%;justify-content:space-between;gap:2px}nav a{padding:6px 7px;font-size:.88rem;white-space:nowrap}}',
     '@media(max-width:700px){.hero::before,.hero::after{width:46px;height:46px;border-width:10px}.hero::before{top:-20px;left:-16px}.hero::after{bottom:-22px;right:16px}.hero .w{padding:34px 20px 52px}}',     /* narrow: smaller chevrons in the corners, clear of the title and the buttons (Moaz 2026-11-14, every site) */
-    '.info .mgr small{display:block;color:var(--mut);font-size:.8rem;line-height:1.5;margin-top:2px}.info .mgr{grid-column:1/-1}@media(min-width:900px){.info{grid-template-columns:repeat(3,1fr)}}'
+    '.info .mgr small{display:block;color:var(--mut);font-size:.8rem;line-height:1.5;margin-top:2px}.info .mgr{grid-column:1/-1}@media(min-width:900px){.info{grid-template-columns:repeat(3,1fr)}}',
+    /* EH2 mini challenge (Moaz 2026-11-24): its own layout, not the games shop's. A green strip, a navy header, a football-pitch hero,
+       square tiles, product cards with a price badge on the picture, a full-width band, side-by-side team cards, a list of contact rows, a light footer. */
+    'body{background:#F6F8F4}.strip{background:#14532D;color:#E6F4EA;font-size:.8rem}.strip .w{justify-content:space-between;padding-top:5px;padding-bottom:5px;flex-wrap:nowrap}.strip span{display:flex;align-items:center;gap:6px;white-space:nowrap}.strip .ic{color:var(--gold)}',
+    '.hd{background:var(--navy);border-bottom:0;box-shadow:none}.hd .w{justify-content:space-between!important}.hd .logo{background:#fff;border-radius:10px;padding:5px 10px}.hd .logo img{height:38px}.hd nav{gap:4px}.hd nav a{color:#fff;border-radius:0;padding:8px 14px;background:none!important;box-shadow:none}.hd nav a:hover{color:var(--gold)}.hd nav a.on{color:var(--gold);background:none;box-shadow:inset 0 -3px 0 var(--gold)}',
+    '.hero{background:#1F7A3A;background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.06) 0 70px,rgba(0,0,0,0) 70px 140px)}.hero::before{width:220px;height:220px;border:3px solid rgba(255,255,255,.25);border-radius:50%;top:50%;left:12%;transform:translateY(-50%)}.hero::after{width:0;height:100%;border:0;border-left:3px solid rgba(255,255,255,.25);border-radius:0;top:0;bottom:auto;right:auto;left:calc(12% + 110px);transform:none}',
+    '.hero .w{padding:54px 20px 44px}.kick{display:inline-block;background:var(--gold);color:var(--navy);font-weight:800;font-size:.8rem;border-radius:6px;padding:2px 12px;margin-bottom:10px}.hero h1 em{color:var(--gold)}.hero p{color:#E6F4EA}.btn{border-radius:10px;box-shadow:none}.btn.o{border-radius:10px}',
+    '.hs{display:flex;gap:26px;margin-top:22px;flex-wrap:wrap}.hs span{display:flex;flex-direction:column;color:#E6F4EA;font-size:.85rem;line-height:1.3}.hs b{font-size:1.6rem;color:#fff;font-family:"CC Digits","Baloo Bhaijaan 2",sans-serif}.hero .heroart{background:rgba(255,255,255,.95);border-radius:50%;padding:22px;width:300px;flex-basis:300px}',
+    '.sec h2::before{content:"";width:8px;height:1.1em;background:var(--green);border-radius:3px;vertical-align:-.15em;margin-inline-end:10px}.sec h2{font-size:1.5rem}',
+    '.cats{grid-template-columns:repeat(4,1fr)}.cat{flex-direction:column;justify-content:center;text-align:center;gap:8px;background:linear-gradient(160deg,#fff,#EEF5EA);border:0;border-bottom:4px solid var(--green);border-radius:12px;padding:20px 12px;min-height:140px}.cat .ic{width:2.8em;height:2.8em;background:#1F7A3A;color:#fff;border-radius:50%}',
+    '.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));justify-content:stretch;gap:16px}.grid .pc{flex:none}.pc{border:0;border-radius:12px;box-shadow:0 2px 0 #E2E8DE,0 12px 24px -20px rgba(14,31,57,.5)}',
+    '.phw{position:relative;margin:10px 10px 0;border-radius:10px;overflow:hidden}.phw .art{height:150px}.tag{position:absolute;top:8px;left:8px;background:var(--gold);color:var(--navy);border-radius:8px;padding:0 10px;font-size:.85rem;font-weight:700;box-shadow:0 2px 6px rgba(0,0,0,.2)}.tag b{font-size:1rem}',
+    '.pb{padding:10px 14px 14px}.pb h3{margin:0 0 2px;font-size:1.05rem}.pb .d{margin:0 0 10px;color:var(--mut);font-size:.85rem;line-height:1.6}.pb .av2{align-self:flex-start;margin-top:auto}',
+    '.band{background:var(--navy);margin:34px 0 6px}.band .feat{max-width:1100px;margin:0 auto;padding:4px 20px;grid-template-columns:repeat(4,1fr);gap:0}.band .feat div{border-radius:0;background:none;padding:18px 16px;border-inline-start:1px solid rgba(255,255,255,.12)}.band .feat div:first-child{border:0}',
+    '.vals div{border:0;border-inline-start:5px solid var(--green);border-radius:10px}.story .pic{border:0;border-radius:12px}',
+    '.team{grid-template-columns:repeat(2,1fr)}.mem{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:16px;row-gap:0;text-align:start;border:0;border-inline-start:5px solid var(--gold);border-radius:12px;padding:14px 18px}.mem .av{grid-row:span 2;margin:0;flex:none;width:72px;height:72px;border:3px solid #1F7A3A}.mem h3{font-size:1.05rem;align-self:end}.mem span{display:block;align-self:start}',
+    '.info{grid-template-columns:1fr!important;gap:0;background:#fff;border-radius:12px;overflow:hidden}.info div{flex-direction:row!important;align-items:center!important;text-align:start!important;border:0;border-bottom:1px solid var(--sage2);border-radius:0;padding:14px 18px}.info div:last-child{border-bottom:0}.info div>span{align-items:flex-start!important;flex:1!important}.info .ic{color:#1F7A3A;width:1.8em;height:1.8em}.info .mgr{background:#FFF7E6}.ct .pnl,.ct .hrs td,.ct .hrs td:last-child{text-align:start!important}.ct .hrs td:last-child{text-align:end!important}',
+    '.pnl{border:0;border-radius:12px}.box{border:0;border-top:6px solid #1F7A3A;border-radius:12px}',
+    '.ft{background:#E7EEE9;color:var(--navy);border-top:6px solid #1F7A3A}.ft a,.ft span,.ft p{color:var(--navy)}.ft h4{color:#1F7A3A}.ft span .ic{color:#1F7A3A}',
+    '@media(max-width:900px){.cats{grid-template-columns:repeat(2,1fr)}.band .feat{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:1fr}.hero::before,.hero::after{display:none}}',
+    '@media(max-width:760px){.hd .w{justify-content:flex-start!important;column-gap:8px!important}.hd .logo{padding:2px 5px}.hd .logo img{height:26px!important}.hd nav{gap:0!important}.hd nav a{padding:5px 4px!important;font-size:.76rem!important}}',
+    '@media(max-width:700px){.strip span+span{display:none}.hero .heroart{display:none}.band .feat{grid-template-columns:1fr}.band .feat div{border-inline-start:0;border-top:1px solid rgba(255,255,255,.12)}}'
   ].join('\n');
 
   var pages = {};
   pages['/home'] = { title: SHOP.name + ' | الرئيسية', html: page('/home',
-    '<section class="hero"><div class="w"><div class="tx"><h1>كل ما يحتاجه اللاعب في <em>مكان واحد</em></h1><p>أحذية وكرات وأطقم ومعدات لكل لاعب، من الناشئين إلى المحترفين.</p><a class="btn" href="/products">تصفح المنتجات</a><a class="btn o" href="/about">تعرّف علينا</a></div>' + heroArt + '</div></section>' +
+    '<section class="hero"><div class="w"><div class="tx"><span class="kick">موسم 2025 / 2026</span><h1>كل ما يحتاجه اللاعب في <em>مكان واحد</em></h1><p>أحذية وكرات وأطقم ومعدات لكل لاعب، من الناشئين إلى المحترفين.</p><a class="btn" href="/products">تصفح المنتجات</a><a class="btn o" href="/about">تعرّف علينا</a><div class="hs"><span><b>+40</b>فريقاً ومدرسة</span><span><b>14</b>يوماً لتبديل المقاس</span><span><b>9</b>منتجات مختارة</span></div></div>' + heroArt + '</div></section>' +
     '<section class="sec"><h2>تسوّق حسب القسم</h2><p class="lead">اختر القسم الذي يناسبك.</p><div class="cats">' +
     '<a class="cat" href="/products">' + I.shoe + '<span>الأحذية<small>حذاءان</small></span></a><a class="cat" href="/products">' + I.ball + '<span>الكرات<small>نوعان</small></span></a><a class="cat" href="/products">' + I.shirt + '<span>الأطقم<small>قطعتان</small></span></a><a class="cat" href="/products">' + I.glove + '<span>المعدات<small>ثلاث قطع</small></span></a></div></section>' +
     '<section class="sec" style="padding-top:0"><h2>أبرز منتجاتنا</h2><p class="lead">منتجات يختارها فريقنا لك.</p>' + grid([PRODUCTS.boots[0], PRODUCTS.balls[0], PRODUCTS.kit[0]]) + '</section>' +
-    '<section class="sec" style="padding-top:0"><div class="feat"><div>' + I.shield + '<span><b>تبديل المقاس</b>خلال 14 يوماً</span></div><div>' + I.truck + '<span><b>توصيل سريع</b>إلى باب بيتك</span></div><div>' + I.card + '<span><b>دفع مرن</b>ببطاقة أو عند الاستلام</span></div><div>' + I.ball + '<span><b>طلبات الفرق</b>أطقم كاملة للفرق والمدارس</span></div></div></section>' +
+    '<section class="band"><div class="feat"><div>' + I.shield + '<span><b>تبديل المقاس</b>خلال 14 يوماً</span></div><div>' + I.truck + '<span><b>توصيل سريع</b>إلى باب بيتك</span></div><div>' + I.card + '<span><b>دفع مرن</b>ببطاقة أو عند الاستلام</span></div><div>' + I.ball + '<span><b>طلبات الفرق</b>أطقم كاملة للفرق والمدارس</span></div></div></section>' +
     '<section class="sec txt" style="padding-top:0"><h2>عن المتجر</h2><p>بدأ ' + SHOP.name + ' كمحل صغير لمحبي كرة القدم، وأصبح اليوم وجهة اللاعبين والفرق في المدينة. <a class="more" href="/about">اقرأ قصتنا ←</a></p></section>') };
   pages['/products'] = { title: 'المنتجات | ' + SHOP.name, html: page('/products',
     crumb('المنتجات') + '<section class="sec"><h2>المنتجات</h2><p class="lead">جميع المنتجات متوفرة في المتجر.</p>' +
@@ -4719,12 +4743,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '<div class="vals"><div>' + I.star + '<b>الجودة</b><span>نجرّب كل حذاء وكرة قبل أن يصل إلى الرف.</span></div><div>' + I.shield + '<b>الأمانة</b><span>ننصحك بالمقاس الصحيح، دون مبالغة.</span></div><div>' + I.heart + '<b>خدمة العملاء</b><span>نساعدك قبل الشراء وبعده.</span></div></div></section>' +
     '<section class="sec" style="padding-top:0"><h2>فريقنا</h2><p class="lead">الأشخاص الذين يقفون خلف المتجر.</p><div class="team">' +
     '<div class="mem"><div class="av">' + avatar('#3b2a1c', '#295AA6', '#e0ac80') + '</div><h3>' + SHOP.owner + '</h3><span>مالك المتجر</span></div>' +
-    '<div class="mem tgt"><div class="av">' + avatar('#1f1530', '#14b8a6', '#c58c63') + '</div><h3>' + SHOP.manager + '</h3><span>مدير المتجر</span></div>' +
+    '<div class="mem tgt"><div class="av">' + avatar('#1f1530', '#14b8a6', '#c58c63') + '</div><h3>' + SHOP.manager + '</h3><span>مدير التسويق</span></div>' +
     '<div class="mem"><div class="av">' + avatar('#5a3a22', '#91278E', '#e8b890') + '</div><h3>' + SHOP.sales + '</h3><span>مسؤول المبيعات</span></div>' +
     '<div class="mem"><div class="av">' + avatar('#2a1b12', '#3b82f6', '#d49a72') + '</div><h3>' + SHOP.support + '</h3><span>مسؤول طلبات الفرق</span></div></div></section>') };
   pages['/contact'] = { title: 'تواصل | ' + SHOP.name, html: page('/contact',
     crumb('تواصل') + '<section class="sec"><h2>تواصل معنا</h2><p class="lead">يسعدنا سماع رأيك أو الإجابة عن أسئلتك.</p>' +
-    '<div class="info"><div>' + I.mail + '<span><b>البريد الإلكتروني</b><bdi dir="ltr">' + SHOP.email + '</bdi></span></div><div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + SHOP.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + SHOP.address + '</span></div><div class="mgr">' + I.mail + '<span><b>بريد مدير المتجر</b><bdi dir="ltr">' + SHOP.managerEmail + '</bdi><small>للطلبات الخاصة وطلبات الفرق: ' + SHOP.manager + '</small></span></div></div>' +
+    '<div class="info"><div>' + I.mail + '<span><b>البريد الإلكتروني</b><bdi dir="ltr">' + SHOP.email + '</bdi></span></div><div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + SHOP.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + SHOP.address + '</span></div><div class="mgr">' + I.mail + '<span><b>بريد مدير التسويق</b><bdi dir="ltr">' + SHOP.managerEmail + '</bdi><small>للطلبات الخاصة وطلبات الفرق: ' + SHOP.manager + '</small></span></div></div>' +
     '<div class="two ct"><div class="pnl"><h3>أوقات العمل</h3><table class="hrs"><tr><td>من السبت إلى الخميس</td><td>من 10 صباحاً إلى 10 مساءً</td></tr><tr><td>الجمعة</td><td>من 2 ظهراً إلى 10 مساءً</td></tr></table></div>' +
     '<div class="pnl"><h3>كيف تصل إلينا</h3><p>المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة، ويمكنك الدخول من الباب الرئيسي ذي المظلة المخططة، بجانب الملعب الصغير.</p></div></div></section>') };
   /* /login: a public account-login page (Moaz 2026-11-18). A real form, never dead: it answers every attempt. In this OSINT lab there is no
@@ -4739,10 +4763,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
   /* password generator: the manager's control panel, shown in place of the form after a correct login */
   function panelHtml() {
-    return page('/login', '<section class="sec n"><div class="bar"><h2 style="margin:0">لوحة التحكم</h2></div><p class="lead">دخلت كحساب مدير المتجر.</p>' +
+    return page('/login', '<section class="sec n"><div class="bar"><h2 style="margin:0">لوحة التحكم</h2></div><p class="lead">دخلت كحساب مدير التسويق.</p>' +
       '<div class="two">' +
       '<div class="pnl"><h3>' + I.note + ' رسائل داخلية</h3>' +
-        '<div class="msg"><b>المدير:</b> كود خصم الموظفين لهذا الشهر هو <bdi dir="ltr">' + SHOP.staffCode + '</bdi>، استخدموه عند شراء أي منتج من المتجر.</div>' +
+        '<div class="msg"><b>' + SHOP.owner + ':</b> كود خصم الموظفين لهذا الشهر هو <bdi dir="ltr">' + SHOP.staffCode + '</bdi>، استخدموه عند شراء أي منتج من المتجر.</div>' +
         '<div class="msg"><b>' + SHOP.sales + ':</b> شكراً! سأخبر بقية الفريق.</div></div>' +
       '<div class="pnl"><h3>' + I.note + ' طلبات الفرق</h3>' +
         '<div class="msg"><b>نادي الناشئين في الخور:</b> نحتاج 20 طقماً عنابياً و20 كرة تدريب قبل بداية الدوري.</div>' +
@@ -4904,14 +4928,14 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       t: 'د. يوسف العطار | استشاري طب الأسنان', p: 'د. يوسف العطار، استشاري طب الأسنان في عيادة الأسنان بالريان، خبرة أكثر من 25 عاماً. تعرّف على الطبيب وأوقات العيادة.',
       extra: '<div class="rate"><span class="st">★★★★★</span> 4.7 · 98 مراجعة · عيادة أسنان في الريان</div>' },
     { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + T.user, href: T.socialHref, key: 'social',
-      t: 'يوسف العطار ⚽ (@' + T.user + ')', p: '⚽ مدير متجر CamelCode لمستلزمات كرة القدم | 🎂 ' + ltr(T.bday) + ' | 📍 الخور، قطر | 🧤 مدرب فريق الناشئين. 864 متابعاً · 2 منشور. شاهد صور ومنشورات يوسف العطار.',
+      t: 'يوسف العطار ⚽ (@' + T.user + ')', p: '⚽ مدير التسويق في متجر CamelCode لمستلزمات كرة القدم | 🎂 ' + ltr(T.bday) + ' | 📍 الخور، قطر | 🧤 مدرب فريق الناشئين. 864 متابعاً · 2 منشور. شاهد صور ومنشورات يوسف العطار.',
       extra: '<div class="imgs">' + ['cat', 'pitch'].map(function (k) { return thumb(PIC[k]); }).join('') + '</div>' },
     { site: 'شبكة الوظائف', bg: '#0f766e', ico: IC.bag, cite: 'jobs.example › profile › yousef-alattar', href: T.workHref, key: 'work',
-      t: 'يوسف أحمد العطار - مدير متجر في CamelCode', p: 'مدير متجر في CamelCode | مستلزمات كرة القدم | تدريب الناشئين · الخور، قطر · أكثر من 300 جهة اتصال · التعليم: كلية التربية الرياضية.' },
+      t: 'يوسف أحمد العطار - مدير التسويق في CamelCode', p: 'مدير التسويق في CamelCode | مستلزمات كرة القدم | تدريب الناشئين · الخور، قطر · أكثر من 300 جهة اتصال · التعليم: كلية التربية الرياضية.' },
     { site: 'معاني الأسماء', bg: '#15803d', ico: IC.book, cite: 'names.example › names › yousef', href: '//names.example/names/yousef',
       t: 'معنى اسم يوسف وصفات حامل الاسم', p: 'يوسف من أشهر الأسماء في العالم العربي. تعرّف على أصل الاسم وصفات من يحمله وطرق كتابته بالإنجليزية.' },
     { site: 'موقع الأخبار', bg: '#b91c1c', ico: IC.ball, cite: 'news.example › sports › yousef-alattar-coach', href: T.newsHref, key: 'news', date: '18 مارس 2025',
-      t: 'مدرب الناشئين يوسف العطار: كرة القدم مدرسة للحياة', p: 'يدير يوسف العطار متجراً لمستلزمات كرة القدم في الدوحة صباحاً، ويدرّب فريق الناشئين في الخور مساءً. في هذا اللقاء يحكي قصته مع الكرة...',
+      t: 'مدرب الناشئين يوسف العطار: كرة القدم مدرسة للحياة', p: 'يعمل يوسف العطار مديراً للتسويق في متجر لمستلزمات كرة القدم في الدوحة صباحاً، ويدرّب فريق الناشئين في الخور مساءً. في هذا اللقاء يحكي قصته مع الكرة...',
       side: thumb(PIC.pitch) },
     { site: 'الأخبار الرياضية', bg: '#ea580c', ico: IC.ball, cite: 'sports.example › youth › yousef-alattar', href: '//sports.example/youth/yousef-alattar', date: '12 أبريل 2025',
       t: 'اللاعب الشاب يوسف العطار يقود فريق المدرسة للفوز', p: 'سجّل اللاعب يوسف العطار (17 عاماً، مواليد 2008) هدف الفوز في نهائي البطولة المدرسية، ليحصل على جائزة أفضل لاعب في المباراة.' },
@@ -5018,16 +5042,16 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   var socialProfile = '<header class="nav"><div class="nin">' + LOGO_SO + '<span class="nic"><span class="on">' + IC.home + '</span><span>' + IC.grid + '</span><span>' + IC.bell + '</span><span class="me">' + IC.user + '</span></span></div></header>' +
     '<div class="page"><main class="main">' +
     '<section class="prof"><div class="cover">' + COVER + '</div><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>يوسف العطار ⚽</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
-    '<div class="bio"><p>⚽ مدير متجر CamelCode لمستلزمات كرة القدم</p><p>🎂 ' + ltr(T.bday) + '</p><p>📍 الخور، قطر</p><p>🧤 مدرب فريق الناشئين</p><p>🐱 أبو زعتر</p></div>' +
+    '<div class="bio"><p>⚽ مدير التسويق في متجر CamelCode لمستلزمات كرة القدم</p><p>🎂 ' + ltr(T.bday) + '</p><p>📍 الخور، قطر</p><p>🧤 مدرب فريق الناشئين</p><p>🐱 أبو زعتر</p></div>' +
     '<div class="meta"><span>' + IC.pin + 'الخور، قطر</span><span>' + IC.bag + 'CamelCode</span><span>' + IC.cal + 'انضم في مارس 2016</span></div>' +
     '<div class="stats"><span><b>2</b> منشور</span><span><b>864</b> متابعاً</span><span><b>271</b> يتابع</span></div>' +
     '<div class="hls">' + HL.map(function (h) { return '<span class="hlc"><span class="hli">' + h[1] + '</span><small>' + h[0] + '</small></span>'; }).join('') + '</div>' +
     '<nav class="ptabs"><span class="on">' + IC.grid + 'المنشورات</span><span>' + IC.cam + 'الصور</span><span>' + IC.user + 'الإشارات</span></nav></section>' +
-    post('9 سبتمبر 2025', 'قطّي زعتر (Zaatar) نايم على حذاء التدريب كالعادة 😺 #زعتر #قطط', PIC.cat, 187, 'omar_hassan', [comment('omar_hassan', 'زعتر صار نجم المتجر 😂', '#be123c', 4), comment(T.user, 'ما يرضى ينام إلا على الأحذية الجديدة 🐱', '#1B2F52', 3)]) +
-    post('22 فبراير 2025', 'آخر تمرين لفريق الناشئين قبل الدوري ⚽ #الخور #كرة_القدم', PIC.pitch, 241, 'faisal_m', [comment('faisal_m', 'بالتوفيق يا كابتن يوسف 💪', '#0891b2', 2)], 'ملعب الخور') +
+    post('9 سبتمبر 2025', 'قطّي زعتر (Zaatar) نايم على حذاء التدريب كالعادة 😺 #زعتر #قطط', PIC.cat, 187, 'omar_alnajjar', [comment('omar_alnajjar', 'زعتر صار نجم المتجر 😂', '#be123c', 4), comment(T.user, 'ما يرضى ينام إلا على الأحذية الجديدة 🐱', '#1B2F52', 3)]) +
+    post('22 فبراير 2025', 'آخر تمرين لفريق الناشئين قبل الدوري ⚽ #الخور #كرة_القدم', PIC.pitch, 241, 'faisal_alkhatib', [comment('faisal_alkhatib', 'بالتوفيق يا كابتن يوسف 💪', '#0891b2', 2)], 'ملعب الخور') +
     '<p class="end">لا توجد منشورات أخرى</p></main>' +
     '<aside class="side"><div class="box"><h3>قد تعرفهم</h3>' +
-      [['خالد ناصر', 'khaled_nasser', BROTHER, 'مالك متجر CamelCode'], ['عمر حسن', 'omar_hassan', COLLEAGUE, 'يعمل في CamelCode'], ['فيصل محمد', 'faisal_m', K.avatar('#1f1530', '#0891b2', '#e0ac80'), 'متابَع مشترك']].map(function (p) {
+      [['خالد الحداد', 'khaled_alhaddad', BROTHER, 'مالك متجر CamelCode'], ['عمر النجار', 'omar_alnajjar', COLLEAGUE, 'يعمل في CamelCode'], ['فيصل الخطيب', 'faisal_alkhatib', K.avatar('#1f1530', '#0891b2', '#e0ac80'), 'متابَع مشترك']].map(function (p) {
         return '<div class="sug"><span class="av">' + p[2] + '</span><span class="who"><b>' + p[0] + '</b><small dir="ltr">@' + p[1] + '</small><small>' + p[3] + '</small></span></div>';
       }).join('') + '</div>' +
     '<div class="box"><h3>الصور</h3><div class="ph3">' + ['cat', 'pitch'].map(function (k) { return '<span>' + PIC[k] + '</span>'; }).join('') + '</div></div>' +
@@ -5066,21 +5090,21 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   var jobsProfile = '<header class="nav"><div class="nin">' + LOGO_J + '<nav class="nl"><span class="on">' + IC.home + '<small>الرئيسية</small></span><span>' + IC.user + '<small>شبكتي</small></span><span>' + IC.bag + '<small>الوظائف</small></span><span>' + IC.chat + '<small>الرسائل</small></span><span>' + IC.bell + '<small>التنبيهات</small></span></nav></div></header>' +
     '<div class="page"><main class="main">' +
     '<section class="card top"><div class="cover">' + J_COVER + '</div><span class="big">' + FACE + '</span>' +
-      '<div class="tin"><h1>يوسف أحمد العطار <span class="pr">هو</span></h1><p class="hl">مدير متجر في CamelCode | مستلزمات كرة القدم | تدريب الناشئين</p>' +
+      '<div class="tin"><h1>يوسف أحمد العطار <span class="pr">هو</span></h1><p class="hl">مدير التسويق في CamelCode | مستلزمات كرة القدم | تدريب الناشئين</p>' +
       '<p class="loc">الخور، قطر · <b>أكثر من 300</b> جهة اتصال</p><div class="cur"><span class="org s" style="background:#0E1F39">C</span><b>CamelCode</b><span class="org s" style="background:#7c2d12">' + IC.cap + '</span><b>كلية التربية الرياضية</b></div></div></section>' +
-    '<section class="card"><h2>نبذة</h2><p>ألعب كرة القدم منذ صغري، واليوم أساعد اللاعبين في اختيار الحذاء والطقم المناسب، وأدرّب فريق الناشئين في الخور كل مساء.</p></section>' +
+    '<section class="card"><h2>نبذة</h2><p>ألعب كرة القدم منذ صغري، واليوم أقود تسويق متجر لمستلزمات كرة القدم، وأدرّب فريق الناشئين في الخور كل مساء.</p></section>' +
     '<section class="card"><h2>الخبرة</h2>' +
-      exp('C', '#0E1F39', 'مدير المتجر', 'CamelCode · دوام كامل', 'مارس 2020 حتى الآن', 'الدوحة، قطر', 'إدارة متجر مستلزمات كرة القدم وطلبات الفرق والمدارس.') +
+      exp('C', '#0E1F39', 'مدير التسويق', 'CamelCode · دوام كامل', 'مارس 2020 حتى الآن', 'الدوحة، قطر', 'حملات التسويق والعروض، والتعاون مع الفرق والمدارس.') +
       exp(IC.ball, '#15803d', 'مدرب فريق الناشئين', 'نادي الناشئين في الخور · تطوعي', '2018 حتى الآن', 'الخور، قطر', 'تدريب لاعبين من 10 إلى 14 سنة.') +
       exp(IC.bag, '#a16207', 'موظف مبيعات', 'متجر أدوات رياضية في الدوحة', '2014 إلى 2020', 'الدوحة، قطر', '') + '</section>' +
     '<section class="card"><h2>التعليم</h2>' + exp(IC.cap, '#7c2d12', 'كلية التربية الرياضية', 'بكالوريوس التربية الرياضية', '2010 إلى 2014', '', '') + '</section>' +
     '<section class="card"><h2>المهارات</h2><div class="sk"><div><b>تدريب الناشئين</b><span>' + IC.thumb + '27 تأييداً</span></div><div><b>المبيعات</b><span>' + IC.thumb + '18 تأييداً</span></div><div><b>خدمة العملاء</b><span>' + IC.thumb + '22 تأييداً</span></div></div></section>' +
-    '<section class="card"><h2>التوصيات</h2><div class="rec"><span class="av">' + COLLEAGUE + '</span><div><b>عمر حسن</b><small>مسؤول المبيعات في CamelCode</small><blockquote>«يوسف يعرف المقاس المناسب لكل لاعب من أول نظرة، والأطفال يحبون زيارة المتجر بسببه.»</blockquote></div></div></section>' +
+    '<section class="card"><h2>التوصيات</h2><div class="rec"><span class="av">' + COLLEAGUE + '</span><div><b>عمر حسن النجار</b><small>مسؤول المبيعات في CamelCode</small><blockquote>«يوسف يعرف المقاس المناسب لكل لاعب من أول نظرة، والأطفال يحبون زيارة المتجر بسببه.»</blockquote></div></div></section>' +
     '<section class="card"><h2>معلومات التواصل</h2><div class="ct"><span class="ci">' + IC.link + '</span><div><b>الملف الشخصي</b>' + ltr('jobs.example/profile/yousef-alattar') + '</div></div><div class="ct"><span class="ci">' + IC.pin + '</span><div><b>الموقع</b>الخور، قطر</div></div></section>' +
     '</main><aside class="side">' +
     '<section class="card"><h3>اللغات</h3><div class="lng"><b>العربية</b><span>اللغة الأم</span></div><div class="lng"><b>الإنجليزية</b><span>جيد</span></div></section>' +
     '<section class="card"><h3>أشخاص شاهدوا هذا الملف أيضاً</h3>' +
-      [['عمر حسن', 'مسؤول المبيعات في CamelCode', K.avatar('#5a3a22', '#91278E', '#e8b890')], ['خالد ناصر', 'مالك متجر CamelCode', K.avatar('#3b2a1c', '#295AA6', '#e0ac80')], ['فيصل محمد', 'مسؤول طلبات الفرق في CamelCode', K.avatar('#1f1530', '#16a34a', '#c58c63')]].map(function (p) {
+      [['عمر حسن النجار', 'مسؤول المبيعات في CamelCode', K.avatar('#5a3a22', '#91278E', '#e8b890')], ['خالد ناصر الحداد', 'مالك متجر CamelCode', K.avatar('#3b2a1c', '#295AA6', '#e0ac80')], ['فيصل محمد الخطيب', 'مسؤول طلبات الفرق في CamelCode', K.avatar('#1f1530', '#16a34a', '#c58c63')]].map(function (p) {
         return '<div class="pp"><span class="av">' + p[2] + '</span><div><b>' + p[0] + '</b><small>' + p[1] + '</small></div></div>';
       }).join('') + '</section><p class="foot">شبكة الوظائف · الخصوصية · الشروط</p></aside></div>';
   var J_CSS = BASE + 'body{font-family:"CC Digits",system-ui,"Segoe UI",Tahoma,"Montserrat Arabic",sans-serif;background:#f1f5f4;color:#16231f}' +
@@ -5101,7 +5125,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.pp{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #edf3f1}.pp:last-child{border:0}.pp .av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none}.pp small{display:block;color:#5d6f69;font-size:.82rem;line-height:1.4}.foot{color:#8a9a95;font-size:.8rem;text-align:center}' +
     '@media(max-width:860px){.page{grid-template-columns:1fr}.side{display:none}.nl small{display:none}}';
   var jobs = { css: J_CSS, notFound: NF, pages: {} };
-  jobs.pages[T.work.path] = { title: 'يوسف أحمد العطار - مدير متجر في CamelCode | شبكة الوظائف', html: jobsProfile };
+  jobs.pages[T.work.path] = { title: 'يوسف أحمد العطار - مدير التسويق في CamelCode | شبكة الوظائف', html: jobsProfile };
 
   /* =================================================================== news.example: «موقع الأخبار» =================================================================== */
   var LOGO_N = '<span class="brand"><span class="bm">أ</span><span>موقع <b>الأخبار</b></span></span>';
@@ -5110,13 +5134,13 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '<nav class="nv"><div class="w"><span>الرئيسية</span><span>محليات</span><span>اقتصاد</span><span>تكنولوجيا</span><span class="on">رياضة</span><span>ثقافة</span><span>منوعات</span></div></nav>' +
     '<div class="w lay"><article class="art"><p class="crumb">الرئيسية › رياضة › لقاءات</p><span class="cat">لقاء</span>' +
     '<h1>مدرب الناشئين يوسف العطار: كرة القدم مدرسة للحياة</h1>' +
-    '<p class="std">مدير متجر لمستلزمات كرة القدم في الدوحة يدرّب فريق الناشئين في الخور بعد عمله كل يوم</p>' +
+    '<p class="std">مدير التسويق في متجر لمستلزمات كرة القدم في الدوحة يدرّب فريق الناشئين في الخور بعد عمله كل يوم</p>' +
     '<div class="by"><span class="ba">ر</span><div><b>محرر الرياضة</b><small>' + IC.cal + ' 18 مارس 2025 · ' + IC.clock + ' 3 دقائق للقراءة</small></div></div>' +
     '<figure><div class="hero">' + PIC.pitch + '</div><figcaption>' + IC.cam + ' ملعب تدريب فريق الناشئين في الخور</figcaption></figure>' +
-    '<p class="lead">في الصباح يستقبل يوسف أحمد العطار اللاعبين في متجر CamelCode لمستلزمات كرة القدم في الدوحة، وفي المساء تجده في ملعب الخور يدرّب فريق الناشئين.</p>' +
-    '<h2>البداية في الحارة</h2><p>يقول العطار: «كبرت في الخور، وكنا نلعب الكرة في الحارة حتى يغيب الضوء». ودرس التربية الرياضية، ثم عمل في متجر للأدوات الرياضية قبل أن يصبح مديراً لمتجر CamelCode.</p>' +
+    '<p class="lead">في الصباح يعمل يوسف أحمد العطار مديراً للتسويق في متجر CamelCode لمستلزمات كرة القدم في الدوحة، وفي المساء تجده في ملعب الخور يدرّب فريق الناشئين.</p>' +
+    '<h2>البداية في الحارة</h2><p>يقول العطار: «كبرت في الخور، وكنا نلعب الكرة في الحارة حتى يغيب الضوء». ودرس التربية الرياضية، ثم عمل في متجر للأدوات الرياضية قبل أن يصبح مديراً للتسويق في متجر CamelCode.</p>' +
     '<blockquote class="pq">«الملعب يعلّم الطفل أن يحترم زميله قبل أن يفوز»</blockquote>' +
-    '<h2>بين المتجر والملعب</h2><p>يرى العطار أن عمله في المتجر يساعده في التدريب: «أعرف ما يحتاجه كل لاعب، من الحذاء المناسب إلى واقي الساق». ولا يكتمل المتجر عند الزبائن الصغار دون قطّه «زعتر» الذي ينام فوق علب الأحذية.</p>' +
+    '<h2>بين المتجر والملعب</h2><p>يرى العطار أن عمله في المتجر يساعده في التدريب: «أعرف ما يحتاجه كل لاعب، من الحذاء المناسب إلى زجاجة الماء». ولا يكتمل المتجر عند الزبائن الصغار دون قطّه «زعتر» الذي ينام فوق علب الأحذية.</p>' +
     '<h2>الخور بيتي</h2><p>ورغم أن المتجر في الدوحة، ما زال العطار يسكن في الخور، ويقول: «الخور بيتي، وفريقها فريقي».</p>' +
     '<div class="tags"><span>#رياضة</span><span>#الخور</span><span>#الناشئين</span></div></article>' +
     '<aside class="side"><h3>الأكثر قراءة</h3><ol>' +
@@ -5236,16 +5260,16 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
-    q1: 'ما اسم مدير المتجر؟', q1h: 'افتح صفحة «**من نحن**» في موقع المتجر، وابحث في قسم «**فريقنا**».',
-    q2: 'ما اسم الحيوان الأليف لمدير المتجر؟', q2h: 'ابحث عن **اسمه الكامل** في **محرك البحث**، وتأكد أن النتيجة عنه هو (**الصورة** و**الوظيفة**)، ثم اقرأ **منشوراته**.',
-    q3: 'في أي سنة وُلد مدير المتجر؟', q3h: 'انتبه! يوجد **أشخاص آخرون** بالاسم نفسه. اقرأ **وصف حسابه** هو في منصة التواصل الاجتماعي.',
-    q4: 'ما البريد الإلكتروني لمدير المتجر في العمل؟', q4h: 'ابحث في صفحات **موقع المتجر** نفسه.',
-    q5: 'ما كلمة المرور التي وجدتها أداة برق لحساب المدير؟', q5h: 'شغّل **أداة برق** على **صفحة تسجيل الدخول** مع **بريد المدير** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة شيئاً، فتأكد من المعلومات التي أدخلتها في المولّد.',
-    q6: 'ما كود الخصم الخاص بالموظفين؟', q6h: 'سجّل الدخول إلى حساب المدير، ثم اقرأ **الرسائل الداخلية** في لوحة التحكم.',
+    q1: 'ما اسم مدير التسويق في المتجر؟', q1h: 'افتح صفحة «**من نحن**» في موقع المتجر، وابحث في قسم «**فريقنا**».',
+    q2: 'ما اسم الحيوان الأليف لمدير التسويق؟', q2h: 'ابحث عن **اسمه الكامل** في **محرك البحث**، وتأكد أن النتيجة عنه هو (**الصورة** و**الوظيفة**)، ثم اقرأ **منشوراته**.',
+    q3: 'في أي سنة وُلد مدير التسويق؟', q3h: 'انتبه! يوجد **أشخاص آخرون** بالاسم نفسه. اقرأ **وصف حسابه** هو في منصة التواصل الاجتماعي.',
+    q4: 'ما البريد الإلكتروني لمدير التسويق في العمل؟', q4h: 'ابحث في صفحات **موقع المتجر** نفسه.',
+    q5: 'ما كلمة المرور التي وجدتها أداة برق لحساب مدير التسويق؟', q5h: 'شغّل **أداة برق** على **صفحة تسجيل الدخول** مع **بريد مدير التسويق** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة شيئاً، فتأكد من المعلومات التي أدخلتها في المولّد.',
+    q6: 'ما كود الخصم الخاص بالموظفين؟', q6h: 'سجّل الدخول إلى حساب مدير التسويق، ثم اقرأ **الرسائل الداخلية** في لوحة التحكم.',
     /* the three instructions (one per phase; Moaz rewords them) */
-    t_p1: '**التحدي الأول:** هدفك هو **مدير متجر** `camelcode.shop`. افتح **المتصفح** [[web]] واجمع عنه **معلومات** من **الإنترنت**، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
-    t_p2: '**التحدي الثاني:** افتح **شاشة الأوامر** [[term]] واستخدم **أداة مولّد كلمات المرور** لتصنع **قائمة كلمات مرور** من المعلومات التي جمعتها عن المدير. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
-    t_p3: '**التحدي الثالث:** استخدم **أداة برق** مع **القائمة** التي صنعتها لتجد **كلمة مرور** حساب المدير، ثم **سجّل الدخول** إلى الموقع وأجب عن **الأسئلة الجديدة**.',
+    t_p1: '**التحدي الأول:** هدفك هو **مدير التسويق** في متجر `camelcode.shop`. افتح **المتصفح** [[web]] واجمع عنه **معلومات** من **الإنترنت**، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
+    t_p2: '**التحدي الثاني:** افتح **شاشة الأوامر** [[term]] واستخدم **أداة مولّد كلمات المرور** لتصنع **قائمة كلمات مرور** من المعلومات التي جمعتها عن مدير التسويق. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
+    t_p3: '**التحدي الثالث:** استخدم **أداة برق** مع **القائمة** التي صنعتها لتجد **كلمة مرور** حساب مدير التسويق، ثم **سجّل الدخول** إلى الموقع وأجب عن **الأسئلة الجديدة**.',
     t_done: 'أحسنت! أنهيت التحدي المصغّر.',
     e_gen: 'المولّد يبني قائمة كلمات المرور...', e_run: 'أداة برق تجرّب كلمات المرور الآن...',
     /* tokens explained under a command */
@@ -5590,7 +5614,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: جمع المعلومات","keys":["t_p1"]},{"label":"التحدي الثاني: مولّد كلمات المرور","keys":["t_p2"]},{"label":"التحدي الثالث: حساب المدير","keys":["t_p3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
+window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي الأول: جمع المعلومات","keys":["t_p1"]},{"label":"التحدي الثاني: مولّد كلمات المرور","keys":["t_p2"]},{"label":"التحدي الثالث: حساب مدير التسويق","keys":["t_p3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
