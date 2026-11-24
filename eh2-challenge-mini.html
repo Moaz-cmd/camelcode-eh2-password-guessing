@@ -4993,6 +4993,13 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '@media(max-height:560px){.tb{padding:6px 20px}.lg.xl{font-size:3.2rem}.tag{margin:4px 0 16px}.cen{padding-bottom:24px}.fb{padding:8px 20px}}' +
     '@media(max-height:420px){.tb,.fb{display:none}.hm{min-height:100vh;justify-content:center}.cen{padding:10px 20px}.lg.xl{font-size:2.6rem}}' +   /* the search home always fits the window: nothing to scroll, the scroll pill never covers the box */
     '@media(max-width:760px){.rh{flex-wrap:wrap;gap:10px;padding:12px 16px}.rh .ap{display:none}.tabs{padding-inline:16px;gap:16px;overflow:hidden}.res{margin-inline-start:0;padding-inline:16px}.lg.xl{font-size:3.2rem}.r.hs>.th{display:none}.imgs .th{width:84px;height:56px}}';
+  /* EH2 mini challenge (Moaz 2026-11-24): a look of its own, not the OSINT lab's (added on top of the OSINT design) */
+  S_CSS += 'body{background:#f1f5f4}.lg{color:#0f766e}.lg .mk{background:linear-gradient(135deg,#14b8a6,#0f766e);border-radius:50%;box-shadow:none}' +
+    '.hm{background:radial-gradient(circle at 50% 35%,#ccfbf1,#f1f5f4 62%)}.tag{color:#3f5f59}.fb{background:#e2ece9;border-color:#d3e0dc}' +
+    '.sf{border-radius:14px;border:2px solid #0f766e;box-shadow:none}.sf:focus-within{box-shadow:0 0 0 4px rgba(20,184,166,.25);border-color:#0f766e}.sf .go{background:#0f766e;border-radius:10px}.sf .go:hover{background:#115e59}' +
+    '.rh{background:#0f766e}.rh .lg{color:#fff}.rh .lg .mk{background:#fff;color:#0f766e}.rh .sf{border-color:#fff}.rh .ap{color:#fff}' +
+    '.tabs{background:#fff;padding-inline-start:28px}.tabs .on{color:#0f766e;border-bottom-color:#0f766e}.res{margin-inline-start:auto;margin-inline-end:auto;max-width:780px}' +
+    '.r{background:#fff;border:1px solid #dfe7e5;border-radius:14px;padding:14px 16px;margin-bottom:14px}.t{color:#0f766e}.fav{border-radius:8px}';
   var searchSite = {
     css: S_CSS, notFound: NF,
     pages: {
@@ -5080,6 +5087,13 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.side{display:flex;flex-direction:column;gap:16px}.box{padding:14px 16px}.box h3{margin:0 0 10px;font-size:1rem}.sug{display:flex;gap:10px;align-items:center;padding:7px 0}.sug .av{width:44px;height:44px}.sug small{display:block}.sug small[dir=ltr]{text-align:right}' +
     '.ph3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:12px;overflow:hidden}.ph3 span{aspect-ratio:1;overflow:hidden;background:#e6edf2}.ph3 svg{width:100%;height:100%}.foot{color:#8796a2;font-size:.8rem;text-align:center;margin:0}' +
     '@media(max-width:860px){.page{grid-template-columns:1fr}.side{display:none}}';
+  /* EH2 mini challenge (Moaz 2026-11-24): a look of its own, not the OSINT lab's (added on top of the OSINT design) */
+  SO_CSS += 'body{background:#0f1115;color:#e7e9ee}.nav{background:rgba(15,17,21,.96);border-color:#23262d}.brand{color:#f472b6}.bm{background:linear-gradient(135deg,#f472b6,#a855f7);box-shadow:none}' +
+    '.nic span{color:#9aa0ad}.nic .on{color:#f472b6;background:#1f1a24}.nic .me{background:#1a1d23}.prof,.post,.box{background:#171a20;border-color:#262a31;box-shadow:none}' +
+    '.row{flex-direction:column;align-items:center;text-align:center}.row .big{margin-top:-62px}.nm{padding-top:4px}.bio{text-align:center}.meta,.stats,.hls{justify-content:center}' +
+    '.big{border-color:#171a20;background:#171a20;box-shadow:0 0 0 3px #f472b6}.un,.meta,.stats,.who small,.cmeta,.lk,.foot,.end{color:#9aa0ad}.stats b{color:#fff}' +
+    '.hli{background:#171a20;box-shadow:0 0 0 2px #f472b6}.hlc{color:#c9cdd6}.ptabs{border-color:#262a31}.ptabs span{color:#9aa0ad}.ptabs .on{color:#f472b6;box-shadow:inset 0 -3px 0 #f472b6}' +
+    '.ht,.loc{color:#f472b6}.acts{color:#c9cdd6}.cms{border-color:#262a31}.cb{background:#20242b}.av.ring{box-shadow:0 0 0 2px #171a20,0 0 0 4px #f472b6}.pic,.ph3 span{background:#20242b}';
   var social = { css: SO_CSS, notFound: NF, pages: {} };
   social.pages[T.social.path] = { title: 'يوسف العطار (@' + T.user + ') | منصة التواصل الاجتماعي', html: socialProfile };
 
@@ -5127,6 +5141,11 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.side{}.lng{display:flex;justify-content:space-between;padding:6px 0;font-size:.95rem}.lng span{color:#5d6f69}' +
     '.pp{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #edf3f1}.pp:last-child{border:0}.pp .av{width:44px;height:44px;border-radius:50%;overflow:hidden;flex:none}.pp small{display:block;color:#5d6f69;font-size:.82rem;line-height:1.4}.foot{color:#8a9a95;font-size:.8rem;text-align:center}' +
     '@media(max-width:860px){.page{grid-template-columns:1fr}.side{display:none}.nl small{display:none}}';
+  /* EH2 mini challenge (Moaz 2026-11-24): a look of its own, not the OSINT lab's (added on top of the OSINT design) */
+  J_CSS += 'body{background:#eef2f7}.brand{color:#1e3a8a}.bm{background:#1e3a8a;border-radius:50%}.nl .on{color:#1e3a8a;box-shadow:inset 0 -2px 0 #1e3a8a}' +
+    '.page{grid-template-columns:280px minmax(0,1fr)}.side{order:-1}.card{border-radius:6px;border-color:#d6dde8}.top .big{border-radius:18px;right:auto;left:24px}' +
+    '.loc b{color:#1e3a8a}.ci{background:#e0e7ff;color:#1e3a8a}blockquote{background:#eef2ff;border-color:#1e3a8a}.card h2{border-bottom:2px solid #e0e7ff;padding-bottom:6px}' +
+    '@media(max-width:860px){.page{grid-template-columns:1fr}}';
   var jobs = { css: J_CSS, notFound: NF, pages: {} };
   jobs.pages[T.work.path] = { title: 'يوسف أحمد العطار - مدير التسويق في CamelCode | شبكة الوظائف', html: jobsProfile };
 
@@ -5167,6 +5186,12 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.side li::before{content:counter(n);font-family:"Baloo Bhaijaan 2",sans-serif;font-size:1.8rem;line-height:1;color:#d4d4d4;min-width:1.1em}.ad{margin-top:22px;height:220px;display:grid;place-items:center;background:repeating-linear-gradient(45deg,#f6f6f6 0 10px,#efefef 10px 20px);color:#9a9a9a;font-size:.85rem;border-radius:4px}' +
     '.ft{background:#111;color:#bdbdbd;padding:18px 0;font-size:.85rem}.ft .w{display:flex;justify-content:space-between;align-items:center}.ft .brand{color:#fff;font-size:1.4rem}.ft .bm{width:32px;height:32px;font-size:1.1rem}' +
     '@media(max-width:860px){.lay{grid-template-columns:1fr}.side{display:none}.art h1{font-size:1.8rem}.sl{display:none}}';
+  /* EH2 mini challenge (Moaz 2026-11-24): a look of its own, not the OSINT lab's (added on top of the OSINT design) */
+  N_CSS += '.brand b{color:#b45309}.bm{background:#b45309;border-radius:50%}.mast .w{flex-direction:column;justify-content:center;align-items:center;gap:2px}.util{background:#1c1917}' +
+    '.nv{border-top-color:#1c1917}.nv .w{justify-content:center}.nv .on{color:#b45309;box-shadow:inset 0 -3px 0 #b45309}.art .cat{background:#b45309;display:table;margin:0 auto}' +
+    '.crumb,.art h1,.std{text-align:center}.by{justify-content:center}.pq{border-color:#b45309;color:#b45309;background:#fff7ed}.lead::first-letter{color:#b45309}' +
+    '.lay{grid-template-columns:260px minmax(0,1fr)}.side{order:-1}.side h3{border-color:#b45309}.ft{background:#1c1917}' +
+    '@media(max-width:860px){.lay{grid-template-columns:1fr}}';
   var news = { css: N_CSS, notFound: NF, pages: {} };
   news.pages[T.news.path] = { title: 'مدرب الناشئين يوسف العطار: كرة القدم مدرسة للحياة | موقع الأخبار', html: newsArticle };
 
