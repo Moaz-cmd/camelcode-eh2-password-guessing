@@ -5359,7 +5359,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         var ic2 = qs('#laptop .cc-app[data-app="mail"]'); if (ic2) ic2.classList.remove('cue');
         CC.guide.hide();
       }
-      if (!(await CC.sleep(300, g))) return;
+      if (!(await CC.sleep(60, g))) return;     /* the hint and the ring come with the window, not half a second later */
       var toOk = function () { var x = fld('.ml-to'); return st.sent || (!!x && x.value.trim().toLowerCase() === SALEH); };
       /* a field is done only when the student has finished typing in it: the whole suggested text, or he left the field, or 2 s without a key
          (Moaz 2026-11-24: the subject step used to end after 3 letters, while he was still typing) */
@@ -7206,6 +7206,11 @@ body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cu
 @keyframes vlpop{to{opacity:1;transform:none}}
 .vl-scr{background:radial-gradient(circle at 75% 20%,rgba(120,170,255,.35),transparent 45%),radial-gradient(circle at 20% 85%,rgba(56,120,160,.45),transparent 50%),linear-gradient(160deg,#2E5470,#142533)}
 @media (prefers-reduced-motion:reduce){.vlap .vl-di,.vlap .vl-app{opacity:1;transform:none;animation:none!important}}
+/* the mail window opens solid (Moaz 2026-11-24: "it glitches when I open the email"): the engine's window fade let the bank page show through
+   the large window for a moment; here only a small scale-up, never transparent */
+.cc-win.cc-win-mail,.cc-win.cc-win-mail.cc-back{animation:mlopen 180ms cubic-bezier(.2,.8,.3,1)}
+@keyframes mlopen{0%{transform:scale(.97)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.cc-win.cc-win-mail,.cc-win.cc-win-mail.cc-back{animation:none}}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
