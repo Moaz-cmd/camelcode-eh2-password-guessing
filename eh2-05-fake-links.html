@@ -4764,9 +4764,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   /* build the laptop beside the hacker's */
   V.show = function (mail) {
     V.reset();
-    var root = document.createElement('div'); root.id = 'vlap'; root.className = 'vlap';
+    var root = document.createElement('div'); root.id = 'vlap'; root.className = 'vlap desk';     /* he starts on his desktop: no window open (Moaz 2026-11-24) */
     root.innerHTML = '<span class="tag victim">' + esc(CC.t('tag_vic')) + '</span><div class="vl-lid"><span class="vl-cam"></span><div class="vl-scr">' +
       '<div class="vl-mb"><b>' + esc(CC.t('vl_os')) + '</b></div>' +
+      '<div class="vl-dock"><span class="vl-app vl-app-mail" title="' + esc(CC.t('vl_mail')) + '">' + MAIL_IC + '</span><span class="vl-app vl-app-web"></span><span class="vl-app vl-app-files"></span><span class="vl-app vl-app-notes"></span></div>' +
+      '<div class="vl-note"><span class="vl-note-ic">' + MAIL_IC + '</span><div><small>' + esc(CC.t('vl_mail')) + '</small><b class="vl-nf"></b><span class="vl-ns"></span></div></div>' +
       '<div class="vl-win vl-mail"><div class="vl-bar"><i></i><i></i><i></i><b>' + esc(CC.t('vl_mail')) + '</b></div><div class="vl-mbody"></div></div>' +
       '<div class="vl-win vl-brw"><div class="vl-bar"><i></i><i></i><i></i><div class="vl-url" dir="ltr"></div></div><div class="vl-page"><iframe title="page" tabindex="-1"></iframe></div></div>' +
       '<div class="vl-status" dir="ltr"></div><i class="vl-cur">' + CURSOR + '</i></div></div><div class="vl-base"></div>';
@@ -4818,41 +4820,49 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   async function typeIn(doc, sel, text, g) {
     var inp = doc.querySelector(sel); if (!inp) return true;
     inp.focus();
-    for (var i = 1; i <= text.length; i++) { if (!(await CC.sleep(150, g))) return false; inp.value = text.slice(0, i); }
+    for (var i = 1; i <= text.length; i++) { if (!(await CC.sleep(210, g))) return false; inp.value = text.slice(0, i); }
     return true;
   }
 
   /* the whole visit; on.visit(): the copy opened; on.creds(): he pressed «تسجيل الدخول» */
   V.play = async function (g, on) {
     if (!S) return false;
-    var c = $('.vl-cur', S.root); c.style.left = '70%'; c.style.top = '75%';
-    if (!(await CC.sleep(1300, g))) return false;
-    if (!(await move($('.vl-row.new', S.root), g, 900))) return false;           /* the new email at the top of the inbox */
+    var c = $('.vl-cur', S.root); c.style.left = '62%'; c.style.top = '58%';
+    if (!(await CC.sleep(1800, g))) return false;                                   /* Saleh on his desktop */
+    var nt = $('.vl-note', S.root);                                                  /* a new email: the notification on his desktop */
+    $('.vl-nf', nt).textContent = S.mail.from; $('.vl-ns', nt).textContent = S.mail.subj;
+    nt.classList.add('on');
+    if (!(await CC.sleep(3000, g))) return false;
+    if (!(await move($('.vl-app-mail', S.root), g, 1300))) return false;            /* he opens the mail app from the dock */
+    if (!(await click(g))) return false;
+    nt.classList.remove('on'); S.root.classList.remove('desk');
+    if (!(await CC.sleep(1600, g))) return false;
+    if (!(await move($('.vl-row.new', S.root), g, 1300))) return false;             /* the new email at the top of the inbox */
     if (!(await click(g))) return false;
     open();
-    if (!(await CC.sleep(2600, g))) return false;                                  /* he reads it */
+    if (!(await CC.sleep(4200, g))) return false;                                   /* he reads it */
     var lk = $('.vl-link', S.root) || $('.vl-txt', S.root);
-    if (!(await move(lk, g, 900))) return false;
+    if (!(await move(lk, g, 1300))) return false;
     var stEl = $('.vl-status', S.root); stEl.textContent = BANK.fake + '/login'; stEl.classList.add('on');   /* the real address of the link, at the bottom of the screen */
-    if (!(await CC.sleep(1400, g))) return false;
+    if (!(await CC.sleep(2000, g))) return false;
     if (!(await click(g))) return false;
     stEl.classList.remove('on');
     $('.vl-url', S.root).textContent = BANK.fake + '/login';
     S.root.classList.add('brw');
     var doc = await frame(BANK.loginHtml()); if (g !== CC.gen || !doc) return false;
     if (on.visit) on.visit();
-    if (!(await CC.sleep(1300, g))) return false;
-    if (!(await move(inFrame('#u'), g, 800))) return false;
+    if (!(await CC.sleep(2000, g))) return false;
+    if (!(await move(inFrame('#u'), g, 1200))) return false;
     if (!(await click(g))) return false;
     if (!(await typeIn(doc, '#u', BANK.user, g))) return false;
-    if (!(await move(inFrame('#p'), g, 700))) return false;
+    if (!(await move(inFrame('#p'), g, 1100))) return false;
     if (!(await click(g))) return false;
     if (!(await typeIn(doc, '#p', BANK.pass, g))) return false;
-    if (!(await move(inFrame('.btn'), g, 700))) return false;
+    if (!(await move(inFrame('.btn'), g, 1100))) return false;
     if (!(await click(g))) return false;
     if (on.creds) on.creds();
-    await frame(BANK.errorHtml());                                                 /* the copy answers with a «technical error» */
-    if (!(await CC.sleep(3200, g))) return false;
+    await frame(BANK.errorHtml());                                                   /* the copy answers with a «technical error» */
+    if (!(await CC.sleep(4500, g))) return false;
     return true;
   };
 })();
@@ -4921,7 +4931,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة faker: `' + FAKE + '`',     /* Moaz 2026-11-24 (a «نسخ الرابط» button follows the link) */
     t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
-    t_caught: 'لاحظ: وصل إلى **شاشة الأوامر** **اسم المستخدم** و**كلمة السر** اللذان كتبهما صالح، وحفظتهما الأداة في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني**، فلم ينتبه لشيء!',
+    t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة faker** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي وصلت إلى شاشة الأوامر.',
     t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر المستفيد **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
     t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
@@ -4953,7 +4963,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     mail_h: 'الرسالة المزيفة',
     mail: 'الآن نكتب رسالة إلى صالح، ونتظاهر فيها أننا **البنك**.\n\nالرسالة المزيفة تحاول أن تجعل الضحية **يخاف** و**يستعجل**، فيضغط على الرابط **دون أن يفكر**: «حسابك تعرّض للاختراق»، «غيّر كلمة السر **فوراً**».\n\nلاحظ خانة **من**: الاسم «البنك الإلكتروني»، لكن العنوان `' + FROM_A + '` **ليس** من موقع البنك.',
     caught_h: 'وصلت البيانات',
-    caught: 'كتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فوصلت إليك مباشرة. ثم ظهرت له رسالة **خطأ تقني**، فظن أن الموقع معطّل فقط.\n\nالآن تستطيع أن تدخل إلى **حسابه الحقيقي** في البنك بهذه البيانات.',
+    caught: 'كتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فوصلت إليك مباشرة. ثم ظهرت له رسالة **خطأ تقني** لخداعه، فظن أن الموقع معطّل فقط.\n\nالآن تستطيع أن تدخل إلى **حسابه الحقيقي** في البنك بهذه البيانات.',
     replay: 'إعادة التدريب',
     /* congratulations card */
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
@@ -5028,9 +5038,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var LINK_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var LINK_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copyText(txt) {
-    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
-    var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
-    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+    var old = function () {
+      var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
+      document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+    };
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).catch(old); return; } } catch (e) { }   /* a refused clipboard falls back to the old way */
+    old();
   }
   var linkBtnOn = false;
   setInterval(function () {
@@ -5157,7 +5170,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
           if (!ok()) return;
           L.add('', 'txt');
           L.add('[-] Victim opened the link !', 'ok');
-          L.add("[-] Victim's IP : " + st.ip, 'ok');
           L.add('[-] Waiting for Login Info...', 'dim');
         },
         creds: function () {
@@ -7077,7 +7089,7 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 .vl-link{color:#2F6FD6;text-decoration:underline;unicode-bidi:isolate;direction:ltr;display:inline-block}
 .vl-status{position:absolute;left:3cqw;bottom:3.2cqw;z-index:6;padding:.6cqw 1.6cqw;background:#EEF1F4;color:#111;font-size:2cqw;border-radius:0 1cqw 0 1cqw;box-shadow:0 0 0 1px #D6DCE2;opacity:0;transition:opacity .2s}
 .vl-status.on{opacity:1}
-.vl-cur{position:absolute;z-index:8;width:3.8cqw;height:3.8cqw;left:70%;top:75%;transition:left .7s cubic-bezier(.4,0,.2,1),top .7s cubic-bezier(.4,0,.2,1);pointer-events:none}
+.vl-cur{position:absolute;z-index:8;width:3.8cqw;height:3.8cqw;left:62%;top:58%;transition:left 1.05s cubic-bezier(.4,0,.2,1),top 1.05s cubic-bezier(.4,0,.2,1);pointer-events:none}
 .vl-cur svg{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
 .vl-cur.clk svg{animation:vlclk .28s ease-out}
 @keyframes vlclk{50%{transform:scale(.82)}}
@@ -7086,6 +7098,20 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 /* the faint typing hint over a mail field (like the terminal's command hint, Moaz 2026-11-24) */
 .ml-ghost{position:absolute;z-index:1;pointer-events:none;overflow:hidden;box-sizing:border-box;border-style:solid;border-color:transparent;color:#9AA8AA;margin:0}
 .ml-ghost .hid{visibility:hidden}
+
+/* Saleh's desktop before he opens the mail (Moaz 2026-11-24): a dock and a notification for the new email */
+.vlap.desk .vl-mail{opacity:0;transform:scale(.94);pointer-events:none}
+.vl-dock{position:absolute;bottom:1.6cqw;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:1.4cqw;padding:1cqw 1.6cqw;border-radius:2.4cqw;background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.vlap:not(.desk) .vl-dock{opacity:0}
+.vl-app{width:5.6cqw;height:5.6cqw;border-radius:1.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#5A6880,#2A3953)}
+.vl-app svg{width:62%;height:62%}
+.vl-app-mail{background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-app-web{background:linear-gradient(145deg,#3B6CBC,#295AA6)}.vl-app-files{background:linear-gradient(145deg,#F5B13D,#E08E0B)}.vl-app-notes{background:linear-gradient(145deg,#FCE7A8,#F5C84C)}
+.vl-note{position:absolute;top:6cqw;left:2.4cqw;z-index:6;width:44cqw;display:flex;gap:1.4cqw;align-items:center;padding:1.4cqw 1.8cqw;border-radius:2cqw;background:rgba(250,250,252,.97);color:#111;box-shadow:0 1.6cqw 4cqw -1cqw rgba(0,0,0,.45);transform:translateX(-120%);opacity:0;transition:transform .55s cubic-bezier(.2,.9,.3,1.15),opacity .4s}
+.vl-note.on{transform:none;opacity:1}
+.vl-note-ic{flex:none;width:5.6cqw;height:5.6cqw;border-radius:1.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-note-ic svg{width:62%;height:62%}
+.vl-note div{min-width:0;display:flex;flex-direction:column}
+.vl-note small{font-size:1.7cqw;color:#6b7280;font-weight:700}.vl-note b{font-size:2.2cqw}
+.vl-note span{font-size:2cqw;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
