@@ -4927,7 +4927,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_link: 'صنعت الأداة **رابط الصفحة المزيفة** `' + FAKE + '`. لاحظ أنه **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**. الأداة الآن **تنتظر** أن يفتح صالح الرابط.',
     t_mail: 'افتح تطبيق **البريد** في أسفل شاشة الحاسوب، لنكتب **رسالة تصيد احتيالي** إلى **صالح**.',     /* Moaz 2026-11-24 */
     t_to: 'اضغط على خانة **إلى**، واكتب البريد الإلكتروني لصالح: `' + SALEH + '`',
-    t_subj: 'اكتب **موضوع** الرسالة في خانة **الموضوع**، مثل: «' + H_SUBJ + '»',
+    t_subj: 'اكتب **عنوان الإيميل** في خانة **الموضوع**، مثل: «' + H_SUBJ + '»',     /* Moaz 2026-11-24 */
     t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة صنّارة: `' + FAKE + '`',     /* Moaz 2026-11-24 (a «نسخ الرابط» button follows the link) */
     t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
@@ -5045,20 +5045,24 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).catch(old); return; } } catch (e) { }   /* a refused clipboard falls back to the old way */
     old();
   }
-  var linkBtnOn = false;
+  /* one copy button beside one chip of the step on screen: { text, label, field } (Moaz 2026-11-24: «نسخ البريد» on the «إلى» step,
+     «نسخ الرابط» on the message step); null = none. One click copies it and puts the cursor in that mail field, ready to paste. */
+  var copyBtn = null;
   setInterval(function () {
-    if (!linkBtnOn) { [].forEach.call(document.querySelectorAll('.fx-copy.fx-link'), function (b) { b.remove(); }); return; }
+    var want = copyBtn;
+    [].forEach.call(document.querySelectorAll('.fx-link'), function (b) { if (!want || b.getAttribute('data-copy') !== want.text) b.remove(); });
+    if (!want) return;
     var cur = document.querySelector('.cc-cur'); if (!cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
-      if (c.textContent.replace(/[⁦-⁩‎‏]/g, '').trim() !== FAKE) return;
+      if (c.textContent.replace(/[⁦-⁩‎‏]/g, '').trim() !== want.text) return;
       if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-link')) return;
-      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy fx-link'; b.innerHTML = LINK_IC + '<span>نسخ الرابط</span>';
-      b.title = 'انسخ الرابط'; b.setAttribute('aria-label', 'انسخ الرابط ' + FAKE);
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-link'; b.setAttribute('data-copy', want.text); b.innerHTML = LINK_IC + '<span>' + want.label + '</span>';
+      b.title = want.label; b.setAttribute('aria-label', want.label + ' ' + want.text);
       b.addEventListener('click', function (e) {
-        e.stopPropagation(); e.preventDefault(); copyText(FAKE);
+        e.stopPropagation(); e.preventDefault(); copyText(want.text);
         b.classList.add('ok'); b.innerHTML = LINK_OK + '<span>تم النسخ</span>';
-        setTimeout(function () { if (b.isConnected) { b.classList.remove('ok'); b.innerHTML = LINK_IC + '<span>نسخ الرابط</span>'; } }, 1500);
-        var box = document.querySelector('.cc-win-mail .ml-body'); if (box && !box.readOnly) box.focus();
+        setTimeout(function () { if (b.isConnected) { b.classList.remove('ok'); b.innerHTML = LINK_IC + '<span>' + want.label + '</span>'; } }, 1500);
+        setTimeout(function () { var box = document.querySelector('.cc-win-mail ' + want.field); if (box && !box.readOnly) box.focus(); }, 150);   /* after the copy (its fallback selects a hidden box for a moment) */
       });
       c.parentNode.insertBefore(b, c.nextSibling);
     });
@@ -5311,13 +5315,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var toOk = function () { var x = fld('.ml-to'); return st.sent || (!!x && x.value.trim().toLowerCase() === SALEH); };
       var suOk = function () { var x = fld('.ml-subj'); return st.sent || (!!x && x.value.trim().length >= 3); };
       var boOk = function () { var x = fld('.ml-body'); return st.sent || (!!x && x.value.toLowerCase().indexOf(BANK.fake) >= 0); };
-      if (!toOk()) { L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
-        CC.guide.hide(); if (!st.sent && !(await CC.stepWait(g))) return; }     /* the address is right: «متابعة» before the subject (Moaz 2026-11-24) */
+      if (!toOk()) { copyBtn = { text: SALEH, label: 'نسخ البريد', field: '.ml-to' }; L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
+        copyBtn = null; CC.guide.hide(); if (!st.sent && !(await CC.stepWait(g))) return; }     /* the address is right: «متابعة» before the subject (Moaz 2026-11-24) */
       CC.guide.hide();
       if (!suOk()) { L.task(CC.t('t_subj')); hints.push(fieldHint(fld('.ml-subj'), H_SUBJ)); guideFld('.ml-subj', function () { var x = fld('.ml-subj'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(suOk))) return; }
       CC.guide.hide();
-      if (!boOk()) { linkBtnOn = true; L.task(CC.t('t_body')); hints.push(fieldHint(fld('.ml-body'), H_BODY)); guideFld('.ml-body', function () { var x = fld('.ml-body'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(boOk))) return; }
-      linkBtnOn = false;
+      if (!boOk()) { copyBtn = { text: FAKE, label: 'نسخ الرابط', field: '.ml-body' }; L.task(CC.t('t_body')); hints.push(fieldHint(fld('.ml-body'), H_BODY)); guideFld('.ml-body', function () { var x = fld('.ml-body'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(boOk))) return; }
+      copyBtn = null;
       CC.guide.hide();
       if (!st.sent) {
         L.task(CC.t('t_send'));
@@ -7118,6 +7122,15 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 .vl-note div{min-width:0;display:flex;flex-direction:column}
 .vl-note small{font-size:1.7cqw;color:#6b7280;font-weight:700}.vl-note b{font-size:2.2cqw}
 .vl-note span{font-size:2cqw;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* «نسخ البريد» and «نسخ الرابط» in the steps: the engine's «نسخ الأمر» look, on their own class (the engine removes every .fx-copy that is not the next terminal command) */
+.cc-cur .cc-txt .fx-link{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin:0 3px;padding:1px 9px;border:1.5px solid #0E1F39;border-radius:99px;background:#FCAD0F;color:#0E1F39;
+  font-family:"Montserrat Arabic",Tahoma,sans-serif;font-weight:800;font-size:.78em;line-height:1.7;cursor:pointer;direction:rtl;white-space:nowrap;transition:transform .12s,background .2s}
+.cc-cur .cc-txt .fx-link svg{width:1.05em;height:1.05em;flex:none}
+.cc-cur .cc-txt .fx-link:hover{transform:translateY(-1px);filter:brightness(1.06)}
+.cc-cur .cc-txt .fx-link:active{transform:translateY(1px)}
+.cc-cur .cc-txt .fx-link.ok{background:#2E9E5B;border-color:#2E9E5B;color:#fff}
+.cc-cur.typing .cc-txt .fx-link{display:none}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
