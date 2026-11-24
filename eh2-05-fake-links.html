@@ -4894,7 +4894,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var SALEH = 'saleh.altamimi@camelcode.shop', FROM_N = BANK.name, FROM_A = 'security@bank-alerts.example';
   var BEN = BANK.bens.filter(function (b) { return b.id === BANK.target; })[0];
   var H_SUBJ = 'تنبيه عاجل تم اختراق حساب البنك';     /* Moaz 2026-11-24 */
-  var H_BODY = 'عزيزي العميل، تم اختراق حسابك في البنك الإلكتروني. لحماية أموالك غيّر كلمة السر فوراً من خلال الرابط التالي: ' + FAKE;
+  var H_BODY = 'عزيزي العميل تم اختراق حسابك في البنك الإلكتروني لحماية أموالك غير كلمة السر فوراً من خلال الرابط التالي ' + FAKE;     /* words only: no «،» «.» «:» and no shadda (Moaz 2026-11-24) */
 
   /* [LAB] ================= STRING TABLE (ar filled, en empty for later) ================= */
   Object.assign(CC.S.ar, {
@@ -4935,7 +4935,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
     t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة صنّارة** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
-    t_ans1: 'أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة** الآن!',     /* Moaz 2026-11-24 */
+    t_ans1: 'الآن أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة**',     /* Moaz 2026-11-24 */
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي ظهرت في **شاشة الأوامر** أو في الملف `account.txt`',     /* Moaz 2026-11-24 */
     t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط **التحويل** في أعلى الموقع، واختر حساب **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',
     t_q: 'تم التحويل! أجب عن **أسئلة التحدي** على يسار الشاشة.',
@@ -5033,7 +5033,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       /* empty: the hint types itself on a loop. Once the student types (and it still matches), the rest shows whole and still,
          so nothing flickers or restarts under his letters (Moaz 2026-11-24: "smooth while the student is typing") */
       var rest = v ? text.slice(v.length) : text.slice(0, n);
-      if (hid.textContent !== v) hid.textContent = v;
+      /* an Arabic last letter would join the hint's next letter in the ghost but not in the field (where it ends the text), so the hidden copy
+         would be narrower and the hint would overlap the typed letters: a zero-width non-joiner keeps it the field's width (Moaz 2026-11-24) */
+      var hv = v && /[؀-ۿ]$/.test(v) ? v + '‌' : v;
+      if (hid.textContent !== hv) hid.textContent = hv;
       if (restEl.textContent !== rest) restEl.textContent = rest;
       gh.scrollTop = el.scrollTop; gh.scrollLeft = el.scrollLeft;
     }
@@ -5147,7 +5150,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     async function until(fn) { while (!fn()) { if (!(await CC.sleep(150, g))) return false; } return true; }
     function mailOpen() { var w = MAIL.win; return !!w && w.isConnected && !w.classList.contains('cc-min'); }
     function fld(c) { return MAIL.win && MAIL.win.isConnected ? MAIL.win.querySelector(c) : null; }
-    function guideFld(c, done) { CC.guide.show(function () { return mailOpen() ? fld(c) : qs('#laptop .cc-app[data-app="mail"]'); }, { force: true, until: done, center: true }); }
+    function guideFld(c, done) { CC.guide.show(function () { return mailOpen() ? fld(c) : null; }, { force: true, until: done, center: true }); }
 
     /* ---- the mail app: checks and «إرسال» ---- */
     var errT = null;
@@ -5183,6 +5186,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     async function send() {
       st.sent = true; CC.guide.hide();
       if (MAIL.win) sentState(MAIL.win);
+      /* the terminal comes to the front at once, so the student watches it while Saleh reads the email (Moaz 2026-11-24) */
+      var mn0 = MAIL.win && MAIL.win.querySelector('.cc-win-min'); if (mn0 && MAIL.win.isConnected) mn0.click();
+      var ti = document.querySelector('#laptop .cc-app[data-app="term"]'); if (ti) ti.click();
       st.vicOn = true;
       V.show({ from: FROM_N, addr: FROM_A, to: SALEH, subj: MAIL.subj, body: MAIL.body });
       var done = await V.play(g, {
@@ -5323,7 +5329,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (!mailOpen()) {
         L.task(CC.t('t_mail'));
         var ic = qs('#laptop .cc-app[data-app="mail"]'); if (ic) ic.classList.add('cue');
-        CC.guide.show(function () { return qs('#laptop .cc-app[data-app="mail"]'); }, { force: true, until: mailOpen });
+        /* the cued icon draws its own pointer, ring and glow (.cc-app.cue): no second guide pointer on it (Moaz 2026-11-24) */
         if (!(await until(mailOpen))) return;
         var ic2 = qs('#laptop .cc-app[data-app="mail"]'); if (ic2) ic2.classList.remove('cue');
         CC.guide.hide();
