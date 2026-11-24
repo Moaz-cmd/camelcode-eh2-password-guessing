@@ -6980,6 +6980,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
    (it used to switch to the Arabic UI font, and the code chips inside it were smaller). */
 .cs-log .row.bad,.cs-log .errmsg,.cs-err{font-family:var(--f-mono,ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace)!important;font-size:inherit!important}
 .cs-log .row.bad *,.cs-log .errmsg *,.cs-err *{font-family:inherit!important;font-size:inherit!important}
+/* one «ابدأ هنا» at a time (Moaz 2026-11-24, every lab): a closed browser keeps its icon cued until it is opened again; when a step then needs
+   the terminal, the terminal's cue wins and the other icons' tip, ring, pointer and glow step aside until the terminal is open (they come back by themselves) */
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) .cc-tip,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::before,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::after{display:none!important}
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) svg{animation:none!important;transform:none!important;box-shadow:0 .5cqw 1cqw -.4cqw rgba(0,0,0,.5)!important}
 
 /* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
    Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */
