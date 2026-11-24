@@ -1820,6 +1820,8 @@ body.side .cc-feed .cc-coach .cc-fb,body.side .cc-feed .cc-coach .cc-expl,.cc-co
 /* «شرح مختصر» inside the panel */
 .cc-ref{display:none;flex:1 1 auto;min-height:0;overflow-y:auto;padding:6px 20px 16px;color:var(--ink);scrollbar-width:thin;scrollbar-color:#D9D2C6 transparent}
 .cc-ref .dr-b{padding:0;overflow:visible;line-height:1.9}
+/* شرح مختصر: a long command wraps inside the frame instead of overflowing it, never a sideways scroll (Moaz 2026-11-21, every lab) */
+.cc-ref .dr-b .tok{white-space:normal;overflow-wrap:anywhere;max-width:100%;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .cc-feed[data-tab="ref"] .cc-ref{display:block;order:1}
 .cc-feed[data-tab="ref"] .cc-steps,.cc-feed[data-tab="ref"] .cc-cur,.cc-feed[data-tab="ref"] .cc-coach{display:none}
 
@@ -2147,6 +2149,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 /* the parts of a command are never cut off (Moaz 2026-11-15, every lab): no «…»; each part keeps its whole name and the row gets smaller to fit
    (engine/hacker-laptop.js fitChips sets --ck). Each description wraps under its own word. */
+/* all command parts stay on ONE line; when they do not fit, the font shrinks (fitChips --ck), never wrapping to a second line (Moaz 2026-11-21, every lab) */
+.cs .cs-chips:not(:empty),body.cc-web .laptop.cc-os .lscreen .cs .cs-chips:not(:empty){flex-wrap:nowrap!important}
 .cs .cs-chips .tk,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk{flex:0 0 auto;min-width:0;max-width:none;zoom:var(--ck,1)}
 .cs .cs-chips .tk b,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk b{white-space:nowrap;max-width:none;overflow:visible;text-overflow:clip}
 .cs .cs-chips .tk small,body.cc-web .laptop.cc-os .lscreen .cs .cs-chips .tk small{white-space:normal;max-width:10em;overflow:visible;text-overflow:clip;overflow-wrap:normal}
@@ -2720,6 +2724,22 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (keep) while (log.children.length > keep) log.removeChild(log.firstChild);
       if (near) log.scrollTop = log.scrollHeight;
     };
+    /* rows added inside one block of the log (a long tool output), trimmed inside that block only, so the commands and
+       results above it are never removed: the student can always scroll up to them (Farhan's review, Moaz 2026-11-24, every lab) */
+    L.addManyIn = function (box, arr, cls, keep) {
+      var f = document.createDocumentFragment();
+      arr.forEach(function (t) { var r = el('div', 'row ' + cls); r.textContent = t; f.appendChild(r); });
+      var near = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      box.appendChild(f);
+      if (keep) while (box.children.length > keep) box.removeChild(box.firstChild);
+      if (near) log.scrollTop = log.scrollHeight;
+    };
+    /* a long list printed as ONE line of text (one node, so thousands of lines stay light): CC.L.addText(box, lines) adds lines to it */
+    L.addText = function (box, arr) {
+      var near = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      box.appendChild(document.createTextNode((box.firstChild ? '\n' : '') + arr.join('\n')));
+      if (near) log.scrollTop = log.scrollHeight;
+    };
     L.progress = function (done, total, ok) {
       if (!$('#pdone', root)) return;
       $('#pdone', root).textContent = CC.fmt(done); $('#prem', root).textContent = CC.fmt(Math.max(0, total - done));
@@ -2744,7 +2764,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function fitChips() {
       var box = $('#chips', root); if (!box) return;
       box.style.setProperty('--ck', '1'); if (!box.children.length) return;
-      for (var k = 1, n = 0; n < 14 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
+      for (var k = 1, n = 0; n < 18 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
     }
     if (window.ResizeObserver) { var ckW = 0; new ResizeObserver(function () { var w = root.clientWidth; if (w !== ckW) { ckW = w; fitChips(); } }).observe(root); }
     L.actions = function (btns) {
@@ -2868,6 +2888,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var L = o.L, g = o.g, total = o.total, hit = o.hit;
       var big = total > (o.bigAt || 10000), keep = big ? 400 : 0;
       var i = 0, carry = 0, rampAt = null, t0 = performance.now(), last = t0;
+      /* the attempts go into their own block, trimmed inside it only: earlier commands and their results stay in the log (Moaz 2026-11-24, every lab) */
+      var box = L.addManyIn ? L.addEl(CC.el('div', 'srch')) : null;
       L.progress(0, total);
       while (true) {
         if (g !== CC.gen) return null;
@@ -2887,7 +2909,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (found) end = hit + 1;
         var from = Math.max(i, end - 30), rows = [];
         for (var k = from; k < (found ? end - 1 : end); k++) rows.push('✗ ' + o.text(k));
-        L.addMany(rows, 'bad', keep);
+        if (box) L.addManyIn(box, rows, 'bad', keep); else L.addMany(rows, 'bad', keep);
         i = end; L.progress(i, total, found);
         if (found) { L.add('✓ ' + o.text(hit), 'ok'); return { found: true, done: i, hit: hit }; }
         if (i >= total) return { found: false, none: true, done: i, hit: hit };
@@ -5121,6 +5143,9 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
       ['C', '÷', '×', '−', '7', '8', '9', '+', '4', '5', '6', '=', '1', '2', '3', '0', '.'].map(function (k) { return '<button type="button" data-k="' + k + '"' + (k === '=' ? ' class="eq"' : /[÷×−+C]/.test(k) ? ' class="op"' : k === '0' ? ' class="z"' : '') + '>' + k + '</button>'; }).join('') +
       '</div></div>'
   };
+  /* a lab's own apps in the dock (EH2 lab 5: «البريد», 2026-11-24): CC.labApps = [{ id, label, icon: '<svg...>', html, init(win) }], set by lab-logic.js
+     before this file runs; they go right after the browser and the terminal. Other labs set nothing and keep their dock. */
+  (CC.labApps || []).forEach(function (a) { APPS.splice(WEB ? 2 : 1, 0, { id: a.id, label: a.label, lab: a }); IC[a.id] = a.icon; WIN[a.id] = a.html || ''; });
   function lapEl() { return $('#laptop'); }
   /* the desktop inside the laptop changed width (terminal opened or closed): fit its icons again when the slide ends */
   function refitDesk() {
@@ -5219,7 +5244,7 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
     var t = text != null ? text : CC.labFS && CC.labFS.read(path || '/' + name); $('.cc-ftxt', w).textContent = t == null ? '' : t;
     front(w);
   }
-  setInterval(function () { var l = lapEl(); if (l && WEB) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
+  setInterval(function () { var l = lapEl(); if (l && (WEB || CC.deskFilesOn)) deskFiles(l); }, 120);     /* was 700 ms: the folders showed late (Moaz 2026-11-14) */
   /* ---- the browser app (body.cc-web) ---- */
   function webIc(l) { return dockIc(l, 'web'); }
   function openWeb() {
@@ -5257,6 +5282,7 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
       $('.cc-win-min', w).onclick = function (e) { e.stopPropagation(); w.classList.add('cc-min'); frontTop(l); };
       w.addEventListener('mousedown', function () { front(w); });
       if (id === 'calc') calc(w);
+      if (a.lab && a.lab.init) setTimeout(function () { a.lab.init(w); }, 0);   /* a lab's own app fills its window (CC.labApps) */
       wins.appendChild(w);
     } else if (w.classList.contains('cc-min')) {
       w.classList.remove('cc-min'); w.classList.remove('cc-back'); void w.offsetWidth; w.classList.add('cc-back');
@@ -5308,14 +5334,14 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
     if (!l || l.__ccOS) return;
     var scr = $('.lscreen', l); if (!scr) return;
     l.__ccOS = true; OS.pending = null;
-    OS.webOpened = false; OS.webPending = null; OS.webGuide = null; OS.webGuideOn = false; OS.webLast = null;
+    OS.webOpened = false; OS.webDue = false; OS.webPending = null; OS.webGuide = null; OS.webGuideOn = false; OS.webLast = null;
     bindLaptop(l);
     l.classList.add('cc-os', 'cc-closed', 'cc-noanim');     /* the first closed state shows at once: no slide of the desktop on load or restart (Moaz 2026-11-13) */
     requestAnimationFrame(function () { requestAnimationFrame(function () { setTimeout(function () { l.classList.remove('cc-noanim'); }, 60); }); });
     setTimeout(function () { l.classList.remove('cc-noanim'); }, 1200);     /* also when the page is in a background tab (no frames drawn) */
     var cs = $('.cs', l); if (cs) cs.setAttribute('data-name', TERM);
     var br = WEB && $('.cc-brw', l);
-    if (br && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
+    if ((br || CC.deskFilesOn) && cs) { var dk = document.createElement('div'); dk.className = 'cc-dkfiles'; scr.appendChild(dk); deskFiles(l); }   /* CC.deskFilesOn: a lab that is not a website lab asks for the icons too (EH2 lab 5: account.txt, 2026-11-23) */   /* drawn at once, not on the next tick */   /* the lab's files on the desktop (labs with a terminal) */
     if (br) {
       l.classList.add('cc-web-shut'); br.setAttribute('data-name', WEB_L);     /* the browser starts closed in every lab, challenges too (Moaz 2026-11-14: never open by default) */
       var strip = $('.br-strip', br);
@@ -5338,7 +5364,7 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
     var wins = document.createElement('div'); wins.className = 'cc-wins'; scr.appendChild(wins);
     var dock = document.createElement('div'); dock.className = 'cc-dock';
     var apps = cs ? APPS : APPS.filter(function (a) { return a.id !== 'term'; });   /* a laptop with no terminal (a planner website lab) has no terminal app */
-    dock.innerHTML = apps.map(function (a) { return '<button type="button" class="cc-app" data-app="' + a.id + '" aria-label="' + a.label + '">' + IC[a.id] + '<span>' + a.label + '</span>' + (a.id === 'term' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + SPOT_B + '</em></i>' : a.id === 'web' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>افتح المتصفح لتصل إلى موقع المتجر</em></i>' : '') + '</button>'; }).join('');
+    dock.innerHTML = apps.map(function (a) { return '<button type="button" class="cc-app" data-app="' + a.id + '" aria-label="' + a.label + '">' + IC[a.id] + '<span>' + a.label + '</span>' + (a.id === 'term' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + SPOT_B + '</em></i>' : a.id === 'web' ? '<i class="cc-tip"><b>' + SPOT_T + '</b><em>' + ((M && M.openBrowserTip) || 'افتح المتصفح لتصل إلى موقع المتجر') + '</em></i>' : '') + '</button>'; }).join('');
     dock.addEventListener('click', function (e) { var b = e.target.closest('.cc-app'); if (b) openWin(b.getAttribute('data-app')); });
     scr.appendChild(dock);
     if (cs) cs.addEventListener('mousedown', function () { front(cs); });
@@ -5384,7 +5410,9 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
   function route(txt) {
     if (!txt) return;
     decorate(lapEl());                 /* the lab may have built a new laptop a moment ago (restart) */
-    if (!PLAIN && WEB && !OS.webOpened && $('#laptop .cc-brw')) {      /* the browser was never opened: «open the browser» comes first, the lab's step follows when it opens (not in a challenge: its two instructions only, no cue) */
+    /* lab-settings mission.openBrowserAt (Moaz 2026-11-21, EH2 lab 3 first): the «open the browser» cue waits until that step's key; the steps before it run on the desktop and terminal */
+    if (M && M.openBrowserAt && !OS.webDue && keyOf(txt) === M.openBrowserAt) OS.webDue = true;
+    if (!PLAIN && WEB && !OS.webOpened && (!M || !M.openBrowserAt || OS.webDue) && $('#laptop .cc-brw')) {      /* the browser was never opened: «open the browser» comes first, the lab's step follows when it opens (not in a challenge: its two instructions only, no cue) */
       OS.webPending = txt;
       push(OPEN_WEB_TXT);
       var wi = $('#laptop .cc-app[data-app="web"]');
@@ -5724,7 +5752,7 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
     h.addEventListener('mouseenter', function(){ setOpen(true); });   /* hover opens and keeps it open; click the tab to close (Farhan 2026-11-10) */
     qp.addEventListener('mouseenter', function(){ setOpen(true); });
     var toQ = function () { if (CC.panelTab) CC.panelTab('q'); setOpen(true); };
-    if (curT) new MutationObserver(function () { var t = curT.textContent; if (t.indexOf(CC.t('q_h')) !== -1 || /أجب/.test(t)) toQ(); }).observe(curT, { childList: true, subtree: true, characterData: true });
+    if (curT) new MutationObserver(function () { var t = curT.textContent; if (t.indexOf(CC.t('q_h')) !== -1 || /أجب عن/.test(t)) toQ(); }).observe(curT, { childList: true, subtree: true, characterData: true });   /* open the panel only when the step says «أجب عن (السؤال)», not a bare «أجب عليها» about the tool's own prompts (Moaz 2026-11-21) */
     /* a new question scrolls into view inside the panel (Moaz 2026-11-12): after the panel has opened, its top sits 13px below the panel's top */
     var scrollT = null;
     function scrollToRow(r) {
@@ -5955,6 +5983,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
    (it used to switch to the Arabic UI font, and the code chips inside it were smaller). */
 .cs-log .row.bad,.cs-log .errmsg,.cs-err{font-family:var(--f-mono,ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace)!important;font-size:inherit!important}
 .cs-log .row.bad *,.cs-log .errmsg *,.cs-err *{font-family:inherit!important;font-size:inherit!important}
+/* one «ابدأ هنا» at a time (Moaz 2026-11-24, every lab): a closed browser keeps its icon cued until it is opened again; when a step then needs
+   the terminal, the terminal's cue wins and the other icons' tip, ring, pointer and glow step aside until the terminal is open (they come back by themselves) */
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) .cc-tip,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::before,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::after{display:none!important}
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) svg{animation:none!important;transform:none!important;box-shadow:0 .5cqw 1cqw -.4cqw rgba(0,0,0,.5)!important}
 
 /* Farhan 2026-11-20 (EH1 lab 2): files created one by one (see create.js) */
 .pc .fx-wait{opacity:0!important;transform:scale(.5)!important;pointer-events:none}
@@ -6201,7 +6235,7 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, sinnara: 1, clear: 1, help: 1, password: 1 };   /* sinnara: EH2 lab 5; password: «password generator», EH2 lab 3 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
@@ -6214,7 +6248,7 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
   setInterval(function () {
     var want = next();
     /* a button whose command is no longer the next one goes away */
-    [].forEach.call(document.querySelectorAll('.fx-copy'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
+    [].forEach.call(document.querySelectorAll('.fx-copy:not([data-val])'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
     var cur = document.querySelector('.cc-cur'); if (!want || !cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
       var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]] || norm(t) !== want) return;
@@ -6226,6 +6260,28 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
         b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
         setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ الأمر</span>'; }, 1500);
         var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
+
+  /* Farhan's review (EH2 lab 3, Moaz 2026-11-24, every lab that opts in): a copy button next to a VALUE in the step on screen, such as the
+     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'sltmimi@camelcode.shop', label: 'نسخ البريد' }, ...]
+     while the step needs them and clears it (null) after; the button sits after the code chip whose text is exactly that value. */
+  setInterval(function () {
+    var list = (window.CC && CC.copyVals) || [], want = {};
+    list.forEach(function (x) { want[norm(x.v)] = x.label || 'نسخ'; });
+    [].forEach.call(document.querySelectorAll('.fx-copy[data-val]'), function (b) { if (!want[b.getAttribute('data-val')] || !b.closest('.cc-cur')) b.remove(); });
+    var cur = document.querySelector('.cc-cur'); if (!list.length || !cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      var t = norm(c.textContent), lab = want[t]; if (!lab) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.setAttribute('data-val', t); b.innerHTML = IC + '<span></span>';
+      b.lastChild.textContent = lab; b.title = lab; b.setAttribute('aria-label', lab + ' ' + t);
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copy(t);
+        b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span></span>'; b.lastChild.textContent = lab; }, 1500);
       });
       c.parentNode.insertBefore(b, c.nextSibling);
     });

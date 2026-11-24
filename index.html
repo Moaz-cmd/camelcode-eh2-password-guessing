@@ -5672,6 +5672,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
    (it used to switch to the Arabic UI font, and the code chips inside it were smaller). */
 .cs-log .row.bad,.cs-log .errmsg,.cs-err{font-family:var(--f-mono,ui-monospace,"Cascadia Mono","Cascadia Code",Consolas,Menlo,monospace)!important;font-size:inherit!important}
 .cs-log .row.bad *,.cs-log .errmsg *,.cs-err *{font-family:inherit!important;font-size:inherit!important}
+/* one «ابدأ هنا» at a time (Moaz 2026-11-24, every lab): a closed browser keeps its icon cued until it is opened again; when a step then needs
+   the terminal, the terminal's cue wins and the other icons' tip, ring, pointer and glow step aside until the terminal is open (they come back by themselves) */
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) .cc-tip,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::before,
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::after{display:none!important}
+.cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) svg{animation:none!important;transform:none!important;box-shadow:0 .5cqw 1cqw -.4cqw rgba(0,0,0,.5)!important}
 
 /* Farhan 2026-11-19 (EH1 lab 1): the realistic cable (see cable.js). The wire: a soft outline, the white body, a thin highlight. */
 #cable.fx-real rect:not(.fx-keep){display:none}
@@ -5895,7 +5901,7 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, sinnara: 1, clear: 1, help: 1, password: 1 };   /* sinnara: EH2 lab 5; password: «password generator», EH2 lab 3 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
@@ -5908,7 +5914,7 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
   setInterval(function () {
     var want = next();
     /* a button whose command is no longer the next one goes away */
-    [].forEach.call(document.querySelectorAll('.fx-copy'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
+    [].forEach.call(document.querySelectorAll('.fx-copy:not([data-val])'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
     var cur = document.querySelector('.cc-cur'); if (!want || !cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
       var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]] || norm(t) !== want) return;
@@ -5920,6 +5926,28 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
         b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
         setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ الأمر</span>'; }, 1500);
         var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
+
+  /* Farhan's review (EH2 lab 3, Moaz 2026-11-24, every lab that opts in): a copy button next to a VALUE in the step on screen, such as the
+     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'sltmimi@camelcode.shop', label: 'نسخ البريد' }, ...]
+     while the step needs them and clears it (null) after; the button sits after the code chip whose text is exactly that value. */
+  setInterval(function () {
+    var list = (window.CC && CC.copyVals) || [], want = {};
+    list.forEach(function (x) { want[norm(x.v)] = x.label || 'نسخ'; });
+    [].forEach.call(document.querySelectorAll('.fx-copy[data-val]'), function (b) { if (!want[b.getAttribute('data-val')] || !b.closest('.cc-cur')) b.remove(); });
+    var cur = document.querySelector('.cc-cur'); if (!list.length || !cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      var t = norm(c.textContent), lab = want[t]; if (!lab) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.setAttribute('data-val', t); b.innerHTML = IC + '<span></span>';
+      b.lastChild.textContent = lab; b.title = lab; b.setAttribute('aria-label', lab + ' ' + t);
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copy(t);
+        b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span></span>'; b.lastChild.textContent = lab; }, 1500);
       });
       c.parentNode.insertBefore(b, c.nextSibling);
     });

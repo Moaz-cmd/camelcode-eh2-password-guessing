@@ -2724,6 +2724,22 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (keep) while (log.children.length > keep) log.removeChild(log.firstChild);
       if (near) log.scrollTop = log.scrollHeight;
     };
+    /* rows added inside one block of the log (a long tool output), trimmed inside that block only, so the commands and
+       results above it are never removed: the student can always scroll up to them (Farhan's review, Moaz 2026-11-24, every lab) */
+    L.addManyIn = function (box, arr, cls, keep) {
+      var f = document.createDocumentFragment();
+      arr.forEach(function (t) { var r = el('div', 'row ' + cls); r.textContent = t; f.appendChild(r); });
+      var near = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      box.appendChild(f);
+      if (keep) while (box.children.length > keep) box.removeChild(box.firstChild);
+      if (near) log.scrollTop = log.scrollHeight;
+    };
+    /* a long list printed as ONE line of text (one node, so thousands of lines stay light): CC.L.addText(box, lines) adds lines to it */
+    L.addText = function (box, arr) {
+      var near = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      box.appendChild(document.createTextNode((box.firstChild ? '\n' : '') + arr.join('\n')));
+      if (near) log.scrollTop = log.scrollHeight;
+    };
     L.progress = function (done, total, ok) {
       if (!$('#pdone', root)) return;
       $('#pdone', root).textContent = CC.fmt(done); $('#prem', root).textContent = CC.fmt(Math.max(0, total - done));
@@ -2872,6 +2888,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var L = o.L, g = o.g, total = o.total, hit = o.hit;
       var big = total > (o.bigAt || 10000), keep = big ? 400 : 0;
       var i = 0, carry = 0, rampAt = null, t0 = performance.now(), last = t0;
+      /* the attempts go into their own block, trimmed inside it only: earlier commands and their results stay in the log (Moaz 2026-11-24, every lab) */
+      var box = L.addManyIn ? L.addEl(CC.el('div', 'srch')) : null;
       L.progress(0, total);
       while (true) {
         if (g !== CC.gen) return null;
@@ -2891,7 +2909,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (found) end = hit + 1;
         var from = Math.max(i, end - 30), rows = [];
         for (var k = from; k < (found ? end - 1 : end); k++) rows.push('✗ ' + o.text(k));
-        L.addMany(rows, 'bad', keep);
+        if (box) L.addManyIn(box, rows, 'bad', keep); else L.addMany(rows, 'bad', keep);
         i = end; L.progress(i, total, found);
         if (found) { L.add('✓ ' + o.text(hit), 'ok'); return { found: true, done: i, hit: hit }; }
         if (i >= total) return { found: false, none: true, done: i, hit: hit };
@@ -3521,6 +3539,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* it may also be a function of the browser window's width, so the site can be a little smaller beside the terminal (EH1 labs 4 and 5: 80% alone, 70% beside the terminal, Moaz 2026-11-14 «not so zoomed in, not so zoomed out») */
     function fitScale() { var f = CC.site && CC.site.fitScale; if (typeof f === 'function') f = f(view.clientWidth); return f || 0; }
     if (window.ResizeObserver) new ResizeObserver(function () { applyZoom(); shintUpd(); partsDraw(); fitCode(); }).observe(view);
+    P.rescale = function () { applyZoom(); shintUpd(); };     /* a lab changed CC.site.fitScale's answer (EH2 lab 3: full size from the login step, Moaz 2026-11-24) */
     /* «scroll down» hint on the website (Moaz 2026-11-14, like the one of «شرح مختصر»): a bouncing gold pill at the bottom of the page while the page
        has more below; it goes once the page is scrolled to its end */
     var shint = el('div', 'br-shint'); shint.setAttribute('aria-hidden', 'true');
@@ -4611,7 +4630,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     'h1,h2,h3,h4{font-family:"CC Digits","Montserrat Arabic",Tajawal,sans-serif;color:var(--teal);line-height:1.35;margin:0;font-weight:800}',
     'a{color:inherit;text-decoration:none}bdi{unicode-bidi:isolate}.w{max-width:1140px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}.ic{width:1.15em;height:1.15em;vertical-align:-.2em;flex:none}small{display:block;color:var(--mut);font-size:.76rem;font-weight:600;line-height:1.4}',
     /* header: white, a thin teal line on top, the active menu item underlined in gold */
-    '.hd{position:sticky;top:0;z-index:5;background:#fff;border-top:4px solid var(--teal);border-bottom:1px solid var(--line)}.hd .w{min-height:70px}',
+    '.hd{position:relative;z-index:5;background:#fff;border-top:4px solid var(--teal);border-bottom:1px solid var(--line)}.hd .w{flex-wrap:nowrap}.hd nav{flex-wrap:nowrap;white-space:nowrap;min-width:0}@media(max-width:900px){.hd .w{column-gap:16px!important}.hd nav{gap:2px!important}.hd nav a{padding:6px 10px!important;font-size:.9rem!important}.hd .logo img{height:38px!important}}@media(max-width:760px){.hd .w{column-gap:10px!important;padding-left:12px!important;padding-right:12px!important}.hd nav a{padding:5px 7px!important;font-size:.8rem!important}.hd .logo img{height:32px!important}}.hd .w{min-height:70px}',
     '.logo{display:flex;align-items:center;gap:10px}.lg-bar{width:5px;height:38px;border-radius:3px;background:linear-gradient(180deg,var(--gold),#5E8FD1);flex:none}.logo b{display:block;font-size:1.12rem;color:var(--teal);line-height:1.2;font-weight:800}.logo small{font-weight:600;font-size:.72rem}',
     'nav{display:flex;gap:4px;align-self:stretch}nav a{display:flex;align-items:center;gap:7px;padding:0 14px;font-weight:700;color:var(--mut);border-bottom:3px solid transparent;margin-bottom:-1px}nav a:hover{color:var(--teal)}nav a.on{color:var(--teal);border-bottom-color:var(--gold)}nav a.on .ic{color:var(--teal3)}',
     '.who{display:flex;align-items:center;gap:10px}.who .av{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:var(--teal);color:#fff;font-weight:800;font-size:1rem}.who .hi{font-size:.88rem;font-weight:600;color:var(--mut);white-space:nowrap}.who .hi b{font-size:.95rem;color:var(--teal);font-weight:800}.who .lo{display:flex;align-items:center;gap:5px;font-size:.78rem;font-weight:700;color:var(--mut);border-inline-start:1px solid var(--line);padding-inline-start:12px;margin-inline-start:4px}',
@@ -4914,7 +4933,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
 
   var LOGIN = BANK.host + '/login', FAKE = BANK.fake + '/login', EX = 'sinnara ' + LOGIN;
-  var SALEH = 'saleh.altamimi@camelcode.shop', FROM_N = BANK.name, FROM_A = 'security@bank-alerts.example';
+  var SALEH = 'sltmimi@camelcode.shop', FROM_N = BANK.name, FROM_A = 'security@bank-alerts.example';
   var BEN = BANK.bens.filter(function (b) { return b.id === BANK.target; })[0];
   var H_SUBJ = 'تنبيه عاجل تم اختراق حساب البنك';     /* Moaz 2026-11-24 */
   var H_BODY = 'عزيزي العميل تم اختراق حسابك في البنك الإلكتروني لحماية أموالك غير كلمة السر فوراً من خلال الرابط التالي ' + FAKE;     /* words only: no «،» «.» «:» and no shadda (Moaz 2026-11-24) */
@@ -7422,7 +7441,7 @@ body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cu
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, sinnara: 1, clear: 1, help: 1 };   /* sinnara: EH2 lab 5 (2026-11-24) */
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, sinnara: 1, clear: 1, help: 1, password: 1 };   /* sinnara: EH2 lab 5; password: «password generator», EH2 lab 3 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
@@ -7435,7 +7454,7 @@ body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cu
   setInterval(function () {
     var want = next();
     /* a button whose command is no longer the next one goes away */
-    [].forEach.call(document.querySelectorAll('.fx-copy'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
+    [].forEach.call(document.querySelectorAll('.fx-copy:not([data-val])'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
     var cur = document.querySelector('.cc-cur'); if (!want || !cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
       var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]] || norm(t) !== want) return;
@@ -7447,6 +7466,28 @@ body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cu
         b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
         setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span>نسخ الأمر</span>'; }, 1500);
         var i = document.querySelector('#laptop #cmd'); if (i && !i.disabled) i.focus();     /* ready to paste */
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
+
+  /* Farhan's review (EH2 lab 3, Moaz 2026-11-24, every lab that opts in): a copy button next to a VALUE in the step on screen, such as the
+     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'sltmimi@camelcode.shop', label: 'نسخ البريد' }, ...]
+     while the step needs them and clears it (null) after; the button sits after the code chip whose text is exactly that value. */
+  setInterval(function () {
+    var list = (window.CC && CC.copyVals) || [], want = {};
+    list.forEach(function (x) { want[norm(x.v)] = x.label || 'نسخ'; });
+    [].forEach.call(document.querySelectorAll('.fx-copy[data-val]'), function (b) { if (!want[b.getAttribute('data-val')] || !b.closest('.cc-cur')) b.remove(); });
+    var cur = document.querySelector('.cc-cur'); if (!list.length || !cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      var t = norm(c.textContent), lab = want[t]; if (!lab) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.setAttribute('data-val', t); b.innerHTML = IC + '<span></span>';
+      b.lastChild.textContent = lab; b.title = lab; b.setAttribute('aria-label', lab + ' ' + t);
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copy(t);
+        b.classList.add('ok'); b.innerHTML = OK + '<span>تم النسخ</span>';
+        setTimeout(function () { b.classList.remove('ok'); b.innerHTML = IC + '<span></span>'; b.lastChild.textContent = lab; }, 1500);
       });
       c.parentNode.insertBefore(b, c.nextSibling);
     });
