@@ -4918,8 +4918,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_mail: 'افتح تطبيق **البريد** في أسفل شاشة الحاسوب، لنكتب **رسالة تصيد احتيالي** إلى **صالح**.',     /* Moaz 2026-11-24 */
     t_to: 'اضغط على خانة **إلى**، واكتب البريد الإلكتروني لصالح: `' + SALEH + '`',
     t_subj: 'اكتب **موضوع** الرسالة في خانة **الموضوع**، مثل: «' + H_SUBJ + '»',
-    t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** `' + FAKE + '` في آخرها.',
-    t_send: 'اقرأ رسالتك مرة أخرى، ثم اضغط زر **إرسال**.',
+    t_body: 'اكتب **نص الرسالة**: تظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة faker: `' + FAKE + '`',     /* Moaz 2026-11-24 (a «نسخ الرابط» button follows the link) */
+    t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
     t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
     t_caught: 'لاحظ: وصل إلى **شاشة الأوامر** **اسم المستخدم** و**كلمة السر** اللذان كتبهما صالح، وحفظتهما الأداة في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني**، فلم ينتبه لشيء!',
     t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في `' + LOGIN + '` باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي وصلت إلى شاشة الأوامر.',
@@ -4991,18 +4991,65 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     init: function (w) { MAIL.win = w; if (MAIL.bind) MAIL.bind(w); }
   }];
 
-  /* a faint typing hint in an empty field, like the terminal's command hint (both modes; it never fills anything) */
+  /* a faint typing hint in a field, exactly like the terminal's command hint (both modes; it never fills anything): the hint types itself on a loop,
+     keeps going when the field is clicked, and the letters the student types replace it in place while they match (Moaz 2026-11-24) */
   function fieldHint(el, text) {
     if (!el) return function () { };
-    var n = 0, pause = 0, ph = el.getAttribute('placeholder') || '';
+    var box = el.parentNode, gh = document.createElement('div'), hid = document.createElement('span'), rest = document.createElement('span');
+    gh.className = 'ml-ghost'; gh.setAttribute('aria-hidden', 'true'); hid.className = 'hid'; gh.appendChild(hid); gh.appendChild(rest);
+    if (getComputedStyle(box).position === 'static') box.style.position = 'relative';
+    box.appendChild(gh);
+    function place() {           /* the ghost sits exactly over the field, with the field's own font, padding and direction */
+      var cs = getComputedStyle(el);
+      ['font', 'fontSize', 'lineHeight', 'letterSpacing', 'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'textAlign', 'direction', 'borderTopWidth', 'borderRightWidth', 'borderBottomWidth', 'borderLeftWidth'].forEach(function (k) { gh.style[k] = cs[k]; });
+      gh.style.left = el.offsetLeft + 'px'; gh.style.top = el.offsetTop + 'px'; gh.style.width = el.offsetWidth + 'px'; gh.style.height = el.offsetHeight + 'px';
+      gh.style.whiteSpace = el.tagName === 'TEXTAREA' ? 'pre-wrap' : 'pre';
+    }
+    var n = 0, pause = 0;
+    function draw() {
+      var v = el.value, shown = text.slice(0, n);
+      if (text.indexOf(v) !== 0) { gh.style.visibility = 'hidden'; return; }      /* a different text: the hint steps aside */
+      gh.style.visibility = 'visible';
+      hid.textContent = v; rest.textContent = shown.length > v.length ? shown.slice(v.length) : '';
+      gh.scrollTop = el.scrollTop;
+    }
+    place();
     var t = setInterval(function () {
-      if (!el.isConnected) { clearInterval(t); return; }
-      if (el.value) { el.setAttribute('placeholder', ''); return; }
+      if (!el.isConnected) { clearInterval(t); gh.remove(); return; }
       if (n < text.length) n++; else if (++pause > 16) { n = 0; pause = 0; }
-      el.setAttribute('placeholder', text.slice(0, n));
+      place(); draw();
     }, 85);
-    return function () { clearInterval(t); el.setAttribute('placeholder', ph); };
+    el.addEventListener('input', draw); el.addEventListener('scroll', draw);
+    return function () { clearInterval(t); el.removeEventListener('input', draw); gh.remove(); };
   }
+
+  /* «نسخ الرابط» beside the fake link in the message step (Moaz 2026-11-24): the engine's «نسخ الأمر» look (.fx-copy, engine/touches/os.js);
+     one click copies the link and puts the cursor in the message box, ready to paste */
+  var LINK_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
+  var LINK_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
+  function copyText(txt) {
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
+    var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
+    document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
+  }
+  var linkBtnOn = false;
+  setInterval(function () {
+    if (!linkBtnOn) { [].forEach.call(document.querySelectorAll('.fx-copy.fx-link'), function (b) { b.remove(); }); return; }
+    var cur = document.querySelector('.cc-cur'); if (!cur || cur.classList.contains('typing')) return;
+    [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
+      if (c.textContent.replace(/[⁦-⁩‎‏]/g, '').trim() !== FAKE) return;
+      if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-link')) return;
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy fx-link'; b.innerHTML = LINK_IC + '<span>نسخ الرابط</span>';
+      b.title = 'انسخ الرابط'; b.setAttribute('aria-label', 'انسخ الرابط ' + FAKE);
+      b.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault(); copyText(FAKE);
+        b.classList.add('ok'); b.innerHTML = LINK_OK + '<span>تم النسخ</span>';
+        setTimeout(function () { if (b.isConnected) { b.classList.remove('ok'); b.innerHTML = LINK_IC + '<span>نسخ الرابط</span>'; } }, 1500);
+        var box = document.querySelector('.cc-win-mail .ml-body'); if (box && !box.readOnly) box.focus();
+      });
+      c.parentNode.insertBefore(b, c.nextSibling);
+    });
+  }, 300);
 
   /* [LAB] ================= COMMANDS ================= */
   var CMDS = ['display', 'enter', 'back', 'read', 'create', 'faker', 'clear', 'help'];   /* every command of the terminal lab still works (engine/terminal-basics.js) */
@@ -5257,7 +5304,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       CC.guide.hide();
       if (!suOk()) { L.task(CC.t('t_subj')); hints.push(fieldHint(fld('.ml-subj'), H_SUBJ)); guideFld('.ml-subj', function () { var x = fld('.ml-subj'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(suOk))) return; }
       CC.guide.hide();
-      if (!boOk()) { L.task(CC.t('t_body')); hints.push(fieldHint(fld('.ml-body'), H_BODY)); guideFld('.ml-body', function () { var x = fld('.ml-body'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(boOk))) return; }
+      if (!boOk()) { linkBtnOn = true; L.task(CC.t('t_body')); hints.push(fieldHint(fld('.ml-body'), H_BODY)); guideFld('.ml-body', function () { var x = fld('.ml-body'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(boOk))) return; }
+      linkBtnOn = false;
       CC.guide.hide();
       if (!st.sent) {
         L.task(CC.t('t_send'));
@@ -7035,6 +7083,9 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 @keyframes vlclk{50%{transform:scale(.82)}}
 @media (max-width:1020px){body.cc-vic #stage{flex-direction:column}body.cc-vic #stage>#laptop,.vlap{flex-basis:auto;max-width:100%;width:100%}}
 @media (prefers-reduced-motion:reduce){.vlap,.vl-win,.vl-cur{transition:none}.vl-cur.clk svg{animation:none}}
+/* the faint typing hint over a mail field (like the terminal's command hint, Moaz 2026-11-24) */
+.ml-ghost{position:absolute;z-index:1;pointer-events:none;overflow:hidden;box-sizing:border-box;border-style:solid;border-color:transparent;color:#9AA8AA;margin:0}
+.ml-ghost .hid{visibility:hidden}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
@@ -7246,7 +7297,7 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 (function () {
   'use strict';
   if (window.__farhanCopy) return; window.__farhanCopy = 1;
-  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, clear: 1, help: 1 };
+  var CMDS = { guess: 1, display: 1, enter: 1, read: 1, back: 1, create: 1, open: 1, barq: 1, kashif: 1, faker: 1, clear: 1, help: 1 };   /* faker: EH2 lab 5 (2026-11-24) */
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
