@@ -4481,7 +4481,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     name: 'متجر كاملكود لمستلزمات كرة القدم',
     host: 'camelcode.shop',
     owner: 'خالد ناصر الحداد', manager: 'يوسف أحمد العطار', managerFirst: 'يوسف', support: 'فيصل محمد الخطيب', sales: 'عمر حسن النجار',   /* full three-part names (Moaz 2026-11-24) */   /* pending */
-    email: 'info@camelcode.shop', managerEmail: 'yousef.alattar@camelcode.shop', phone: '+974 0000 0000', address: 'شارع الملاعب، الدوحة'   /* pending */
+    email: 'info@camelcode.shop', managerEmail: 'yalattar@camelcode.shop', ownerEmail: 'khaddad@camelcode.shop', salesStaffEmail: 'onajjar@camelcode.shop', supportEmail: 'fkhatib@camelcode.shop', phone: '+974 0000 0000', address: 'شارع الملاعب، الدوحة'   /* pending */
   };
   /* the account the challenge breaks into is the manager's; his password is his cat's name + his birth year (pending, Moaz 2026-11-24 plan) */
   SHOP.salesEmail = SHOP.managerEmail;
@@ -4581,11 +4581,16 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<path d="M1.2 21h56.6v2.2c0 .8-.6 1.4-1.4 1.4H4.4c-1.8 0-3.2-1.6-3.2-3.6z" fill="#16a34a"/>' +
       '<path d="M7 24.6v2.6M14 24.6v2.6M21 24.6v2.6M40 24.6v2.6M47 24.6v2.6M54 24.6v2.6" stroke="#111827" stroke-width="2.4" stroke-linecap="round"/></g>';
   }
-  /* a shirt with a number */
-  function shirtG(x, y, s, c, trim, num) {
-    return '<g transform="translate(' + x + ' ' + y + ') scale(' + s + ')"><path d="M14 0l-14 8 6 12 6-3v31h26V17l6 3 6-12-14-8c-1.5 4-5 6-9 6s-7.5-2-9-6z" fill="' + c + '"/>' +
-      '<path d="M14 0c1.5 4 5 6 9 6s7.5-2 9-6" stroke="' + trim + '" stroke-width="2.4" fill="none"/><path d="M0 8l6 12M46 8l-6 12" stroke="' + trim + '" stroke-width="2"/>' +
-      '<text x="23" y="34" text-anchor="middle" font-size="15" font-weight="800" fill="' + trim + '" font-family="Montserrat,sans-serif">' + num + '</text></g>';
+  /* a football shirt on the 120x80 canvas, symmetric about x=60 (84 wide, 58 high: y 10 to 68), with a collar trim, cuffs and a number on the chest.
+     long = true gives long sleeves (the goalkeeper's). */
+  function shirtG(c, trim, num, long) {
+    var so = long ? [20, 52] : [18, 32], ci = long ? [31, 56] : [28, 40];
+    function m(p) { return [120 - p[0], p[1]]; }
+    var d = 'M50 10L34 15L' + so.join(' ') + 'L' + ci.join(' ') + 'L36 33V68H84V33L' + m(ci).join(' ') + 'L' + m(so).join(' ') + 'L86 15L70 10Q60 19 50 10Z';
+    return '<path d="' + d + '" fill="' + c + '"/><path d="M36 33V68H44V35zM84 33V68H76V35z" fill="rgba(0,0,0,.09)"/>' +
+      '<path d="M50 10Q60 19 70 10" stroke="' + trim + '" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+      '<path d="M' + so.join(' ') + 'L' + ci.join(' ') + 'M' + m(so).join(' ') + 'L' + m(ci).join(' ') + '" stroke="' + trim + '" stroke-width="3.2" stroke-linecap="round"/>' +
+      '<text x="60" y="52" text-anchor="middle" font-size="22" font-weight="800" fill="' + trim + '" font-family="Montserrat,Arial,sans-serif">' + num + '</text>';
   }
   var bootArt = art('', '', '<ellipse cx="60" cy="68" rx="42" ry="3.5" fill="rgba(0,0,0,.14)"/>' + bootG(26, 32, 1.15, '#111827', '#ffffff'));
   var kidsBootArt = art('', '', '<ellipse cx="60" cy="68" rx="38" ry="3.5" fill="rgba(0,0,0,.14)"/>' + bootG(30, 35, 1, '#16a34a', '#ffffff'));
@@ -4600,13 +4605,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<rect x="-12" y="11" width="23" height="9" rx="2.5" fill="#16a34a"/><path d="M-9 15.5h17" stroke="#fff" stroke-width="1.2" opacity=".6"/></g>';
   }
   var glovesArt = art('', '', '<ellipse cx="60" cy="72" rx="34" ry="3.2" fill="rgba(0,0,0,.14)"/>' + gloveG(44, 46, false) + gloveG(78, 46, true));
-  var kitArt = art('#0E1F39', '#1B2F52', '<ellipse cx="60" cy="74" rx="34" ry="3" fill="rgba(0,0,0,.3)"/>' + shirtG(37, 14, 1, '#8A1538', '#fff', '10'));
-  var keeperArt = art('#E7EEE9', '#D0DBD3', '<ellipse cx="60" cy="74" rx="34" ry="3" fill="rgba(14,31,57,.18)"/>' + shirtG(37, 14, 1, '#FCAD0F', '#0E1F39', '1'));
-  /* a sports water bottle with a gold cap and a flip straw */
-  var bottleArt = art('#295AA6', '#0E1F39', '<ellipse cx="60" cy="72" rx="26" ry="3.4" fill="rgba(0,0,0,.3)"/><circle cx="60" cy="42" r="30" fill="rgba(252,173,15,.1)"/>' +
-    '<rect x="44" y="24" width="32" height="48" rx="9" fill="#F4F6FA"/><rect x="44" y="40" width="32" height="18" fill="#8DC63F"/><path d="M48 30v36" stroke="rgba(255,255,255,.7)" stroke-width="3" stroke-linecap="round"/>' +
-    '<rect x="48" y="14" width="24" height="12" rx="4" fill="#FCAD0F"/><path d="M60 14V6h8" stroke="#0E1F39" stroke-width="3" fill="none" stroke-linecap="round"/>' +
-    '<path d="M50 62h20" stroke="#0E1F39" stroke-width="2" opacity=".3"/>');
+  var kitArt = art('', '', '<ellipse cx="60" cy="72" rx="30" ry="2.8" fill="rgba(0,0,0,.14)"/>' + shirtG('#8A1538', '#ffffff', '10', false));
+  var keeperArt = art('', '', '<ellipse cx="60" cy="72" rx="30" ry="2.8" fill="rgba(0,0,0,.14)"/>' + shirtG('#F2B705', '#0E1F39', '1', true));
+  /* a sports water bottle, symmetric about x=60: a spout, a cap, a body with a green band and a highlight */
+  var bottleArt = art('', '', '<ellipse cx="60" cy="72" rx="20" ry="2.8" fill="rgba(0,0,0,.14)"/>' +
+    '<rect x="56" y="8" width="8" height="6" rx="2" fill="#111827"/><rect x="49" y="13" width="22" height="11" rx="3.5" fill="#111827"/>' +
+    '<rect x="43" y="23" width="34" height="47" rx="9" fill="#E9EEF3"/><rect x="43" y="43" width="34" height="15" fill="#16a34a"/>' +
+    '<path d="M43 47h34M43 54h34" stroke="#fff" stroke-width="1" opacity=".55"/><rect x="48" y="28" width="4" height="38" rx="2" fill="#fff" opacity=".75"/>' +
+    '<rect x="43" y="23" width="34" height="47" rx="9" fill="none" stroke="rgba(0,0,0,.06)"/>');
   var bagArt = art('#8DC63F', '#3E8A2E', '<ellipse cx="60" cy="70" rx="44" ry="4" fill="rgba(0,0,0,.25)"/>' +
     '<path d="M42 30c0-10 8-16 18-16s18 6 18 16" fill="none" stroke="#0E1F39" stroke-width="4"/><rect x="16" y="28" width="88" height="40" rx="18" fill="#0E1F39"/>' +
     '<path d="M24 40h72" stroke="#FCAD0F" stroke-width="3" stroke-dasharray="5 4"/><circle cx="34" cy="54" r="7" fill="#fff"/><path d="M34 50.5l3.3 2.4-1.2 3.8h-4.2l-1.2-3.8z" fill="#0E1F39"/>');
@@ -4683,8 +4689,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.cats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.cat{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--soft);border-radius:var(--r);padding:26px 12px;font-weight:700;text-align:center;border:1px solid transparent}.cat:hover{border-color:var(--line);background:#fff}',
     '.cat .ic{width:2.2em;height:2.2em;color:var(--ink)}.cat small{display:block;color:var(--mut);font-weight:500;font-size:.85rem}',
     /* products */
-    '.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}.pc{display:flex;flex-direction:column;background:#fff}.phw{border-radius:var(--r);overflow:hidden;background:var(--soft)}',
-    '.art{aspect-ratio:4/3;display:grid;place-items:center;background:var(--soft)}.art svg{width:82%;height:auto}',
+    '.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}.pc{display:flex;flex-direction:column;background:#fff}.phw{border-radius:var(--r);overflow:hidden;background:var(--soft)}',
+    '.art{aspect-ratio:4/3;display:grid;place-items:center;background:var(--soft)}.art svg{width:74%;height:auto}',
     '.pb{display:flex;flex-direction:column;padding:12px 2px 0;flex:1}.pb h3{font-size:1rem;font-weight:700}.pb .d{margin:2px 0 10px;color:var(--mut);font-size:.88rem;line-height:1.6}',
     '.pr{display:flex;align-items:center;justify-content:space-between;margin-top:auto}.pr b{font-size:1.05rem;font-weight:800}.av2{font-size:.8rem;font-weight:700;color:var(--acc);display:flex;align-items:center;gap:6px}.av2::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--acc)}',
     /* features band */
@@ -4698,7 +4704,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.team{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.mem{border:1px solid var(--line);border-radius:var(--r);padding:22px 16px;text-align:center;background:#fff}.mem .av{width:76px;height:76px;margin:0 auto 12px;border-radius:50%;overflow:hidden}.avp{display:block;width:100%;height:100%}.mem h3{font-size:1rem;font-weight:700}.mem span{display:block;color:var(--mut);font-size:.88rem;margin-top:2px}',
     /* contact */
     '.info{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.info div{display:flex;gap:14px;align-items:flex-start;border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}.info .ic{width:1.5em;height:1.5em;color:var(--acc);margin-top:.15em}',
-    '.info div>span{display:flex;flex-direction:column;gap:2px;color:var(--mut);line-height:1.5;min-width:0}.info b{color:var(--ink);font-weight:700}.info bdi{direction:ltr;unicode-bidi:isolate;white-space:nowrap;color:var(--ink)}.info .mgr{grid-column:1/-1;background:var(--acc2);border-color:transparent}.info .mgr small{color:var(--mut);font-size:.85rem}',
+    '.info div>span{display:flex;flex-direction:column;gap:2px;color:var(--mut);line-height:1.5;min-width:0}.info b{color:var(--ink);font-weight:700}.info bdi{direction:ltr;unicode-bidi:isolate;white-space:nowrap;color:var(--ink)}',
+    '.staff{margin-top:16px}.sm{display:grid;grid-template-columns:1.3fr 1fr 1.5fr;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}.sm:last-child{border:0}.sm.head{font-size:.82rem;color:var(--mut);font-weight:700;padding-top:2px}.sm bdi{direction:ltr;unicode-bidi:isolate;font-weight:700;overflow-wrap:anywhere}.sm>:nth-child(3){justify-self:end;text-align:left;direction:ltr}.sm span:nth-child(2){color:var(--mut)}',
     '.two{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;align-items:stretch}.pnl{border:1px solid var(--line);border-radius:var(--r);padding:20px 22px;background:#fff}.pnl h3{font-size:1.05rem;margin-bottom:10px;display:flex;align-items:center;gap:8px}.pnl p{margin:0;color:var(--mut)}',
     '.hrs{width:100%;border-collapse:collapse}.hrs td{padding:10px 0;border-bottom:1px solid var(--line);color:var(--mut)}.hrs tr:last-child td{border:0}.hrs td:last-child{text-align:end;color:var(--ink);font-weight:700}',
     /* login and the manager panel */
@@ -4711,7 +4718,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.ft h4{color:#fff;font-size:1rem;margin-bottom:4px}.ft a,.ft span,.ft p{color:#B8C0CC}.ft a:hover{color:#fff}.ft span{display:flex;align-items:center;gap:8px}.ft span .ic{color:#fff}.ft p{margin:0;max-width:320px}',
     /* narrow */
     '@media(max-width:980px){.grid,.cats{grid-template-columns:repeat(2,1fr)}.team{grid-template-columns:repeat(2,1fr)}.feat{grid-template-columns:repeat(2,1fr)}.hero .w{flex-wrap:wrap}.story{grid-template-columns:1fr}}',
-    '@media(max-width:700px){.w,.sec{padding-left:18px;padding-right:18px}.hero h1{font-size:1.9rem}.feature{display:none}.info,.two,.vals,.ft .cols{grid-template-columns:1fr}.feat{grid-template-columns:1fr}.grid{gap:14px}}'
+    '@media(max-width:700px){.sm>:nth-child(3){justify-self:start}.sm{grid-template-columns:1fr;gap:2px}.sm.head{display:none}.w,.sec{padding-left:18px;padding-right:18px}.hero h1{font-size:1.9rem}.feature{display:none}.info,.two,.vals,.ft .cols{grid-template-columns:1fr}.feat{grid-template-columns:1fr}.grid{gap:14px}}'
   ].join('\n');
 
   var pages = {};
@@ -4720,7 +4727,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '<div class="feature"><div class="shot">' + heroShot + '</div><div class="fi"><span>الأكثر طلباً</span><b>حذاء سبيد للملاعب</b><em>349 ر.ق</em></div></div></div></section>' +
     '<section class="sec"><div class="sh"><h2>تسوّق حسب القسم</h2></div><div class="cats">' +
     '<a class="cat" href="/products">' + I.shoe + '<span>الأحذية<small>حذاءان</small></span></a><a class="cat" href="/products">' + I.ball + '<span>الكرات<small>نوعان</small></span></a><a class="cat" href="/products">' + I.shirt + '<span>الأطقم<small>قطعتان</small></span></a><a class="cat" href="/products">' + I.glove + '<span>المعدات<small>ثلاث قطع</small></span></a></div></section>' +
-    '<section class="sec" style="padding-top:0"><div class="sh"><h2>الأكثر مبيعاً</h2><a class="lnk" href="/products">عرض كل المنتجات ←</a></div>' + grid([PRODUCTS.boots[0], PRODUCTS.balls[0], PRODUCTS.kit[0], PRODUCTS.gear[0]]) + '</section>' +
+    '<section class="sec" style="padding-top:0"><div class="sh"><h2>الأكثر مبيعاً</h2><a class="lnk" href="/products">عرض كل المنتجات ←</a></div>' + grid([PRODUCTS.boots[0], PRODUCTS.balls[0], PRODUCTS.kit[0]]) + '</section>' +
     '<section class="band"><div class="feat"><div>' + I.shield + '<span><b>تبديل المقاس</b>خلال 14 يوماً</span></div><div>' + I.truck + '<span><b>توصيل سريع</b>إلى باب بيتك</span></div><div>' + I.card + '<span><b>دفع مرن</b>ببطاقة أو عند الاستلام</span></div><div>' + I.ball + '<span><b>طلبات الفرق</b>أطقم كاملة للفرق والمدارس</span></div></div></section>' +
     '<section class="sec txt" style="padding-top:0"><h2>عن المتجر</h2><p>بدأ ' + SHOP.name + ' كمحل صغير لمحبي كرة القدم، وأصبح اليوم وجهة اللاعبين والفرق في المدينة. <a class="more" href="/about">اقرأ قصتنا ←</a></p></section>') };
   pages['/products'] = { title: 'المنتجات | ' + SHOP.name, html: page('/products',
@@ -4736,7 +4743,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '<div class="mem"><div class="av">' + avatar('#2a1b12', '#3b82f6', '#d49a72') + '</div><h3>' + SHOP.support + '</h3><span>مسؤول طلبات الفرق</span></div></div></section>') };
   pages['/contact'] = { title: 'تواصل | ' + SHOP.name, html: page('/contact',
     crumb('تواصل') + '<section class="sec"><h2>تواصل معنا</h2><p class="lead">يسعدنا سماع رأيك أو الإجابة عن أسئلتك.</p>' +
-    '<div class="info"><div>' + I.mail + '<span><b>البريد الإلكتروني</b><bdi dir="ltr">' + SHOP.email + '</bdi></span></div><div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + SHOP.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + SHOP.address + '</span></div><div class="mgr">' + I.mail + '<span><b>بريد مدير التسويق</b><bdi dir="ltr">' + SHOP.managerEmail + '</bdi><small>للطلبات الخاصة وطلبات الفرق: ' + SHOP.manager + '</small></span></div></div>' +
+    '<div class="info"><div>' + I.mail + '<span><b>البريد الإلكتروني</b><bdi dir="ltr">' + SHOP.email + '</bdi></span></div><div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + SHOP.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + SHOP.address + '</span></div></div>' +
+    '<section class="pnl staff"><h3>' + I.mail + ' بريد فريق المتجر</h3><div class="sm head"><span>الاسم</span><span>الوظيفة</span><span>البريد الإلكتروني</span></div>' +
+    [[SHOP.owner, 'مالك المتجر', SHOP.ownerEmail], [SHOP.manager, 'مدير التسويق', SHOP.managerEmail], [SHOP.sales, 'مسؤول المبيعات', SHOP.salesStaffEmail], [SHOP.support, 'مسؤول طلبات الفرق', SHOP.supportEmail]].map(function (p) {
+      return '<div class="sm"><span>' + p[0] + '</span><span>' + p[1] + '</span><bdi dir="ltr">' + p[2] + '</bdi></div>';
+    }).join('') + '</section>' +
     '<div class="two ct"><div class="pnl"><h3>أوقات العمل</h3><table class="hrs"><tr><td>من السبت إلى الخميس</td><td>من 10 صباحاً إلى 10 مساءً</td></tr><tr><td>الجمعة</td><td>من 2 ظهراً إلى 10 مساءً</td></tr></table></div>' +
     '<div class="pnl"><h3>كيف تصل إلينا</h3><p>المتجر في ' + SHOP.address + '، بالقرب من مواقف السيارات العامة، ويمكنك الدخول من الباب الرئيسي ذي المظلة المخططة، بجانب الملعب الصغير.</p></div></div></section>') };
   /* /login: a public account-login page (Moaz 2026-11-18). A real form, never dead: it answers every attempt. In this OSINT lab there is no
@@ -4818,7 +4829,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   var T = CC.osint = {
     name: 'يوسف أحمد العطار', short: 'يوسف العطار', first: 'يوسف',
     user: 'yousef_alattar92', pet: 'زعتر', petEn: 'Zaatar', born: 1992, bday: '02/08/1992',
-    email: 'yousef.alattar@camelcode.shop', town: 'الخور',
+    email: 'yalattar@camelcode.shop', town: 'الخور',
     search: 'search.example',
     social: { host: 'social.example', path: '/yousef_alattar92' },
     work: { host: 'jobs.example', path: '/profile/yousef-alattar' },
@@ -5271,13 +5282,15 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما اسم مدير التسويق في المتجر؟', q1h: 'افتح صفحة «**من نحن**» في موقع المتجر، وابحث في قسم «**فريقنا**».',
-    q2: 'ما اسم الحيوان الأليف لمدير التسويق؟', q2h: 'ابحث عن **اسمه الكامل** في **محرك البحث**، وتأكد أن النتيجة عنه هو (**الصورة** و**الوظيفة**)، ثم اقرأ **منشوراته**.',
-    q3: 'في أي سنة وُلد مدير التسويق؟', q3h: 'انتبه! يوجد **أشخاص آخرون** بالاسم نفسه. اقرأ **وصف حسابه** هو في منصة التواصل الاجتماعي.',
-    q4: 'ما البريد الإلكتروني لمدير التسويق في العمل؟', q4h: 'ابحث في صفحات **موقع المتجر** نفسه.',
+    q2: 'ما البريد الإلكتروني لمدير التسويق في العمل؟', q2h: 'ابحث في **موقع المتجر** نفسه، وانتبه إلى **وظيفة** صاحب كل بريد.',
+    q3: 'ما اسم الحيوان الأليف لمدير التسويق؟', q3h: 'ابحث عن **اسمه الكامل** في **محرك البحث**، وتأكد أن النتيجة عنه هو (**الصورة** و**الوظيفة**)، ثم اقرأ **منشوراته**.',
+    q4: 'في أي سنة وُلد مدير التسويق؟', q4h: 'انتبه! يوجد **أشخاص آخرون** بالاسم نفسه. اقرأ **وصف حسابه** هو في منصة التواصل الاجتماعي.',
     q5: 'ما كلمة المرور التي وجدتها أداة برق لحساب مدير التسويق؟', q5h: 'شغّل **أداة برق** على **صفحة تسجيل الدخول** مع **بريد مدير التسويق** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة شيئاً، فتأكد من المعلومات التي أدخلتها في المولّد.',
     q6: 'ما كود الخصم الخاص بالموظفين؟', q6h: 'سجّل الدخول إلى حساب مدير التسويق، ثم اقرأ **الرسائل الداخلية** في لوحة التحكم.',
-    /* one instruction, shown at once (Moaz 2026-11-24: «هدفك اليوم», not «التحدي الأول والثاني») */
-    t_goal: '**هدفك اليوم:** اختراق حساب **مدير التسويق** في متجر `camelcode.shop`. اجمع عنه **معلومات** من **الإنترنت** باستخدام **المتصفح** [[web]]، ثم استخدم **أداة مولّد كلمات المرور** و**أداة برق** في **شاشة الأوامر** [[term]] لتجد **كلمة مروره**، وسجّل الدخول إلى الموقع وأجب عن **أسئلة التحدي**. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
+    /* the instruction moves on as the questions are answered (Moaz 2026-11-25): never named «التحدي الأول / الثاني». It starts with «هدفك اليوم». */
+    t_goal: '**هدفك اليوم:** اختراق حساب **مدير التسويق** في متجر `camelcode.shop`. ابدأ بجمع **معلومات** عنه من **الإنترنت**: افتح **المتصفح** [[web]]، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
+    t_goal2: 'الآن افتح **شاشة الأوامر** [[term]] واستخدم **أداة مولّد كلمات المرور** لتصنع **قائمة كلمات مرور** من **المعلومات** التي جمعتها عن مدير التسويق. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
+    t_goal3: 'استخدم **أداة برق** مع **القائمة** التي صنعتها لتجد **كلمة مرور** حساب مدير التسويق، ثم **سجّل الدخول** إلى الموقع وأجب عن **الأسئلة الجديدة**.',
     t_done: 'أحسنت! أنهيت التحدي المصغّر.',
     e_gen: 'المولّد يبني قائمة كلمات المرور...', e_run: 'أداة برق تجرّب كلمات المرور الآن...',
     /* tokens explained under a command */
@@ -5399,25 +5412,35 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     var ok = function () { return g === CC.gen; };
     var fs = CC.newFS();
     CC.labFS = fs;                                       /* the desktop shows passwords.txt once it exists */
-    var st = { armed: true, busy: false, gen: null, genCount: 0 };
+    var st = { phase: 1, armed: true, busy: false, gen: null, genCount: 0, loggedIn: false };
     CC.free = true; CC.barqUnlocked = false;
     if (CC.site.resetLogin) CC.site.resetLogin();       /* a fresh run never starts already logged in */
 
     function low(v) { return String(v || '').trim().toLowerCase(); }
     CC.Q.init([
       { id: 'q1', q: CC.t('q1'), answers: [T.name, T.short, 'يوسف احمد العطار'], hint: CC.t('q1h') },
-      { id: 'q2', q: CC.t('q2'), answers: ['زعتر', 'Zaatar'], check: function (v) { var t = low(v).replace(/^(القط|قطه|قطّه|القطة)\s+/, ''); return t === 'زعتر' || ALIAS[t] === 'zaatar'; }, hint: CC.t('q2h') },
-      { id: 'q3', q: CC.t('q3'), answers: ['1992'], check: function (v) { return String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).trim() === String(T.born); }, hint: CC.t('q3h') },
-      { id: 'q4', q: iso(CC.t('q4')), answers: [EMAIL], check: function (v) { return low(v).replace(/\s+/g, '') === EMAIL; }, hint: CC.t('q4h') },
+      { id: 'q2', q: iso(CC.t('q2')), answers: [EMAIL], check: function (v) { return low(v).replace(/\s+/g, '') === EMAIL; }, hint: CC.t('q2h') },
+      { id: 'q3', q: CC.t('q3'), answers: ['زعتر', 'Zaatar'], check: function (v) { var t = low(v).replace(/^(القط|قطه|قطّه|القطة)\s+/, ''); return t === 'زعتر' || ALIAS[t] === 'zaatar'; }, hint: CC.t('q3h') },
+      { id: 'q4', q: CC.t('q4'), answers: ['1992'], check: function (v) { return String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).trim() === String(T.born); }, hint: CC.t('q4h') },
       { id: 'q5', q: CC.t('q5'), answers: [SHOP.realPassword], hint: iso(CC.t('q5h')), gate: false, hidden: true },
       { id: 'q6', q: CC.t('q6'), answers: [SHOP.staffCode], check: function (v) { return low(v) === SHOP.staffCode.toLowerCase(); }, hint: CC.t('q6h'), gate: false, hidden: true }
     ]);
 
-    /* all six questions are shown from the start; answering all of them ends the challenge */
-    /* the questions come in quiet steps, with no new instruction (Moaz 2026-11-24): 1 to 4 at the start; 5 once 1 to 4 are right and the
-       generator has saved a list; 6 once the student has logged in */
+    /* the questions and the instruction come in quiet steps (Moaz 2026-11-25): questions 1 to 4 and «هدفك اليوم» at the start; when 1 to 4 are
+       right the instruction moves to the generator; once the generator has saved a list it moves to Barq and question 5 appears; question 6
+       appears after the login. Nothing says «phase» or «challenge». */
     function more() {
-      if (CC.Q.done.q1 && CC.Q.done.q2 && CC.Q.done.q3 && CC.Q.done.q4 && st.genCount) CC.Q.reveal('q5');
+      var four = CC.Q.done.q1 && CC.Q.done.q2 && CC.Q.done.q3 && CC.Q.done.q4;
+      var want = four ? (st.genCount ? 3 : 2) : 1;
+      if (want > st.phase) {
+        st.phase = want;
+        CC.sleep(900, g).then(function (k) {
+          if (!k) return;
+          CC.emit('step', { id: 'phase' + want });
+          if (want === 3) CC.Q.reveal('q5');
+          L.task(CC.t(want === 2 ? 't_goal2' : 't_goal3')); L.expl('');
+        });
+      }
       if (st.loggedIn) CC.Q.reveal('q6');
     }
     CC.Q.onAll = function () { more(); };
@@ -5590,10 +5613,10 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       st.busy = false; L.enable(true);
     });
 
-    /* the panel's question needs the login; questions 5 and 6 are already shown in challenge 3 */
+    /* question 6 (the panel's) appears after the login */
     P.onPost = function (path, data, res) { if (path === '/login' && res && res.go) { st.loggedIn = true; more(); } };
 
-    /* ---- start: the desktop with the browser and the terminal closed (engine, mission.plain); one instruction ---- */
+    /* ---- start: the desktop with the browser and the terminal closed (engine, mission.plain); the first instruction ---- */
     prompt(); L.enable(true); L.expl('');
     P.setSite(CC.site);
     CC.emit('step', { id: 'start' });
@@ -5611,7 +5634,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys":["t_goal"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
+window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys":["t_goal","t_goal2","t_goal3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
