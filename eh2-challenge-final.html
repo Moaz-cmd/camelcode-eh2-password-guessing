@@ -2747,12 +2747,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       $('#pdone', root).textContent = CC.fmt(done); $('#prem', root).textContent = CC.fmt(Math.max(0, total - done));
       var f = $('#pfill', root); f.style.width = (total ? Math.min(100, done / total * 100) : 0) + '%'; f.className = ok ? 'ok' : '';
     };
+    /* «شرح الأمر» sits in the log DIRECTLY under the command it explains (Farhan's IDOR comment 4, every lab): it scrolls with that command, so no
+       other line (an earlier failed try, the tool's output) ever comes between them, and the earlier commands stay visible above */
     L.chips = async function (list, g, delay) {
-      var box = $('#chips', root); box.innerHTML = '';
+      var near = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      var rows = log.querySelectorAll('.cmdrow'), anchor = rows.length ? rows[rows.length - 1] : null;
+      var box = el('div', 'cs-chips inl');
+      if (anchor && anchor.parentNode === log) anchor.parentNode.insertBefore(box, anchor.nextSibling); else put(box);   /* after `clear` there is no command row: above the typing line */
       list.forEach(function (c, i) {
         var d = el('div', 'tk t' + i); d.innerHTML = '<b></b><small></small>'; d.firstChild.textContent = c[0]; d.lastChild.textContent = c[1]; box.appendChild(d);
       });
-      fitChips();
+      fitChips(box);
+      if (near) log.scrollTop = log.scrollHeight;
       var all = box.children;
       for (var i = 0; i < all.length; i++) {
         all[i].classList.add('on');
@@ -2763,10 +2769,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     L.clearChips = function () { $('#chips', root).innerHTML = ''; };
     /* the parts of a command are never cut off with «…» (Moaz 2026-11-15, every lab): when the row does not fit the terminal, all of it gets smaller
        (--ck scales the parts) until it fits; it grows back when the terminal gets wider */
-    function fitChips() {
-      var box = $('#chips', root); if (!box) return;
-      box.style.setProperty('--ck', '1'); if (!box.children.length) return;
-      for (var k = 1, n = 0; n < 18 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
+    function fitChips(one) {
+      (one ? [one] : [].slice.call(root.querySelectorAll('.cs-chips'))).forEach(function (box) {
+        box.style.setProperty('--ck', '1'); if (!box.children.length) return;
+        for (var k = 1, n = 0; n < 18 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
+      });
     }
     if (window.ResizeObserver) { var ckW = 0; new ResizeObserver(function () { var w = root.clientWidth; if (w !== ckW) { ckW = w; fitChips(); } }).observe(root); }
     L.actions = function (btns) {
@@ -3738,7 +3745,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         it.addEventListener('click', function (ev) {
           ev.stopPropagation(); if (!l[2]) return;
           hideCtx();
-          if (l[0] === 'copy') { try { navigator.clipboard.writeText(selText); } catch (e) { try { f.contentDocument.execCommand('copy'); } catch (e2) { } } }
+          if (l[0] === 'copy') { var oc = function () { try { f.contentDocument.execCommand('copy'); } catch (e2) { } }; try { navigator.clipboard.writeText(selText).catch(oc); } catch (e) { oc(); } }
           else if (l[0] === 'src') openSource('menu');
           else if (l[0] === 'reload') render(hist[idx]);
           else if (l[0] === 'back') backB.onclick();
@@ -4002,6 +4009,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     function fixUrl() {
       if (!S || (R && R.freeUrl)) return;
       var base = S.host + '/', fx = lockPre(), lfx = fx.toLowerCase(), ex = fx.slice(base.length).toLowerCase(), v = urlEl.value, lv = v.toLowerCase(), rest;
+      /* a page the site keeps free of the lock (site.unlock(page), EH2 lab 4: the transfer address typed or pasted on an account page): the address becomes that page */
+      if (S.unlock && ex) {
+        var aft = lv.indexOf(lfx) === 0 ? v.slice(fx.length) : (lv.indexOf(base) === 0 ? v.slice(base.length) : null);
+        if (aft != null) { aft = aft.replace(/^\/+/, ''); if (aft.toLowerCase().indexOf(base) === 0) aft = aft.slice(base.length); if (S.unlock(aft)) { if (base + aft !== v) urlEl.value = base + aft; return; } }
+      }
       if (lv.indexOf(lfx) === 0) rest = v.slice(fx.length);
       else if (lfx.indexOf(lv) === 0) rest = '';                                 /* part of camelcode.shop/ was deleted: put it back */
       else if (ex && lv.indexOf(base) === 0) rest = v.slice(base.length);        /* part of the locked page part was deleted: keep what follows it */
@@ -5330,7 +5342,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys":["t_goal","t_goal2","t_goal3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب","openBrowser":"افتح **المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openTerminal":"افتح **شاشة الأوامر** [[term]] من شريط التطبيقات في أسفل شاشة الحاسوب."};
+window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys":["t_goal","t_goal2","t_goal3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب","openBrowser":"افتح **المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openTerminal":"افتح **شاشة الأوامر** [[term]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البطولة"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
@@ -5579,6 +5591,8 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys
     txt = txt || '';
     if (!txt || txt === lastTxt) return;
     lastTxt = txt; dropBubble();                    /* a new step: an old comment must not linger */
+    /* the browser is minimised: its icon glows for a website step and not for a terminal step, decided again at every new step (Farhan's IDOR comment 10) */
+    try { var lw = lapEl(), wi = lw && lw.classList.contains('cc-web-shut') ? webIc(lw) : null; if (wi && !PLAIN) wi.classList.toggle('cue', txt.indexOf(TERM) === -1); } catch (e) { }
     /* the step that was current moves down into the list of earlier steps */
     if (steps.length) {
       var pi = steps.length - 1, li = document.createElement('li');
@@ -6226,7 +6240,7 @@ window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys
     var l = lapEl(); if (!l || l.classList.contains('cc-web-shut')) return;
     l.classList.add('cc-web-shut');
     if (OS.webLast) { OS.webGuide = OS.webLast; OS.webLast = null; gHideF.call(CC.guide); }   /* a guide on the website goes with the browser (no ring floating on the empty desktop) and returns when it opens (Moaz 2026-11-13) */
-    var ic = webIc(l); if (ic) { if (!keep) ic.classList.remove('run'); ic.classList.remove('cue'); if (!PLAIN) { void ic.offsetWidth; ic.classList.add('cue'); } }   /* the lab happens on the website: its icon glows until he opens it again (never in a challenge: no guiding cue, review 2026-11-25) */
+    var ic = webIc(l); if (ic) { if (!keep) ic.classList.remove('run'); ic.classList.remove('cue'); var aboutTerm = steps.length && steps[steps.length - 1].indexOf(TERM) !== -1;   /* the step on screen is about the terminal: only its icon glows (Farhan's IDOR comment 10) */ if (!PLAIN && !aboutTerm) { void ic.offsetWidth; ic.classList.add('cue'); } }   /* the lab happens on the website: its icon glows until he opens it again (never in a challenge: no guiding cue, review 2026-11-25) */
     frontTop(l);
   }
   function openWin(id) {
@@ -6950,6 +6964,9 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 .cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::after{display:none!important}
 .cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) svg{animation:none!important;transform:none!important;box-shadow:0 .5cqw 1cqw -.4cqw rgba(0,0,0,.5)!important}
 
+/* Farhan's IDOR comment 4 (every lab): «شرح الأمر» is drawn in the log right under its command, not pinned at the top */
+.cs .cs-log .cs-chips.inl{margin:4px auto 10px;max-width:100%}
+
 /* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
    Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */
 
@@ -7210,7 +7227,8 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
-    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
+    var old = function () { var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove(); };
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).catch(old); return; } } catch (e) { }   /* a page without clipboard permission (an embedded frame) falls back quietly (review 2026-11-25) */
     var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
     document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
   }
@@ -7222,7 +7240,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
     [].forEach.call(document.querySelectorAll('.fx-copy:not([data-val])'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
     var cur = document.querySelector('.cc-cur'); if (!want || !cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
-      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]] || norm(t) !== want) return;
+      var t = c.textContent.trim(); if (norm(t) !== want) return;   /* any tool the lab names as its next command (addad, password generator, a future tool: Farhan's IDOR comment 11), not a fixed list */
       if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
       var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.setAttribute('data-cmd', norm(t)); b.innerHTML = IC + '<span>نسخ الأمر</span>';
       b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
@@ -7282,7 +7300,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
       var a = [].slice.call(arguments);
       if (typeof get === 'function') a[0] = function () {
         var e = get();
-        if (e && e.ccSite && covered(e)) { need = Date.now(); return null; }
+        if (e && (e.ccSite || !e.closest || e.closest('#br')) && covered(e)) { need = Date.now(); return null; }   /* also the address bar and the browser's own parts (Farhan's IDOR comment 12) */
         return e;
       };
       return show.apply(this, a);
@@ -7292,7 +7310,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
   wrap(); setInterval(wrap, 500);
   setInterval(function () {
     var b = q('#laptop .cc-dock [data-app="web"]'); if (!b) return;
-    var on = Date.now() - need < 500 && !q('.overlay'), tip = b.querySelector('.fx-tip');
+    var on = Date.now() - need < 1600 && !q('.overlay'), tip = b.querySelector('.fx-tip');   /* steady, not flickering: the guide asks about once a second (review 2026-11-25) */
     if (on) {
       b.classList.add('fx-cue');
       if (!tip) { tip = document.createElement('b'); tip.className = 'fx-tip'; tip.textContent = 'افتح المتصفح لتكمل الخطوة'; b.appendChild(tip); }
@@ -7483,6 +7501,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
     /* a site that locks more than its name (site.lock, EH2 lab 4: «bank.example/account/») and names that part itself (site.tipWord: «رقم الحساب») */
     var pre = (CC.P && CC.P.lockPre) ? CC.P.lockPre() : '', S2 = CC.site || {}, wd = S2.tipWord || 'اسم الصفحة', wdNew = S2.tipWordNew || 'اسم الصفحة الجديدة';
     if (pre && pre.length > host.length + 1 && v.toLowerCase().indexOf(pre.toLowerCase()) === 0) { host = pre.slice(0, -1); page = v.slice(pre.length); }
+    if (!/^\d+$/.test(want)) { wd = 'اسم الصفحة'; wdNew = 'اسم الصفحة الجديدة'; }   /* the site's own word (رقم الحساب) only when a number is asked for; a transfer address is a page (review 2026-11-25) */
     if (page && want.indexOf(page) !== 0) html = foc ? 'احذف ' + wd + ' ' + code(page) + ' ثم اكتب ' + code(want) : 'اضغط على ' + wd + ' ' + code(page) + ' ثم احذفه واكتب ' + code(want);
     else if (page === want) html = 'اضغط ' + code('Enter') + ' لفتح الصفحة';
     else html = (foc ? 'اكتب' : 'اضغط هنا ثم اكتب') + ' ' + wdNew + ' ' + code(want);

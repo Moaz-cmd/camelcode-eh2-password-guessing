@@ -2740,17 +2740,25 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       box.appendChild(document.createTextNode((box.firstChild ? '\n' : '') + arr.join('\n')));
       if (near) log.scrollTop = log.scrollHeight;
     };
+    /* scroll the terminal to its very end, whatever the student scrolled to (Moaz 2026-11-25: when the password guessing tool finishes the view goes down to its result) */
+    L.toEnd = function () { log.scrollTop = log.scrollHeight; };
     L.progress = function (done, total, ok) {
       if (!$('#pdone', root)) return;
       $('#pdone', root).textContent = CC.fmt(done); $('#prem', root).textContent = CC.fmt(Math.max(0, total - done));
       var f = $('#pfill', root); f.style.width = (total ? Math.min(100, done / total * 100) : 0) + '%'; f.className = ok ? 'ok' : '';
     };
+    /* «شرح الأمر» sits in the log DIRECTLY under the command it explains (Farhan's IDOR comment 4, every lab): it scrolls with that command, so no
+       other line (an earlier failed try, the tool's output) ever comes between them, and the earlier commands stay visible above */
     L.chips = async function (list, g, delay) {
-      var box = $('#chips', root); box.innerHTML = '';
+      var near = log.scrollHeight - log.scrollTop - log.clientHeight < 60;
+      var rows = log.querySelectorAll('.cmdrow'), anchor = rows.length ? rows[rows.length - 1] : null;
+      var box = el('div', 'cs-chips inl');
+      if (anchor && anchor.parentNode === log) anchor.parentNode.insertBefore(box, anchor.nextSibling); else put(box);   /* after `clear` there is no command row: above the typing line */
       list.forEach(function (c, i) {
         var d = el('div', 'tk t' + i); d.innerHTML = '<b></b><small></small>'; d.firstChild.textContent = c[0]; d.lastChild.textContent = c[1]; box.appendChild(d);
       });
-      fitChips();
+      fitChips(box);
+      if (near) log.scrollTop = log.scrollHeight;
       var all = box.children;
       for (var i = 0; i < all.length; i++) {
         all[i].classList.add('on');
@@ -2761,10 +2769,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     L.clearChips = function () { $('#chips', root).innerHTML = ''; };
     /* the parts of a command are never cut off with «…» (Moaz 2026-11-15, every lab): when the row does not fit the terminal, all of it gets smaller
        (--ck scales the parts) until it fits; it grows back when the terminal gets wider */
-    function fitChips() {
-      var box = $('#chips', root); if (!box) return;
-      box.style.setProperty('--ck', '1'); if (!box.children.length) return;
-      for (var k = 1, n = 0; n < 18 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
+    function fitChips(one) {
+      (one ? [one] : [].slice.call(root.querySelectorAll('.cs-chips'))).forEach(function (box) {
+        box.style.setProperty('--ck', '1'); if (!box.children.length) return;
+        for (var k = 1, n = 0; n < 18 && box.scrollWidth > box.clientWidth + 1; n++) { k = Math.round((k - .04) * 100) / 100; box.style.setProperty('--ck', String(k)); }
+      });
     }
     if (window.ResizeObserver) { var ckW = 0; new ResizeObserver(function () { var w = root.clientWidth; if (w !== ckW) { ckW = w; fitChips(); } }).observe(root); }
     L.actions = function (btns) {
@@ -2888,8 +2897,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var L = o.L, g = o.g, total = o.total, hit = o.hit;
       var big = total > (o.bigAt || 10000), keep = big ? 400 : 0;
       var i = 0, carry = 0, rampAt = null, t0 = performance.now(), last = t0;
+      /* when the tool finishes (found, nothing found or stopped at the cap) the terminal goes down to the end, even if the student had scrolled up; the lab prints
+         its result lines right after this returns, so the scroll is repeated a moment later (Moaz 2026-11-25, every lab that runs Barq) */
+      function finish(res) { if (L.toEnd) { setTimeout(L.toEnd, 60); setTimeout(L.toEnd, 600); } return res; }
       /* the attempts go into their own block, trimmed inside it only: earlier commands and their results stay in the log (Moaz 2026-11-24, every lab) */
-      var box = L.addManyIn ? L.addEl(CC.el('div', 'srch')) : null;
+      var box = L.addManyIn ? L.addEl(CC.el('div', 'atts')) : null;   /* NOT 'srch': that class is an old absolutely-positioned pill in styles.css and scattered the attempts over the screen (bug found by Moaz 2026-11-25) */
       L.progress(0, total);
       while (true) {
         if (g !== CC.gen) return null;
@@ -2911,9 +2923,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         for (var k = from; k < (found ? end - 1 : end); k++) rows.push('✗ ' + o.text(k));
         if (box) L.addManyIn(box, rows, 'bad', keep); else L.addMany(rows, 'bad', keep);
         i = end; L.progress(i, total, found);
-        if (found) { L.add('✓ ' + o.text(hit), 'ok'); return { found: true, done: i, hit: hit }; }
-        if (i >= total) return { found: false, none: true, done: i, hit: hit };
-        if (big && performance.now() - t0 > o.capMs) return { found: false, capped: true, done: i, hit: hit };
+        if (found) { L.add('✓ ' + o.text(hit), 'ok'); return finish({ found: true, done: i, hit: hit }); }
+        if (i >= total) return finish({ found: false, none: true, done: i, hit: hit });
+        if (big && performance.now() - t0 > o.capMs) return finish({ found: false, capped: true, done: i, hit: hit });
       }
     }
   };
@@ -3809,6 +3821,7 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
   CC.guide = {
     show: function (get, o) {
       o = o || {};
+      if (document.body.classList.contains('cc-plain')) return;              /* a challenge never shows a guide ring or an animated mouse pointer, forced or not (Moaz 2026-11-25, every challenge) */
       if (document.body.classList.contains('inst') && !o.force) return;      /* instructor-led mode shows no guide, unless the lab forces one (use it very rarely) */
       gMake();
       if (document.body.classList.contains('inst')) o.dim = false;      /* instructor-led never dims or blurs the screen, even for a forced guide (Moaz 2026-11-13) */
@@ -4619,6 +4632,8 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
     txt = txt || '';
     if (!txt || txt === lastTxt) return;
     lastTxt = txt; dropBubble();                    /* a new step: an old comment must not linger */
+    /* the browser is minimised: its icon glows for a website step and not for a terminal step, decided again at every new step (Farhan's IDOR comment 10) */
+    try { var lw = lapEl(), wi = lw && lw.classList.contains('cc-web-shut') ? webIc(lw) : null; if (wi && !PLAIN) wi.classList.toggle('cue', txt.indexOf(TERM) === -1); } catch (e) { }
     /* the step that was current moves down into the list of earlier steps */
     if (steps.length) {
       var pi = steps.length - 1, li = document.createElement('li');
@@ -5266,7 +5281,7 @@ window.CC_MISSION = {"stages":[{"label":"واجهة المستخدم","keys":["t
     var l = lapEl(); if (!l || l.classList.contains('cc-web-shut')) return;
     l.classList.add('cc-web-shut');
     if (OS.webLast) { OS.webGuide = OS.webLast; OS.webLast = null; gHideF.call(CC.guide); }   /* a guide on the website goes with the browser (no ring floating on the empty desktop) and returns when it opens (Moaz 2026-11-13) */
-    var ic = webIc(l); if (ic) { if (!keep) ic.classList.remove('run'); ic.classList.remove('cue'); void ic.offsetWidth; ic.classList.add('cue'); }   /* the lab happens on the website: its icon glows until he opens it again */
+    var ic = webIc(l); if (ic) { if (!keep) ic.classList.remove('run'); ic.classList.remove('cue'); var aboutTerm = steps.length && steps[steps.length - 1].indexOf(TERM) !== -1;   /* the step on screen is about the terminal: only its icon glows (Farhan's IDOR comment 10) */ if (!PLAIN && !aboutTerm) { void ic.offsetWidth; ic.classList.add('cue'); } }   /* the lab happens on the website: its icon glows until he opens it again (never in a challenge: no guiding cue, review 2026-11-25) */
     frontTop(l);
   }
   function openWin(id) {
@@ -5990,6 +6005,9 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 .cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"])::after{display:none!important}
 .cc-dock:has(.cc-app[data-app="term"].cue) .cc-app.cue:not([data-app="term"]) svg{animation:none!important;transform:none!important;box-shadow:0 .5cqw 1cqw -.4cqw rgba(0,0,0,.5)!important}
 
+/* Farhan's IDOR comment 4 (every lab): «شرح الأمر» is drawn in the log right under its command, not pinned at the top */
+.cs .cs-log .cs-chips.inl{margin:4px auto 10px;max-width:100%}
+
 /* Farhan 2026-11-20 (EH1 lab 2): files created one by one (see create.js) */
 .pc .fx-wait{opacity:0!important;transform:scale(.5)!important;pointer-events:none}
 .pc .fx-born{animation:fx-born .55s cubic-bezier(.3,1.6,.5,1) both!important;box-shadow:inset 0 0 0 2px #FFC94A,0 0 14px 4px rgba(252,173,15,.6)}
@@ -6239,7 +6257,8 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
   var IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg>';
   var OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg>';
   function copy(txt) {
-    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt); return; } } catch (e) { }
+    var old = function () { var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove(); };
+    try { if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(txt).catch(old); return; } } catch (e) { }   /* a page without clipboard permission (an embedded frame) falls back quietly (review 2026-11-25) */
     var ta = document.createElement('textarea'); ta.value = txt; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;left:-999px;top:0;opacity:0';
     document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { } ta.remove();
   }
@@ -6251,7 +6270,7 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
     [].forEach.call(document.querySelectorAll('.fx-copy:not([data-val])'), function (b) { if (!want || b.getAttribute('data-cmd') !== want) b.remove(); });
     var cur = document.querySelector('.cc-cur'); if (!want || !cur || cur.classList.contains('typing')) return;
     [].forEach.call(cur.querySelectorAll('.cc-txt code, .cc-txt .tok'), function (c) {
-      var t = c.textContent.trim(); if (!CMDS[t.split(/\s+/)[0]] || norm(t) !== want) return;
+      var t = c.textContent.trim(); if (norm(t) !== want) return;   /* any tool the lab names as its next command (addad, password generator, a future tool: Farhan's IDOR comment 11), not a fixed list */
       if (c.nextElementSibling && c.nextElementSibling.classList.contains('fx-copy')) return;
       var b = document.createElement('button'); b.type = 'button'; b.className = 'fx-copy'; b.setAttribute('data-cmd', norm(t)); b.innerHTML = IC + '<span>نسخ الأمر</span>';
       b.setAttribute('aria-label', 'انسخ الأمر ' + t); b.title = 'انسخ الأمر';
@@ -6311,7 +6330,7 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
       var a = [].slice.call(arguments);
       if (typeof get === 'function') a[0] = function () {
         var e = get();
-        if (e && e.ccSite && covered(e)) { need = Date.now(); return null; }
+        if (e && (e.ccSite || !e.closest || e.closest('#br')) && covered(e)) { need = Date.now(); return null; }   /* also the address bar and the browser's own parts (Farhan's IDOR comment 12) */
         return e;
       };
       return show.apply(this, a);
@@ -6321,7 +6340,7 @@ body.cc-one-dev .laptop.cc-os.fx-term-full .lscreen .cs{left:1.4cqw!important}
   wrap(); setInterval(wrap, 500);
   setInterval(function () {
     var b = q('#laptop .cc-dock [data-app="web"]'); if (!b) return;
-    var on = Date.now() - need < 500 && !q('.overlay'), tip = b.querySelector('.fx-tip');
+    var on = Date.now() - need < 1600 && !q('.overlay'), tip = b.querySelector('.fx-tip');   /* steady, not flickering: the guide asks about once a second (review 2026-11-25) */
     if (on) {
       b.classList.add('fx-cue');
       if (!tip) { tip = document.createElement('b'); tip.className = 'fx-tip'; tip.textContent = 'افتح المتصفح لتكمل الخطوة'; b.appendChild(tip); }
