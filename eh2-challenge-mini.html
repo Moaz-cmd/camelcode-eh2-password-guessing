@@ -4952,7 +4952,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       '<button class="go" type="submit">بحث</button></form>';
   }
   var sHome = '<div class="hm"><header class="tb"><span>الأخبار</span><span>الصور</span><span class="ap">' + IC.grid + '</span></header>' +
-    '<main class="cen">' + LOGO_S.replace('class="lg"', 'class="lg xl"') + '<p class="tag">ابحث في الإنترنت بسهولة وأمان</p>' + sForm('', true) +
+    '<main class="cen">' + LOGO_S.replace('class="lg"', 'class="lg xl"') + '<p class="tag">ابحث في الإنترنت بسهولة</p>' + sForm('', true) +
     '</main>' +
     '<footer class="fb"><span>قطر</span><span class="sp"></span><span>الخصوصية</span><span>الشروط</span><span>حول بحث</span></footer></div>';
   function sResults(st) {
@@ -4978,7 +4978,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.sf:focus-within{box-shadow:0 4px 18px -4px rgba(55,48,163,.35);border-color:#c7cbe8}.sf .sic{color:#8a8fa0;padding:0 14px 0 6px}.sf .sic .i{width:1.25em;height:1.25em}' +
     '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:9px 4px;color:#1f2430}.sf input::placeholder{color:#9aa0ad}' +
     '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:400px;height:44px;padding:0 4px 0 5px}.sf.big input{height:100%;font-size:1rem;line-height:normal;padding:0 6px}.sf.big .go{height:34px;line-height:34px;padding:0 20px;font-size:.92rem}' +
-    '.rh{position:sticky;top:0;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
+    '.rh{position:relative;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
     '.tabs{display:flex;gap:26px;padding:0 28px;padding-inline-start:146px;border-bottom:1px solid #eceef3;color:#5f6475;font-size:.9rem}.tabs span{display:flex;align-items:center;gap:6px;padding:9px 2px}.tabs .i{width:1em;height:1em}.tabs .on{color:#3730a3;border-bottom:3px solid #3730a3;font-weight:700}' +
     '.res{max-width:720px;padding:10px 28px 40px;margin-inline-start:118px}.cnt{color:#717684;font-size:.85rem;margin:8px 0 18px}' +
     '.r{margin:0 0 30px;display:flex;gap:18px;align-items:flex-start}.r .rb{flex:1;min-width:0}.src{display:flex;align-items:center;gap:10px;margin-bottom:3px}' +
@@ -4992,13 +4992,6 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '@media(max-height:560px){.tb{padding:6px 20px}.lg.xl{font-size:3.2rem}.tag{margin:4px 0 16px}.cen{padding-bottom:24px}.fb{padding:8px 20px}}' +
     '@media(max-height:420px){.tb,.fb{display:none}.hm{min-height:100vh;justify-content:center}.cen{padding:10px 20px}.lg.xl{font-size:2.6rem}}' +   /* the search home always fits the window: nothing to scroll, the scroll pill never covers the box */
     '@media(max-width:760px){.rh{flex-wrap:wrap;gap:10px;padding:12px 16px}.rh .ap{display:none}.tabs{padding-inline:16px;gap:16px;overflow:hidden}.res{margin-inline-start:0;padding-inline:16px}.lg.xl{font-size:3.2rem}.r.hs>.th{display:none}.imgs .th{width:84px;height:56px}}';
-  /* EH2 mini challenge (Moaz 2026-11-24): a look of its own, not the OSINT lab's (added on top of the OSINT design) */
-  S_CSS += 'body{background:#f1f5f4}.lg{color:#0f766e}.lg .mk{background:linear-gradient(135deg,#14b8a6,#0f766e);border-radius:50%;box-shadow:none}' +
-    '.hm{background:radial-gradient(circle at 50% 35%,#ccfbf1,#f1f5f4 62%)}.tag{color:#3f5f59}.fb{background:#e2ece9;border-color:#d3e0dc}' +
-    '.sf{border-radius:14px;border:2px solid #0f766e;box-shadow:none}.sf:focus-within{box-shadow:0 0 0 4px rgba(20,184,166,.25);border-color:#0f766e}.sf .go{background:#0f766e;border-radius:10px}.sf .go:hover{background:#115e59}' +
-    '.rh{background:#0f766e}.rh .lg{color:#fff}.rh .lg .mk{background:#fff;color:#0f766e}.rh .sf{border-color:#fff}.rh .ap{color:#fff}' +
-    '.tabs{background:#fff;padding-inline-start:28px}.tabs .on{color:#0f766e;border-bottom-color:#0f766e}.res{margin-inline-start:auto;margin-inline-end:auto;max-width:780px}' +
-    '.r{background:#fff;border:1px solid #dfe7e5;border-radius:14px;padding:14px 16px;margin-bottom:14px}.t{color:#0f766e}.fav{border-radius:8px}';
   var searchSite = {
     css: S_CSS, notFound: NF,
     pages: {
@@ -5050,7 +5043,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   ];
   var socialProfile = '<header class="nav"><div class="nin">' + LOGO_SO + '<span class="nic"><span class="on">' + IC.home + '</span><span>' + IC.grid + '</span><span>' + IC.bell + '</span><span class="me">' + IC.user + '</span></span></div></header>' +
     '<div class="page"><main class="main">' +
-    '<section class="prof"><div class="cover">' + COVER + '</div><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>يوسف العطار ⚽</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
+    '<section class="prof"><div class="row"><span class="big">' + FACE + '</span><div class="nm"><h1>يوسف العطار ⚽</h1><span class="un" dir="ltr">@' + T.user + '</span></div></div>' +
     '<div class="bio"><p>⚽ مدير التسويق في متجر CamelCode لمستلزمات كرة القدم</p><p>🎂 ' + ltr(T.bday) + '</p><p>📍 الخور، قطر</p><p>🧤 مدرب فريق الناشئين</p><p>🐱 أبو زعتر</p></div>' +
     '<div class="meta"><span>' + IC.pin + 'الخور، قطر</span><span>' + IC.bag + 'CamelCode</span><span>' + IC.cal + 'انضم في مارس 2016</span></div>' +
     '<div class="stats"><span><b>2</b> منشور</span><span><b>864</b> متابعاً</span><span><b>271</b> يتابع</span></div>' +
@@ -5089,7 +5082,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   /* EH2 mini challenge (Moaz 2026-11-24): a look of its own, not the OSINT lab's (added on top of the OSINT design) */
   SO_CSS += 'body{background:#0f1115;color:#e7e9ee}.nav{background:rgba(15,17,21,.96);border-color:#23262d}.brand{color:#f472b6}.bm{background:linear-gradient(135deg,#f472b6,#a855f7);box-shadow:none}' +
     '.nic span{color:#9aa0ad}.nic .on{color:#f472b6;background:#1f1a24}.nic .me{background:#1a1d23}.prof,.post,.box{background:#171a20;border-color:#262a31;box-shadow:none}' +
-    '.row{flex-direction:column;align-items:center;text-align:center}.row .big{margin-top:-62px}.nm{padding-top:4px}.bio{text-align:center}.meta,.stats,.hls{justify-content:center}' +
+    '.row{flex-direction:column;align-items:center;text-align:center}.row{padding-top:28px}.row .big{margin-top:0}.nm{padding-top:4px}.bio{text-align:center}.meta,.stats,.hls{justify-content:center}' +
     '.big{border-color:#171a20;background:#171a20;box-shadow:0 0 0 3px #f472b6}.un,.meta,.stats,.who small,.cmeta,.lk,.foot,.end{color:#9aa0ad}.stats b{color:#fff}' +
     '.hli{background:#171a20;box-shadow:0 0 0 2px #f472b6}.hlc{color:#c9cdd6}.ptabs{border-color:#262a31}.ptabs span{color:#9aa0ad}.ptabs .on{color:#f472b6;box-shadow:inset 0 -3px 0 #f472b6}' +
     '.ht,.loc{color:#f472b6}.acts{color:#c9cdd6}.cms{border-color:#262a31}.cb{background:#20242b}.av.ring{box-shadow:0 0 0 2px #171a20,0 0 0 4px #f472b6}.pic,.ph3 span{background:#20242b}';
@@ -5204,7 +5197,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.pic{border-radius:12px;overflow:hidden;background:#ede9fe}.pic svg{width:100%;height:auto;display:block}h1{margin:12px 0 4px;font-size:1.5rem}.pr{font-size:1.6rem;font-weight:800;color:#7c3aed}.facts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.facts div{background:#f5f3ff;border-radius:10px;padding:8px 12px;font-size:.9rem}.facts b{display:block}' +
     '.seller{display:flex;gap:12px;align-items:center}.lt{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:800;font-size:1.2rem;background:#7c3aed}.seller small{display:block;color:#6b6b8a}.note{color:#6b6b8a;font-size:.85rem;margin:10px 0 0}' +
     '@media(max-width:760px){.lay{grid-template-columns:1fr}}' };
-  ads.pages['/bikes/55201'] = { title: 'للبيع: دراجة هوائية بحالة ممتازة | سوق الإعلانات', html: '<header class="hd"><div class="w">' + IC.tagi + 'سوق الإعلانات<span class="c">إعلانات مبوبة في قطر</span></div></header><main class="w">' +
+  ads.pages['/bikes/55201'] = { title: 'للبيع: دراجة هوائية بحالة ممتازة | سوق الإعلانات', html: '<header class="hd"><div class="w">' + IC.tagi + 'سوق الإعلانات<span class="c">إعلانات بيع في قطر</span></div></header><main class="w">' +
     '<p class="crumb">الرئيسية › رياضة وهوايات › دراجات</p><div class="lay"><div><div class="box"><div class="pic"><svg viewBox="0 0 400 220" aria-hidden="true"><rect width="400" height="220" fill="#ede9fe"/><rect y="170" width="400" height="50" fill="#ddd6fe"/>' +
     '<g fill="none" stroke="#1e1b4b" stroke-width="7"><circle cx="120" cy="140" r="48"/><circle cx="290" cy="140" r="48"/><path d="M120 140l60-70h70l40 70M180 70l30 70h-90M250 70l-10-20h-20M200 140l50-70"/></g><path d="M165 62h34" stroke="#1e1b4b" stroke-width="8" stroke-linecap="round"/></svg></div>' +
     '<h1>للبيع: دراجة هوائية بحالة ممتازة</h1><div class="pr">450 ر.ق</div><div class="facts"><div><b>المقاس</b>26</div><div><b>الحالة</b>مستعملة سنة واحدة</div><div><b>المنطقة</b>الريان</div><div><b>تاريخ الإعلان</b>2 نوفمبر 2025</div></div></div>' +
