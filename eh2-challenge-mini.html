@@ -2889,7 +2889,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var big = total > (o.bigAt || 10000), keep = big ? 400 : 0;
       var i = 0, carry = 0, rampAt = null, t0 = performance.now(), last = t0;
       /* the attempts go into their own block, trimmed inside it only: earlier commands and their results stay in the log (Moaz 2026-11-24, every lab) */
-      var box = L.addManyIn ? L.addEl(CC.el('div', 'srch')) : null;
+      var box = L.addManyIn ? L.addEl(CC.el('div', 'atts')) : null;   /* NOT 'srch': that class is an old absolutely-positioned pill in styles.css and scattered the attempts over the screen (bug found by Moaz 2026-11-25) */
       L.progress(0, total);
       while (true) {
         if (g !== CC.gen) return null;
@@ -4779,7 +4779,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* ---------- what the browser target uses (password generator: its own login, no other websites) ---------- */
   CC.site = {
-    fitScale: 0.8,                       /* every site drawn as a desktop page at 80%, as in OSINT */
+    fitScale: function () { return CC.bigSite ? 0 : 0.8; },   /* every site drawn as a desktop page at 80%, as in OSINT; at full size once Barq has found the password (CC.bigSite, Farhan's comment 4) */
     freeUrl: true,                       /* the whole address can be typed (any site's address works) */
     newTab: { host: 'search.example', path: '/' },   /* the «+» button opens a new tab on the search engine (as in the OSINT lab) */
     host: SHOP.host, start: '/home', css: CSS, pages: pages,   /* opens on the shop's home page, as in OSINT */
@@ -5059,7 +5059,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '<div class="box"><h3>الصور</h3><div class="ph3">' + ['cat', 'pitch'].map(function (k) { return '<span>' + PIC[k] + '</span>'; }).join('') + '</div></div>' +
     '<p class="foot">منصة التواصل الاجتماعي · الخصوصية · الشروط</p></aside></div>';
   var SO_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#eef3f6;color:#15212b}' +
-    '.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid #dde6ec}.nin{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:9px 20px}' +
+    '.nav{position:relative;z-index:5;background:rgba(255,255,255,.96);border-bottom:1px solid #dde6ec}.nin{max-width:1040px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:9px 20px}' +
     '.brand{display:flex;align-items:center;gap:10px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.45rem;color:#0e7490}.bm{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,#06b6d4,#0e7490);box-shadow:0 6px 14px -8px #0e7490}.bm svg{width:24px;height:24px}' +
     '.nic{display:flex;gap:8px;color:#5b6b78}.nic span{width:42px;height:42px;border-radius:12px;display:grid;place-items:center}.nic .i{width:1.4em;height:1.4em}.nic .on{color:#0e7490;background:#e0f4f8}.nic .me{border-radius:50%;background:#eef3f6}' +
     '.page{max-width:1040px;margin:0 auto;padding:18px 20px 40px;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}' +
@@ -5117,7 +5117,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
         return '<div class="pp"><span class="av">' + p[2] + '</span><div><b>' + p[0] + '</b><small>' + p[1] + '</small></div></div>';
       }).join('') + '</section><p class="foot">شبكة الوظائف · الخصوصية · الشروط</p></aside></div>';
   var J_CSS = BASE + 'body{font-family:"CC Digits",system-ui,"Segoe UI",Tahoma,"Montserrat Arabic",sans-serif;background:#f1f5f4;color:#16231f}' +
-    '.nav{position:sticky;top:0;z-index:5;background:#fff;border-bottom:1px solid #dbe5e2}.nin{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px 22px}' +
+    '.nav{position:relative;z-index:5;background:#fff;border-bottom:1px solid #dbe5e2}.nin{max-width:1080px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:6px 22px}' +
     '.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.25rem;color:#0f766e}.bm{width:36px;height:36px;border-radius:9px;display:grid;place-items:center;background:#0f766e;color:#fff}.bm .i{width:1.3em;height:1.3em}' +
     '.nl{display:flex;gap:4px}.nl span{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 12px;color:#5d6f69;font-size:.75rem}.nl .i{width:1.35em;height:1.35em}.nl .on{color:#0f766e;box-shadow:inset 0 -2px 0 #0f766e}' +
     '.page{max-width:1080px;margin:0 auto;padding:18px 22px 40px;display:grid;grid-template-columns:minmax(0,1fr) 290px;gap:20px;align-items:start}' +
@@ -5165,7 +5165,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     '.util{background:#111;color:#bdbdbd;font-size:.78rem}.util .w{display:flex;justify-content:space-between;padding-top:5px;padding-bottom:5px}' +
     '.mast .w{display:flex;align-items:center;justify-content:space-between;padding-top:18px;padding-bottom:14px}.brand{display:flex;align-items:center;gap:10px;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:2.1rem;line-height:1;color:#111}.brand b{color:#b91c1c}' +
     '.bm{width:44px;height:44px;background:#b91c1c;color:#fff;display:grid;place-items:center;font-size:1.6rem;border-radius:4px}.sl{color:#6b6b6b;font-size:.9rem}' +
-    '.nv{border-top:3px solid #111;border-bottom:1px solid #e3e3e3;position:sticky;top:0;background:#fff;z-index:4}.nv .w{display:flex;gap:26px;font-weight:700;font-size:.95rem}.nv span{padding:10px 0}.nv .on{color:#b91c1c;box-shadow:inset 0 -3px 0 #b91c1c}' +
+    '.nv{border-top:3px solid #111;border-bottom:1px solid #e3e3e3;position:relative;background:#fff;z-index:4}.nv .w{display:flex;gap:26px;font-weight:700;font-size:.95rem}.nv span{padding:10px 0}.nv .on{color:#b91c1c;box-shadow:inset 0 -3px 0 #b91c1c}' +
     '.lay{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:40px;padding-top:22px;padding-bottom:30px}.crumb{color:#6b6b6b;font-size:.85rem;margin:0 0 8px}' +
     '.cat{display:inline-block;background:#b91c1c;color:#fff;font-weight:800;font-size:.8rem;padding:2px 10px;border-radius:3px}.art h1{font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-size:2.35rem;line-height:1.3;margin:10px 0 8px}' +
     '.std{font-size:1.15rem;color:#444;margin:0 0 16px}.by{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid #eee;border-bottom:1px solid #eee;margin-bottom:18px}.ba{width:42px;height:42px;border-radius:50%;background:#1c1c1e;color:#fff;display:grid;place-items:center;font-weight:800}' +
@@ -5278,7 +5278,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     q2: 'ما البريد الإلكتروني لمدير التسويق في العمل؟', q2h: 'ابحث في **صفحات موقع المتجر** عن **البريد الإلكتروني** لمدير التسويق.',
     q3: 'ما اسم الحيوان الأليف لمدير التسويق؟', q3h: 'ابحث عن **اسم** مدير التسويق **الكامل** في **محرك البحث**، و**تفقد منشوراته** على **مواقع التواصل الاجتماعي**.',
     q4: 'في أي سنة وُلد مدير التسويق؟', q4h: 'اقرأ **وصف حسابه** في **منصة التواصل الاجتماعي**.',
-    q5: 'ما كلمة المرور لحساب مدير التسويق على موقع المتجر؟', q5h: 'شغّل **أداة برق** على **صفحة تسجيل الدخول** مع **بريد مدير التسويق** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة شيئاً، فتأكد من المعلومات التي أدخلتها في المولّد.',
+    q5: 'ما كلمة المرور لحساب مدير التسويق على موقع المتجر؟', q5h: 'استخدم **أداة برق** على **صفحة تسجيل الدخول** مع **بريد مدير التسويق** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة **كلمة المرور** تأكد من **المعلومات** التي أدخلتها في المولّد.',
     q6: 'ما كود الخصم الخاص بالموظفين؟', q6h: 'سجّل الدخول إلى حساب مدير التسويق، ثم اقرأ **الرسائل الداخلية** في لوحة التحكم.',
     /* the instruction moves on as the questions are answered (Moaz 2026-11-25): never named «التحدي الأول / الثاني». It starts with «هدفك اليوم». */
     t_goal: '**هدفك اليوم:** اختراق حساب **مدير التسويق** في متجر `camelcode.shop`. ابدأ بجمع **معلومات** عنه من **الإنترنت**: افتح **المتصفح** [[web]]، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
@@ -5328,6 +5328,8 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     bs_p_page: 'صفحة الدخول `{w}`', bs_p_mail: 'البريد الإلكتروني `{w}`', bs_p_file: 'ملف كلمات المرور `{w}`',
     bs_n_page: 'صفحة الدخول', bs_n_mail: 'البريد الإلكتروني', bs_n_file: 'ملف كلمات المرور',
     bs_form: 'الصيغة الصحيحة: `' + FORM + '`',
+    /* Farhan's comment 9 (every tool, every lab): the parts and why each is there; general placeholders only, never the answers (challenge rule) */
+    b_parts: 'أمر `barq` يتكوّن من أربعة أجزاء:\n- `barq`: اسم الأداة التي تجرّب كلمات المرور.\n- `website/login`: صفحة تسجيل الدخول التي تجرّب عليها الأداة.\n- `example@gmail.com`: البريد الإلكتروني لحساب الهدف.\n- `passwords.txt`: الملف الذي فيه قائمة كلمات المرور.',
     /* congratulations */
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
@@ -5406,7 +5408,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     var fs = CC.newFS();
     CC.labFS = fs;                                       /* the desktop shows passwords.txt once it exists */
     var st = { phase: 1, armed: true, busy: false, gen: null, genCount: 0, loggedIn: false };
-    CC.free = true; CC.barqUnlocked = false;
+    CC.free = true; CC.barqUnlocked = false; CC.bigSite = false; if (P.rescale) P.rescale();   /* a restart starts with the sites at 80% */
     if (CC.site.resetLogin) CC.site.resetLogin();       /* a fresh run never starts already logged in */
 
     function low(v) { return String(v || '').trim().toLowerCase(); }
@@ -5471,11 +5473,14 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       var rr = buildList(ans);
       fs.write('/' + rr.file, rr.list.join('\n'));
       if (P.refresh) P.refresh();
-      var lst = rr.list, CH = 40, per = Math.ceil(lst.length / CH);
+      /* Farhan's review (lab 3, comment 1): nothing is trimmed. The whole list is ONE text block (one node, so ~12,000 lines stay light), so
+         scrolling up shows every generated password and the commands typed before the tool ran. */
+      var lst = rr.list, CH = 40, per = Math.ceil(lst.length / CH), pgBox = L.addEl(CC.el('div', 'row dim pglist'));
+      pgBox.style.whiteSpace = 'pre'; pgBox.style.direction = 'ltr'; pgBox.style.textAlign = 'left';
       for (var ci = 0; ci < CH; ci++) {
         var part = lst.slice(ci * per, (ci + 1) * per);
         if (!part.length) break;
-        L.addMany(part, 'dim', 240);
+        if (L.addText) L.addText(pgBox, part); else L.addMany(part, 'dim', 240);
         if (!(await CC.sleep(80, g))) return;
       }
       L.add('', 'dim');
@@ -5498,7 +5503,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       if (!ok() || !r) return false;
       L.add('', 'dim');
       if (r.found) {
-        CC.barqUnlocked = true;
+        CC.barqUnlocked = true; CC.bigSite = true; if (P.rescale) P.rescale();   /* Farhan's comment 4: from here the shop is drawn at full size, not small */
         L.add(iso(CC.t('b_sum')), 'info ar');
         [['email address', email], ['password', words[r.hit]]].forEach(function (kv) {
           var row = CC.el('div', 'row'), lb = CC.el('span'), vl = CC.el('span');
@@ -5528,6 +5533,9 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       else s = CC.t('bs_none', { miss: m });
       return CC.t('bs_head') + (notes.length ? notes.join(' ') + ' ' : '') + s + ' ' + CC.t('bs_form');
     }
+
+    /* a wrong barq command: the mistake, then the parts and why each is there, then the correct form */
+    function bErr(m) { var i = m.lastIndexOf('الصيغة الصحيحة'), head = (i >= 0 ? m.slice(0, i) : m).trim(); return head + '\n' + CC.t('b_parts') + '\n' + CC.t('bs_form'); }
 
     function helpBox() {
       var hb = CC.el('div', 'hlp'), ht = CC.el('div', 'hl-t'); ht.textContent = CC.t('h_t'); hb.appendChild(ht);
@@ -5560,17 +5568,17 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
         return { info: { cmd: 'gen_start' } };
       }
       if (c === 'barq') {
-        for (i = 0; i < args.length; i++) if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: CC.t('m_b_opt', { w: args[i] }) };
-        if (args.length > 3) return { err: CC.t('m_b_extra') };
-        for (i = 0; i < args.length; i++) if (/^https?:/i.test(args[i]) || args[i].indexOf('://') >= 0) return { err: CC.t('m_b_sym') };
-        if (args.length < 3) return { err: barqShort(args) };
+        for (i = 0; i < args.length; i++) if (args[i].charAt(0) === '-' && args[i].length > 1) return { err: bErr(CC.t('m_b_opt', { w: args[i] })) };
+        if (args.length > 3) return { err: bErr(CC.t('m_b_extra')) };
+        for (i = 0; i < args.length; i++) if (/^https?:/i.test(args[i]) || args[i].indexOf('://') >= 0) return { err: bErr(CC.t('m_b_sym')) };
+        if (args.length < 3) return { err: bErr(barqShort(args)) };
         var pg = args[0].replace(/\/+$/, ''), em = args[1].toLowerCase(), fl = args[2];
-        if (!isPage(pg)) { if (args.some(isPage)) return { err: CC.t('m_b_swap') }; return { err: CC.t('m_b_badpage', { w: pg }) }; }
-        if (pg.split('/')[0] !== HOST) return { err: CC.t('m_b_site', { w: pg.split('/')[0] }) };
-        if (pg !== LOGIN) return { err: CC.t('m_b_page', { w: pg }) };
-        if (!isMail(em)) return { err: CC.t('m_b_noatmail') };
-        if (/[^\w.\-\/]/.test(fl)) return { err: CC.t('m_b_sym') };
-        if (!fileAt(fl)) return { err: CC.t('m_b_file', { w: fl }) };
+        if (!isPage(pg)) { if (args.some(isPage)) return { err: bErr(CC.t('m_b_swap')) }; return { err: bErr(CC.t('m_b_badpage', { w: pg })) }; }
+        if (pg.split('/')[0] !== HOST) return { err: bErr(CC.t('m_b_site', { w: pg.split('/')[0] })) };
+        if (pg !== LOGIN) return { err: bErr(CC.t('m_b_page', { w: pg })) };
+        if (!isMail(em)) return { err: bErr(CC.t('m_b_noatmail')) };
+        if (/[^\w.\-\/]/.test(fl)) return { err: bErr(CC.t('m_b_sym')) };
+        if (!fileAt(fl)) return { err: bErr(CC.t('m_b_file', { w: fl })) };
         if (!(await barq(em, fl))) return { err: '' };
         return { info: { cmd: 'barq' } };
       }
