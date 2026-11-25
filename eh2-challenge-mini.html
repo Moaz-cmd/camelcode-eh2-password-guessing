@@ -5427,15 +5427,15 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
       var want = four ? (st.genCount ? 3 : 2) : 1;
       if (want > st.phase) {
         st.phase = want;
-        CC.sleep(900, g).then(function (k) {
-          if (!k) return;
-          CC.emit('step', { id: 'phase' + want });
-          if (want === 3) CC.Q.reveal('q5');
-          L.task(CC.t(want === 2 ? 't_goal2' : 't_goal3')); L.expl('');
-        });
+        CC.emit('step', { id: 'phase' + want });
+        if (want === 3) CC.Q.reveal('q5');
+        L.task(CC.t(want === 2 ? 't_goal2' : 't_goal3')); L.expl('');
       }
       if (st.loggedIn) CC.Q.reveal('q6');
     }
+    /* the instruction always follows the real state (Moaz 2026-11-25: it must never lag behind what the student has already done), so it is also
+       re-checked every half second, not only when an event happens */
+    var iv = setInterval(function () { if (g !== CC.gen) { clearInterval(iv); return; } more(); }, 500);
     CC.Q.onAll = function () { more(); };
     (function () {
       var items = CC.Q.items, shown = false;
