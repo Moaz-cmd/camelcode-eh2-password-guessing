@@ -4004,8 +4004,23 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     });
     urlEl.addEventListener('focus', function () { var e = hist[idx]; if (e) urlEl.value = display(e); if (S && !(R && R.freeUrl) && urlEl.value.toLowerCase() === S.host) urlEl.value = S.host + '/'; selectPage(); });
     urlEl.addEventListener('blur', function () { var e = hist[idx]; if (e) urlEl.value = display(e); });
+    /* Moaz 2026-11-25 (every lab with a search engine): like a real browser, text typed in the address bar that is NOT an address is a SEARCH. It opens the lab's
+       search engine on the results for that text (the engine's own post() runs, as if the student had typed it in the search box). An address has a dot with no
+       spaces («camelcode.shop», «search.example/search») or starts with «//» or «/». Only where the lab has a free address bar and a search engine:
+       site.search = { host, path } or, by default, the host of site.newTab with the path '/search'. */
+    function looksLikeAddress(v) { return !/\s/.test(v) && (/^(https?:)?\/\//i.test(v) || v.charAt(0) === '/' || /^[^\s\/.]+(\.[^\s\/.]+)+/.test(v)); }
+    function searchTyped(v) {
+      var cfg = R && R.freeUrl && (R.search || (R.newTab && { host: R.newTab.host, path: '/search' }));
+      v = String(v).trim();
+      if (!cfg || !v || looksLikeAddress(v)) return false;
+      var sh = siteOf(cfg.host); if (!sh || !sh.post) return false;
+      var res = sh.post(cfg.path, { q: v }, P.state);
+      go({ host: cfg.host, path: (res && res.go) || cfg.path }, 'push', { typed: true });
+      if (P.onPost) P.onPost(cfg.path, { q: v }, res);
+      return true;
+    }
     urlEl.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { var v = urlEl.value; urlEl.blur(); go(v, 'push', { typed: true }); }
+      if (e.key === 'Enter') { var v = urlEl.value; urlEl.blur(); if (!searchTyped(v)) go(v, 'push', { typed: true }); }
       else if (e.key === 'Escape') urlEl.blur();
     });
     return P;
