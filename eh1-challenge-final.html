@@ -4799,6 +4799,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   CC.guide = {
     show: function (get, o) {
       o = o || {};
+      if (document.body.classList.contains('cc-plain')) return;              /* a challenge never shows a guide ring or an animated mouse pointer, forced or not (Moaz 2026-11-25, every challenge) */
       if (document.body.classList.contains('inst') && !o.force) return;      /* instructor-led mode shows no guide, unless the lab forces one (use it very rarely) */
       gMake();
       if (document.body.classList.contains('inst')) o.dim = false;      /* instructor-led never dims or blurs the screen, even for a forced guide (Moaz 2026-11-13) */
