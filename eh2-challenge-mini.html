@@ -4744,7 +4744,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   pages['/contact'] = { title: 'تواصل | ' + SHOP.name, html: page('/contact',
     crumb('تواصل') + '<section class="sec"><h2>تواصل معنا</h2><p class="lead">يسعدنا سماع رأيك أو الإجابة عن أسئلتك.</p>' +
     '<div class="info"><div>' + I.mail + '<span><b>البريد الإلكتروني</b><bdi dir="ltr">' + SHOP.email + '</bdi></span></div><div>' + I.phone + '<span><b>الهاتف</b><bdi dir="ltr">' + SHOP.phone + '</bdi></span></div><div>' + I.pin + '<span><b>العنوان</b>' + SHOP.address + '</span></div></div>' +
-    '<section class="pnl staff"><h3>' + I.mail + ' بريد فريق المتجر</h3><div class="sm head"><span>الاسم</span><span>الوظيفة</span><span>البريد الإلكتروني</span></div>' +
+    '<section class="pnl staff"><h3>' + I.mail + ' بيانات تواصل فريق المتجر</h3><div class="sm head"><span>الاسم</span><span>الوظيفة</span><span>البريد الإلكتروني</span></div>' +
     [[SHOP.owner, 'مالك المتجر', SHOP.ownerEmail], [SHOP.manager, 'مدير التسويق', SHOP.managerEmail], [SHOP.sales, 'مسؤول المبيعات', SHOP.salesStaffEmail], [SHOP.support, 'مسؤول طلبات الفرق', SHOP.supportEmail]].map(function (p) {
       return '<div class="sm"><span>' + p[0] + '</span><span>' + p[1] + '</span><bdi dir="ltr">' + p[2] + '</bdi></div>';
     }).join('') + '</section>' +
