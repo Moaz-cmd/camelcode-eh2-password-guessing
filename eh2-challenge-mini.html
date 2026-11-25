@@ -4505,7 +4505,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   };
   /* the account the challenge breaks into is the manager's; his password is his cat's name + his birth year (pending, Moaz 2026-11-24 plan) */
   SHOP.salesEmail = SHOP.managerEmail;
-  SHOP.realPassword = 'Zaatar1992';
+  SHOP.realPassword = 'YousefZataar1992';
   SHOP.staffCode = 'GOAL30';                                                 /* the answer of the last question, in the manager's panel (pending) */
 
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -5361,12 +5361,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   });
 
   /* [LAB] ================= THE GENERATOR (the same tool as EH2 lab 3) ================= */
-  /* turns the five answers into a big, deterministic list. The manager's password (his cat's name + his birth year, SHOP.realPassword) is in the list
-     only when the student found both values: the pet and the year are the ones that matter. */
+  /* turns the five answers into a big, deterministic list. The manager's password (his first name + his cat's name + his birth year, «YousefZataar1992»: both capitalised, no space, SHOP.realPassword) is in the list
+     only when the student found both values: the first name, the pet and the year all matter. */
   var AR = { 'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'a', 'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j', 'ح': 'h', 'خ': 'kh', 'د': 'd', 'ذ': 'dh', 'ر': 'r', 'ز': 'z', 'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd', 'ط': 't', 'ظ': 'z', 'ع': 'a', 'غ': 'gh', 'ف': 'f', 'ق': 'q', 'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ه': 'h', 'و': 'w', 'ي': 'y', 'ى': 'a', 'ة': 'a', 'ء': '', 'ؤ': 'w', 'ئ': 'y', ' ': '' };
-  var TR = { 'يوسف': 'yousef', 'العطار': 'alattar', 'عطار': 'alattar', 'زعتر': 'zaatar', 'الخور': 'khor', 'خور': 'khor' };
+  var TR = { 'يوسف': 'yousef', 'العطار': 'alattar', 'عطار': 'alattar', 'زعتر': 'zataar', 'الخور': 'khor', 'خور': 'khor' };
   /* the usual English spellings of the cat's name all give the same token (the student reads «زعتر (Zaatar)» on his post) */
-  var ALIAS = { zatar: 'zaatar', zaatr: 'zaatar', zaater: 'zaatar', za3tar: 'zaatar', zaatar: 'zaatar', "za'atar": 'zaatar', zatr: 'zaatar' };
+  var ALIAS = { zatar: 'zataar', zaatr: 'zataar', zaater: 'zataar', za3tar: 'zataar', zaatar: 'zataar', zataar: 'zataar', "za'atar": 'zataar', zatr: 'zataar' };
   function translit(s) {
     s = String(s || '').trim();
     if (TR[s]) return TR[s];
@@ -5434,7 +5434,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     CC.Q.init([
       { id: 'q1', q: CC.t('q1'), answers: [T.name, T.short, 'يوسف احمد العطار'], hint: CC.t('q1h') },
       { id: 'q2', q: iso(CC.t('q2')), answers: [EMAIL], check: function (v) { return low(v).replace(/\s+/g, '') === EMAIL; }, hint: CC.t('q2h') },
-      { id: 'q3', q: CC.t('q3'), answers: ['زعتر', 'Zaatar'], check: function (v) { var t = low(v).replace(/^(القط|قطه|قطّه|القطة)\s+/, ''); return t === 'زعتر' || ALIAS[t] === 'zaatar'; }, hint: CC.t('q3h') },
+      { id: 'q3', q: CC.t('q3'), answers: ['زعتر', 'Zaatar'], check: function (v) { var t = low(v).replace(/^(القط|قطه|قطّه|القطة)\s+/, ''); return t === 'زعتر' || ALIAS[t] === 'zataar'; }, hint: CC.t('q3h') },
       { id: 'q4', q: CC.t('q4'), answers: ['1992'], check: function (v) { return String(v).replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).trim() === String(T.born); }, hint: CC.t('q4h') },
       { id: 'q5', q: CC.t('q5'), answers: [SHOP.realPassword], hint: iso(CC.t('q5h')), gate: false, hidden: true },
       { id: 'q6', q: CC.t('q6'), answers: [SHOP.staffCode], check: function (v) { return low(v) === SHOP.staffCode.toLowerCase(); }, hint: CC.t('q6h'), gate: false, hidden: true }
