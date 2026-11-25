@@ -4488,8 +4488,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   };
 })();
 
-/* EH2 mini challenge: the shop footballshop.example as a FOOTBALL GEAR shop «متجر كاملكود لمستلزمات كرة القدم» (Moaz 2026-11-24: a different
-   website on footballshop.example). Built from the password generator lab's labs/eh2/03-password-generator/site.js (same engine parts: header, hero,
+/* EH2 mini challenge: the shop camelcode.shop as a FOOTBALL GEAR shop «متجر كاملكود لمستلزمات كرة القدم» (Moaz 2026-11-24: a different
+   website on camelcode.shop). Built from the password generator lab's labs/eh2/03-password-generator/site.js (same engine parts: header, hero,
    cards, footer, /login with the manager's panel) with new content. The target is the store manager «يوسف أحمد العطار» (card `.mem.tgt`, the same
    face on every site of sites.js). His work email is on the shop's own «تواصل» page (Moaz 2026-11-24). The address bar is free and the «+» button
    opens the search engine (as in the OSINT lab). All invented, male names, phone +974 0000 0000, prices in ر.ق, no http or https anywhere. */
@@ -4499,9 +4499,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   var SHOP = CC.shop = {
     name: 'متجر كاملكود لمستلزمات كرة القدم',
-    host: 'footballshop.example',
+    host: 'camelcode.shop',
     owner: 'خالد ناصر الحداد', manager: 'يوسف أحمد العطار', managerFirst: 'يوسف', support: 'فيصل محمد الخطيب', sales: 'عمر حسن النجار',   /* full three-part names (Moaz 2026-11-24) */   /* pending */
-    email: 'info@footballshop.example', managerEmail: 'yalattar@footballshop.example', ownerEmail: 'khaddad@footballshop.example', salesStaffEmail: 'onajjar@footballshop.example', supportEmail: 'fkhatib@footballshop.example', phone: '+974 0000 0000', address: 'شارع الملاعب، الدوحة'   /* pending */
+    email: 'info@camelcode.shop', managerEmail: 'yalattar@camelcode.shop', ownerEmail: 'khaddad@camelcode.shop', salesStaffEmail: 'onajjar@camelcode.shop', supportEmail: 'fkhatib@camelcode.shop', phone: '+974 0000 0000', address: 'شارع الملاعب، الدوحة'   /* pending */
   };
   /* the account the challenge breaks into is the manager's; his password is his cat's name + his birth year (pending, Moaz 2026-11-24 plan) */
   SHOP.salesEmail = SHOP.managerEmail;
@@ -4831,7 +4831,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   CC.shopKit = { avatar: avatar, I: I, face: function () { return avatar('#1f1530', '#14b8a6', '#c58c63'); } };
 })();
 /* EH2 mini challenge: every website besides the shop (built from the OSINT lab's labs/eh2/02-osint/sites.js: same sites, same designs, new person).
-   The target is the manager of the football gear shop footballshop.example, «يوسف أحمد العطار» (Moaz 2026-11-24). Legal rule (every lab): reserved `.example`
+   The target is the manager of the football gear shop camelcode.shop, «يوسف أحمد العطار» (Moaz 2026-11-24). Legal rule (every lab): reserved `.example`
    addresses and plain names, no real brand. The browser target shows these as CC.site.hosts.
    - search.example   «بحث»: his name gives 7 results, anything else says nothing was found (opened with the «+» button)
    - social.example   his profile: birth date 02/08/1992 and the town الخور in the bio, two posts (his cat «زعتر» and his youth team's training)
@@ -4848,7 +4848,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var T = CC.osint = {
     name: 'يوسف أحمد العطار', short: 'يوسف العطار', first: 'يوسف',
     user: 'yousef_alattar92', pet: 'زعتر', petEn: 'Zaatar', born: 1992, bday: '02/08/1992',
-    email: 'yalattar@footballshop.example', town: 'الخور',
+    email: 'yalattar@camelcode.shop', town: 'الخور',
     search: 'search.example',
     social: { host: 'social.example', path: '/yousef_alattar92' },
     work: { host: 'jobs.example', path: '/profile/yousef-alattar' },
@@ -5262,11 +5262,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   };
 })();
 
-/* EH2 mini challenge (Moaz 2026-11-24): OSINT -> password generator -> Barq, in their natural order, on a new website: footballshop.example as a football gear
+/* EH2 mini challenge (Moaz 2026-11-24): OSINT -> password generator -> Barq, in their natural order, on a new website: camelcode.shop as a football gear
    shop (site.js) and the OSINT websites about its manager «يوسف أحمد العطار» (sites.js). One instruction, «هدفك اليوم», shown at once with all six questions (Moaz 2026-11-24; DESIGN.md section 34 otherwise):
    1. gather his information in the browser (questions 1 to 4: name, pet, birth year, work email);
    2. run `password generator` with what was gathered (nothing is given: a wrong answer makes a list without his password);
-   3. run `barq` with that list on footballshop.example/login, log in, and answer questions 5 and 6.
+   3. run `barq` with that list on camelcode.shop/login, log in, and answer questions 5 and 6.
    No IDOR (only in the EH2 final challenge). Everything is fictional. */
 (function () {
   'use strict';
@@ -5300,7 +5300,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q5: 'ما كلمة المرور لحساب مدير التسويق على موقع المتجر؟', q5h: 'استخدم **أداة برق** على **صفحة تسجيل الدخول** مع **بريد مدير التسويق** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة **كلمة المرور** تأكد من **المعلومات** التي أدخلتها في المولّد.',
     q6: 'ما كود الخصم الخاص بالموظفين؟', q6h: 'سجّل الدخول إلى حساب مدير التسويق، ثم اقرأ **الرسائل الداخلية** في لوحة التحكم.',
     /* the instruction moves on as the questions are answered (Moaz 2026-11-25): never named «التحدي الأول / الثاني». It starts with «هدفك اليوم». */
-    t_goal: '**هدفك اليوم:** اختراق حساب **مدير التسويق** في متجر `footballshop.example`. ابدأ بجمع **معلومات** عنه من **الإنترنت**: افتح **المتصفح** [[web]]، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
+    t_goal: '**هدفك اليوم:** اختراق حساب **مدير التسويق** في متجر `camelcode.shop`. ابدأ بجمع **معلومات** عنه من **الإنترنت**: افتح **المتصفح** [[web]]، ثم أجب عن **أسئلة التحدي** على يسار الشاشة.',
     t_goal2: 'الآن افتح **شاشة الأوامر** [[term]] واستخدم **أداة مولّد كلمات المرور** لتصنع **قائمة كلمات مرور** من **المعلومات** التي جمعتها عن مدير التسويق. لعرض **الأوامر المتاحة** اكتب الأمر `help`.',
     t_goal3: 'استخدم **أداة برق** مع **القائمة** التي صنعتها لتجد **كلمة مرور** حساب مدير التسويق، ثم **سجّل الدخول** إلى الموقع وأجب عن **الأسئلة الجديدة**.',
     t_done: 'أحسنت! أنهيت التحدي المصغّر.',
@@ -5333,7 +5333,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_b_extra: 'الأمر فيه كلمات زائدة. أداة برق تأخذ ثلاثة أجزاء فقط: صفحة الدخول، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `' + FORM + '`',
     m_b_swap: 'ترتيب الأمر غير صحيح: اكتب صفحة الدخول أولاً، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `' + FORM + '`',
     m_b_badpage: '`{w}` ليس عنوان صفحة؛ يجب أن تكتب عنوان الصفحة مباشرة بعد `barq`، هكذا: `website/login`.',
-    m_b_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `footballshop.example`.',
+    m_b_site: 'لم يتم العثور على الموقع `{w}`. الموقع المتاح في هذا التدريب هو `camelcode.shop`.',
     m_b_page: 'لم يتم العثور على صفحة دخول في `{w}`. ابحث عن صفحة الدخول في قائمة الموقع.',
     m_b_noatmail: 'هذا ليس بريداً إلكترونياً صحيحاً؛ يجب أن يحتوي على `@`، مثل `example@gmail.com`.',
     m_b_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الملف كما يظهر في `display`.',
