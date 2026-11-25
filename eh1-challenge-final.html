@@ -2740,6 +2740,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       box.appendChild(document.createTextNode((box.firstChild ? '\n' : '') + arr.join('\n')));
       if (near) log.scrollTop = log.scrollHeight;
     };
+    /* scroll the terminal to its very end, whatever the student scrolled to (Moaz 2026-11-25: when the password guessing tool finishes the view goes down to its result) */
+    L.toEnd = function () { log.scrollTop = log.scrollHeight; };
     L.progress = function (done, total, ok) {
       if (!$('#pdone', root)) return;
       $('#pdone', root).textContent = CC.fmt(done); $('#prem', root).textContent = CC.fmt(Math.max(0, total - done));
@@ -2888,6 +2890,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var L = o.L, g = o.g, total = o.total, hit = o.hit;
       var big = total > (o.bigAt || 10000), keep = big ? 400 : 0;
       var i = 0, carry = 0, rampAt = null, t0 = performance.now(), last = t0;
+      /* when the tool finishes (found, nothing found or stopped at the cap) the terminal goes down to the end, even if the student had scrolled up; the lab prints
+         its result lines right after this returns, so the scroll is repeated a moment later (Moaz 2026-11-25, every lab that runs Barq) */
+      function finish(res) { if (L.toEnd) { setTimeout(L.toEnd, 60); setTimeout(L.toEnd, 600); } return res; }
       /* the attempts go into their own block, trimmed inside it only: earlier commands and their results stay in the log (Moaz 2026-11-24, every lab) */
       var box = L.addManyIn ? L.addEl(CC.el('div', 'atts')) : null;   /* NOT 'srch': that class is an old absolutely-positioned pill in styles.css and scattered the attempts over the screen (bug found by Moaz 2026-11-25) */
       L.progress(0, total);
@@ -2911,9 +2916,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         for (var k = from; k < (found ? end - 1 : end); k++) rows.push('✗ ' + o.text(k));
         if (box) L.addManyIn(box, rows, 'bad', keep); else L.addMany(rows, 'bad', keep);
         i = end; L.progress(i, total, found);
-        if (found) { L.add('✓ ' + o.text(hit), 'ok'); return { found: true, done: i, hit: hit }; }
-        if (i >= total) return { found: false, none: true, done: i, hit: hit };
-        if (big && performance.now() - t0 > o.capMs) return { found: false, capped: true, done: i, hit: hit };
+        if (found) { L.add('✓ ' + o.text(hit), 'ok'); return finish({ found: true, done: i, hit: hit }); }
+        if (i >= total) return finish({ found: false, none: true, done: i, hit: hit });
+        if (big && performance.now() - t0 > o.capMs) return finish({ found: false, capped: true, done: i, hit: hit });
       }
     }
   };
@@ -4004,8 +4009,23 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     });
     urlEl.addEventListener('focus', function () { var e = hist[idx]; if (e) urlEl.value = display(e); if (S && !(R && R.freeUrl) && urlEl.value.toLowerCase() === S.host) urlEl.value = S.host + '/'; selectPage(); });
     urlEl.addEventListener('blur', function () { var e = hist[idx]; if (e) urlEl.value = display(e); });
+    /* Moaz 2026-11-25 (every lab with a search engine): like a real browser, text typed in the address bar that is NOT an address is a SEARCH. It opens the lab's
+       search engine on the results for that text (the engine's own post() runs, as if the student had typed it in the search box). An address has a dot with no
+       spaces («camelcode.shop», «search.example/search») or starts with «//» or «/». Only where the lab has a free address bar and a search engine:
+       site.search = { host, path } or, by default, the host of site.newTab with the path '/search'. */
+    function looksLikeAddress(v) { return !/\s/.test(v) && (/^(https?:)?\/\//i.test(v) || v.charAt(0) === '/' || /^[^\s\/.]+(\.[^\s\/.]+)+/.test(v)); }
+    function searchTyped(v) {
+      var cfg = R && R.freeUrl && (R.search || (R.newTab && { host: R.newTab.host, path: '/search' }));
+      v = String(v).trim();
+      if (!cfg || !v || looksLikeAddress(v)) return false;
+      var sh = siteOf(cfg.host); if (!sh || !sh.post) return false;
+      var res = sh.post(cfg.path, { q: v }, P.state);
+      go({ host: cfg.host, path: (res && res.go) || cfg.path }, 'push', { typed: true });
+      if (P.onPost) P.onPost(cfg.path, { q: v }, res);
+      return true;
+    }
     urlEl.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') { var v = urlEl.value; urlEl.blur(); go(v, 'push', { typed: true }); }
+      if (e.key === 'Enter') { var v = urlEl.value; urlEl.blur(); if (!searchTyped(v)) go(v, 'push', { typed: true }); }
       else if (e.key === 'Escape') urlEl.blur();
     });
     return P;
