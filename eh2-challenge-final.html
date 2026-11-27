@@ -4515,7 +4515,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
    look: never like a real chess website). The student is a registered player (account 3105) who signs in first (Farhan's IDOR comment 8). Player pages are
    chess.example/player?id=<number> (Farhan's IDOR comment 1: the address names the number it carries); the site shows whichever player the number names and
    never checks who is asking (IDOR). One of them, 3241, is the tournament referee: his page's SOURCE holds a developer's comment with the hidden control
-   page /control and his work email in a hidden element (EH2 lab 1). /control is the referee's own login, then «صفحة التحكم بالموقع» with the final's result.
+   page /control (EH2 lab 1); his email is on the page itself and there is no link to his social profile (Moaz 2026-11-28: the student searches the web). /control is the referee's own login, then «صفحة التحكم بالموقع» with the final's result.
    Every page after the sign-in carries its real HTML (`src`), so «عرض مصدر الصفحة» shows the code the page is drawn from.
    CC.chess holds every value the questions depend on (single source). Values marked pending wait for Moaz. Male names only, all invented,
    phone +974 0000 0000, prize in ر.ق, no copyright line, no dead inputs (the only forms are the two logins, and both answer every try). */
@@ -4624,7 +4624,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     return L;
   }
   var FOOT = [ind(1, '<footer class="foot">'), ind(2, '<div class="wrap">'),
-    ind(3, '<span><b>' + C.name + '</b> · بطولة للمشاركين المسجّلين فقط</span>'),
+    ind(3, '<span><b>' + C.name + '</b></span>'),
     ind(3, '<span>' + C.email + ' · <bdi dir="ltr">' + C.phone + '</bdi></span>'),
     ind(2, '</div>'), ind(1, '</footer>')];
   function srcPage(title, active, body) {
@@ -4692,14 +4692,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
   Object.keys(C.players).forEach(function (n) { pages[C.pPath(n)] = playerPage(Number(n)); });
 
-  /* the referee's page: short on screen; its SOURCE has the developer's comment (the hidden /control page) and his email in a hidden element */
+  /* the referee's page: short on screen, with his email; its SOURCE has the developer's comment (the hidden /control page) */
   pages[C.pPath(C.ref)] = { title: C.refName + ' | ' + C.name, src: srcPage(C.refName, '', ['<section class="prof">', ind(1, '<div class="card who">'), ind(2, '<div class="av">♚</div>'), ind(2, '<h1>' + C.refName + '</h1>'),
-    ind(2, '<p class="role">مشرف البطولة</p>'), ind(2, '<span class="badge ref">مشرف</span>'), ind(2, '<ul class="facts">'), ind(3, '<li><span>رقم الحساب</span><b>' + C.ref + '</b></li>'), ind(3, '<li><span>المهمة</span><b>إدخال نتائج المباريات</b></li>'), ind(2, '</ul>'),
-    ind(2, '<p class="hidden">' + C.refEmail + '</p>'),
+    ind(2, '<p class="role">مشرف البطولة</p>'), ind(2, '<span class="badge ref">مشرف</span>'), ind(2, '<ul class="facts">'), ind(3, '<li><span>رقم الحساب</span><b>' + C.ref + '</b></li>'), ind(3, '<li><span>المهمة</span><b>إدخال نتائج المباريات</b></li>'), ind(3, '<li><span>البريد الإلكتروني</span><b><bdi dir="ltr">' + C.refEmail + '</bdi></b></li>'), ind(2, '</ul>'),
     ind(1, '</div>'), ind(1, '<div class="card">'), ind(2, '<h2 style="font-size:1.1rem;margin-bottom:8px">نبذة</h2>'),
     ind(2, '<p>أشرف على مباريات البطولة منذ موسمها الأول، وأتأكد أن كل مباراة تُلعب بعدل، ثم أعلن النتائج.</p>'),
     ind(2, '<!-- ملاحظة للمطوّر: صفحة التحكم بالموقع على العنوان chess.example/control ولا نضع رابطها في القائمة -->'),
-    ind(2, '<a class="lnk" href="//' + C.social.host + C.social.path + '">تابعني في منصة التواصل الاجتماعي</a>'),
     ind(1, '</div>'), '</section>']) };
 
   /* ---------- the two sign-in pages (forms that answer every try) ---------- */
@@ -4766,6 +4764,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     post: function (path, data, st) {
       var u = String((data && data.email) || '').trim(), lu = u.toLowerCase(), pw = String((data && data.password) || '');
       if (path === '/login') {
+        /* Moaz 2026-11-28: this site keeps the email sign-in (EH2 lab 4 uses a username) */
         if (lu === C.meEmail && pw === C.mePass) { st.user = C.me; return { go: '/home' }; }
         pages['/login'] = { title: 'دخول المشاركين | ' + C.name, html: loginHtml(u) };
         CC.site.error = '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
@@ -4798,8 +4797,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 })();
 
 /* EH2 final challenge: the referee's profile on social.example «منصة التواصل الاجتماعي» (reserved .example address, plain name, a light look of its own,
-   different from the OSINT lab and the mini challenge). The chess site links to it from the referee's player page.
-   What the student needs (EH2 lab 2, short: one source, no search with decoys):
+   different from the OSINT lab and the mini challenge), and the search engine «بحث» on search.example (the OSINT lab's tool, opened with the browser's «+»
+   button or by typing words in the address bar). Moaz 2026-11-28: the chess site does NOT link to the profile; the student copies the referee's full name
+   from his player page and searches the web for it (OSINT). His name (or part of it) gives 3 results, all real pages; anything else finds nothing.
+   What the student needs (EH2 lab 2):
    - pet: his falcon «شاهين» (Shaheen), in a post and in the bio «أبو شاهين»
    - city: الشمال (bio)
    - birth year 1989: worked out, not written: a post dated 15 مارس 2024 says he turned 35 today (fixed dates, nothing changes by day)
@@ -4819,6 +4820,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     user: ic('<circle cx="12" cy="8" r="4"/><path d="M4 21c1-4.5 4.5-7 8-7s7 2.5 8 7"/>'), pin: ic('<path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
     cal: ic('<rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>'), heart: ic('<path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0112 7.3a4.3 4.3 0 017.5 2.5C19.5 15.4 12 20 12 20z"/>'),
     chat: ic('<path d="M4 5h16v11H9l-5 4z"/>'), share: ic('<circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/>'),
+    search: ic('<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>'), cam: ic('<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+    eye: ic('<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>'), book: ic('<path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"/><path d="M5 17a3 3 0 013-3h10"/>'),
+    knight: ic('<path d="M8 20h9M9 20c0-4 2-6 2-9l-3 1-2-2 4-5h3c3 0 5 3 5 7v8"/>'),
     grid: ic('<rect x="4" y="4" width="7" height="7"/><rect x="13" y="4" width="7" height="7"/><rect x="4" y="13" width="7" height="7"/><rect x="13" y="13" width="7" height="7"/>')
   };
   /* his picture: a drawn man in a white ghutra (the same drawing as the chess site's referee is a piece, so the student matches him by name and role) */
@@ -4887,9 +4891,89 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '@media(max-width:820px){.page{grid-template-columns:1fr}.side{display:none}}';
 
   var NF = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0;font-size:34px;font-weight:700">الصفحة غير موجودة</h1></div>';
+
+  /* =================================================================== search.example: the search engine «بحث» (the OSINT lab's tool) =================================================================== */
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  var BASE = '*{box-sizing:border-box}html{font-size:16px}body{margin:0;line-height:1.7;-webkit-font-smoothing:antialiased}a{color:inherit;text-decoration:none}svg{display:block}bdi{unicode-bidi:isolate}' +
+    '.i{width:1.15em;height:1.15em;flex:none;display:inline-block;vertical-align:-.2em}img.ph{display:block;width:100%;height:100%;object-fit:cover}';
+  function norm(s) {
+    return String(s || '').replace(/[\u064B-\u0652\u0640]/g, '').replace(/[إأآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي').replace(/\s+/g, ' ').trim().toLowerCase();
+  }
+  function isHit(q) { var n = norm(q); return n.indexOf('ماجد') >= 0 || n.indexOf('حمدان') >= 0 || n.indexOf('majed') >= 0 || n.indexOf('hamdan') >= 0; }
+  function hl(t) { return t.replace(/ماجد|سعيد|الحمدان/g, function (m) { return '<b>' + m + '</b>'; }); }
+  var RESULTS = [
+    { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + R.user, href: '//' + C.social.host + C.social.path,
+      t: R.short + ' ♞ (@' + R.user + ')', p: '♟️ مشرف بطولة الشطرنج الإلكترونية | 📍 الشمال، قطر | 🦅 أبو شاهين. 1,208 متابعين · 3 منشورات.' },
+    { site: C.name, bg: '#5a3720', ico: IC.knight, cite: C.host + ' › player › ' + C.ref, href: '//' + C.host + C.pPath(C.ref),
+      t: C.refName + ' | ' + C.name, p: 'مشرف البطولة. أشرف على مباريات البطولة منذ موسمها الأول، وأتأكد أن كل مباراة تُلعب بعدل، ثم أعلن النتائج.' },
+    { site: C.name, bg: '#5a3720', ico: IC.knight, cite: C.host + ' › home', href: '//' + C.host + '/home',
+      t: 'النهائي يوم الجمعة 4 ديسمبر | ' + C.name, p: 'نهائي الموسم الثالث بإشراف ماجد سعيد الحمدان، والجائزة 5,000 ر.ق لبطل البطولة.' }
+  ];
+  var LOGO_S = '<span class="lg"><span class="mk">' + IC.search + '</span>بحث</span>';
+  function sForm(q, big) {
+    return '<form class="sf' + (big ? ' big' : '') + '" method="post" action="/search"><span class="sic">' + IC.search + '</span>' +
+      '<input id="q" name="q" type="text" autocomplete="off" spellcheck="false" dir="rtl" value="' + esc(q || '') + '" placeholder="ابحث في الإنترنت" aria-label="ابحث">' +
+      '<button class="go" type="submit">بحث</button></form>';
+  }
+  var sHome = '<div class="hm"><header class="tb"><span>الأخبار</span><span>الصور</span><span class="ap">' + IC.grid + '</span></header>' +
+    '<main class="cen">' + LOGO_S.replace('class="lg"', 'class="lg xl"') + '<p class="tag">ابحث في الإنترنت بسهولة</p>' + sForm('', true) + '</main>' +
+    '<footer class="fb"><span>قطر</span><span class="sp"></span><span>الخصوصية</span><span>الشروط</span><span>حول بحث</span></footer></div>';
+  function sResults(st) {
+    var q = st.q || '';
+    var top = '<header class="rh"><a href="/" class="hl0">' + LOGO_S + '</a>' + sForm(q) + '<span class="ap">' + IC.grid + '</span></header>' +
+      '<nav class="tabs"><span class="on">' + IC.search + 'الكل</span><span>' + IC.cam + 'صور</span><span>' + IC.book + 'أخبار</span><span>' + IC.eye + 'فيديو</span><span>' + IC.pin + 'خرائط</span></nav>';
+    if (!isHit(q)) {
+      return top + '<main class="res"><div class="none"><p>لم نجد أي نتائج تطابق بحثك عن «<b>' + esc(q) + '</b>».</p><p>اقتراحات:</p><ul><li>تأكد من كتابة الكلمات بشكل صحيح.</li><li>جرّب كلمات أخرى.</li><li>جرّب كلمات أعمّ.</li></ul></div></main>';
+    }
+    return top + '<main class="res"><p class="cnt">حوالي 3 نتائج (0.38 ثانية)</p>' + RESULTS.map(function (r) {
+      return '<div class="r"><div class="rb"><div class="src"><span class="fav" style="background:' + r.bg + '">' + r.ico + '</span><span class="sn"><b>' + r.site + '</b><cite dir="ltr">' + r.cite + '</cite></span></div>' +
+        '<a class="t" href="' + r.href + '">' + r.t + '</a><p>' + hl(r.p) + '</p></div></div>';
+    }).join('') + '<p class="end">لا توجد نتائج أخرى لهذا البحث.</p></main>';
+  }
+  var S_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#fff;color:#1f2430}' +
+    '.lg{display:inline-flex;align-items:center;gap:.25em;font-family:"Baloo Bhaijaan 2","Montserrat Arabic",sans-serif;font-weight:800;font-size:1.8rem;line-height:1;color:#3730a3;letter-spacing:-.01em}' +
+    '.lg .mk{display:grid;place-items:center;width:1.25em;height:1.25em;border-radius:.38em;background:linear-gradient(135deg,#6366f1,#3730a3);color:#fff;box-shadow:0 4px 10px -4px rgba(55,48,163,.6)}.lg .mk .i{width:.72em;height:.72em;stroke-width:2.6}' +
+    '.lg.xl{font-size:4.6rem;gap:.18em}' +
+    '.hm{min-height:100vh;display:flex;flex-direction:column}.tb{display:flex;justify-content:flex-end;align-items:center;gap:22px;padding:14px 26px;font-size:.92rem;color:#3c4150}.ap{display:grid;place-items:center;width:38px;height:38px;border-radius:50%;color:#5f6475}.ap .i{width:1.3em;height:1.3em}' +
+    '.cen{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 20px 90px}.tag{color:#5f6475;margin:10px 0 28px;font-size:1.02rem}.lng{color:#5f6475;font-size:.88rem;margin-top:26px}' +
+    '.fb{display:flex;gap:22px;padding:14px 28px;background:#f4f5f8;border-top:1px solid #e6e8ee;color:#5f6475;font-size:.88rem}.fb .sp{flex:1}' +
+    '.sf{display:flex;align-items:center;width:100%;max-width:600px;border:1px solid #dcdfe6;border-radius:99px;background:#fff;padding:5px 6px 5px 5px;box-shadow:0 2px 8px -2px rgba(31,36,48,.12);transition:box-shadow .2s}' +
+    '.sf:focus-within{box-shadow:0 4px 18px -4px rgba(55,48,163,.35);border-color:#c7cbe8}.sf .sic{color:#8a8fa0;padding:0 14px 0 6px}.sf .sic .i{width:1.25em;height:1.25em}' +
+    '.sf input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;font-size:1.05rem;padding:9px 4px;color:#1f2430}.sf input::placeholder{color:#9aa0ad}' +
+    '.sf .go{border:0;border-radius:99px;background:#3730a3;color:#fff;font:inherit;font-weight:800;padding:9px 26px;cursor:pointer}.sf .go:hover{background:#312a8f}.sf.big{max-width:400px;height:44px;padding:0 4px 0 5px}.sf.big input{height:100%;font-size:1rem;line-height:normal;padding:0 6px}.sf.big .go{height:34px;line-height:34px;padding:0 20px;font-size:.92rem}' +
+    '.rh{position:relative;z-index:3;background:#fff;display:flex;align-items:center;gap:26px;padding:16px 28px 10px}.rh .sf{max-width:640px;box-shadow:0 1px 6px -2px rgba(31,36,48,.18)}.rh .ap{margin-inline-start:auto}' +
+    '.tabs{display:flex;gap:26px;padding:0 28px;padding-inline-start:146px;border-bottom:1px solid #eceef3;color:#5f6475;font-size:.9rem}.tabs span{display:flex;align-items:center;gap:6px;padding:9px 2px}.tabs .i{width:1em;height:1em}.tabs .on{color:#3730a3;border-bottom:3px solid #3730a3;font-weight:700}' +
+    '.res{max-width:720px;padding:10px 28px 40px;margin-inline-start:118px}.cnt{color:#717684;font-size:.85rem;margin:8px 0 18px}' +
+    '.r{margin:0 0 30px;display:flex;gap:18px;align-items:flex-start}.r .rb{flex:1;min-width:0}.src{display:flex;align-items:center;gap:10px;margin-bottom:3px}' +
+    '.fav{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;border:1px solid rgba(0,0,0,.06)}.fav .i{width:1em;height:1em}' +
+    '.sn{display:flex;flex-direction:column;line-height:1.3;min-width:0}.sn b{font-weight:600;font-size:.9rem;color:#1f2430}.sn cite{font-style:normal;color:#5f6475;font-size:.8rem;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}' +
+    '.t{display:inline-block;color:#2f2a9e;font-size:1.25rem;line-height:1.4;margin:4px 0 3px;font-weight:600}.t:hover{text-decoration:underline}.r p{margin:0;color:#4a4f5c;font-size:.93rem;line-height:1.65}.r p b{color:#1f2430}.dt{color:#717684}' +
+    '.rate{margin-top:4px;color:#5f6475;font-size:.86rem}.rate .st{color:#f59e0b;letter-spacing:1px}' +
+    '.imgs{display:flex;gap:6px;margin-top:10px}.th{display:block;border-radius:10px;overflow:hidden;background:#eee;border:1px solid #eceef3}.imgs .th{width:118px;height:76px}.th svg{width:100%;height:100%}.th svg{object-fit:cover}' +
+    '.r.hs>.th{flex:none;width:150px;height:96px;margin-top:34px}.end{color:#9aa0ad;font-size:.85rem;margin-top:10px}' +
+    '.none{padding:14px 0}.none p{margin:0 0 8px;font-size:1.02rem}.none ul{color:#4a4f5c;margin:0;padding-inline-start:22px}' +
+    '@media(max-height:560px){.tb{padding:6px 20px}.lg.xl{font-size:3.2rem}.tag{margin:4px 0 16px}.cen{padding-bottom:24px}.fb{padding:8px 20px}}' +
+    '@media(max-height:420px){.tb,.fb{display:none}.hm{min-height:100vh;justify-content:center}.cen{padding:10px 20px}.lg.xl{font-size:2.6rem}}' +   /* the search home always fits the window: nothing to scroll, the scroll pill never covers the box */
+    '@media(max-width:760px){.rh{flex-wrap:wrap;gap:10px;padding:12px 16px}.rh .ap{display:none}.tabs{padding-inline:16px;gap:16px;overflow:hidden}.res{margin-inline-start:0;padding-inline:16px}.lg.xl{font-size:3.2rem}.r.hs>.th{display:none}.imgs .th{width:84px;height:56px}}';
+  var searchSite = {
+    css: S_CSS, notFound: NF,
+    pages: {
+      '/': { title: 'بحث', html: sHome },
+      '/search': { title: function (st) { return (st.q || '') + ' - بحث'; }, html: sResults }
+    },
+    redirects: { '/home': '/' },
+    post: function (path, data, st) {
+      if (path !== '/search') return null;
+      var q = String((data && data.q) || '').trim();
+      if (!q) return { go: '/' };
+      st.q = q;
+      return { go: '/search' };
+    }
+  };
   var social = { css: CSS, notFound: NF, pages: {} };
   social.pages[C.social.path] = { title: R.short + ' (@' + R.user + ') | منصة التواصل الاجتماعي', html: profile };
-  CC.site.hosts = { 'social.example': social };
+  CC.site.hosts = { 'social.example': social, 'search.example': searchSite };
+  CC.site.newTab = { host: 'search.example', path: '/' };   /* the «+» button opens a new tab on the search engine (as in the OSINT lab) */
 })();
 
 /* EH2 final challenge (Moaz 2026-11-25, plan.md): an online chess tournament on chess.example (site.js) and the referee's social profile (sites.js).
@@ -4928,9 +5012,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة، حاول مرة أخرى.', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'كم حساباً وجدت أداة عدّاد بين 3000 و4000؟', q1h: 'شغّل **أداة عدّاد** على عنوان **صفحة المشارك** من الرقم `3000` إلى الرقم `4000`، واقرأ آخر سطر في النتيجة.',
     q2: 'ما رقم حساب مشرف البطولة؟', q2h: 'افتح **الحسابات** التي وجدتها أداة عدّاد في **المتصفح**، وابحث عن **حساب مشرف البطولة**.',
-    q3: 'ما عنوان الصفحة المخفية التي وجدتها في الكود البرمجي لصفحة مشرف البطولة؟', q3h: 'افتح **صفحة مشرف البطولة**، ثم اضغط بالزر الأيمن واختر «**عرض مصدر الصفحة**»، واقرأ **التعليقات** في الكود البرمجي.',
-    q4: 'ما البريد الإلكتروني لمشرف البطولة؟', q4h: 'ابحث في **الكود البرمجي لصفحة المشرف** عن عنصر **لا يظهر في الصفحة**.',
-    q5: 'ما اسم الحيوان الأليف لمشرف البطولة؟', q5h: 'افتح **حسابه في منصة التواصل الاجتماعي** من صفحته في موقع البطولة، واقرأ **منشوراته**.',
+    q3: 'ما عنوان الصفحة المخفية التي وجدتها في الكود البرمجي لصفحة مشرف البطولة؟', q3h: 'ابحث في **الكود البرمجي لصفحة المشرف** عن **تعليق مخفي** لا يظهر في الصفحة.',
+    q4: 'ما البريد الإلكتروني لمشرف البطولة؟', q4h: 'تجده في **صفحة مشرف البطولة** في موقع البطولة.',
+    q5: 'ما اسم الحيوان الأليف لمشرف البطولة؟', q5h: 'انسخ **الاسم الكامل** لمشرف البطولة من صفحته، ثم افتح **تبويباً جديداً** بزر «**+**» في المتصفح وابحث عنه في **الإنترنت**. افتح **حسابه في منصة التواصل الاجتماعي** واقرأ **منشوراته**.',
     q6: 'ما هي سنة ميلاد مشرف البطولة؟', q6h: 'ابحث عن منشور **عيد ميلاده**: كم عمره، وفي أي **سنة** كتب المنشور؟',
     q7: 'ما كلمة السر لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **صفحة التحكم بالموقع** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات السر**. إذا لم تجد الأداة كلمة السر، تأكد من المعلومات التي أدخلتها في المولّد.',
     q8: 'مهمة: اجعل نفسك بطل البطولة من صفحة التحكم بالموقع.', q8h: 'في **صفحة التحكم بالموقع** اكتب **رقم حسابك** في قسم «**تغيير البطل**»، ثم اضغط «**اعتماد البطل**». رقم حسابك في الملف `my-account.txt`.',
@@ -5019,7 +5103,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
     cele_1: 'غيّرت **رقم الحساب** في عنوان الصفحة واستخدمت **أداة عدّاد**، فرأيت **حسابات مشاركين آخرين** لأن الموقع لا يتأكد أن الحساب يخصّك.',
-    cele_2: 'قرأت **الكود البرمجي لصفحة المشرف** فوجدت **صفحة مخفية** وبريده، ثم جمعت **معلوماته الشخصية** من حسابه في منصة التواصل الاجتماعي.',
+    cele_2: 'قرأت **الكود البرمجي لصفحة المشرف** فوجدت **صفحة مخفية**، ثم **بحثت في الإنترنت** عن اسمه وجمعت **معلوماته الشخصية** من حسابه في منصة التواصل الاجتماعي.',
     cele_3: 'صنعت قائمة بـ**مولّد كلمات السر**، ووجدت **كلمة السر** بـ**أداة برق**، ودخلت إلى **صفحة التحكم بالموقع** وجعلت نفسك **بطل البطولة**.',
     cele_b: 'متابعة'
   });
@@ -5140,14 +5224,15 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       L.add(iso(CC.t('k_start', { a: a, b: b, site: PAGE })), 'info ar');
       if (!(await CC.sleep(1200, g))) return false;
       L.expl(CC.t('e_run'));
-      var total = b - a + 1, hits = [], prog = L.addEl(CC.el('div', 'row dim'));
-      prog.style.direction = 'ltr'; prog.style.textAlign = 'left';
-      var step = Math.max(1, Math.ceil(total / 160));               /* about 160 small steps, whatever the range: a long range stays quick (Farhan's comment 3) */
+      /* as in EH2 lab 4 (Moaz 2026-11-28: the IDOR changes are in the final too): every number it tries gets a line, red «[Not Found]» or green
+         «[Found]», at a moderate pace (about 18 seconds for 1,001 numbers, a short range one line at a time), then the summary */
+      var total = b - a + 1, hits = [];
+      var per = total <= 60 ? 1 : Math.max(1, Math.round(total / 260)), pause = total <= 60 ? 140 : 65;
       for (var n = a; n <= b; n++) {
         if (C.nums.indexOf(n) >= 0) { hits.push(n); L.add(PAGE + n + '   [Found]', 'ok'); }
-        if ((n - a) % step === 0 || n === b) { prog.textContent = 'Tried ' + (n - a + 1) + '/' + total + '   ' + PAGE + n; if (!(await CC.sleep(45, g))) return false; }
+        else L.add(PAGE + n + '   [Not Found]', 'bad');
+        if ((n - a + 1) % per === 0 || n === b) { if (!(await CC.sleep(pause, g))) return false; }
       }
-      L.addEl(prog);                                               /* the progress line ends up last, under the found pages */
       L.add('Finished', 'dim');
       L.add('', 'dim');
       if (hits.length) {
