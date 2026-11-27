@@ -5181,7 +5181,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     st.phase = 'login'; L.task(CC.t('t_login'));
     while (document.body.classList.contains('cc-web') && (!qs('#laptop.cc-os') || qs('#laptop.cc-web-shut'))) { if (!(await CC.sleep(200, g))) return; }
     CC.copyVals = [{ v: BANK.login.user, label: 'نسخ اسم المستخدم' }, { v: BANK.login.pass, label: 'نسخ كلمة السر' }];
-    guidePage('#u', function () { return !!P.state.user; });
+    /* no ring on the username box (Moaz 2026-11-27) */
     if (!(await waitFor(function () { return !!P.state.user; }))) return;
     CC.copyVals = null; CC.guide.hide();
     if (!(await CC.sleep(700, g))) return;
