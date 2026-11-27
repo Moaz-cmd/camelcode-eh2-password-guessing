@@ -4514,8 +4514,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 /* EH2 final challenge (Moaz 2026-11-25): «بطولة الشطرنج الإلكترونية» at chess.example (reserved .example address, plain name, own walnut, cream and gold
    look: never like a real chess website). The student is a registered player (account 3105) who signs in first (Farhan's IDOR comment 8). Player pages are
    chess.example/player?id=<number> (Farhan's IDOR comment 1: the address names the number it carries); the site shows whichever player the number names and
-   never checks who is asking (IDOR). One of them, 3518, is the tournament referee: his page's SOURCE holds a developer's comment with the hidden control
-   page /control and his work email in a hidden element (EH2 lab 1). /control is the referee's own login, then «لوحة المشرف» with the final's result.
+   never checks who is asking (IDOR). One of them, 3241, is the tournament referee: his page's SOURCE holds a developer's comment with the hidden control
+   page /control and his work email in a hidden element (EH2 lab 1). /control is the referee's own login, then «صفحة التحكم بالموقع» with the final's result.
    Every page after the sign-in carries its real HTML (`src`), so «عرض مصدر الصفحة» shows the code the page is drawn from.
    CC.chess holds every value the questions depend on (single source). Values marked pending wait for Moaz. Male names only, all invented,
    phone +974 0000 0000, prize in ر.ق, no copyright line, no dead inputs (the only forms are the two logins, and both answer every try). */
@@ -4526,8 +4526,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var C = CC.chess = {
     name: 'بطولة الشطرنج الإلكترونية', host: 'chess.example',
     me: 3105, meName: 'راشد علي', meFirst: 'راشد', meEmail: 'rali@chess.example', mePass: 'Pawn2026',            /* the student's own account (pending) */
-    ref: 3518, refName: 'ماجد سعيد الحمدان', refEmail: 'mhamdan@chess.example', refPass: 'Shaheen1989!',           /* the referee (pending) */
-    winner: 'سلطان محمد', runnerUp: 'فهد ناصر', score: '2 - 1', prizeCode: 'KING-4825', prize: '5,000 ر.ق', champ: null,       /* the final, in «لوحة المشرف» (pending) */
+    ref: 3241, refName: 'ماجد سعيد الحمدان', refEmail: 'mhamdan@chess.example', refPass: 'Shaheen1989!',           /* the referee (pending) */
+    winner: 'سلطان محمد', runnerUp: 'فهد ناصر', score: '2 - 1', prizeCode: 'KING-4825', prize: '5,000 ر.ق', champ: null,       /* the final, in «صفحة التحكم بالموقع» (pending) */
     from: 3000, to: 4000, email: 'info@chess.example', phone: '+974 0000 0000',
     social: { host: 'social.example', path: '/majed.alhamdan' }
   };
@@ -4537,7 +4537,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     3027: ['فهد ناصر', 2140, 8, 2, 1, 'الدوحة', 'الدفاع الصقلي'],
     3105: ['راشد علي', 1585, 3, 3, 5, 'الوكرة', 'افتتاح الملك'],
     3168: ['سلطان محمد', 2095, 8, 1, 2, 'الريان', 'الافتتاح الإنجليزي'],
-    3241: ['حمد خليفة', 1960, 6, 3, 2, 'لوسيل', 'الدفاع الفرنسي'],
+    3518: ['حمد خليفة', 1960, 6, 3, 2, 'لوسيل', 'الدفاع الفرنسي'],
     3309: ['عبدالله سالم', 1890, 6, 2, 3, 'الدوحة', 'افتتاح الوزير'],
     3386: ['جاسم يوسف', 1815, 5, 3, 3, 'الخور', 'الدفاع الهندي'],
     3452: ['تميم عادل', 1760, 5, 2, 4, 'الدوحة', 'افتتاح الفيل'],
@@ -4698,7 +4698,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     ind(2, '<p class="hidden">' + C.refEmail + '</p>'),
     ind(1, '</div>'), ind(1, '<div class="card">'), ind(2, '<h2 style="font-size:1.1rem;margin-bottom:8px">نبذة</h2>'),
     ind(2, '<p>أشرف على مباريات البطولة منذ موسمها الأول، وأتأكد أن كل مباراة تُلعب بعدل، ثم أعلن النتائج.</p>'),
-    ind(2, '<!-- ملاحظة للمطوّر: لوحة المشرف على الصفحة chess.example/control ولا نضع رابطها في القائمة -->'),
+    ind(2, '<!-- ملاحظة للمطوّر: صفحة التحكم بالموقع على العنوان chess.example/control ولا نضع رابطها في القائمة -->'),
     ind(2, '<a class="lnk" href="//' + C.social.host + C.social.path + '">تابعني في منصة التواصل الاجتماعي</a>'),
     ind(1, '</div>'), '</section>']) };
 
@@ -4710,13 +4710,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">تسجيل الدخول</button></form>{{error}}</div></div>', false);
   }
   function controlHtml(email) {
-    return shell('<div class="auth"><div class="box"><h1>لوحة المشرف</h1><p class="sub">هذه الصفحة لمشرف البطولة فقط.</p>' +
+    return shell('<div class="auth"><div class="box"><h1>صفحة التحكم بالموقع</h1><p class="sub">هذه الصفحة لمشرف البطولة فقط.</p>' +
       '<form method="post" action="/control"><label for="u">البريد الإلكتروني</label><input id="u" name="email" autocomplete="off" value="' + esc(email || '') + '" required>' +
       '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">دخول المشرف</button></form>{{error}}</div></div>', true);
   }
   function panelHtml(msg, ok) {
     var champ = C.champ ? C.players[C.champ][0] : '';
-    return shell('<main><div class="wrap panel"><section class="sec"><h1>لوحة المشرف</h1><p class="lead">دخلت بحساب ' + C.refName + '.</p>' +
+    return shell('<main><div class="wrap panel"><section class="sec"><h1>صفحة التحكم بالموقع</h1><p class="lead">دخلت بحساب ' + C.refName + '.</p>' +
       '<div class="card"><h2 style="font-size:1.15rem">نتيجة النهائي <span class="badge">لم تُعلن بعد</span></h2>' +
       (champ ? '<div class="res one"><div class="p win"><b>' + champ + '</b><small>بطل البطولة</small></div></div>'
         : '<div class="res"><div class="p win"><b>' + C.winner + '</b><small>الفائز باللقب</small></div>' + score(C.score, 'vs') + '<div class="p"><b>' + C.runnerUp + '</b><small>المركز الثاني</small></div></div>') +
@@ -4740,7 +4740,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function freshAuth() {
     pages['/login'] = { title: 'دخول المشاركين | ' + C.name, html: loginHtml('') };
-    pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: controlHtml('') };
+    pages['/control'] = { title: 'صفحة التحكم بالموقع | ' + C.name, html: controlHtml('') };
   }
   freshAuth();
 
@@ -4774,17 +4774,17 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (path === '/control') {
         /* only the referee's account, and only once Barq has really found the password (the student reaches it through the tools, not a lucky guess) */
         if (CC.barqUnlocked && lu === C.refEmail && pw === C.refPass) {
-          st.ref = true; pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: panelHtml() };
+          st.ref = true; pages['/control'] = { title: 'صفحة التحكم بالموقع | ' + C.name, html: panelHtml() };
           return { go: '/control' };
         }
-        pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: controlHtml(u) };
+        pages['/control'] = { title: 'صفحة التحكم بالموقع | ' + C.name, html: controlHtml(u) };
         CC.site.error = lu === C.refEmail ? '<p class="err">كلمة السر غير صحيحة</p>' : '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
         return { page: '/control', error: true };
       }
       if (path === '/crown') {
         if (!st.ref) return { go: '/control' };
         var r = crown(data);
-        pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: panelHtml(r[0], r[1]) };
+        pages['/control'] = { title: 'صفحة التحكم بالموقع | ' + C.name, html: panelHtml(r[0], r[1]) };
         return { go: '/control' };
       }
       return null;
@@ -4932,14 +4932,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q4: 'ما البريد الإلكتروني لمشرف البطولة؟', q4h: 'ابحث في **الكود البرمجي لصفحة المشرف** عن عنصر **لا يظهر في الصفحة**.',
     q5: 'ما اسم الحيوان الأليف لمشرف البطولة؟', q5h: 'افتح **حسابه في منصة التواصل الاجتماعي** من صفحته في موقع البطولة، واقرأ **منشوراته**.',
     q6: 'ما هي سنة ميلاد مشرف البطولة؟', q6h: 'ابحث عن منشور **عيد ميلاده**: كم عمره، وفي أي **سنة** كتب المنشور؟',
-    q7: 'ما كلمة السر لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **لوحة المشرف** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات السر**. إذا لم تجد الأداة كلمة السر، تأكد من المعلومات التي أدخلتها في المولّد.',
-    q8: 'مهمة: اجعل نفسك بطل البطولة من لوحة المشرف.', q8h: 'في **لوحة المشرف** اكتب **رقم حسابك** في قسم «**تغيير البطل**»، ثم اضغط «**اعتماد البطل**». رقم حسابك في الملف `my-account.txt`.',
+    q7: 'ما كلمة السر لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **صفحة التحكم بالموقع** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات السر**. إذا لم تجد الأداة كلمة السر، تأكد من المعلومات التي أدخلتها في المولّد.',
+    q8: 'مهمة: اجعل نفسك بطل البطولة من صفحة التحكم بالموقع.', q8h: 'في **صفحة التحكم بالموقع** اكتب **رقم حسابك** في قسم «**تغيير البطل**»، ثم اضغط «**اعتماد البطل**». رقم حسابك في الملف `my-account.txt`.',
     q9: 'ما كود الجائزة الذي ظهر في صفحتك بعد أن أصبحت البطل؟', q9h: 'افتح **صفحتك** في الموقع من «**حسابي**»، وستجد **كود الجائزة** تحت «**بطل البطولة**».',
     q_task_open: 'لم تُنجز بعد', q_task_ok: 'تمت المهمة',
     /* the instruction moves on as the questions are answered: never «التحدي الأول / الثاني» */
     t_goal: '**هدفك اليوم:** أنت مشارك في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. اجعل نفسك **بطل البطولة** قبل إعلان النتيجة. بيانات حسابك في الملف `my-account.txt` على **سطح المكتب**. افتح **شاشة الأوامر** [[term]] و**المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب، ثم أجب عن أسئلة التحدي.',
     t_goal2: 'الآن استخدم **مولّد كلمات السر** في **شاشة الأوامر** [[term]] لتصنع قائمة كلمات سر من المعلومات التي جمعتها عن **مشرف البطولة**. لعرض الأوامر المتاحة اكتب الأمر `help`.',
-    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **لوحة المشرف** واجعل نفسك **بطل البطولة**.',
+    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **صفحة التحكم بالموقع** واجعل نفسك **بطل البطولة**.',
     t_done: 'أحسنت! أنهيت التحدي النهائي.',
     e_gen: 'المولّد يبني قائمة كلمات السر...', e_run: 'الأداة تعمل الآن...',
     /* tokens explained under a command */
@@ -5020,7 +5020,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     cele_i: 'أهم ما قمت به:',
     cele_1: 'غيّرت **رقم الحساب** في عنوان الصفحة واستخدمت **أداة عدّاد**، فرأيت **حسابات مشاركين آخرين** لأن الموقع لا يتأكد أن الحساب يخصّك.',
     cele_2: 'قرأت **الكود البرمجي لصفحة المشرف** فوجدت **صفحة مخفية** وبريده، ثم جمعت **معلوماته الشخصية** من حسابه في منصة التواصل الاجتماعي.',
-    cele_3: 'صنعت قائمة بـ**مولّد كلمات السر**، ووجدت **كلمة السر** بـ**أداة برق**، ودخلت إلى **لوحة المشرف** وجعلت نفسك **بطل البطولة**.',
+    cele_3: 'صنعت قائمة بـ**مولّد كلمات السر**، ووجدت **كلمة السر** بـ**أداة برق**، ودخلت إلى **صفحة التحكم بالموقع** وجعلت نفسك **بطل البطولة**.',
     cele_b: 'متابعة'
   });
 
