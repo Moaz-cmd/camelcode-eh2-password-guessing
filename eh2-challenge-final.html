@@ -4704,12 +4704,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function loginHtml(email) {
     return shell('<div class="auth"><div class="box"><h1>دخول اللاعبين</h1><p class="sub">سجّل الدخول بحسابك في البطولة.</p>' +
       '<form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="email" autocomplete="off" value="' + esc(email || '') + '" required>' +
-      '<label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">تسجيل الدخول</button></form>{{error}}</div></div>', false);
+      '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">تسجيل الدخول</button></form>{{error}}</div></div>', false);
   }
   function controlHtml(email) {
     return shell('<div class="auth"><div class="box"><h1>لوحة المشرف</h1><p class="sub">هذه الصفحة لمشرف البطولة فقط.</p>' +
       '<form method="post" action="/control"><label for="u">البريد الإلكتروني</label><input id="u" name="email" autocomplete="off" value="' + esc(email || '') + '" required>' +
-      '<label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">دخول المشرف</button></form>{{error}}</div></div>', true);
+      '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">دخول المشرف</button></form>{{error}}</div></div>', true);
   }
   function panelHtml() {
     return shell('<main><div class="wrap panel"><section class="sec"><h1>لوحة المشرف</h1><p class="lead">دخلت بحساب ' + C.refName + '.</p>' +
@@ -4736,7 +4736,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     host: C.host, start: '/login', css: CSS, files: { 'style.css': CSS }, pages: pages,
     notFound: function (st, entry) { return entry && /^\/player\?id=/.test(entry.path) ? noPlayer() : PLAIN_NF; },
     notFoundTitle: C.name,
-    error: '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>',
+    error: '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>',
     redirects: { '/': '/home' },
     /* everything but the sign-in needs the player's sign-in; /logout signs out */
     guard: function (path, st) {
@@ -4749,7 +4749,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (path === '/login') {
         if (lu === C.meEmail && pw === C.mePass) { st.user = C.me; return { go: '/home' }; }
         pages['/login'] = { title: 'دخول اللاعبين | ' + C.name, html: loginHtml(u) };
-        CC.site.error = '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>';
+        CC.site.error = '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
         return { page: '/login', error: true };
       }
       if (path === '/control') {
@@ -4759,7 +4759,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
           return { go: '/control' };
         }
         pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: controlHtml(u) };
-        CC.site.error = lu === C.refEmail ? '<p class="err">كلمة المرور غير صحيحة</p>' : '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>';
+        CC.site.error = lu === C.refEmail ? '<p class="err">كلمة السر غير صحيحة</p>' : '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
         return { page: '/control', error: true };
       }
       return null;
@@ -4892,7 +4892,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     title: 'أساسيات التهكير المستوى الثاني: التحدي النهائي (Final Challenge)',
     tag_hacker: 'الحاسوب (جهاز الهاكر)', tag_site: 'المتصفح',
     mode_self: 'تعلم ذاتي', mode_inst: 'تعلم بإشراف مدرب', ref_btn: 'شرح مختصر', ref_title: 'شرح مختصر',
-    ethics: 'نتدرب في هذه المنصة على بيئة معزولة، لا تحاول تجربة هذه الأدوات أو الطرق على أشخاص أو أجهزة حقيقية، فهو يعتبر نشاط غير قانوني.',
+    ethics: 'نتدرّب في بيئة معزولة. لا تجرّب هذه الهجمات على أشخاص أو أجهزة حقيقية، فهذا نشاط غير قانوني.',
     continue: 'متابعة', skip: 'تخطّي', next: 'التالي', done: 'تمّ',
     cs_title: 'شاشة الأوامر',
     /* questions panel */
@@ -4904,26 +4904,26 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q4: 'ما البريد الإلكتروني لمشرف البطولة؟', q4h: 'ابحث في **الكود البرمجي لصفحة المشرف** عن عنصر **لا يظهر في الصفحة**.',
     q5: 'ما اسم الحيوان الأليف لمشرف البطولة؟', q5h: 'افتح **حسابه في منصة التواصل الاجتماعي** من صفحته في موقع البطولة، واقرأ **منشوراته**.',
     q6: 'ما هي سنة ميلاد مشرف البطولة؟', q6h: 'ابحث عن منشور **عيد ميلاده**: كم عمره، وفي أي **سنة** كتب المنشور؟',
-    q7: 'ما كلمة المرور لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **لوحة المشرف** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات المرور**. إذا لم تجد الأداة كلمة المرور، تأكد من المعلومات التي أدخلتها في المولّد.',
+    q7: 'ما كلمة السر لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **لوحة المشرف** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات السر**. إذا لم تجد الأداة كلمة السر، تأكد من المعلومات التي أدخلتها في المولّد.',
     q8: 'من الفائز في نهائي البطولة؟', q8h: 'سجّل الدخول إلى **لوحة المشرف** بحسابه، واقرأ **نتيجة النهائي**.',
     q9: 'ما كود الجائزة؟', q9h: 'تجده في **لوحة المشرف** تحت **نتيجة النهائي**.',
     /* the instruction moves on as the questions are answered: never «التحدي الأول / الثاني» */
     t_goal: '**هدفك اليوم:** أنت لاعب في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. اكتشف **نتيجة النهائي** قبل إعلانها. بيانات حسابك في الملف `my-account.txt` على **سطح المكتب**. افتح **شاشة الأوامر** [[term]] و**المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب، ثم أجب عن أسئلة التحدي.',
-    t_goal2: 'الآن استخدم **مولّد كلمات المرور** في **شاشة الأوامر** [[term]] لتصنع قائمة كلمات مرور من المعلومات التي جمعتها عن **مشرف البطولة**. لعرض الأوامر المتاحة اكتب الأمر `help`.',
-    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة مرور** مشرف البطولة، ثم سجّل الدخول إلى **لوحة المشرف** وأجب عن الأسئلة الجديدة.',
+    t_goal2: 'الآن استخدم **مولّد كلمات السر** في **شاشة الأوامر** [[term]] لتصنع قائمة كلمات سر من المعلومات التي جمعتها عن **مشرف البطولة**. لعرض الأوامر المتاحة اكتب الأمر `help`.',
+    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **لوحة المشرف** وأجب عن الأسئلة الجديدة.',
     t_done: 'أحسنت! أنهيت التحدي النهائي.',
-    e_gen: 'المولّد يبني قائمة كلمات المرور...', e_run: 'الأداة تعمل الآن...',
+    e_gen: 'المولّد يبني قائمة كلمات السر...', e_run: 'الأداة تعمل الآن...',
     /* tokens explained under a command */
     tk_clear: 'امسح الشاشة', tk_addad: 'اسم أداة عدّاد', tk_apage: 'عنوان صفحة اللاعب قبل الرقم', tk_from: 'رقم البداية', tk_to: 'رقم النهاية',
-    tk_barq: 'اسم أداة برق', tk_page: 'صفحة تسجيل الدخول', tk_email: 'البريد الإلكتروني', tk_file: 'الملف الذي فيه كلمات المرور',
+    tk_barq: 'اسم أداة برق', tk_page: 'صفحة تسجيل الدخول', tk_email: 'البريد الإلكتروني', tk_file: 'الملف الذي فيه كلمات السر',
     /* password generator (prompts in English like a real tool, as in EH2 lab 3) */
-    pg_intro: 'مولّد كلمات المرور سيعمل الآن على بناء قائمة كلمات مرور محتملة من المعلومات الشخصية للهدف. أدخل ما جمعته عن الهدف:',
+    pg_intro: 'مولّد كلمات السر سيعمل الآن على بناء قائمة كلمات سر محتملة من المعلومات الشخصية للهدف. أدخل ما جمعته عن الهدف:',
     pg_l_name: 'First name', pg_l_family: 'Family name', pg_l_pet: 'Pet or favorite animal', pg_l_city: 'City', pg_l_year: 'Birth year',
     pg_english: 'يرجى إدخال المعلومة باللغة الإنجليزية.',
     pg_empty: 'لا يمكن ترك الإجابة فارغة. اكتب إجابتك ثم اضغط Enter.',
     pg_badyear: 'اكتب سنة الميلاد بأربعة أرقام، مثل 2001.',
-    pg_working: 'جاري توليد كلمات المرور المحتملة...',
-    pg_done: '[✓] تم توليد {n} كلمة مرور محتملة من معلومات الهدف.',
+    pg_working: 'جاري توليد كلمات السر المحتملة...',
+    pg_done: '[✓] تم توليد {n} كلمة سر محتملة من معلومات الهدف.',
     pg_saved: '[✓] تم حفظ القائمة في الملف {f} على سطح المكتب',
     /* addad output (Farhan's comment 5: «التي تم العثور عليها») */
     k_start: 'جارٍ تجربة أرقام الحسابات من {a} إلى {b} في الصفحة {site}',
@@ -4931,19 +4931,19 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     k_end: 'انتهى البحث: عدد الحسابات التي تم العثور عليها {n}',
     k_none: 'انتهى البحث: لم يتم العثور على أي حساب في هذا المدى',
     /* barq output */
-    b_start: 'تجربة كلمات المرور على حساب {email} في {site}',
+    b_start: 'تجربة كلمات السر على حساب {email} في {site}',
     b_sum: 'الحسابات التي تم اكتشافها',
-    b_none: 'جرّبت الأداة كل كلمات الملف ولم تجد كلمة المرور الصحيحة.',
+    b_none: 'جرّبت الأداة كل كلمات الملف ولم تجد كلمة السر الصحيحة.',
     /* help */
     h_t: 'الأوامر المتاحة:',
     h_a: 'أداة عدّاد (addad) تجرّب كل أرقام الحسابات بين رقمين في عنوان صفحة، وتخبرك أي الأرقام لها حساب',
     h_aa: 'الصيغة: ' + FORM_A,
     h_ax: 'حيث نستبدل website/page?id= بعنوان الصفحة كما يظهر في المتصفح بدون الرقم الذي في آخره، و1000 برقم البداية، و2000 برقم النهاية',
-    h_g: 'مولّد كلمات المرور (password generator) يسألك عن معلومات الهدف، ثم يبني منها قائمة كلمات مرور محتملة ويحفظها في ملف على سطح المكتب',
+    h_g: 'مولّد كلمات السر (password generator) يسألك عن معلومات الهدف، ثم يبني منها قائمة كلمات سر محتملة ويحفظها في ملف على سطح المكتب',
     h_ga: 'الصيغة: password generator ثم تجيب عن أسئلة الأداة',
-    h_b: 'أداة برق (barq) تجرّب كلمات المرور الموجودة في ملف على حساب محدد، حتى تجد كلمة المرور الصحيحة',
+    h_b: 'أداة برق (barq) تجرّب كلمات السر الموجودة في ملف على حساب محدد، حتى تجد كلمة السر الصحيحة',
     h_ba: 'الصيغة: ' + FORM_B,
-    h_bx: 'حيث نستبدل website/login بعنوان صفحة تسجيل الدخول، وexample@gmail.com بالبريد الإلكتروني لحساب الهدف، وpasswords.txt بالملف الذي فيه قائمة كلمات المرور',
+    h_bx: 'حيث نستبدل website/login بعنوان صفحة تسجيل الدخول، وexample@gmail.com بالبريد الإلكتروني لحساب الهدف، وpasswords.txt بالملف الذي فيه قائمة كلمات السر',
     /* wrong commands (Farhan's comment 13, every tool): what is wrong, then each part and why it is there, then the general form */
     m_unknown: 'أمر غير معروف. اكتب `help` لعرض قائمة الأوامر.',
     m_opt: 'الخيار `{w}` غير موجود: الأداة لا تحتاج إلى خيارات في هذا التحدي.',
@@ -4971,27 +4971,27 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     b_badpage: '`{w}` ليس عنوان صفحة؛ اكتب عنوان صفحة الدخول مباشرة بعد `barq`: اسم الموقع ثم `/` ثم اسم الصفحة.',
     b_site: 'لم يتم العثور على الموقع `{w}`. اكتب اسم الموقع كما يظهر في عنوان الموقع في المتصفح.',
     b_page: 'لم يتم العثور على صفحة دخول في `{w}`. اكتب عنوان الصفحة التي فيها نموذج تسجيل الدخول.',
-    b_player: 'هذه صفحة دخول اللاعبين، وأنت تعرف كلمة مرور حسابك. ابحث عن صفحة الدخول التي يستخدمها **مشرف البطولة**.',
+    b_player: 'هذه صفحة دخول اللاعبين، وأنت تعرف كلمة سر حسابك. ابحث عن صفحة الدخول التي يستخدمها **مشرف البطولة**.',
     b_noatmail: 'هذا ليس بريداً إلكترونياً صحيحاً؛ يجب أن يحتوي على `@`، مثل `example@gmail.com`.',
     b_sym: 'اسم الملف فيه رموز غير مدعومة. اكتب اسم الملف كما يظهر عند كتابة الأمر `display`.',
-    b_nolist: 'الملف `{w}` غير موجود على سطح المكتب بعد: لم تصنع قائمة كلمات المرور حتى الآن.',
-    b_file: 'لم يتم العثور على `{w}`؛ يجب أن يكون اسم ملف كلمات المرور. اعرض الملفات باستخدام الأمر `display` لترى الاسم الصحيح.',
+    b_nolist: 'الملف `{w}` غير موجود على سطح المكتب بعد: لم تصنع قائمة كلمات السر حتى الآن.',
+    b_file: 'لم يتم العثور على `{w}`؛ يجب أن يكون اسم ملف كلمات السر. اعرض الملفات باستخدام الأمر `display` لترى الاسم الصحيح.',
     bs_head: 'الأمر غير مكتمل: ',
     bs_alone: 'كتبت `barq` وحده، ولم تحدد {miss}.',
     bs_wrote: 'كتبت {got}، لكن لم تحدد {miss}.',
     bs_none: 'لم تحدد {miss}.',
     bs_unk: 'لم أفهم `{w}`: ليس عنوان صفحة دخول، ولا بريداً إلكترونياً، ولا اسم ملف.',
     bs_site: '`{w}` اسم موقع فقط؛ اكتب صفحة الدخول هكذا: اسم الموقع ثم `/` ثم اسم الصفحة.',
-    bs_p_page: 'صفحة الدخول `{w}`', bs_p_mail: 'البريد الإلكتروني `{w}`', bs_p_file: 'ملف كلمات المرور `{w}`',
-    bs_n_page: 'صفحة الدخول', bs_n_mail: 'البريد الإلكتروني', bs_n_file: 'ملف كلمات المرور',
-    b_parts: 'أمر `barq` يتكوّن من أربعة أجزاء:\n- `barq`: اسم الأداة التي تجرّب كلمات المرور.\n- `website/login`: صفحة تسجيل الدخول التي تجرّب عليها الأداة.\n- `example@gmail.com`: البريد الإلكتروني لحساب الهدف.\n- `passwords.txt`: الملف الذي فيه قائمة كلمات المرور.',
+    bs_p_page: 'صفحة الدخول `{w}`', bs_p_mail: 'البريد الإلكتروني `{w}`', bs_p_file: 'ملف كلمات السر `{w}`',
+    bs_n_page: 'صفحة الدخول', bs_n_mail: 'البريد الإلكتروني', bs_n_file: 'ملف كلمات السر',
+    b_parts: 'أمر `barq` يتكوّن من أربعة أجزاء:\n- `barq`: اسم الأداة التي تجرّب كلمات السر.\n- `website/login`: صفحة تسجيل الدخول التي تجرّب عليها الأداة.\n- `example@gmail.com`: البريد الإلكتروني لحساب الهدف.\n- `passwords.txt`: الملف الذي فيه قائمة كلمات السر.',
     b_form: 'الصيغة الصحيحة: `' + FORM_B + '`',
     /* congratulations */
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
     cele_1: 'غيّرت **رقم الحساب** في عنوان الصفحة واستخدمت **أداة عدّاد**، فرأيت **حسابات لاعبين آخرين** لأن الموقع لا يتأكد أن الحساب يخصّك.',
     cele_2: 'قرأت **الكود البرمجي لصفحة المشرف** فوجدت **صفحة مخفية** وبريده، ثم جمعت **معلوماته الشخصية** من حسابه في منصة التواصل الاجتماعي.',
-    cele_3: 'صنعت قائمة بـ**مولّد كلمات المرور**، ووجدت **كلمة المرور** بـ**أداة برق**، ودخلت إلى **لوحة المشرف**.',
+    cele_3: 'صنعت قائمة بـ**مولّد كلمات السر**، ووجدت **كلمة السر** بـ**أداة برق**، ودخلت إلى **لوحة المشرف**.',
     cele_b: 'متابعة'
   });
 
@@ -5035,7 +5035,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* the desktop: the student's own account details, nothing else (the generator adds passwords.txt) */
   CC.fsHome = '/'; CC.fsRootName = 'Desktop';
-  CC.fsSeed = CC.fsD({ 'my-account.txt': CC.fsF('حسابي في بطولة الشطرنج الإلكترونية\nالموقع: chess.example/login\nالبريد الإلكتروني: ' + C.meEmail + '\nكلمة المرور: ' + C.mePass + '\nرقم حسابي: ' + C.me) });
+  CC.fsSeed = CC.fsD({ 'my-account.txt': CC.fsF('حسابي في بطولة الشطرنج الإلكترونية\nالموقع: chess.example/login\nالبريد الإلكتروني: ' + C.meEmail + '\nكلمة السر: ' + C.mePass + '\nرقم حسابي: ' + C.me) });
 
   /* [LAB] ================= COMMANDS ================= */
   var CMDS = ['display', 'enter', 'back', 'read', 'create', 'addad', 'password_generator', 'barq', 'clear', 'help'];

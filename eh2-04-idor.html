@@ -4563,7 +4563,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   /* the answers of the questions (single source) */
   BANK.q = { owner1002: BANK.acc[1002].name, balNum: 1012, bal: BANK.acc[1012].bal, nasser: 1023 };
   /* the sign-in (pending values) and the saved transfer on the transfer page */
-  BANK.login = { email: 'ksalem@bank.example', pass: 'Khaled2026' };
+  BANK.login = { user: 'ksalem', pass: 'Khaled2026' };     /* a username, not an email (Moaz 2026-11-27); values pending */
   BANK.saved = { to: 1029, amount: 100 };
   /* the starting balances and transactions, so a restart undoes every transfer */
   var ORIG = JSON.stringify(BANK.acc);
@@ -4652,7 +4652,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '</div><aside class="side">' +
       '<div class="dcard"><div class="dc-t"><span>بطاقة الخصم</span><b class="dc-bank">' + BANK.name + '</b></div><div class="chip"></div><div class="dc-n"><bdi>•••• •••• •••• ' + a.card + '</bdi></div><div class="dc-b"><span><small>حامل البطاقة</small>' + a.name + '</span><span><small>تنتهي</small><bdi>09/29</bdi></span></div></div>' +
       '<div class="pnl info"><div class="pt"><h2>تفاصيل الحساب</h2></div><ul><li>' + I.user + '<span><small>الاسم</small>' + a.name + '</span></li><li>' + I.branch + '<span><small>الفرع</small>' + a.branch + '</span></li><li>' + I.cal + '<span><small>تاريخ فتح الحساب</small>' + a.since + '</span></li><li>' + I.coin + '<span><small>العملة</small>الريال القطري (ر.ق)</span></li></ul></div>' +
-      '<div class="tip">' + I.shield + '<span><b>نصيحة أمان</b>لا تشارك كلمة المرور أو رمز التحقق مع أي شخص، حتى لو قال إنه من البنك.</span></div>' +
+      '<div class="tip">' + I.shield + '<span><b>نصيحة أمان</b>لا تشارك كلمة السر أو رمز التحقق مع أي شخص، حتى لو قال إنه من البنك.</span></div>' +
       '</aside></div></section>', n === BANK.me ? 'acc' : '');
   }
   /* an account number with nobody behind it */
@@ -4663,11 +4663,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
   /* the sign-in page (Farhan's comment 8): a real form that answers every try */
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function loginHtml(email) {
+  function loginHtml(user) {
     return '<header class="hd"><div class="w"><span class="logo">' + LOGO + '<span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></span></div></header>' +
       '<main><section class="sec"><div class="msg lgn"><span class="mi">' + I.user + '</span><h1>تسجيل الدخول</h1><p>ادخل إلى حسابك في ' + BANK.name + '.</p>{{error}}' +
-      '<form method="post" action="/login" novalidate><label for="u">البريد الإلكتروني</label><input id="u" name="email" autocomplete="off" value="' + esc(email || '') + '" required>' +
-      '<label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form></div></section></main>' + FOOT;
+      '<form method="post" action="/login" novalidate><label for="u">اسم المستخدم</label><input id="u" name="username" autocomplete="off" value="' + esc(user || '') + '" required>' +
+      '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form></div></section></main>' + FOOT;
   }
   /* the transfer page: the student's own saved transfer, a link whose address carries from=, to= and amount= (Farhan's comment 7, no input fields) */
   function transferHtml() {
@@ -4767,13 +4767,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (entry && /^\/transfer\?/i.test(entry.path)) return BANK.transfer(entry.path);
       return PLAIN_NF;
     },
-    error: '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>',
+    error: '<p class="err">اسم المستخدم أو كلمة السر غير صحيحة</p>',
     post: function (path, data, st) {
       if (path !== '/login') return null;
-      var u = String((data && data.email) || '').trim(), p = String((data && data.password) || '');
-      if (u.toLowerCase() === BANK.login.email && p === BANK.login.pass) { st.user = BANK.me; freshLogin(); return { go: BANK.home() }; }
+      var u = String((data && data.username) || '').trim(), p = String((data && data.password) || '');
+      if (u.toLowerCase() === BANK.login.user && p === BANK.login.pass) { st.user = BANK.me; freshLogin(); return { go: BANK.home() }; }
       pages['/login'] = { title: 'تسجيل الدخول | ' + BANK.name, html: loginHtml(u) };
-      CC.site.error = (!u || !p) ? '<p class="err">اكتب البريد الإلكتروني وكلمة المرور، ثم اضغط «تسجيل الدخول».</p>' : '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>';
+      CC.site.error = (!u || !p) ? '<p class="err">اكتب اسم المستخدم وكلمة السر، ثم اضغط «تسجيل الدخول».</p>' : '<p class="err">اسم المستخدم أو كلمة السر غير صحيحة</p>';
       return { page: '/login', error: true };
     },
     notFoundTitle: BANK.name,
@@ -4817,13 +4817,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     title: 'أساسيات التهكير المستوى الثاني: ثغرة IDOR',
     tag_hacker: 'الحاسوب (جهاز الهاكر)', tag_site: 'موقع البنك',
     mode_self: 'تعلم ذاتي', mode_inst: 'تعلم بإشراف مدرب', ref_btn: 'شرح مختصر', ref_title: 'شرح مختصر',
-    ethics: 'نتدرب في هذه المنصة على بيئة معزولة، لا تحاول تجربة هذه الأدوات أو الطرق على أشخاص أو أجهزة حقيقية، فهو يعتبر نشاط غير قانوني.',
+    ethics: 'نتدرّب في بيئة معزولة. لا تجرّب هذه الهجمات على أشخاص أو أجهزة حقيقية، فهذا نشاط غير قانوني.',
     continue: 'متابعة', skip: 'تخطّي', next: 'التالي', done: 'تمّ',
     cs_title: 'شاشة الأوامر',
     br_site: 'اسم الموقع', br_page: 'اسم الصفحة',     /* three labels under the address: bank.example / account?id= / 1001 (site.tipWord) */
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
-    q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابة قبل التحقق',
+    q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما اسم صاحب الحساب رقم 1002؟', q1h: 'غيّر رقم الحساب في آخر عنوان الموقع إلى 1002 ثم اضغط Enter، وانظر إلى «صاحب الحساب» في بطاقة الرصيد.',
     q2: 'كم الرصيد المتاح في الحساب رقم 1012؟', q2h: 'اكتب 1012 مكان رقم الحساب في عنوان الموقع ثم اضغط Enter، وانظر إلى «الرصيد المتاح» في أعلى الصفحة.',
     q3: 'ما رقم حساب ناصر عبدالله؟', q3h: 'انظر إلى أرقام الحسابات التي وجدتها أداة عدّاد، واكتبها في عنوان الموقع، حتى يظهر اسم ناصر في بطاقة الرصيد.',
@@ -4832,9 +4832,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* tokens explained under the command */
     tk_addad: 'اسم الأداة', tk_page: 'عنوان صفحة الحساب بدون الرقم الذي في آخره', tk_from: 'رقم البداية', tk_to: 'رقم النهاية', tk_clear: 'امسح الشاشة',
     /* task lines */
-    t_login: 'سجّل الدخول إلى **حسابك** في **البنك الإلكتروني**: اكتب البريد الإلكتروني `' + BANK.login.email + '` وكلمة المرور `' + BANK.login.pass + '`، ثم اضغط «**تسجيل الدخول**».',
-    t_me: 'سجّلت الدخول بحسابك. لاحظ **اسمك** في أعلى الموقع: «**مرحباً، خالد**». هكذا يعرف الموقع **من سجّل الدخول**.',
-    t_explore: 'هذه صفحة **حسابك**: اسمك، و**الرصيد المتاح**، و**آخر العمليات**. المبالغ **الخضراء** أموال دخلت حسابك، و**الحمراء** أموال خرجت منه.',
+    t_login: 'سجّل الدخول إلى **حسابك** في **البنك الإلكتروني**: اكتب اسم المستخدم `' + BANK.login.user + '` وكلمة السر `' + BANK.login.pass + '`، ثم اضغط «**تسجيل الدخول**».',
+    t_explore: 'هذه صفحة **حسابك** تظهر **معلوماتك البنكية** كاسمك، و**الرصيد المتاح**، و**آخر العمليات**.',     /* Moaz 2026-11-27 */
     t_look: 'لاحظ `id=1001` في **عنوان الموقع**: الرقم `1001` هو **الرقم الخاص بحسابك**، وبه يعرف الموقع **أي حساب** يعرض لك.',     /* Farhan's comment 2 */
     t_change: 'ماذا يحدث لو غيّرنا الرقم؟ اضغط على رقم الحساب `1001` في **عنوان الموقع**، ثم احذفه واكتب `1002`، واضغط `Enter`.',
     t_other: 'لاحظ: ظهرت **معلومات حساب شخص آخر**، باسمه ورصيده وعملياته! وهذا **خطأ**: أنت لم تسجّل الدخول بحسابه، ولا يحق لك رؤية حسابه، لكن الموقع عرضه لك لأنه **لم يتأكد أن الحساب يخصّك**. ولاحظ أن **صاحب الحساب** في بطاقة الرصيد تغيّر، بينما الاسم في أعلى الموقع ما زال **خالد**.',     /* Farhan's comments 8 and 9 */
@@ -5168,20 +5167,16 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
     L.expl('');
 
-    /* 1. sign in (Farhan's comment 8); the engine shows «افتح المتصفح» first */
+    /* 1. sign in with a username (Farhan's comment 8; username since Moaz 2026-11-27); the engine shows «افتح المتصفح» first */
     st.phase = 'login'; L.task(CC.t('t_login'));
     while (document.body.classList.contains('cc-web') && (!qs('#laptop.cc-os') || qs('#laptop.cc-web-shut'))) { if (!(await CC.sleep(200, g))) return; }
-    CC.copyVals = [{ v: BANK.login.email, label: 'نسخ البريد' }, { v: BANK.login.pass, label: 'نسخ كلمة المرور' }];
+    CC.copyVals = [{ v: BANK.login.user, label: 'نسخ اسم المستخدم' }, { v: BANK.login.pass, label: 'نسخ كلمة السر' }];
     guidePage('#u', function () { return !!P.state.user; });
     if (!(await waitFor(function () { return !!P.state.user; }))) return;
     CC.copyVals = null; CC.guide.hide();
     if (!(await CC.sleep(700, g))) return;
 
-    /* 2. who is signed in, then his own account (comment 2) */
-    st.phase = 'me'; L.task(CC.t('t_me'));
-    guidePage('#who');
-    if (!(await CC.stepWait(g))) return;
-    CC.guide.hide();
+    /* 2. his own account (comment 2); the «مرحباً، خالد» step was taken out (Moaz 2026-11-27) */
     st.phase = 'explore'; L.task(CC.t('t_explore'));
     if (!(await CC.stepWait(g))) return;
     await CC.say('acc'); if (!ok()) return;
@@ -5272,7 +5267,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تسجيل الدخول والحساب","keys":["t_login","t_me","t_explore","t_look"]},{"label":"تغيير الرقم","keys":["t_change","t_other","t_hand"]},{"label":"أداة عدّاد","keys":["t_slow","t_openterm","t_addad"]},{"label":"استكشاف الحسابات","keys":["t_q"]},{"label":"تحويل الأموال","keys":["t_tr1","t_tr2","t_tr3","t_tr4","t_q2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب، لتصل إلى **موقع البنك**.","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة عدّاد**.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك"};
+window.CC_MISSION = {"stages":[{"label":"تسجيل الدخول والحساب","keys":["t_login","t_explore","t_look"]},{"label":"تغيير الرقم","keys":["t_change","t_other","t_hand"]},{"label":"أداة عدّاد","keys":["t_slow","t_openterm","t_addad"]},{"label":"استكشاف الحسابات","keys":["t_q"]},{"label":"تحويل الأموال","keys":["t_tr1","t_tr2","t_tr3","t_tr4","t_q2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب، لتصل إلى **موقع البنك**.","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة عدّاد**.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every

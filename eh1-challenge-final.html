@@ -5013,7 +5013,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   function loginHtml(email) {
     var v = String(email || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
-    return '<div class="box"><div class="lg">' + logoImg + '</div><h1>دخول الموظفين</h1><p class="s">هذه الصفحة لموظفي الأكاديمية فقط.</p><form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="username" autocomplete="off" value="' + v + '" required><label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div>';
+    return '<div class="box"><div class="lg">' + logoImg + '</div><h1>دخول الموظفين</h1><p class="s">هذه الصفحة لموظفي الأكاديمية فقط.</p><form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="username" autocomplete="off" value="' + v + '" required><label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div>';
   }
   function panelHtml() {
     return page('', '<section class="sec n"><div class="bar"><h2 style="margin:0">لوحة الموظفين</h2><span class="chp">' + A.staff + '، مسؤول التسجيل</span></div>' +
@@ -5060,7 +5060,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
 
   var NOT_FOUND = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0;font-size:34px;font-weight:700">الصفحة غير موجودة</h1></div>';
-  var ERR_ANY = '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>';
+  var ERR_ANY = '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
 
   CC.site = {
     host: A.host, start: '/home', css: CSS, pages: build(),
@@ -5076,7 +5076,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         return { go: '/login' };
       }
       CC.site.pages['/login'] = { title: 'دخول الموظفين | ' + A.name, html: page('', loginHtml(raw)) };
-      CC.site.error = u === A.staffEmail ? '<p class="err">كلمة المرور غير صحيحة</p>' : ERR_ANY;   /* specific only once the email is right (as in lab 5) */
+      CC.site.error = u === A.staffEmail ? '<p class="err">كلمة السر غير صحيحة</p>' : ERR_ANY;   /* specific only once the email is right (as in lab 5) */
       return { page: '/login', error: true };
     }
   };
@@ -5103,41 +5103,41 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     tag_hacker: 'الحاسوب (جهاز الهاكر)', tag_site: 'موقع الأكاديمية', tag_pc: 'واجهة المستخدم',
     gui_no_write: 'للكتابة داخل الملف في هذا التحدي استخدم شاشة الأوامر.',
     mode_self: 'تعلم ذاتي', mode_inst: 'تعلم بإشراف مدرب', ref_btn: 'شرح مختصر', ref_title: 'شرح مختصر',
-    ethics: 'نتدرب في هذه المنصة على بيئة معزولة، لا تحاول تجربة هذه الأدوات أو الطرق على أشخاص أو أجهزة حقيقية، فهو يعتبر نشاط غير قانوني.',
+    ethics: 'نتدرّب في بيئة معزولة. لا تجرّب هذه الهجمات على أشخاص أو أجهزة حقيقية، فهذا نشاط غير قانوني.',
     continue: 'متابعة', skip: 'تخطّي', next: 'التالي', done: 'تمّ',
     cs_title: 'شاشة الأوامر',
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
-    q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
+    q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما هو اسم مسؤول الأنشطة في الأكاديمية؟', q1h: 'افتح صفحة «**من نحن**» في قائمة الموقع، وابحث في **فريق الإدارة** عن **مسؤول الأنشطة**.',     /* Moaz 2026-11-14: question 1 comes from a public page */
     q2: 'في أي يوم سيتم عرض المشاريع لدورة الذكاء الاصطناعي؟', q2h: 'استخدم **أداة تعلمتها في الحصص الماضية** لتكتشف **الصفحات المخفية** في الموقع، ثم افتح الصفحة التي تخص **المشاريع**.',
     q3: 'ما البريد الإلكتروني لمسؤول التسجيل؟', q3h: 'افتح صفحة «**تواصل**» في قائمة الموقع، وابحث عن بريد **مسؤول التسجيل**.',
-    q4: 'ما كلمة المرور الخاصة ببريد مسؤول التسجيل؟', q4h: 'شغّل **أداة برق** على **صفحة دخول الموظفين** التي وجدتها أداة كاشف، مع بريد **مسؤول التسجيل** و**ملف كلمات المرور**.',
-    q5: 'في أي شهر يبدأ معسكر الأمن السيبراني؟', q5h: 'سجّل الدخول إلى **صفحة دخول الموظفين** بالبريد الإلكتروني وكلمة المرور، ثم اقرأ **الرسائل الداخلية**.',
+    q4: 'ما كلمة السر الخاصة ببريد مسؤول التسجيل؟', q4h: 'شغّل **أداة برق** على **صفحة دخول الموظفين** التي وجدتها أداة كاشف، مع بريد **مسؤول التسجيل** و**ملف كلمات السر**.',
+    q5: 'في أي شهر يبدأ معسكر الأمن السيبراني؟', q5h: 'سجّل الدخول إلى **صفحة دخول الموظفين** بالبريد الإلكتروني وكلمة السر، ثم اقرأ **الرسائل الداخلية**.',
     /* the two instructions */
     t_p1: '**التحدي الأول:** عليك أن تخترق موقع `camelcode.academy`، اكتشف **الصفحات المخفية** فيه باستخدام **أداة كاشف**، ثم أجب عن **أسئلة التحدي** على يسار الشاشة. ستجد **الملفات** التي ستحتاجها داخل **مجلدات** على **سطح المكتب**. لعرض قائمة **الأوامر المتاحة** اكتب الأمر `help`.',     /* Moaz 2026-11-14 */
     t_p2: '**التحدي الثاني:** قم باستخدام **أداة برق** لاختراق **حساب موظف** داخل الموقع. ستجد **الملفات المطلوبة** داخل **مجلدات** على **سطح المكتب**، وأجب عن **الأسئلة الجديدة**.',     /* Moaz 2026-11-14 */
     t_done: 'أحسنت! أنهيت التحدي النهائي.',
-    e_k_run: 'أداة كاشف تجرّب الأسماء الآن...', e_b_run: 'أداة برق تجرّب كلمات المرور الآن...',
+    e_k_run: 'أداة كاشف تجرّب الأسماء الآن...', e_b_run: 'أداة برق تجرّب كلمات السر الآن...',
     /* tokens explained under the command */
     tk_clear: 'امسح الشاشة',
     tk_kashif: 'اسم الأداة', tk_site: 'اسم الموقع', tk_list: 'اسم الملف الذي يحتوي أسماء الصفحات',
-    tk_barq: 'اسم أداة برق', tk_page: 'صفحة تسجيل الدخول الخاصة بالموقع', tk_email: 'البريد الإلكتروني', tk_pfile: 'الملف الذي يحتوي على كلمات المرور',
+    tk_barq: 'اسم أداة برق', tk_page: 'صفحة تسجيل الدخول الخاصة بالموقع', tk_email: 'البريد الإلكتروني', tk_pfile: 'الملف الذي يحتوي على كلمات السر',
     /* help: the file commands, then the two tools with the lesson's examples */
     h_t: 'الأوامر المتاحة:',
     h_k: 'أداة كاشف (kashif) تكتشف صفحات الموقع عن طريق تجربة كل أسماء الصفحات الموجودة في الملف الذي يُعطى لها',
     h_ka: 'الصيغة: kashif website pages.txt',     /* Moaz 2026-11-14: a general form with placeholders, not the lesson's example */
     h_kx: 'حيث نستبدل website بالموقع الذي نريد اختراقه، وpages.txt بالملف الذي يحتوي أسماء الصفحات',
-    h_b: 'أداة برق (barq) تجرّب كلمات المرور الموجودة في ملف على حساب محدد، حتى تجد كلمة المرور الصحيحة',
+    h_b: 'أداة برق (barq) تجرّب كلمات السر الموجودة في ملف على حساب محدد، حتى تجد كلمة السر الصحيحة',
     h_ba: 'الصيغة: barq website/admin example@gmail.com passwords.txt',
-    h_bx: 'حيث نستبدل website/admin بعنوان صفحة تسجيل الدخول الخاصة بالموقع، وexample@gmail.com بالبريد الإلكتروني لحساب الضحية، وpasswords.txt بالملف الذي يحتوي قائمة كلمات المرور',
+    h_bx: 'حيث نستبدل website/admin بعنوان صفحة تسجيل الدخول الخاصة بالموقع، وexample@gmail.com بالبريد الإلكتروني لحساب الضحية، وpasswords.txt بالملف الذي يحتوي قائمة كلمات السر',
     /* tool output */
     k_start: 'جارٍ البحث عن صفحات الموقع {site} باستخدام ملف الصفحات {file}',
     k_sum: 'قائمة الصفحات الموجودة في الموقع',
     k_end: 'انتهى البحث: وُجدت {n} صفحات',
-    b_start: 'تجربة كلمات مرور شائعة على حساب {email} في {site}',
+    b_start: 'تجربة كلمات سر شائعة على حساب {email} في {site}',
     b_sum: 'الحسابات التي تم اكتشافها',
-    b_none: 'جرّبت الأداة كل كلمات الملف ولم تجد كلمة المرور الصحيحة.',     /* as in lab 5 */
+    b_none: 'جرّبت الأداة كل كلمات الملف ولم تجد كلمة السر الصحيحة.',     /* as in lab 5 */
     /* wrong commands: one specific message per mistake */
     m_unknown: 'أمر غير معروف. اكتب `help` لعرض قائمة الأوامر.',
     /* Kashif and Barq mistakes: the same messages and checks as EH1 labs 4 and 5 (Moaz 2026-11-14); «الصيغة الصحيحة» shows the general form of help, so the login page and the email are not given away */
@@ -5153,11 +5153,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_k_page: 'اكتب اسم الموقع فقط `{site}` بدون اسم الصفحة `{page}`. الصيغة الصحيحة: `kashif website pages.txt`',
     m_k_sym: 'لم يتم العثور على الموقع. استخدم الصيغة الصحيحة: `kashif website pages.txt`',
     m_b_opt: 'الخيار `{w}` غير موجود. أداة برق لا تحتاج إلى خيارات في هذا التدريب. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
-    m_b_none: 'الأمر غير مكتمل: لم تحدد صفحة الدخول ولا البريد الإلكتروني ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_none: 'الأمر غير مكتمل: لم تحدد صفحة الدخول ولا البريد الإلكتروني ولا ملف كلمات السر. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     m_b_extra: 'الأمر فيه كلمات زائدة. أداة برق تأخذ ثلاثة أجزاء فقط: صفحة الدخول، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
-    m_b_nofileemail: 'لم تحدد البريد الإلكتروني ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
-    m_b_nopagefile: 'لم تحدد صفحة الدخول ولا ملف كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
-    m_b_nofile: 'لم تحدد ملف كلمات المرور؛ يحتاج برق إلى الملف الذي يحتوي كلمات المرور. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nofileemail: 'لم تحدد البريد الإلكتروني ولا ملف كلمات السر. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nopagefile: 'لم تحدد صفحة الدخول ولا ملف كلمات السر. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
+    m_b_nofile: 'لم تحدد ملف كلمات السر؛ يحتاج برق إلى الملف الذي يحتوي كلمات السر. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     m_b_noemail: 'لم تحدد البريد الإلكتروني؛ يحتاج برق إلى معرفة حساب من يجرّب عليه. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     m_b_nosite: 'لم تحدد صفحة الدخول؛ يحتاج برق إلى معرفة أي صفحة يحاول الدخول إليها. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     m_b_swap: 'ترتيب الأمر غير صحيح: اكتب صفحة الدخول أولاً، ثم البريد الإلكتروني، ثم الملف. الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
@@ -5167,7 +5167,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_b_noatmail: 'هذا ليس بريداً إلكترونياً صحيحاً؛ يجب أن يحتوي على `@`، مثل `example@gmail.com`.',
     m_b_wrongmail: 'لم يتم العثور على حساب بالبريد `{w}`. ابحث عن البريد الإلكتروني في صفحة «تواصل».',
     m_b_sym: 'الأمر فيه رموز غير مدعومة. اكتب اسم الملف كما يظهر في `display`.',
-    m_b_file: 'لم يتم العثور على `{w}`؛ يجب أن يكون اسم ملف كلمات مرور. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
+    m_b_file: 'لم يتم العثور على `{w}`؛ يجب أن يكون اسم ملف كلمات سر. اعرض الملفات الموجودة باستخدام الأمر `display` لترى الاسم الصحيح.',
     /* a barq command with fewer than three parts: say what was typed, what is missing, and any word that is not understood (Moaz 2026-11-14: never the same generic line) */
     bs_head: 'الأمر غير مكتمل: ',
     bs_alone: 'كتبت `barq` وحده، ولم تحدد {miss}.',
@@ -5175,15 +5175,15 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     bs_none: 'لم تحدد {miss}.',
     bs_unk: 'لم أفهم `{w}`: ليس عنوان صفحة دخول، ولا بريداً إلكترونياً، ولا اسم ملف.',
     bs_site: '`{w}` اسم موقع فقط؛ اكتب صفحة الدخول هكذا: اسم الموقع ثم `/` ثم اسم الصفحة.',
-    bs_p_page: 'صفحة الدخول `{w}`', bs_p_mail: 'البريد الإلكتروني `{w}`', bs_p_file: 'ملف كلمات المرور `{w}`',
-    bs_n_page: 'صفحة الدخول', bs_n_mail: 'البريد الإلكتروني', bs_n_file: 'ملف كلمات المرور',
+    bs_p_page: 'صفحة الدخول `{w}`', bs_p_mail: 'البريد الإلكتروني `{w}`', bs_p_file: 'ملف كلمات السر `{w}`',
+    bs_n_page: 'صفحة الدخول', bs_n_mail: 'البريد الإلكتروني', bs_n_file: 'ملف كلمات السر',
     bs_form: 'الصيغة الصحيحة: `barq website/admin example@gmail.com passwords.txt`',
     /* congratulations */
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
     cele_1: 'تنقّلت بين **المجلدات** في شاشة الأوامر باستخدام الأوامر `display` و`enter` و`back` لتصل إلى **ملفات الأدوات**.',
     cele_2: 'استخدمت **أداة كاشف** لتكتشف **الصفحات المخفية** في موقع جديد، ومنها **صفحة دخول الموظفين**.',
-    cele_3: 'وجدت **البريد الإلكتروني** الصحيح، واستخدمت **أداة برق** لتجد **كلمة المرور** للحساب وتدخل إلى **لوحة الموظفين**.',     /* Moaz 2026-11-14 */
+    cele_3: 'وجدت **البريد الإلكتروني** الصحيح، واستخدمت **أداة برق** لتجد **كلمة السر** للحساب وتدخل إلى **لوحة الموظفين**.',     /* Moaz 2026-11-14 */
     cele_b: 'متابعة',
     w1: 'من هنا تختار طريقتك في التعلم: «تعلم ذاتي» أو «تعلم بإشراف مدرب».', w2: 'هذا موقع الأكاديمية في المتصفح.',
     w3: 'هنا تكتب الأمر في شاشة الأوامر ثم تضغط Enter. اكتب help لعرض قائمة الأوامر.', w6: 'زر «؟» يعرّفك على أجزاء الدرس.'

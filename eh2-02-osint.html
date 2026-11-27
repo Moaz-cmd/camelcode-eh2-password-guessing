@@ -4514,7 +4514,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function loginFormHtml(email) {
     return '<section class="sec"><div class="box"><h1>تسجيل الدخول</h1><p class="s">سجّل الدخول إلى حسابك في ' + SHOP.name + '.</p>' +
       '<form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="username" autocomplete="off" value="' + escAttr(email || '') + '" required>' +
-      '<label for="p">كلمة المرور</label><input id="p" name="password" type="password" autocomplete="off" required>' +
+      '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required>' +
       '<button class="btn" type="submit">تسجيل الدخول</button></form>{{error}}</div></section>';
   }
   pages['/login'] = { title: 'تسجيل الدخول | ' + SHOP.name, html: page('/login', loginFormHtml('')) };
@@ -4530,7 +4530,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     host: SHOP.host, start: '/home', css: CSS, pages: pages,
     notFound: NOT_FOUND, notFoundTitle: 'الصفحة غير موجودة | ' + SHOP.name,
     redirects: { '/': '/home' },
-    error: '<p class="err">البريد الإلكتروني أو كلمة المرور غير صحيحة</p>',
+    error: '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>',
     /* OSINT is reconnaissance only: the login page is real and public, but no account logs in here, so every attempt fails (never a dead form) */
     post: function (path, data) {
       if (path !== '/login') return null;
@@ -4997,14 +4997,14 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
     title: 'أساسيات التهكير المستوى الثاني: جمع المعلومات (OSINT)',
     tag_planner: 'مسار التدريب', tag_site: 'المتصفح',
     mode_self: 'تعلم ذاتي', mode_inst: 'تعلم بإشراف مدرب', ref_btn: 'شرح مختصر', ref_title: 'شرح مختصر',
-    ethics: 'نتدرب في هذه المنصة على بيئة معزولة، لا تحاول تجربة هذه الأدوات أو الطرق على أشخاص أو أجهزة حقيقية، فهو يعتبر نشاط غير قانوني.',
+    ethics: 'نتدرّب في بيئة معزولة. لا تجرّب هذه الهجمات على أشخاص أو أجهزة حقيقية، فهذا نشاط غير قانوني.',
     continue: 'متابعة', skip: 'تخطّي', next: 'التالي', done: 'تمّ',
     pl_title: 'خطوات الدرس', pl_here: 'أنت هنا', plan_tab: 'الخطة',
     cf_s1: 'حدّد الهدف', cf_s2: 'ابحث عن الهدف', cf_s3: 'اجمع المعلومات',
     cf_now: 'الآن', cf_done: 'تمّت', cf_skip: '',
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
-    q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'يجب عليك كتابة إجابة قبل التحقق',
+    q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما اسم مدير المتجر؟',
     q1h: 'في موقع المتجر، افتح صفحة «من نحن»، ومرّر للأسفل إلى قسم «فريقنا»، واقرأ الاسم المكتوب لمدير المتجر.',
     q2: 'ما تاريخ ميلاد صالح؟' + String.fromCharCode(10) + 'الصيغة: DD/MM/YYYY',
