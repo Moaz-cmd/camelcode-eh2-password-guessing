@@ -4513,7 +4513,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 /* Lab EH2-04 (IDOR): the fictional online bank «البنك الإلكتروني» at bank.example (reserved .example address, a plain name, its own look: DESIGN.md section 39).
    Farhan's review (Moaz 2026-11-25): the student signs in first (comment 8); every account page is /account?id=<number> (comment 1); 400 accounts are spread over
-   1000 to 2000 (comment 3; 400 since Moaz 2026-11-27); a transfer page moves money by its address (comment 7); expenses are red (comment 6). The site shows
+   1000 to 2000 (comment 3; 400 since Moaz 2026-11-27); every account page has a «تحويل الأموال» box that sends money FROM the account on screen (comment 7; since Moaz 2026-11-27 no /transfer address: the only flaw is ?id=); expenses are red (comment 6). The site shows
    whichever account the number names and never checks that it is the signed-in user's (the vulnerability). No protection modes: protection is taught only in
    «شرح مختصر» (Moaz 2026-11-22). The tool addad (lab-logic.js) reads CC.bank.acc to know which numbers have an account.
    CC.bank holds every value the questions depend on (single source). Values marked pending are not confirmed by Moaz or Farhan.
@@ -4587,9 +4587,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   BANK.nums = Object.keys(BANK.acc).map(Number);
   /* the answers of the questions (single source) */
   BANK.q = { owner1002: BANK.acc[1002].name, balNum: 1012, bal: BANK.acc[1012].bal, nasser: 1018 };     /* Moaz 2026-11-27 */
-  /* the sign-in (pending values) and the saved transfer on the transfer page */
+  /* the sign-in (pending values) */
   BANK.login = { user: 'ksalem', pass: 'Khaled2026' };     /* a username, not an email (Moaz 2026-11-27); values pending */
-  BANK.saved = { to: 1029, amount: 100 };
   /* the starting balances and transactions, so a restart undoes every transfer */
   var ORIG = JSON.stringify(BANK.acc);
   BANK.reset = function () { var o = JSON.parse(ORIG); Object.keys(o).forEach(function (k) { BANK.acc[k] = o[k]; }); };
@@ -4645,8 +4644,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function head(active) {
     var me = BANK.acc[BANK.me];
     return '<header class="hd"><div class="w"><a class="logo" href="' + BANK.home() + '">' + LOGO + '<span><b>' + BANK.name + '</b><small>الخدمات المصرفية عبر الإنترنت</small></span></a>' +
-      /* the menu (Farhan's comment 7 needs a transfer page): the student's own account and the transfers */
-      '<nav><a href="' + BANK.home() + '"' + (active === 'acc' ? ' class="on"' : '') + '>' + I.home + 'حسابي</a><a href="/transfer"' + (active === 'tr' ? ' class="on"' : '') + '>' + CAT.transfer + 'تحويل الأموال</a></nav>' +
+      /* the menu: only his own account (the transfer box is on every account page, Moaz 2026-11-27) */
+      '<nav><a href="' + BANK.home() + '"' + (active === 'acc' ? ' class="on"' : '') + '>' + I.home + 'حسابي</a></nav>' +
       '<div class="who" id="who"><span class="av">' + me.first.charAt(0) + '</span><span class="hi">مرحباً، <b>' + me.first + '</b></span><a class="lo" href="/logout">' + I.out + 'تسجيل الخروج</a></div></div></header>';
   }
   var FOOT = '<footer class="ft"><div class="w cols"><div class="c1"><div class="flogo">' + LOGO + '<b>' + BANK.name + '</b></div><p>خدمات مصرفية سهلة، في أي وقت ومن أي مكان.</p></div>' +
@@ -4656,6 +4655,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* ---------- the account dashboard ---------- */
   function dash(n) {
+    BANK.view = n;                                     /* the account on screen: the transfer box sends from it (the flaw: never checked against the signed-in user) */
     var a = BANK.acc[n], inc = 0, out = 0;
     a.tx.forEach(function (t) { if (t[3] > 0) inc += t[3]; else out -= t[3]; });
     var rows = a.tx.map(function (t) {
@@ -4673,6 +4673,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<div class="af"><div><span class="fi in">' + I.down + '</span><span><small>الإيداعات في أكتوبر</small><b><bdi>' + money(inc) + '</bdi> ر.ق</b></span></div>' +
       '<div><span class="fi outx">' + I.up + '</span><span><small>المصروفات في أكتوبر</small><b><bdi>' + money(out) + '</bdi> ر.ق</b></span></div>' +
       '<div><span class="fi nb">' + I.list + '</span><span><small>عدد العمليات</small><b>' + a.tx.length + ' عمليات</b></span></div></div></div>' +
+      trBox(n) +
       '<div class="pnl"><div class="pt"><h2>آخر العمليات</h2><span class="mut">أكتوبر 2026</span></div><table class="tb"><thead><tr><th>الوصف</th><th>المبلغ</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
       '</div><aside class="side">' +
       '<div class="dcard"><div class="dc-t"><span>بطاقة الخصم</span><b class="dc-bank">' + BANK.name + '</b></div><div class="chip"></div><div class="dc-n"><bdi>•••• •••• •••• ' + a.card + '</bdi></div><div class="dc-b"><span><small>حامل البطاقة</small>' + a.name + '</span><span><small>تنتهي</small><bdi>09/29</bdi></span></div></div>' +
@@ -4694,36 +4695,32 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<form method="post" action="/login" novalidate><label for="u">اسم المستخدم</label><input id="u" name="username" autocomplete="off" value="' + esc(user || '') + '" required>' +
       '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button class="btn" type="submit">تسجيل الدخول</button></form></div></section></main>' + FOOT;
   }
-  /* the transfer page: the student's own saved transfer, a link whose address carries from=, to= and amount= (Farhan's comment 7, no input fields) */
-  function transferHtml() {
-    var s = BANK.saved, to = BANK.acc[s.to];
-    return page('<section class="ph1"><div class="w"><div><h1>تحويل الأموال</h1><p>حوّل الأموال من حسابك إلى حساب آخر في البنك.</p></div></div></section>' +
-      '<section class="sec"><div class="pnl"><div class="pt"><h2>تحويلاتك المحفوظة</h2><span class="mut">اضغط على التحويل لتنفيذه</span></div>' +
-      '<a class="svd" href="/transfer?from=' + BANK.me + '&to=' + s.to + '&amount=' + s.amount + '"><span class="cat">' + CAT.transfer + '</span><span><b>مصروف أخي ' + to.first + '</b><small>إلى ' + to.name + '</small></span><span class="amt neg"><bdi>' + money(s.amount) + '</bdi> <small>ر.ق</small></span></a>' +
-      '</div></section>', 'tr');
+  /* the transfer box (Farhan's comment 7, Moaz 2026-11-27): on every account page, a plain form «إلى رقم الحساب» + «المبلغ» + «تحويل».
+     It sends money FROM the account on screen (BANK.view, the number in ?id=) and never checks that it belongs to the signed-in user: the same flaw. */
+  BANK.moves = []; BANK.flash = null;
+  function trBox(n) {
+    var f = BANK.flash && BANK.flash.n === n ? BANK.flash : null; BANK.flash = null;     /* the message shows once, on the account it was sent from */
+    return '<div class="pnl trf" id="trf"><div class="pt"><h2>' + CAT.transfer + 'تحويل الأموال</h2><span class="mut">من هذا الحساب إلى حساب آخر في البنك</span></div>' +
+      (f ? '<p class="' + (f.ok ? 'tok' : 'err') + '">' + f.text + '</p>' : '') +
+      '<form method="post" action="/send" novalidate><div class="tfl"><label for="to">إلى رقم الحساب</label><input id="to" name="to" inputmode="numeric" autocomplete="off" required></div>' +
+      '<div class="tfl"><label for="amt">المبلغ (ر.ق)</label><input id="amt" name="amount" inputmode="numeric" autocomplete="off" required></div>' +
+      '<button class="btn" type="submit">تحويل</button></form></div>';
   }
-  /* /transfer?from=&to=&amount= : the bank moves the money and never checks that the account it takes from belongs to the signed-in user (the same flaw) */
-  function q(path, k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(path); return m ? decodeURIComponent(m[1]) : null; }
-  function trError(t) { return page('<section class="sec"><div class="msg"><span class="mi">' + CAT.transfer + '</span><h1>تعذّر التحويل</h1><p>' + t + '</p><a class="btn" href="/transfer">العودة إلى تحويل الأموال</a></div></section>', 'tr'); }
-  BANK.done = {};
-  BANK.transfer = function (path) {
-    var f = Number(q(path, 'from')), t = Number(q(path, 'to')), a = Number(q(path, 'amount'));
-    if (!BANK.acc[f] || !BANK.acc[t]) return trError('رقم الحساب غير موجود. تأكد من رقمي الحسابين في عنوان الموقع.');
-    if (f === t) return trError('لا يمكن التحويل من الحساب إلى نفسه.');
-    if (!(a > 0) || Math.floor(a) !== a) return trError('المبلغ غير صحيح. اكتب المبلغ بالأرقام فقط.');
-    if (!BANK.done[path]) {                                                /* the same address again (back, reload) shows the receipt and moves nothing more */
-      if (BANK.acc[f].bal < a) return trError('الرصيد في الحساب لا يكفي لهذا التحويل.');
-      BANK.acc[f].bal -= a; BANK.acc[t].bal += a;
-      BANK.acc[f].tx.unshift(['25 أكتوبر 2026', 'تحويل إلى ' + BANK.acc[t].name, 'transfer', -a]);
-      BANK.acc[t].tx.unshift(['25 أكتوبر 2026', 'تحويل من ' + BANK.acc[f].name, 'transfer', a]);
-      BANK.done[path] = { from: f, to: t, amount: a };
-      if (BANK.onTransfer) BANK.onTransfer(BANK.done[path]);
-    }
-    var mine = f === BANK.me ? 'حسابك' : 'حساب ' + BANK.acc[f].name, dest = t === BANK.me ? 'حسابك' : 'حساب ' + BANK.acc[t].name;
-    return page('<section class="sec"><div class="msg ok"><span class="mi">' + I.shield + '</span><h1>تم التحويل بنجاح</h1>' +
-      '<p>تم تحويل <b><bdi>' + money(a) + '</bdi> ر.ق</b> من ' + mine + ' إلى ' + dest + '.</p>' +
-      '<ul class="rc"><li><small>من الحساب</small><b>' + f + '</b></li><li><small>إلى الحساب</small><b>' + t + '</b></li><li><small>المبلغ</small><b><bdi>' + money(a) + '</bdi> ر.ق</b></li></ul>' +
-      '<a class="btn" href="' + BANK.home() + '">العودة إلى حسابي</a></div></section>', 'tr');
+  function num(s) { s = String(s || '').replace(/[٠-٩]/g, function (d) { return '٠١٢٣٤٥٦٧٨٩'.indexOf(d); }).replace(/[,،\s]/g, ''); return /^\d+$/.test(s) ? Number(s) : NaN; }
+  BANK.send = function (data) {
+    var f = BANK.view, to = num(data && data.to), amt = num(data && data.amount), say = function (ok, text) { BANK.flash = { n: f, ok: ok, text: text }; };
+    if (!BANK.acc[f]) return;
+    if (!String((data && data.to) || '').trim() || !String((data && data.amount) || '').trim()) return say(false, 'اكتب رقم الحساب والمبلغ، ثم اضغط «تحويل».');
+    if (!BANK.acc[to]) return say(false, 'رقم الحساب غير موجود. تأكد من رقم الحساب ثم حاول مرة أخرى.');
+    if (to === f) return say(false, 'لا يمكن التحويل إلى نفس الحساب.');
+    if (!(amt > 0)) return say(false, 'المبلغ غير صحيح. اكتب المبلغ بالأرقام فقط.');
+    if (BANK.acc[f].bal < amt) return say(false, 'الرصيد في هذا الحساب لا يكفي لهذا التحويل.');
+    BANK.acc[f].bal -= amt; BANK.acc[to].bal += amt;
+    BANK.acc[f].tx.unshift(['25 أكتوبر 2026', 'تحويل إلى ' + BANK.acc[to].name, 'transfer', -amt]);
+    BANK.acc[to].tx.unshift(['25 أكتوبر 2026', 'تحويل من ' + BANK.acc[f].name, 'transfer', amt]);
+    var mv = { from: f, to: to, amount: amt }; BANK.moves.push(mv);
+    say(true, 'تم تحويل <b><bdi>' + money(amt) + '</bdi> ر.ق</b> إلى حساب ' + BANK.acc[to].name + ' (<bdi>' + to + '</bdi>).');
+    if (BANK.onTransfer) BANK.onTransfer(mv);
   };
   function acctPage(n) { return { title: 'معلومات الحساب | ' + BANK.name, html: function () { return dash(n); } }; }
 
@@ -4760,7 +4757,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* «الحساب غير موجود» */
     '.msg{max-width:540px;margin:34px auto;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:36px 30px;box-shadow:0 1px 2px rgba(15,42,74,.06),0 12px 30px -22px rgba(15,42,74,.4)}.msg .mi{display:inline-grid;place-items:center;width:76px;height:76px;border-radius:50%;margin-bottom:14px;background:#EEF2F8;color:var(--teal)}.msg .mi .ic{width:2.2em;height:2.2em}.msg h1{font-size:1.45rem;margin-bottom:6px}.msg p{color:var(--mut);margin:0 0 22px}',
     '.lgn form{text-align:start}.lgn label{display:block;font-weight:700;font-size:.88rem;margin:12px 0 6px;color:var(--teal)}.lgn input{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;direction:ltr;text-align:left}.lgn input:focus{outline:2px solid var(--gold);border-color:var(--teal3)}.lgn button{width:100%;margin-top:18px;border:0;cursor:pointer;font:inherit;font-weight:800}.err{margin:0 0 12px;color:var(--neg);background:#FBEDEA;border:1px solid #F1CDC6;border-radius:8px;padding:8px 12px;font-size:.88rem;font-weight:700}',
-    '.svd{display:flex;align-items:center;gap:12px;padding:14px 20px}.svd:hover{background:var(--soft)}.svd>span:nth-child(2){flex:1}.svd b{display:block}.rc{list-style:none;margin:0 0 20px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.rc li{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:10px}.rc b{font-size:1.05rem;color:var(--teal)}.msg.ok .mi{background:#E6F2EC;color:var(--pos)}',
+    /* the transfer box on every account page (Moaz 2026-11-27) */
+    '.trf{margin-bottom:22px}.trf .pt h2{display:flex;align-items:center;gap:8px}.trf form{display:flex;align-items:flex-end;gap:14px;flex-wrap:wrap;padding:16px 20px 20px}.trf .tfl{flex:1;min-width:150px}.trf label{display:block;font-weight:700;font-size:.88rem;margin:0 0 6px;color:var(--teal)}.trf input{width:100%;font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:8px;direction:ltr;text-align:left;background:#fff}.trf input:focus{outline:2px solid var(--teal3);outline-offset:0}.trf .btn{border:0;font:inherit;font-weight:800;cursor:pointer;padding:11px 30px}.trf .err,.trf .tok{margin:16px 20px 0}.tok{color:var(--pos);background:#E6F2EC;border:1px solid #BFDCCB;border-radius:8px;padding:8px 12px;font-size:.88rem;font-weight:700}',
     '.btn{display:inline-block;padding:10px 26px;border-radius:8px;background:var(--teal);color:#fff;font-weight:800}.btn:hover{background:var(--teal2)}',
     /* footer */
     '.ft{background:#0B2038;color:#A9B9CF;margin-top:30px}.ft .cols{display:grid;grid-template-columns:1.4fr 1fr;gap:30px;align-items:start;padding-top:26px;padding-bottom:26px}.ft .cols>div{display:flex;flex-direction:column;gap:7px;font-size:.88rem}.flogo{display:flex;align-items:center;gap:10px}.flogo .lg-bar{height:30px}.flogo b{color:#fff;font-size:1.05rem}.ft p{margin:4px 0 0}',
@@ -4773,7 +4771,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   /* ---------- the pages ---------- */
   var pages = {};
   BANK.nums.forEach(function (n) { pages[BANK.path(n)] = acctPage(n); });
-  pages['/transfer'] = { title: 'تحويل الأموال | ' + BANK.name, html: function () { return transferHtml(); } };
   function freshLogin() { pages['/login'] = { title: 'تسجيل الدخول | ' + BANK.name, html: loginHtml('') }; }
   freshLogin();
 
@@ -4784,16 +4781,15 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     fitScale: function (w) { return w > 800 ? 0.8 : 0.7; },      /* desktop layout drawn at 80%, like the Kashif and Barq shop */
     host: BANK.host, start: '/login', css: CSS, pages: pages,
     tipWord: 'رقم الحساب', tipWordNew: 'رقم الحساب الجديد',       /* the guide box under the address (engine/touches/web.js) */
-    query: true,                                                  /* keep ?id= and the transfer's from=, to=, amount= in the address (engine) */
+    query: true,                                                  /* keep ?id= in the address (engine) */
     lock: function (path) { return /^\/account\?id=/i.test(path) ? 'account?id=' : ''; },     /* on an account page only the number is typed */
-    unlock: function (page) { return /^transfer\b/i.test(page); },     /* ...but a transfer address typed or pasted there opens the transfer (engine fixUrl) */
     notFound: function (state, entry) {
       if (entry && /^\/account\?id=/i.test(entry.path)) return notFoundPage();
-      if (entry && /^\/transfer\?/i.test(entry.path)) return BANK.transfer(entry.path);
       return PLAIN_NF;
     },
     error: '<p class="err">اسم المستخدم أو كلمة السر غير صحيحة</p>',
     post: function (path, data, st) {
+      if (path === '/send') { BANK.send(data); return { go: BANK.path(BANK.view) }; }     /* back to the same account page, its balance and the message updated */
       if (path !== '/login') return null;
       var u = String((data && data.username) || '').trim(), p = String((data && data.password) || '');
       if (u.toLowerCase() === BANK.login.user && p === BANK.login.pass) { st.user = BANK.me; freshLogin(); return { go: BANK.home() }; }
@@ -4808,7 +4804,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       return (path === '/' || path === '/home' || path === '/login' || path === '/account' || path === '/account?id=') ? BANK.home() : null;
     }
   };
-  CC.site.resetLogin = function () { BANK.reset(); BANK.done = {}; freshLogin(); };
+  CC.site.resetLogin = function () { BANK.reset(); BANK.moves = []; BANK.flash = null; freshLogin(); };
 })();
 
 /* Lab EH2-04: ثغرة IDOR (13-17). The fictional bank «البنك الإلكتروني» at bank.example (site.js, a reserved .example address).
@@ -4817,7 +4813,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
    2. he looks at HIS account first (comment 2), then at id=1001 in «عنوان الموقع» (comment 1: bank.example/account?id=1001);
    3. he changes the number, another person's account opens while the header still says خالد, and the lab says plainly that this is wrong (comments 8, 9);
    4. one minute to find accounts by hand among 1000 to 2000 (comment 3), then the tool «عدّاد» (`addad bank.example/account?id= 1000 2000`);
-   5. the questions, then a transfer: from his own account by a saved transfer, then from another person's account by editing the address (comment 7).
+   5. three questions, then a task (comment 7, Moaz 2026-11-27): move money from a found account to his own with the «تحويل الأموال» box on that account's page (no /transfer address; the only flaw is ?id=).
    Wording «الحسابات التي تم العثور عليها» (comment 5); every addad error names the wrong part and lists each part with its reason (comment 13).
    Strings first, then the file system, then the commands, then the flow. */
 (function () {
@@ -4834,8 +4830,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var EX = 'addad ' + PAGE + ' ' + FROM + ' ' + TO;
   /* how many accounts the tool finds between FROM and TO (question 4, single source) */
   var FOUND = BANK.nums.filter(function (n) { return n >= FROM && n <= TO; }).length;
-  var SV = BANK.saved, THIEF_FROM = BANK.q.nasser, THIEF_AMT = 500;
-  var TR_EX = 'transfer?from=' + THIEF_FROM + '&to=' + ME + '&amount=' + THIEF_AMT;
 
   /* [LAB] ================= STRING TABLE (ar filled, en empty for later) ================= */
   Object.assign(CC.S.ar, {
@@ -4851,9 +4845,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما اسم صاحب الحساب رقم 1002؟', q1h: 'غيّر رقم الحساب في آخر عنوان الموقع إلى 1002 ثم اضغط Enter، وانظر إلى «صاحب الحساب» في بطاقة الرصيد.',
     q2: 'كم الرصيد المتاح في الحساب رقم 1012؟', q2h: 'اكتب 1012 مكان رقم الحساب في عنوان الموقع ثم اضغط Enter، وانظر إلى «الرصيد المتاح» في أعلى الصفحة.',
-    q3: 'ما رقم حساب ناصر عبدالله؟ (ستجده بين أول الأرقام التي عرضتها الأداة)', q3h: 'افتح أول الحسابات التي عرضتها أداة عدّاد واحداً تلو الآخر، بكتابة رقمها في عنوان الموقع، حتى يظهر اسم ناصر في بطاقة الرصيد.',     /* Moaz 2026-11-27 */
-    q4: 'كم حساباً وجدت أداة عدّاد بين 1000 و2000؟', q4h: 'انظر إلى السطر الأخير في نتيجة أداة عدّاد في شاشة الأوامر.',
-    q5: 'كم أصبح الرصيد المتاح في حسابك الآن؟', q5h: 'اضغط على «حسابي» في قائمة الموقع، وانظر إلى «الرصيد المتاح».',
+    q3: 'كم حساباً وجدت أداة عدّاد بين 1000 و2000؟', q3h: 'انظر إلى السطر الأخير في نتيجة أداة عدّاد في شاشة الأوامر.',
+    q_task_open: 'لم تُنجز بعد', q_task_ok: 'تمت المهمة',
+    q4: 'مهمة: حوّل 2000 ر.ق من أحد الحسابات التي وجدتها إلى حسابك (1001).', q4h: 'اكتب في عنوان الموقع رقم أحد الحسابات التي وجدتها، مثل `1002`، ثم اضغط Enter. في مربع «تحويل الأموال» في صفحة ذلك الحساب، اكتب رقم حسابك `1001` في «إلى رقم الحساب»، و`2000` في «المبلغ»، ثم اضغط «تحويل».',     /* a task (Moaz 2026-11-27): done when any transfer from another account reaches 1001 */
     /* tokens explained under the command */
     tk_addad: 'اسم الأداة', tk_page: 'عنوان صفحة الحساب بدون الرقم الذي في آخره', tk_from: 'رقم البداية', tk_to: 'رقم النهاية', tk_clear: 'امسح الشاشة',
     /* task lines */
@@ -4868,11 +4862,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_openterm: 'افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة عدّاد**.',     /* the same text is lab-settings mission.openTerminal */
     t_addad: 'شغّل **أداة عدّاد** في **شاشة الأوامر** [[term]] لتجرّب أرقام الحسابات من `1000` إلى `2000`، اكتب الأمر `' + EX + '`',
     t_q: 'افتح **الحسابات** التي وجدتها **الأداة** في **الموقع**، ثم أجب عن **أسئلة التحدي**.',
-    t_tr1: 'هل يستطيع الهاكر أن **يحوّل أموالاً** بنفس الثغرة؟ افتح صفحة «**تحويل الأموال**» من قائمة الموقع، ثم اضغط على التحويل المحفوظ «**مصروف أخي حمد**».',     /* Farhan's comment 7 */
-    t_tr2: 'تم التحويل من حسابك. لاحظ **عنوان الموقع**: `from=' + ME + '` هو الحساب الذي **خرج** منه المال (حسابك)، و`to=' + SV.to + '` هو الحساب الذي **وصل** إليه، و`amount=' + SV.amount + '` هو **المبلغ**.',
-    t_tr3: 'ماذا لو غيّرنا الأرقام؟ اكتب في **عنوان الموقع** `' + HOST + '/' + TR_EX + '` ثم اضغط `Enter`.',
+    t_tr: 'ظهرت **مهمة جديدة** في الأسئلة: حوّل **2,000 ر.ق** من أحد الحسابات التي وجدتها إلى **حسابك**. افتح الحساب في المتصفح، ثم استخدم مربع «**تحويل الأموال**» في صفحته.',
     t_tr4: 'لاحظ: الموقع نقل **{amt} ر.ق** من حساب **{who}** إلى **حسابك**، لأنه **لم يتأكد** أن الحساب الذي خرج منه المال **يخصّك**. في الحقيقة هذا **يُعدّ سرقة** يعاقب عليها القانون، ونحن هنا في **بيئة تدريب** فقط.',
-    t_q2: 'اضغط على «**حسابي**» في قائمة الموقع، وأجب عن **السؤال الجديد**.',
     t_done: 'أحسنت! أنهيت التدريب.',
     hand_left: 'الوقت المتبقي', hand_found: 'الحسابات التي وجدتها',
     e_idle: 'اكتب الأمر بصيغته الصحيحة، ثم اضغط Enter ليتم تنفيذه.',
@@ -4926,7 +4917,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     found_h: 'الحسابات التي تم العثور عليها',
     found: 'كل سطر **أحمر** (`[Not Found]`) رقمٌ ليس له حساب، وكل سطر **أخضر** (`[Found]`) رقمٌ له حساب في البنك. وفي النهاية تعرض الأداة **ملخصاً** بأرقام **الحسابات التي تم العثور عليها**.\n\nاكتب أحد هذه الأرقام في عنوان الموقع بعد `account?id=`، ثم اضغط `Enter`، وأجب عن الأسئلة.',
     tr_h: 'تحويل الأموال',
-    tr: 'صفحة التحويل تقرأ **ثلاثة أرقام** من عنوان الموقع: `from` الحساب الذي يخرج منه المال، و`to` الحساب الذي يصل إليه، و`amount` المبلغ.\n\nالموقع **لم يتأكد** أن الحساب في `from` **يخصّك**، فنقل المال من حساب شخص آخر. هذه هي **ثغرة IDOR** نفسها، لكن نتيجتها هنا أخطر: **سرقة أموال**.',
+    tr: 'في صفحة كل حساب مربع «**تحويل الأموال**»، والموقع يحوّل المال **من الحساب المعروض** في الصفحة، أي الحساب الذي رقمه في **عنوان الموقع**.\n\nالموقع **لم يتأكد** أن هذا الحساب **يخصّك**، فنقل المال من حساب شخص آخر. هذه هي **ثغرة IDOR** نفسها، لكن نتيجتها هنا أخطر: **سرقة أموال**.',
     replay: 'إعادة التدريب',
     /* congratulations card */
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
@@ -4946,7 +4937,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     r0_h: 'الحساب والعنوان', r0: '- يعرض الموقع **معلومات حسابك** بعد تسجيل الدخول: الاسم والرصيد وآخر العمليات.\n- بعض المواقع تظهر **رقم الحساب** في آخر **عنوان الموقع**: `bank.example/account?id=1001`.\n   - `bank.example`: **اسم الموقع**.\n   - `account?id=`: **اسم الصفحة**.\n   - `1001`: **رقم الحساب**.\n- الموقع يقرأ هذا الرقم ليعرف **أي حساب** سيتم عرضه.',
     r1_h: 'ثغرة IDOR', r1: '- الموقع تأكد أنك **سجّلت الدخول**، لكنه لم يتأكد أن الحساب **يخصّك**.\n- تغيير `1001` إلى `1002` في عنوان الموقع يعرض **حساب شخص آخر** باسمه ورصيده وعملياته، بينما الاسم في أعلى الموقع ما زال **اسمك**.\n- المشكلة ليست شكل العنوان، بل أن الموقع **لا يتحقق من صاحب الحساب**.',
     r3_h: 'أداة عدّاد (`addad`)', r3: '- تجرّب **أداة عدّاد** كل أرقام الحسابات بين رقمين، وتخبرنا بأرقام **الحسابات التي تم العثور عليها**.\n- الاستخدام: `' + EX + '`\n   - `addad`: اسم الأداة.\n   - `' + PAGE + '`: عنوان صفحة الحساب بدون الرقم الذي في آخره.\n   - `1000`: رقم البداية.\n   - `2000`: رقم النهاية.',
-    r4_h: 'تحويل الأموال', r4: '- صفحة التحويل تقرأ من عنوان الموقع: `from` (من حساب)، و`to` (إلى حساب)، و`amount` (المبلغ).\n- تغيير `from` إلى حساب شخص آخر نقل المال منه، لأن الموقع **لم يتحقق** أن الحساب **يخصّك**.\n- في الحقيقة هذا **يُعدّ سرقة** يعاقب عليها القانون.',
+    r4_h: 'تحويل الأموال', r4: '- في صفحة كل حساب مربع «**تحويل الأموال**» يحوّل المال **من الحساب المعروض** في الصفحة.\n- عندما فتحت حساب شخص آخر بتغيير الرقم في عنوان الموقع، استطعت أن تحوّل المال منه إلى حسابك، لأن الموقع **لم يتحقق** أن الحساب **يخصّك**.\n- في الحقيقة هذا **يُعدّ سرقة** يعاقب عليها القانون.',
     r2_h: 'الحماية', r2: '- يجب على الموقع أن **يتحقق من صاحب الحساب**: في كل صفحة، وفي كل تحويل، يتأكد الموقع أن الحساب **يخصّ** من سجّل الدخول، وإلا يُظهر «لا تملك صلاحية لعرض هذا الحساب».'
   });
 
@@ -4976,15 +4967,14 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     CC.Q.init([
       { id: 'q1', q: iso(CC.t('q1')), answers: [BANK.q.owner1002, BANK.acc[1002].first], check: function (v) { var t = norm(v).replace(/[أإآ]/g, 'ا').toLowerCase(); return t === 'احمد يوسف' || t === 'احمد' || /^ahm[ae]d( y[ou]u?sse?f)?$/.test(t); }, hint: iso(CC.t('q1h')) },
       { id: 'q2', q: iso(CC.t('q2')), answers: money(BANK.q.bal), check: function (v) { return CC.numMatch(v, BANK.q.bal); }, hint: iso(CC.t('q2h')) },
-      { id: 'q3', q: iso(CC.t('q3')), answers: [String(BANK.q.nasser)], check: function (v) { return norm(v).replace(/[^0-9]/g, '') === String(BANK.q.nasser); }, hint: iso(CC.t('q3h')) },
-      { id: 'q4', q: iso(CC.t('q4')), answers: [String(FOUND)], check: function (v) { return CC.numMatch(v, FOUND) || digits(v).replace(/[^0-9]/g, '') === String(FOUND); }, hint: iso(CC.t('q4h')) },
-      /* the balance after the two transfers: whatever the student really moved (read live from the bank) */
-      { id: 'q5', q: CC.t('q5'), answers: function () { return [String(BANK.acc[ME].bal)]; }, check: function (v) { return CC.numMatch(v, BANK.acc[ME].bal); }, hint: CC.t('q5h'), gate: false, hidden: true }
+      { id: 'q3', q: iso(CC.t('q3')), answers: [String(FOUND)], check: function (v) { return CC.numMatch(v, FOUND) || digits(v).replace(/[^0-9]/g, '') === String(FOUND); }, hint: iso(CC.t('q3h')) },
+      /* the transfer task (Moaz 2026-11-27): appears once question 3 is answered; finished by the lab when money from another account reaches 1001 */
+      { id: 'q4', task: true, q: iso(CC.t('q4')), hint: iso(CC.t('q4h')), gate: false, hidden: true }
     ]);
 
-    /* the five questions are the end of the lab: the moment they are all answered it finishes */
+    /* the three questions and the transfer task are the end of the lab: the moment all four are done it finishes */
     CC.Q.onAll = function () {
-      if (st.finishing || !CC.Q.done.q5) return;
+      if (st.finishing || !['q1', 'q2', 'q3', 'q4'].every(function (k) { return CC.Q.done[k]; })) return;
       st.finishing = true;
       CC.sleep(900, g).then(function (k) {
         if (!k) { st.finishing = false; return; }
@@ -5019,12 +5009,6 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
     function guidePage(sel, until) { CC.guide.show(function () { return P.pageEl ? P.pageEl(sel) : null; }, { force: true, until: until }); }
     function idleQ(on) { var p = qs('#qpanel'); if (p) p.classList.toggle('idle', !!on); }
-    async function flashBar(ms) {
-      var bar = qs('#br .br-omni'); if (bar) bar.classList.add('urlflash');
-      var k = await CC.sleep(ms, g);
-      var b2 = qs('#br .br-omni'); if (b2) b2.classList.remove('urlflash');
-      return k;
-    }
     async function waitFor(test) { while (!test()) { if (!(await CC.sleep(150, g))) return false; } return true; }
     /* waits until the student types an account address in the bar that matches (a typed number, not a link click) */
     async function waitTyped(test) {
@@ -5254,30 +5238,19 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* 6. open the accounts the tool found, and answer the questions */
     L.el.classList.remove('off', 'glow'); idleQ(false);
     st.phase = 'questions'; CC.free = true; L.task(CC.t('t_q')); L.expl(''); L.enable(true);
-    if (!(await waitFor(function () { return ['q1', 'q2', 'q3', 'q4'].every(function (k) { return CC.Q.done[k]; }); }))) return;
-    if (!(await CC.sleep(900, g))) return;
+    var stolenT = function () { var m = BANK.moves.filter(function (x) { return x.from !== ME && x.to === ME; }); return m.length ? m[m.length - 1] : null; };
+    if (!(await waitFor(function () { return !!CC.Q.done.q3; }))) return;
+    if (!(await CC.sleep(700, g))) return;
 
-    /* 7. the transfer (comment 7): his own saved transfer first, then the same address with another person's account in from= */
-    var tr = function (test) { var k = Object.keys(BANK.done).filter(function (p) { return test(BANK.done[p]); }); return k.length ? BANK.done[k[k.length - 1]] : null; };
-    var mineT = function () { return tr(function (t) { return t.from === ME; }); }, stolenT = function () { return tr(function (t) { return t.from !== ME && t.to === ME; }); };
-    st.phase = 'tr1'; L.task(CC.t('t_tr1'));
-    guidePage('a[href="/transfer"]', function () { return /^\/transfer/.test((P.host && P.host() === HOST && qs('#br .br-url')) ? qs('#br .br-url').value.slice(HOST.length) : ''); });
-    var onTr = function () { var v = qs('#br .br-url'); return !!v && v.value.toLowerCase().indexOf(HOST + '/transfer') === 0; };
-    var saw = false;
-    if (!(await waitFor(function () { if (!saw && onTr()) { saw = true; CC.guide.hide(); guidePage('.svd', function () { return !!mineT(); }); } return !!mineT(); }))) return;   /* then the ring moves to the saved transfer */
-    CC.guide.hide();
-    st.phase = 'tr2'; L.task(CC.t('t_tr2')); flashBar(2500);
-    if (!(await CC.stepWait(g))) return;
-    st.phase = 'tr3'; L.task(CC.t('t_tr3'));
-    if (P.urlGhost) P.urlGhost(TR_EX); guideBar();
+    /* 7. the transfer task (comment 7, Moaz 2026-11-27): it appears after question 3; any transfer from another account into 1001 finishes it */
+    CC.Q.reveal('q4');
+    st.phase = 'tr'; L.task(CC.t('t_tr'));
     if (!(await waitFor(function () { return !!stolenT(); }))) return;
     var stolen = stolenT();
-    if (P.urlGhost) P.urlGhost(null); CC.guide.hide();
     st.phase = 'tr4'; L.task(CC.t('t_tr4', { amt: BANK.fmt(stolen.amount), who: BANK.acc[stolen.from].name }));
-    if (!(await CC.stepWait(g))) return;
     await CC.say('tr'); if (!ok()) return;
-    st.phase = 'q2'; L.task(CC.t('t_q2'));
-    CC.Q.reveal('q5');
+    CC.Q.complete('q4');
+    if (!['q1', 'q2'].every(function (k) { return CC.Q.done[k]; })) L.task(CC.t('t_q'));     /* questions 1 and 2 may still be open */
   }
 
   CC.start({
@@ -5293,7 +5266,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"تسجيل الدخول والحساب","keys":["t_login","t_explore","t_look"]},{"label":"تغيير الرقم","keys":["t_change","t_other","t_hand"]},{"label":"أداة عدّاد","keys":["t_slow","t_openterm","t_addad"]},{"label":"استكشاف الحسابات","keys":["t_q"]},{"label":"تحويل الأموال","keys":["t_tr1","t_tr2","t_tr3","t_tr4","t_q2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب، لتصل إلى **موقع البنك**.","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة عدّاد**.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك"};
+window.CC_MISSION = {"stages":[{"label":"تسجيل الدخول والحساب","keys":["t_login","t_explore","t_look"]},{"label":"تغيير الرقم","keys":["t_change","t_other","t_hand"]},{"label":"أداة عدّاد","keys":["t_slow","t_openterm","t_addad"]},{"label":"استكشاف الحسابات","keys":["t_q"]},{"label":"تحويل الأموال","keys":["t_tr","t_tr4"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب، لتصل إلى **موقع البنك**.","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة عدّاد**.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
