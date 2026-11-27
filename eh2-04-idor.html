@@ -4512,8 +4512,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 })();
 
 /* Lab EH2-04 (IDOR): the fictional online bank «البنك الإلكتروني» at bank.example (reserved .example address, a plain name, its own look: DESIGN.md section 39).
-   Farhan's review (Moaz 2026-11-25): the student signs in first (comment 8); every account page is /account?id=<number> (comment 1); 400 accounts are spread over
-   1000 to 2000 (comment 3; 400 since Moaz 2026-11-27); every account page has a «تحويل الأموال» box that sends money FROM the account on screen (comment 7; since Moaz 2026-11-27 no /transfer address: the only flaw is ?id=); expenses are red (comment 6). The site shows
+   Farhan's review (Moaz 2026-11-25): the student signs in first (comment 8); every account page is /account?id=<number> (comment 1); 402 accounts are spread over
+   1000 to 2000 (comment 3; 402 since Moaz 2026-11-27); every account page has a «تحويل الأموال» box that sends money FROM the account on screen (comment 7; since Moaz 2026-11-27 no /transfer address: the only flaw is ?id=); expenses are red (comment 6). The site shows
    whichever account the number names and never checks that it is the signed-in user's (the vulnerability). No protection modes: protection is taught only in
    «شرح مختصر» (Moaz 2026-11-22). The tool addad (lab-logic.js) reads CC.bank.acc to know which numbers have an account.
    CC.bank holds every value the questions depend on (single source). Values marked pending are not confirmed by Moaz or Farhan.
@@ -4559,7 +4559,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         tx: [['19 أكتوبر 2026', 'راتب شهري', 'income', 7400], ['13 أكتوبر 2026', 'متجر ملابس', 'shop', -640], ['9 أكتوبر 2026', 'مطعم', 'food', -155], ['3 أكتوبر 2026', 'فاتورة الهاتف', 'phone', -190]] }
     }
   };
-  /* ~400 accounts (Moaz 2026-11-27): the twelve above plus generated ones, the same for every student (a fixed seed), spread over 1000 to 2000.
+  /* 402 accounts (Moaz 2026-11-27): the twelve above plus generated ones, the same for every student (a fixed seed), spread over 1000 to 2000.
      Female names are fine here (Moaz 2026-11-27). No generated name repeats a name above, so the questions keep one answer. Amounts are invented. */
   (function () {
     var seed = 20261127; function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
@@ -4572,9 +4572,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var OUT = [['سوبرماركت', 'food'], ['مطعم', 'food'], ['محطة وقود', 'fuel'], ['صيدلية', 'health'], ['فاتورة الهاتف', 'phone'], ['فاتورة الكهرباء والماء', 'bills'], ['اشتراك الإنترنت', 'bills'], ['متجر ملابس', 'shop'], ['متجر إلكترونيات', 'shop'], ['رسوم مدرسية', 'edu'], ['قسط السيارة', 'car']];
     var used = {}; Object.keys(BANK.acc).forEach(function (k) { used[BANK.acc[k].name] = 1; });
     var free = []; for (var n = 1003; n <= 2000; n++) if (!BANK.acc[n]) free.push(n);
-    var need = 400 - Object.keys(BANK.acc).length;
+    var need = 400 - Object.keys(BANK.acc).length, EXTRA = 2;     /* 402 in all (Moaz 2026-11-27); the two extra are made last so the first 400 keep their names and amounts */
     for (var i = free.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), x = free[i]; free[i] = free[j]; free[j] = x; }
-    free.slice(0, need).sort(function (a, b) { return a - b; }).forEach(function (num) {
+    function make(num) {
       var first, father, name; do { first = pick(rnd() < 0.5 ? MALE : FEMALE); father = pick(FATHER); name = first + ' ' + father; } while (used[name] || father === first);
       used[name] = 1;
       var inc = pick(INC), big = inc[0] === 'راتب شهري', inAmt = big ? 5000 + Math.round(rnd() * 150) * 100 : 200 + Math.round(rnd() * 28) * 50;
@@ -4582,7 +4582,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var tx = [[days[0] + ' أكتوبر 2026', inc[0], inc[1], inAmt]];
       var seen = {}; for (var k = 1; k < 4; k++) { var o; do { o = pick(OUT); } while (seen[o[0]]); seen[o[0]] = 1; tx.push([days[k] + ' أكتوبر 2026', o[0], o[1], -(40 + Math.floor(rnd() * 900))]); }
       BANK.acc[num] = { name: name, first: first, bal: 500 + Math.round(rnd() * 600) * 50, card: String(1000 + Math.floor(rnd() * 9000)), since: String(2008 + Math.floor(rnd() * 17)), branch: pick(BRANCH), tx: tx };
-    });
+    }
+    var byNum = function (a, b) { return a - b; };
+    free.slice(0, need).sort(byNum).forEach(make);
+    free.slice(need, need + EXTRA).sort(byNum).forEach(make);
   })();
   BANK.nums = Object.keys(BANK.acc).map(Number);
   /* the answers of the questions (single source) */
