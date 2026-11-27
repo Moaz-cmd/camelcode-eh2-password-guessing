@@ -4894,7 +4894,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 /* EH2 final challenge (Moaz 2026-11-25, plan.md): an online chess tournament on chess.example (site.js) and the referee's social profile (sites.js).
    It stands alone (some classes take only the final): IDOR -> page source -> a short OSINT step -> password generator + Barq. No phishing.
-   One instruction stage, «هدفك اليوم», that moves on as the questions are answered (as in the EH2 mini challenge); DESIGN.md section 34 otherwise.
+   One instruction stage, «التحدي النهائي», that moves on as the questions are answered (as in the EH2 mini challenge); DESIGN.md section 34 otherwise.
    Farhan's IDOR review is built in: the player sign-in first (comment 8), addresses player?id=<n> (comment 1), a wide range of numbers (comment 3),
    «الحسابات التي تم العثور عليها» (comment 5), and every tool error names the wrong part and lists each part of the command with its reason (comment 13).
    Everything is fictional. */
@@ -4937,7 +4937,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q9: 'ما كود الجائزة الذي ظهر في صفحتك بعد أن أصبحت البطل؟', q9h: 'افتح **صفحتك** في الموقع من «**حسابي**»، وستجد **كود الجائزة** تحت «**بطل البطولة**».',
     q_task_open: 'لم تُنجز بعد', q_task_ok: 'تمت المهمة',
     /* the instruction moves on as the questions are answered: never «التحدي الأول / الثاني» */
-    t_goal: '**هدفك اليوم:** أنت مشارك في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. اجعل نفسك **بطل البطولة** قبل إعلان النتيجة. بيانات حسابك في الملف `my-account.txt` على **سطح المكتب**. افتح **شاشة الأوامر** [[term]] و**المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب، ثم أجب عن أسئلة التحدي.',
+    t_goal: '**التحدي النهائي:** أنت مشارك في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. مهمتك هي **اختراق موقع البطولة** واكتشاف **نتيجة النهائي** قبل إعلانها. بيانات حسابك موجودة في الملف `my-account.txt` على **سطح المكتب**. أجب عن أسئلة التحدي، ولعرض الأوامر المتاحة اكتب الأمر `help` في **شاشة الأوامر** [[term]].',
     t_goal2: 'الآن استخدم **مولّد كلمات السر** في **شاشة الأوامر** [[term]] لتصنع قائمة كلمات سر من المعلومات التي جمعتها عن **مشرف البطولة**. لعرض الأوامر المتاحة اكتب الأمر `help`.',
     t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **صفحة التحكم بالموقع** واجعل نفسك **بطل البطولة**.',
     t_done: 'أحسنت! أنهيت التحدي النهائي.',
@@ -5372,7 +5372,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"plain":true,"stages":[{"label":"هدفك اليوم","keys":["t_goal","t_goal2","t_goal3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب","openBrowser":"افتح **المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openTerminal":"افتح **شاشة الأوامر** [[term]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البطولة"};
+window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي النهائي","keys":["t_goal","t_goal2","t_goal3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب","openBrowser":"افتح **المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openTerminal":"افتح **شاشة الأوامر** [[term]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البطولة"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
