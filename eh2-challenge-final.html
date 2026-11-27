@@ -4682,7 +4682,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   function playerPage(n) {
     var p = C.players[n], rank = R.indexOf(n) + 1, mine = n === C.me;
     var body = ['<section class="prof">', ind(1, '<div class="card who">'), ind(2, '<div class="av">♞</div>'), ind(2, '<h1>' + p[0] + '</h1>'), ind(2, '<p class="role">مشارك في البطولة · ' + p[5] + '</p>'),
-      ind(2, '<span class="badge">' + (mine ? 'حسابك' : 'المركز ' + rank) + '</span>')].concat(n === C.champ ? [ind(2, '<div class="champ"><b>♛ بطل البطولة</b><small>كود الجائزة</small><span class="code">' + C.prizeCode + '</span></div>')] : [], [ind(2, '<ul class="facts">'),
+      ind(2, '<span class="badge">' + (mine ? 'حسابك' : 'المركز ' + rank) + '</span>')].concat(n === C.champ ? [ind(2, '<div class="champ"><b>♛ بطل البطولة</b></div>')] : [], [ind(2, '<ul class="facts">'),
       ind(3, '<li><span>رقم الحساب</span><b>' + n + '</b></li>'), ind(3, '<li><span>التصنيف</span><b>' + p[1] + '</b></li>'), ind(3, '<li><span>الافتتاح المفضل</span><b>' + p[6] + '</b></li>'), ind(3, '<li><span>عضو منذ</span><b>' + (2019 + (n % 5)) + '</b></li>'),
       ind(2, '</ul>'), ind(1, '</div>'), ind(1, '<div>'), ind(2, '<div class="stats">'),
       ind(3, '<div class="stat"><small>فوز</small><b>' + p[2] + '</b></div>'), ind(3, '<div class="stat"><small>تعادل</small><b>' + p[3] + '</b></div>'), ind(3, '<div class="stat"><small>خسارة</small><b>' + p[4] + '</b></div>'), ind(3, '<div class="stat"><small>النقاط</small><b>' + pts(p) + '</b></div>'),
@@ -4716,9 +4716,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var champ = C.champ ? C.players[C.champ][0] : '';
     return shell('<main><div class="wrap panel"><section class="sec"><h1>صفحة التحكم بالموقع</h1><p class="lead">دخلت بحساب ' + C.refName + '.</p>' +
       '<div class="card"><h2 style="font-size:1.15rem">نتيجة النهائي <span class="badge">لم تُعلن بعد</span></h2>' +
-      (champ ? '<div class="res one"><div class="p win"><b>' + champ + '</b><small>بطل البطولة</small></div></div>'
-        : '<div class="res"><div class="p win"><b>' + C.winner + '</b><small>الفائز باللقب</small></div>' + score(C.score, 'vs') + '<div class="p"><b>' + C.runnerUp + '</b><small>المركز الثاني</small></div></div>') +
-      '<p>يظهر كود الجائزة في صفحة البطل.</p></div>' +
+      '<div class="res one"><div class="p win"><b>' + (champ || C.winner) + '</b><small>بطل البطولة</small></div></div></div>' +   /* Moaz 2026-11-28: one name, no match score */
       '<div class="card crown" style="margin-top:16px"><h2 style="font-size:1.15rem">تغيير البطل</h2><p class="lead">اكتب رقم حساب المشارك الذي سيكون بطل البطولة.</p>' +
       '<form method="post" action="/crown"><label for="cn">رقم حساب البطل</label><div class="row"><input id="cn" name="num" inputmode="numeric" autocomplete="off"><button type="submit">اعتماد البطل</button></div></form>' +
       (msg ? '<p class="' + (ok ? 'tok' : 'err') + '">' + msg + '</p>' : '') + '</div></section>' +
@@ -5048,13 +5046,11 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
     q5: 'ما اسم صقر مشرف البطولة؟', q5h: 'ابحث عن **اسم مشرف البطولة** في **الإنترنت**، وافتح **حسابه في منصة التواصل الاجتماعي**، وابحث في **منشوراته**.',
     q6: 'ما هي سنة ميلاد مشرف البطولة؟', q6h: 'ابحث عن منشور **عيد ميلاده**: كم عمره، وفي أي **سنة** كتب المنشور؟ قم بطرح **عمره** من **سنة النشر** لإيجاد **سنة ميلاده**.',
     q7: 'ما كلمة السر لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **صفحة التحكم بالموقع** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات السر**. إذا لم تجد الأداة كلمة السر، تأكد من المعلومات التي أدخلتها في المولّد.',
-    q8: 'مهمة: اجعل نفسك بطل البطولة من صفحة التحكم بالموقع.', q8h: 'في **صفحة التحكم بالموقع** اكتب **رقم حسابك** في قسم «**تغيير البطل**»، ثم اضغط «**اعتماد البطل**». رقم حسابك في الملف `my-account.txt`.',
-    q9: 'ما كود الجائزة الذي ظهر في صفحتك بعد أن أصبحت البطل؟', q9h: 'افتح **صفحتك** في الموقع من «**حسابي**»، وستجد **كود الجائزة** تحت «**بطل البطولة**».',
+    q8: 'مهمة: اجعل نفسك بطل البطولة من صفحة التحكم بالموقع. تذكّر أن رقمك هو 3105.', q8h: 'في **صفحة التحكم بالموقع** اكتب **رقم حسابك** في قسم «**تغيير البطل**»، ثم اضغط «**اعتماد البطل**». رقم حسابك في الملف `my-account.txt`.',
     q_task_open: 'لم تُنجز بعد', q_task_ok: 'تمت المهمة',
     /* the instruction moves on as the questions are answered: never «التحدي الأول / الثاني» */
     t_goal: '**التحدي النهائي:** أنت مشارك في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. مهمتك هي **اختراق موقع البطولة** واكتشاف **نتيجة النهائي** قبل إعلانها. بيانات حسابك موجودة في الملف `my-account.txt` على **سطح المكتب**. أجب عن أسئلة التحدي، ولعرض الأوامر المتاحة اكتب الأمر `help` في **شاشة الأوامر** [[term]].',
-    t_goal2: 'الآن استخدم **مولّد كلمات السر** في **شاشة الأوامر** [[term]] لتصنع قائمة كلمات سر من المعلومات التي جمعتها عن **مشرف البطولة**. لعرض الأوامر المتاحة اكتب الأمر `help`.',
-    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **صفحة التحكم بالموقع** واجعل نفسك **بطل البطولة**.',
+    t_goal2: 'استخدم **أداة توليد كلمات السر** [[term]] باستخدام المعلومات التي جمعتها، ثم استخدم **أداة برق** مع هذه القائمة لتجد **كلمة سر مشرف البطولة**، ثم سجّل الدخول إلى **صفحة التحكم بالموقع** واجعل نفسك **بطل البطولة**.',
     t_done: 'أحسنت! أنهيت التحدي النهائي.',
     e_gen: 'المولّد يبني قائمة كلمات السر...', e_run: 'الأداة تعمل الآن...',
     /* tokens explained under a command */
@@ -5209,12 +5205,11 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
       { id: 'q5', q: CC.t('q5'), answers: [T.pet, T.petEn], check: function (v) { var t = noAl(String(v).trim().replace(/^(صقره|الصقر|صقر)\s+/, '')); return t === 'شاهين' || token(v) === 'shaheen'; }, hint: CC.t('q5h') },
       { id: 'q6', q: CC.t('q6'), answers: [String(T.born)], check: function (v) { return digits(v).replace(/[^0-9]/g, '') === String(T.born); }, hint: CC.t('q6h') },
       { id: 'q7', q: CC.t('q7'), answers: [C.refPass], check: function (v) { return String(v).trim() === C.refPass; }, hint: CC.t('q7h'), gate: false, hidden: true },
-      { id: 'q8', task: true, q: CC.t('q8'), hint: CC.t('q8h'), gate: false, hidden: true },
-      { id: 'q9', q: CC.t('q9'), answers: [C.prizeCode], check: function (v) { return low(v).replace(/[\s\-–_]+/g, '') === C.prizeCode.toLowerCase().replace(/-/g, ''); }, hint: CC.t('q9h'), gate: false, hidden: true }
+      { id: 'q8', task: true, q: CC.t('q8'), hint: CC.t('q8h'), gate: false }
     ]);
 
     /* the instruction follows the real state: 1 at the start; 2 (the generator) once questions 1 to 6 are right; 3 (Barq) once a list is saved,
-       with question 7; questions 8 and 9 after the referee login. Re-checked every half second too, so it never lags behind. */
+       with question 7. The task (question 8) shows from the start and is the last one (Moaz 2026-11-28: no prize-code question). Re-checked every half second too, so it never lags behind. */
     function more() {
       var six = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].every(function (k) { return CC.Q.done[k]; });
       var want = six ? (st.genCount ? 3 : 2) : 1;
@@ -5222,10 +5217,9 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
         st.phase = want;
         CC.emit('step', { id: 'phase' + want });
         if (want === 3) CC.Q.reveal('q7');
-        L.task(CC.t(want === 2 ? 't_goal2' : 't_goal3')); L.expl('');
+        else { L.task(CC.t('t_goal2')); L.expl(''); }       /* Moaz 2026-11-28: one instruction for the generator, Barq and the control page */
       }
-      if (st.inPanel) CC.Q.reveal('q8');
-      if (C.champ === C.me && !CC.Q.done.q8) { CC.Q.complete('q8'); CC.Q.reveal('q9'); }
+      if (C.champ === C.me && !CC.Q.done.q8) CC.Q.complete('q8');      /* the task (shown from the start) is the last question: the lab ends with it */
     }
     var iv = setInterval(function () { if (g !== CC.gen) { clearInterval(iv); return; } more(); }, 500);
     CC.Q.onAll = function () { more(); };
@@ -5488,7 +5482,7 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي النهائي","keys":["t_goal","t_goal2","t_goal3"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب","openBrowser":"افتح **المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openTerminal":"افتح **شاشة الأوامر** [[term]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البطولة"};
+window.CC_MISSION = {"plain":true,"stages":[{"label":"التحدي النهائي","keys":["t_goal","t_goal2"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"cmdTip":"اكتب الأمر هنا ليتم تنفيذه على الحاسوب","openBrowser":"افتح **المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openTerminal":"افتح **شاشة الأوامر** [[term]] من شريط التطبيقات في أسفل شاشة الحاسوب.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البطولة"};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
