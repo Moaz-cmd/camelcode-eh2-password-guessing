@@ -4834,7 +4834,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* task lines */
     t_login: 'سجّل الدخول إلى **حسابك** في **البنك الإلكتروني**: اكتب اسم المستخدم `' + BANK.login.user + '` وكلمة السر `' + BANK.login.pass + '`، ثم اضغط «**تسجيل الدخول**».',
     t_explore: 'هذه صفحة **حسابك** تظهر **معلوماتك البنكية** كاسمك، و**الرصيد المتاح**، و**آخر العمليات**.',     /* Moaz 2026-11-27 */
-    t_look: 'لاحظ `id=1001` في **عنوان الموقع**: الرقم `1001` هو **الرقم الخاص بحسابك**، وبه يعرف الموقع **أي حساب** يعرض لك.',     /* Farhan's comment 2 */
+    t_look: 'لاحظ `id=1001` في **عنوان الموقع**: الرقم `1001` هو **الرقم الخاص بحسابك**، وبه يعرف الموقع **أي حساب** سيتم عرضه في الصفحة.',     /* Farhan's comment 2; wording Moaz 2026-11-27 */
     t_change: 'ماذا يحدث لو غيّرنا الرقم؟ اضغط على رقم الحساب `1001` في **عنوان الموقع**، ثم احذفه واكتب `1002`، واضغط `Enter`.',
     t_other: 'لاحظ: ظهرت **معلومات حساب شخص آخر**، باسمه ورصيده وعملياته! وهذا **خطأ**: أنت لم تسجّل الدخول بحسابه، ولا يحق لك رؤية حسابه، لكن الموقع عرضه لك لأنه **لم يتأكد أن الحساب يخصّك**. ولاحظ أن **صاحب الحساب** في بطاقة الرصيد تغيّر، بينما الاسم في أعلى الموقع ما زال **خالد**.',     /* Farhan's comments 8 and 9 */
     t_hand: 'جرّب بنفسك: لديك **دقيقة واحدة**. غيّر **رقم الحساب** في عنوان الموقع، وابحث عن أكبر عدد من **الحسابات**. أرقام الحسابات في هذا البنك من `1000` إلى `2000`.',     /* Farhan's comment 3 */
@@ -5194,7 +5194,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     if (!(await waitTyped(function (n) { return !!BANK.acc[n] && n !== ME; }))) return;   /* only when another account really opened (a mistyped number shows «الحساب غير موجود» and the step stays) */
     if (P.urlGhost) P.urlGhost(null); CC.guide.hide();
     st.phase = 'other'; L.task(CC.t('t_other'));
-    guidePage('#owner');                                    /* the owner on the card changed; the name in the header did not (comment 8) */
+    /* no ring on «صاحب الحساب» here (Moaz 2026-11-27) */
     if (!(await CC.stepWait(g))) return;
     CC.guide.hide();
     await CC.say('idor'); if (!ok()) return;
