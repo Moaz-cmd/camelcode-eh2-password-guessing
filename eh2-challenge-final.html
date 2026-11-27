@@ -3088,10 +3088,10 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_count: 'العدد `{w}` غير صحيح. اكتب بعد اسم الملف عدداً من 1 إلى 20، مثل `create file.txt 10`.',
     m_count_big: 'هذا عدد كبير من الملفات. اكتب عدداً من 1 إلى 20، مثل `create file.txt 10`.',
     m_back_args: 'الأمر `back` لا يحتاج إلى أي كلمة بعده. اكتب `back` وحده للعودة إلى المجلد السابق.',
-    tk_display: 'اعرض محتويات المجلد', tk_display_cur: 'اعرض محتويات المجلد الحالي', tk_path: 'المجلد الذي نعرضه',
-    tk_enter: 'انتقل إلى مجلد', tk_dest: 'المجلد الذي ننتقل إليه', tk_parent: 'المجلد السابق', tk_back: 'ارجع إلى المجلد السابق',
-    tk_show: 'اعرض النص داخل ملف', tk_rfile: 'الملف الذي نقرؤه',
-    tk_create: 'أنشئ ملفاً جديداً', tk_cfile: 'اسم الملف الجديد', tk_count: 'عدد الملفات',
+    tk_display: 'اعرض محتويات المجلد', tk_display_cur: 'اعرض محتويات المجلد الحالي', tk_path: 'اسم المجلد',
+    tk_enter: 'انتقل إلى مجلد', tk_dest: 'اسم المجلد الذي تنتقل إليه', tk_parent: 'المجلد السابق', tk_back: 'ارجع إلى المجلد السابق',
+    tk_show: 'اقرأ نص الملف', tk_rfile: 'اسم الملف',
+    tk_create: 'أنشئ ملفاً جديداً', tk_cfile: 'اسم الملف', tk_count: 'عدد الملفات',
     hb_display: 'يعرض محتويات مجلد', hb_display1: 'يعرض محتويات المجلد الحالي', hb_display2: 'يعرض محتويات المجلد Documents',
     hb_enter: 'ينقلك إلى مجلد آخر', hb_enter1: 'ينقلك إلى المجلد Documents', hb_back: 'يعيدك خطوة للخلف إلى المجلد السابق',
     hb_read: 'يعرض النص المكتوب داخل ملف', hb_read1: 'يعرض النص داخل الملف report.txt', hb_create: 'ينشئ ملفاً جديداً فارغاً', hb_create1: 'ينشئ الملف plan.txt', hb_create2: 'ينشئ 10 ملفات جديدة مرقّمة باسم file: file1.txt، file2.txt ...',
@@ -4527,7 +4527,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     name: 'بطولة الشطرنج الإلكترونية', host: 'chess.example',
     me: 3105, meName: 'راشد علي', meFirst: 'راشد', meEmail: 'rali@chess.example', mePass: 'Pawn2026',            /* the student's own account (pending) */
     ref: 3518, refName: 'ماجد سعيد الحمدان', refEmail: 'mhamdan@chess.example', refPass: 'Shaheen1989!',           /* the referee (pending) */
-    winner: 'سلطان محمد', runnerUp: 'فهد ناصر', score: '2 - 1', prizeCode: 'KING-4825', prize: '5,000 ر.ق',       /* the final, in «لوحة المشرف» (pending) */
+    winner: 'سلطان محمد', runnerUp: 'فهد ناصر', score: '2 - 1', prizeCode: 'KING-4825', prize: '5,000 ر.ق', champ: null,       /* the final, in «لوحة المشرف» (pending) */
     from: 3000, to: 4000, email: 'info@chess.example', phone: '+974 0000 0000',
     social: { host: 'social.example', path: '/majed.alhamdan' }
   };
@@ -4598,6 +4598,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     '.box input:focus{outline:2px solid var(--gold2);border-color:var(--gold)}.box button{width:100%;margin-top:18px;font:inherit;font-weight:800;border:0;border-radius:10px;padding:11px;background:var(--wood);color:#fff;cursor:pointer}.box button:hover{background:var(--wood2)}',
     '.err{margin-top:12px;color:var(--bad);background:#fbebe6;border:1px solid #f0c9bf;border-radius:10px;padding:8px 12px;font-size:.9rem;font-weight:700}',
     /* the referee panel */
+    '.crown .row{display:flex;gap:10px;flex-wrap:wrap}.crown label{display:block;font-weight:700;font-size:.9rem;margin:12px 0 6px}.crown input{flex:1 1 160px;font:inherit;padding:10px 12px;border:1px solid #d9c8aa;border-radius:10px;background:#fff;direction:ltr;text-align:left}.crown input:focus{outline:2px solid var(--gold2);border-color:var(--gold)}.crown button{font:inherit;font-weight:800;border:0;border-radius:10px;padding:10px 20px;background:var(--wood);color:#fff;cursor:pointer}.crown button:hover{background:var(--wood2)}',
+    '.tok{margin-top:12px;color:#2f6b3a;background:#e8f4ea;border:1px solid #bfdcc5;border-radius:10px;padding:8px 12px;font-size:.9rem;font-weight:700}.res.one{grid-template-columns:1fr}',
+    '.champ{margin-top:14px;border:1px solid var(--gold);box-shadow:0 0 0 2px var(--gold2);background:#fbf3e0;border-radius:14px;padding:14px;display:grid;gap:8px;justify-items:center}.champ b{font-size:1.1rem;color:var(--wood)}.champ small{color:var(--muted)}',
     '.panel h1{font-size:1.6rem}.res{display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;text-align:center;margin:16px 0}.res .p{background:var(--paper);border:1px solid var(--line);border-radius:14px;padding:16px}.res .p.win{border-color:var(--gold);box-shadow:0 0 0 2px var(--gold2)}',
     '.res .p b{display:block;font-size:1.15rem}.res .vs{display:inline-flex;gap:8px;justify-content:center;font-size:1.6rem;font-weight:800;color:var(--wood)}.code{display:inline-block;direction:ltr;font-family:Consolas,monospace;font-size:1.2rem;font-weight:800;letter-spacing:.06em;background:var(--wood);color:var(--gold2);border-radius:8px;padding:4px 14px}',
     '@media(max-width:900px){.hero .wrap,.prof{grid-template-columns:1fr}.cards,.cards.c3{grid-template-columns:repeat(2,1fr)}.rounds{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.top .wrap{gap:10px}.top nav a{padding:6px 7px;font-size:.84rem}.logo{font-size:1rem}.kn{width:34px;height:34px;font-size:1.35rem}.me span{display:none}}',
@@ -4616,12 +4619,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       NAV.forEach(function (n) { L.push(ind(4, '<a href="' + n[0] + '"' + (n[0] === active ? ' class="on"' : '') + '>' + n[1] + '</a>')); });
       L.push(ind(3, '</nav>'));
     }
-    if (user) L.push(ind(3, '<div class="me"><span>مرحباً،</span> <b>' + (typeof user === 'string' ? user : C.meName) + '</b> <a href="/logout">تسجيل الخروج</a></div>'));
+    if (user) L.push(ind(3, '<div class="me"><span>مرحباً،</span> <b>' + (typeof user === 'string' ? user : C.meName) + '</b></div>'));
     L.push(ind(2, '</div>'), ind(1, '</header>'));
     return L;
   }
   var FOOT = [ind(1, '<footer class="foot">'), ind(2, '<div class="wrap">'),
-    ind(3, '<span><b>' + C.name + '</b> · بطولة للاعبين المسجّلين فقط</span>'),
+    ind(3, '<span><b>' + C.name + '</b> · بطولة للمشاركين المسجّلين فقط</span>'),
     ind(3, '<span>' + C.email + ' · <bdi dir="ltr">' + C.phone + '</bdi></span>'),
     ind(2, '</div>'), ind(1, '</footer>')];
   function srcPage(title, active, body) {
@@ -4640,19 +4643,19 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   pages['/home'] = { title: 'الرئيسية | ' + C.name, src: ['<!DOCTYPE html>', '<html lang="ar" dir="rtl">', '<head>', ind(1, '<meta charset="utf-8">'), ind(1, '<title>الرئيسية | ' + C.name + '</title>'),
     ind(1, '<link rel="stylesheet" href="style.css">'), '</head>', '<body>'].concat(header('/home', true), [
     ind(1, '<section class="hero">'), ind(2, '<div class="wrap">'), ind(3, '<div>'),
-    ind(4, '<small>الموسم الثالث · 2026</small>'), ind(4, '<h1>النهائي يوم الجمعة 4 ديسمبر</h1>'),
-    ind(4, '<p>بعد 11 جولة، يتنافس أفضل لاعبَين في البطولة على اللقب. يعلن مشرف البطولة النتيجة بعد المباراة مباشرة.</p>'),
+    ind(4, '<small>الموسم الثالث</small>'), ind(4, '<h1>النهائي يوم الجمعة 4 ديسمبر</h1>'),
+    ind(4, '<p>بعد 11 جولة، يتنافس أفضل مشاركَين في البطولة على اللقب. يعلن مشرف البطولة النتيجة بعد المباراة مباشرة.</p>'),
     ind(3, '</div>'), ind(3, '<div class="prize">'), ind(4, '<h3>جائزة البطل</h3>'), ind(4, '<div class="big">' + C.prize + '</div>'),
     ind(4, '<ul>'), ind(5, '<li>كأس البطولة وشهادة الفوز</li>'), ind(5, '<li>كود جائزة يُرسل إلى البطل بعد إعلان النتيجة</li>'), ind(5, '<li>مقعد في بطولة الموسم القادم</li>'), ind(4, '</ul>'),
     ind(3, '</div>'), ind(2, '</div>'), ind(1, '</section>'),
-    ind(1, '<main>'), ind(2, '<div class="wrap">'), ind(3, '<section class="sec">'), ind(4, '<h2>أفضل أربعة لاعبين</h2>'), ind(4, '<p class="lead">ترتيب اللاعبين بعد الجولة الحادية عشرة.</p>'), ind(4, '<div class="cards">')],
+    ind(1, '<main>'), ind(2, '<div class="wrap">'), ind(3, '<section class="sec">'), ind(4, '<h2>أفضل أربعة مشاركين</h2>'), ind(4, '<p class="lead">ترتيب المشاركين بعد الجولة الحادية عشرة.</p>'), ind(4, '<div class="cards">')],
     top4.map(function (n, i) { var p = C.players[n]; return ind(5, '<div class="card pl"><div class="pc">' + ['♚', '♛', '♜', '♝'][i] + '</div><b>' + p[0] + '</b><small>' + p[5] + ' · تصنيف ' + p[1] + '</small><span class="rk">المركز ' + (i + 1) + '</span></div>'); }),
     [ind(4, '</div>'), ind(3, '</section>'), ind(3, '<section class="sec">'), ind(4, '<div class="note">مشرف البطولة يدخل نتائج المباريات بنفسه، ولا تظهر النتيجة لأحد قبل إعلانها.</div>'), ind(3, '</section>'),
     ind(2, '</div>'), ind(1, '</main>')], FOOT, ['</body>', '</html>']).join('\n') };
 
   /* /table: the rankings (names only, no links: the only player page linked is the student's own, «حسابي») */
   pages['/table'] = { title: 'الجدول | ' + C.name, src: srcPage('الجدول', '/table', ['<section class="sec">', ind(1, '<h2>جدول الترتيب</h2>'), ind(1, '<p class="lead">الفوز نقطة، والتعادل نصف نقطة.</p>'), ind(1, '<table>'),
-    ind(2, '<tr><th>المركز</th><th>اللاعب</th><th>المدينة</th><th>التصنيف</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>النقاط</th></tr>')]
+    ind(2, '<tr><th>المركز</th><th>المشارك</th><th>المدينة</th><th>التصنيف</th><th>فوز</th><th>تعادل</th><th>خسارة</th><th>النقاط</th></tr>')]
     .concat(rankOrder().map(function (n, i) { var p = C.players[n]; return ind(2, '<tr' + (i < 4 ? ' class="top4"' : '') + '><td class="n">' + (i + 1) + '</td><td>' + p[0] + '</td><td>' + p[5] + '</td><td>' + p[1] + '</td><td>' + p[2] + '</td><td>' + p[3] + '</td><td>' + p[4] + '</td><td class="pts">' + pts(p) + '</td></tr>'); }))
     .concat([ind(1, '</table>'), '</section>'])) };
 
@@ -4678,12 +4681,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   }
   function playerPage(n) {
     var p = C.players[n], rank = R.indexOf(n) + 1, mine = n === C.me;
-    var body = ['<section class="prof">', ind(1, '<div class="card who">'), ind(2, '<div class="av">♞</div>'), ind(2, '<h1>' + p[0] + '</h1>'), ind(2, '<p class="role">لاعب في البطولة · ' + p[5] + '</p>'),
-      ind(2, '<span class="badge">' + (mine ? 'حسابك' : 'المركز ' + rank) + '</span>'), ind(2, '<ul class="facts">'),
+    var body = ['<section class="prof">', ind(1, '<div class="card who">'), ind(2, '<div class="av">♞</div>'), ind(2, '<h1>' + p[0] + '</h1>'), ind(2, '<p class="role">مشارك في البطولة · ' + p[5] + '</p>'),
+      ind(2, '<span class="badge">' + (mine ? 'حسابك' : 'المركز ' + rank) + '</span>')].concat(n === C.champ ? [ind(2, '<div class="champ"><b>♛ بطل البطولة</b><small>كود الجائزة</small><span class="code">' + C.prizeCode + '</span></div>')] : [], [ind(2, '<ul class="facts">'),
       ind(3, '<li><span>رقم الحساب</span><b>' + n + '</b></li>'), ind(3, '<li><span>التصنيف</span><b>' + p[1] + '</b></li>'), ind(3, '<li><span>الافتتاح المفضل</span><b>' + p[6] + '</b></li>'), ind(3, '<li><span>عضو منذ</span><b>' + (2019 + (n % 5)) + '</b></li>'),
       ind(2, '</ul>'), ind(1, '</div>'), ind(1, '<div>'), ind(2, '<div class="stats">'),
       ind(3, '<div class="stat"><small>فوز</small><b>' + p[2] + '</b></div>'), ind(3, '<div class="stat"><small>تعادل</small><b>' + p[3] + '</b></div>'), ind(3, '<div class="stat"><small>خسارة</small><b>' + p[4] + '</b></div>'), ind(3, '<div class="stat"><small>النقاط</small><b>' + pts(p) + '</b></div>'),
-      ind(2, '</div>'), ind(2, '<div class="card">'), ind(3, '<h2 style="font-size:1.1rem;margin-bottom:10px">أفضل مباراة</h2>'), ind(3, '<div class="bw">')]
+      ind(2, '</div>'), ind(2, '<div class="card">'), ind(3, '<h2 style="font-size:1.1rem;margin-bottom:10px">أفضل مباراة</h2>'), ind(3, '<div class="bw">')])
       .concat(boardLines(n % 7).map(function (l) { return ind(4, l); }), [ind(4, '<p>فاز بهذه المباراة في الجولة ' + (3 + n % 8) + ' باستخدام ' + p[6] + '.</p>'), ind(3, '</div>'), ind(2, '</div>'), ind(1, '</div>'), '</section>']);
     return { title: p[0] + ' | ' + C.name, src: srcPage(p[0], mine ? C.pPath(C.me) : '', body) };
   }
@@ -4702,7 +4705,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   /* ---------- the two sign-in pages (forms that answer every try) ---------- */
   function shell(body, user) { return header('', user).join('') + body; }
   function loginHtml(email) {
-    return shell('<div class="auth"><div class="box"><h1>دخول اللاعبين</h1><p class="sub">سجّل الدخول بحسابك في البطولة.</p>' +
+    return shell('<div class="auth"><div class="box"><h1>دخول المشاركين</h1><p class="sub">سجّل الدخول بحسابك في البطولة.</p>' +
       '<form method="post" action="/login"><label for="u">البريد الإلكتروني</label><input id="u" name="email" autocomplete="off" value="' + esc(email || '') + '" required>' +
       '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">تسجيل الدخول</button></form>{{error}}</div></div>', false);
   }
@@ -4711,23 +4714,39 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<form method="post" action="/control"><label for="u">البريد الإلكتروني</label><input id="u" name="email" autocomplete="off" value="' + esc(email || '') + '" required>' +
       '<label for="p">كلمة السر</label><input id="p" name="password" type="password" autocomplete="off" required><button type="submit">دخول المشرف</button></form>{{error}}</div></div>', true);
   }
-  function panelHtml() {
+  function panelHtml(msg, ok) {
+    var champ = C.champ ? C.players[C.champ][0] : '';
     return shell('<main><div class="wrap panel"><section class="sec"><h1>لوحة المشرف</h1><p class="lead">دخلت بحساب ' + C.refName + '.</p>' +
       '<div class="card"><h2 style="font-size:1.15rem">نتيجة النهائي <span class="badge">لم تُعلن بعد</span></h2>' +
-      '<div class="res"><div class="p win"><b>' + C.winner + '</b><small>الفائز باللقب</small></div>' + score(C.score, 'vs') + '<div class="p"><b>' + C.runnerUp + '</b><small>المركز الثاني</small></div></div>' +
-      '<p>كود الجائزة الذي يُرسل إلى البطل: <span class="code">' + C.prizeCode + '</span></p></div></section>' +
+      (champ ? '<div class="res one"><div class="p win"><b>' + champ + '</b><small>بطل البطولة</small></div></div>'
+        : '<div class="res"><div class="p win"><b>' + C.winner + '</b><small>الفائز باللقب</small></div>' + score(C.score, 'vs') + '<div class="p"><b>' + C.runnerUp + '</b><small>المركز الثاني</small></div></div>') +
+      '<p>يظهر كود الجائزة في صفحة البطل.</p></div>' +
+      '<div class="card crown" style="margin-top:16px"><h2 style="font-size:1.15rem">تغيير البطل</h2><p class="lead">اكتب رقم حساب المشارك الذي سيكون بطل البطولة.</p>' +
+      '<form method="post" action="/crown"><label for="cn">رقم حساب البطل</label><div class="row"><input id="cn" name="num" inputmode="numeric" autocomplete="off"><button type="submit">اعتماد البطل</button></div></form>' +
+      (msg ? '<p class="' + (ok ? 'tok' : 'err') + '">' + msg + '</p>' : '') + '</div></section>' +
       '<section class="sec"><div class="note">تُعلن النتيجة للجميع يوم الجمعة 4 ديسمبر بعد المباراة.</div></section></div></main>', true);
+  }
+  /* «تغيير البطل»: any player's number makes him the champion; his page then shows the prize code (the task: the student's own number, 3105) */
+  function crown(data) {
+    var raw = String((data && data.num) || '').trim().replace(/[\u0660-\u0669]/g, function (d) { return String(d.charCodeAt(0) - 0x660); }), n = Number(raw);
+    if (!raw) return ['اكتب رقم حساب المشارك، ثم اضغط «اعتماد البطل».'];
+    if (n === C.ref) return ['هذا رقم حساب المشرف. اكتب رقم حساب أحد المشاركين.'];
+    if (!/^[0-9]+$/.test(raw) || !C.players[n]) return ['لا يوجد مشارك بهذا الرقم. اكتب رقم حساب أحد المشاركين.'];
+    var prev = C.champ; C.champ = n;
+    if (prev && prev !== n) pages[C.pPath(prev)] = playerPage(prev);
+    pages[C.pPath(n)] = playerPage(n);
+    return ['تم اعتماد ' + C.players[n][0] + ' بطلاً للبطولة.', true];
   }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
   function freshAuth() {
-    pages['/login'] = { title: 'دخول اللاعبين | ' + C.name, html: loginHtml('') };
+    pages['/login'] = { title: 'دخول المشاركين | ' + C.name, html: loginHtml('') };
     pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: controlHtml('') };
   }
   freshAuth();
 
   var PLAIN_NF = '<style>html,body{height:100%;margin:0;background:#fff!important;color:#202124!important;font-family:system-ui,Segoe UI,Tajawal,sans-serif}</style><div style="min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;box-sizing:border-box"><h1 style="margin:0;font-size:34px;font-weight:700">الصفحة غير موجودة</h1></div>';
   function noPlayer() {
-    return shell('<main><div class="wrap"><section class="sec" style="text-align:center;padding:60px 0"><div style="font-size:3rem;color:#c9b48f">♟</div><h2>اللاعب غير موجود</h2><p class="lead" style="margin-top:6px">لا يوجد حساب بهذا الرقم.</p></section></div></main>' + FOOT.join(''), true);
+    return shell('<main><div class="wrap"><section class="sec" style="text-align:center;padding:60px 0"><div style="font-size:3rem;color:#c9b48f">♟</div><h2>المشارك غير موجود</h2><p class="lead" style="margin-top:6px">لا يوجد حساب بهذا الرقم.</p></section></div></main>' + FOOT.join(''), true);
   }
 
   CC.site = {
@@ -4748,7 +4767,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var u = String((data && data.email) || '').trim(), lu = u.toLowerCase(), pw = String((data && data.password) || '');
       if (path === '/login') {
         if (lu === C.meEmail && pw === C.mePass) { st.user = C.me; return { go: '/home' }; }
-        pages['/login'] = { title: 'دخول اللاعبين | ' + C.name, html: loginHtml(u) };
+        pages['/login'] = { title: 'دخول المشاركين | ' + C.name, html: loginHtml(u) };
         CC.site.error = '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
         return { page: '/login', error: true };
       }
@@ -4762,11 +4781,20 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         CC.site.error = lu === C.refEmail ? '<p class="err">كلمة السر غير صحيحة</p>' : '<p class="err">البريد الإلكتروني أو كلمة السر غير صحيحة</p>';
         return { page: '/control', error: true };
       }
+      if (path === '/crown') {
+        if (!st.ref) return { go: '/control' };
+        var r = crown(data);
+        pages['/control'] = { title: 'لوحة المشرف | ' + C.name, html: panelHtml(r[0], r[1]) };
+        return { go: '/control' };
+      }
       return null;
     }
   };
   /* a restart re-runs the lab, but this module loads once: both sign-ins go back to their forms */
-  CC.site.resetLogin = freshAuth;
+  CC.site.resetLogin = function () {
+    freshAuth();
+    if (C.champ) { var c = C.champ; C.champ = null; pages[C.pPath(c)] = playerPage(c); }
+  };
 })();
 
 /* EH2 final challenge: the referee's profile on social.example «منصة التواصل الاجتماعي» (reserved .example address, plain name, a light look of its own,
@@ -4898,23 +4926,24 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة رائعة! أحسنت', q_no: 'إجابة غير صحيحة، حاول مرة أخرى.', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
-    q1: 'كم حساباً وجدت أداة عدّاد بين 3000 و4000؟', q1h: 'شغّل **أداة عدّاد** على عنوان **صفحة اللاعب** من الرقم `3000` إلى الرقم `4000`، واقرأ آخر سطر في النتيجة.',
-    q2: 'ما رقم حساب مشرف البطولة؟', q2h: 'افتح **الحسابات** التي وجدتها أداة عدّاد في **المتصفح**، وابحث عن الحساب الذي ليس لاعباً.',
+    q1: 'كم حساباً وجدت أداة عدّاد بين 3000 و4000؟', q1h: 'شغّل **أداة عدّاد** على عنوان **صفحة المشارك** من الرقم `3000` إلى الرقم `4000`، واقرأ آخر سطر في النتيجة.',
+    q2: 'ما رقم حساب مشرف البطولة؟', q2h: 'افتح **الحسابات** التي وجدتها أداة عدّاد في **المتصفح**، وابحث عن الحساب الذي ليس مشاركاً.',
     q3: 'ما عنوان الصفحة المخفية التي وجدتها في الكود البرمجي لصفحة مشرف البطولة؟', q3h: 'افتح **صفحة مشرف البطولة**، ثم اضغط بالزر الأيمن واختر «**عرض مصدر الصفحة**»، واقرأ **التعليقات** في الكود البرمجي.',
     q4: 'ما البريد الإلكتروني لمشرف البطولة؟', q4h: 'ابحث في **الكود البرمجي لصفحة المشرف** عن عنصر **لا يظهر في الصفحة**.',
     q5: 'ما اسم الحيوان الأليف لمشرف البطولة؟', q5h: 'افتح **حسابه في منصة التواصل الاجتماعي** من صفحته في موقع البطولة، واقرأ **منشوراته**.',
     q6: 'ما هي سنة ميلاد مشرف البطولة؟', q6h: 'ابحث عن منشور **عيد ميلاده**: كم عمره، وفي أي **سنة** كتب المنشور؟',
     q7: 'ما كلمة السر لحساب مشرف البطولة؟', q7h: 'استخدم **أداة برق** على **لوحة المشرف** مع **بريده** و**القائمة** التي صنعها **مولّد كلمات السر**. إذا لم تجد الأداة كلمة السر، تأكد من المعلومات التي أدخلتها في المولّد.',
-    q8: 'من الفائز في نهائي البطولة؟', q8h: 'سجّل الدخول إلى **لوحة المشرف** بحسابه، واقرأ **نتيجة النهائي**.',
-    q9: 'ما كود الجائزة؟', q9h: 'تجده في **لوحة المشرف** تحت **نتيجة النهائي**.',
+    q8: 'مهمة: اجعل نفسك بطل البطولة من لوحة المشرف.', q8h: 'في **لوحة المشرف** اكتب **رقم حسابك** في قسم «**تغيير البطل**»، ثم اضغط «**اعتماد البطل**». رقم حسابك في الملف `my-account.txt`.',
+    q9: 'ما كود الجائزة الذي ظهر في صفحتك بعد أن أصبحت البطل؟', q9h: 'افتح **صفحتك** في الموقع من «**حسابي**»، وستجد **كود الجائزة** تحت «**بطل البطولة**».',
+    q_task_open: 'لم تُنجز بعد', q_task_ok: 'تمت المهمة',
     /* the instruction moves on as the questions are answered: never «التحدي الأول / الثاني» */
-    t_goal: '**هدفك اليوم:** أنت لاعب في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. اكتشف **نتيجة النهائي** قبل إعلانها. بيانات حسابك في الملف `my-account.txt` على **سطح المكتب**. افتح **شاشة الأوامر** [[term]] و**المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب، ثم أجب عن أسئلة التحدي.',
+    t_goal: '**هدفك اليوم:** أنت مشارك في **بطولة الشطرنج الإلكترونية** على الموقع `chess.example`. اجعل نفسك **بطل البطولة** قبل إعلان النتيجة. بيانات حسابك في الملف `my-account.txt` على **سطح المكتب**. افتح **شاشة الأوامر** [[term]] و**المتصفح** [[web]] من شريط التطبيقات في أسفل شاشة الحاسوب، ثم أجب عن أسئلة التحدي.',
     t_goal2: 'الآن استخدم **مولّد كلمات السر** في **شاشة الأوامر** [[term]] لتصنع قائمة كلمات سر من المعلومات التي جمعتها عن **مشرف البطولة**. لعرض الأوامر المتاحة اكتب الأمر `help`.',
-    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **لوحة المشرف** وأجب عن الأسئلة الجديدة.',
+    t_goal3: 'استخدم **أداة برق** مع القائمة التي صنعتها لتجد **كلمة سر** مشرف البطولة، ثم سجّل الدخول إلى **لوحة المشرف** واجعل نفسك **بطل البطولة**.',
     t_done: 'أحسنت! أنهيت التحدي النهائي.',
     e_gen: 'المولّد يبني قائمة كلمات السر...', e_run: 'الأداة تعمل الآن...',
     /* tokens explained under a command */
-    tk_clear: 'امسح الشاشة', tk_addad: 'اسم أداة عدّاد', tk_apage: 'عنوان صفحة اللاعب قبل الرقم', tk_from: 'رقم البداية', tk_to: 'رقم النهاية',
+    tk_clear: 'امسح الشاشة', tk_addad: 'اسم أداة عدّاد', tk_apage: 'عنوان صفحة المشارك قبل الرقم', tk_from: 'رقم البداية', tk_to: 'رقم النهاية',
     tk_barq: 'اسم أداة برق', tk_page: 'صفحة تسجيل الدخول', tk_email: 'البريد الإلكتروني', tk_file: 'الملف الذي فيه كلمات السر',
     /* password generator (prompts in English like a real tool, as in EH2 lab 3) */
     pg_intro: 'مولّد كلمات السر سيعمل الآن على بناء قائمة كلمات سر محتملة من المعلومات الشخصية للهدف. أدخل ما جمعته عن الهدف:',
@@ -4955,11 +4984,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     a_nofrom: 'الأمر غير مكتمل: لم تحدد رقم البداية ولا رقم النهاية.',
     a_noto: 'الأمر غير مكتمل: لم تحدد رقم النهاية.',
     a_site: 'لم يتم العثور على الموقع `{w}`. اكتب اسم الموقع كما يظهر في عنوان الموقع في المتصفح.',
-    a_bare: '`{w}` اسم موقع فقط: اكتب عنوان صفحة اللاعب كما يظهر في المتصفح، بدون رقم الحساب في آخره (العنوان ينتهي بـ `=`).',
+    a_bare: '`{w}` اسم موقع فقط: اكتب عنوان صفحة المشارك كما يظهر في المتصفح، بدون رقم الحساب في آخره (العنوان ينتهي بـ `=`).',
     a_withnum: 'اكتب عنوان الصفحة بدون رقم الحساب في آخره: يجب أن ينتهي العنوان بـ `=`، والأرقام تكتبها بعده.',
-    a_page: 'لم يتم العثور على صفحة لاعب في `{w}`. اكتب عنوان صفحة اللاعب كما يظهر في المتصفح.',
-    a_noid: 'العنوان `{w}` ينقصه الجزء `?id=`: اكتب عنوان صفحة اللاعب كما يظهر في المتصفح حتى علامة `=`، بدون الرقم.',
-    a_notaddr: '`{w}` ليس عنوان صفحة: اكتب عنوان صفحة اللاعب كما يظهر في المتصفح.',
+    a_page: 'لم يتم العثور على صفحة مشارك في `{w}`. اكتب عنوان صفحة المشارك كما يظهر في المتصفح.',
+    a_noid: 'العنوان `{w}` ينقصه الجزء `?id=`: اكتب عنوان صفحة المشارك كما يظهر في المتصفح حتى علامة `=`، بدون الرقم.',
+    a_notaddr: '`{w}` ليس عنوان صفحة: اكتب عنوان صفحة المشارك كما يظهر في المتصفح.',
     a_dash: 'اكتب رقم البداية ثم رقم النهاية وبينهما مسافة، وليس شرطة (`-`).',
     a_nan_from: 'رقم البداية `{w}` غير صحيح: يجب أن يتكوّن من أرقام فقط، بدون أحرف.',
     a_nan_to: 'رقم النهاية `{w}` غير صحيح: يجب أن يتكوّن من أرقام فقط، بدون أحرف.',
@@ -4971,7 +5000,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     b_badpage: '`{w}` ليس عنوان صفحة؛ اكتب عنوان صفحة الدخول مباشرة بعد `barq`: اسم الموقع ثم `/` ثم اسم الصفحة.',
     b_site: 'لم يتم العثور على الموقع `{w}`. اكتب اسم الموقع كما يظهر في عنوان الموقع في المتصفح.',
     b_page: 'لم يتم العثور على صفحة دخول في `{w}`. اكتب عنوان الصفحة التي فيها نموذج تسجيل الدخول.',
-    b_player: 'هذه صفحة دخول اللاعبين، وأنت تعرف كلمة سر حسابك. ابحث عن صفحة الدخول التي يستخدمها **مشرف البطولة**.',
+    b_player: 'هذه صفحة دخول المشاركين، وأنت تعرف كلمة سر حسابك. ابحث عن صفحة الدخول التي يستخدمها **مشرف البطولة**.',
     b_noatmail: 'هذا ليس بريداً إلكترونياً صحيحاً؛ يجب أن يحتوي على `@`، مثل `example@gmail.com`.',
     b_sym: 'اسم الملف فيه رموز غير مدعومة. اكتب اسم الملف كما يظهر عند كتابة الأمر `display`.',
     b_nolist: 'الملف `{w}` غير موجود على سطح المكتب بعد: لم تصنع قائمة كلمات السر حتى الآن.',
@@ -4989,9 +5018,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     /* congratulations */
     cele_h: 'أثبتّ أنك هاكر!',
     cele_i: 'أهم ما قمت به:',
-    cele_1: 'غيّرت **رقم الحساب** في عنوان الصفحة واستخدمت **أداة عدّاد**، فرأيت **حسابات لاعبين آخرين** لأن الموقع لا يتأكد أن الحساب يخصّك.',
+    cele_1: 'غيّرت **رقم الحساب** في عنوان الصفحة واستخدمت **أداة عدّاد**، فرأيت **حسابات مشاركين آخرين** لأن الموقع لا يتأكد أن الحساب يخصّك.',
     cele_2: 'قرأت **الكود البرمجي لصفحة المشرف** فوجدت **صفحة مخفية** وبريده، ثم جمعت **معلوماته الشخصية** من حسابه في منصة التواصل الاجتماعي.',
-    cele_3: 'صنعت قائمة بـ**مولّد كلمات السر**، ووجدت **كلمة السر** بـ**أداة برق**، ودخلت إلى **لوحة المشرف**.',
+    cele_3: 'صنعت قائمة بـ**مولّد كلمات السر**، ووجدت **كلمة السر** بـ**أداة برق**، ودخلت إلى **لوحة المشرف** وجعلت نفسك **بطل البطولة**.',
     cele_b: 'متابعة'
   });
 
@@ -5065,7 +5094,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       { id: 'q5', q: CC.t('q5'), answers: [T.pet, T.petEn], check: function (v) { var t = noAl(String(v).trim().replace(/^(صقره|الصقر|صقر)\s+/, '')); return t === 'شاهين' || token(v) === 'shaheen'; }, hint: CC.t('q5h') },
       { id: 'q6', q: CC.t('q6'), answers: [String(T.born)], check: function (v) { return digits(v).replace(/[^0-9]/g, '') === String(T.born); }, hint: CC.t('q6h') },
       { id: 'q7', q: CC.t('q7'), answers: [C.refPass], check: function (v) { return String(v).trim() === C.refPass; }, hint: CC.t('q7h'), gate: false, hidden: true },
-      { id: 'q8', q: CC.t('q8'), answers: [C.winner, 'سلطان'], check: function (v) { var t = String(v).trim().replace(/\s+/g, ' '); return t === C.winner || t === 'سلطان' || t === 'سلطان بن محمد' || /^su?lta?a?n( (bin )?mo?ha?mm?e?a?d)?$/.test(low(t)); }, hint: CC.t('q8h'), gate: false, hidden: true },
+      { id: 'q8', task: true, q: CC.t('q8'), hint: CC.t('q8h'), gate: false, hidden: true },
       { id: 'q9', q: CC.t('q9'), answers: [C.prizeCode], check: function (v) { return low(v).replace(/[\s\-–_]+/g, '') === C.prizeCode.toLowerCase().replace(/-/g, ''); }, hint: CC.t('q9h'), gate: false, hidden: true }
     ]);
 
@@ -5080,7 +5109,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (want === 3) CC.Q.reveal('q7');
         L.task(CC.t(want === 2 ? 't_goal2' : 't_goal3')); L.expl('');
       }
-      if (st.inPanel) { CC.Q.reveal('q8'); CC.Q.reveal('q9'); }
+      if (st.inPanel) CC.Q.reveal('q8');
+      if (C.champ === C.me && !CC.Q.done.q8) { CC.Q.complete('q8'); CC.Q.reveal('q9'); }
     }
     var iv = setInterval(function () { if (g !== CC.gen) { clearInterval(iv); return; } more(); }, 500);
     CC.Q.onAll = function () { more(); };
