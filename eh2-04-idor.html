@@ -5626,63 +5626,70 @@ window.CC_MISSION = {"stages":[{"label":"تسجيل الدخول والحساب"
     if (isDone) { setBase('win'); celebrateFeed(); }
     else setBase(steps.length === 1 ? 'hello' : 'point');
   };
-  /* the end of the lab in the instruction panel (Moaz 2026-11-13, every lab): the earlier steps CHARGE (they shake harder and harder and glow gold),
-     then explode one after another into gold shards (Moaz 2026-11-14: slower, «charges then explodes»), confetti falls through the panel, and the last
-     step pops. Nothing is left behind: the exploded steps are hidden and the shards and confetti are removed when they finish. Plays once; reduced motion
-     shows the last step only. */
+  /* the end of the lab in the instruction panel (every lab): «فك التشفير», digital decode (Moaz 2026-11-27, chosen from six options in
+     labs/_previews/end-animation; it replaces the 2026-11-13 charge-and-explode). A gold scan line wipes each earlier step from right to left, the step
+     turns into 0s and 1s that float up and fade, then the last step («أحسنت! أنهيت التدريب.») decodes out of scrambled symbols inside a gold glow and
+     a few sparks fly. Nothing is left behind: the wiped steps are hidden and every line, digit and spark is removed. Plays once; reduced motion shows
+     the last step only. */
   function celebrateFeed() {
     if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     var olds = [].slice.call(list.querySelectorAll('.cc-step')).filter(function (li) { return li.animate && li.getClientRects().length; });
-    var CHARGE = 1600, GAP = 260, BLOW = 1400;
+    finishTyping();                                               /* the last step decodes instead of typing itself */
+    var html = curTxt.innerHTML, goal = curTxt.textContent;
+    curTxt.style.visibility = 'hidden';
     var fr = feed.getBoundingClientRect(), k = feed.clientWidth / Math.max(1, fr.width);      /* screen px -> page px (the page is zoomed) */
     var boom = document.createElement('div'); boom.className = 'cc-fboom'; boom.setAttribute('aria-hidden', 'true'); feed.appendChild(boom);
-    var cols = ['#FCAD0F', '#FFFFFF', '#5BC8FF', '#8DC63F', '#F39B22'];
-    olds.forEach(function (li, i) {
-      /* 1. charge: a shake that grows, a gold glow that builds up */
-      var kf = [], n = 16;
-      for (var q = 0; q <= n; q++) {
-        var p = q / n, amp = 1 + p * 5, x = q === n ? 0 : (q % 2 ? amp : -amp), r = q === n ? 0 : (q % 2 ? -p * 2 : p * 2);
-        kf.push({ transform: 'translateX(' + x + 'px) rotate(' + r + 'deg) scale(' + (1 + p * 0.06) + ')', boxShadow: '0 0 ' + Math.round(4 + p * 22) + 'px ' + Math.round(p * 6) + 'px rgba(252,173,15,' + (0.2 + p * 0.7).toFixed(2) + ')', filter: 'brightness(' + (1 + p * 0.5).toFixed(2) + ')' });
-      }
-      li.animate(kf, { duration: CHARGE, easing: 'ease-in', fill: 'forwards' });
-      /* 2. explode, one after another */
-      var at = CHARGE + i * GAP, dir = i % 2 ? 1 : -1, dx = dir * (140 + Math.random() * 160), dy = -(160 + Math.random() * 200), rot = dir * (30 + Math.random() * 50);
+    var WIPE = 420, GAP = 150, FRAMES = 18, FRAME = 45;
+    function gone(e) { return function () { e.remove(); }; }
+    /* 1. the scan line, newest step first (the one nearest the last step), then up the list */
+    olds.slice().reverse().forEach(function (li, i) {
       setTimeout(function () {
         if (!li.isConnected) return;
-        var rr = li.getBoundingClientRect(), cx = (rr.left + rr.width / 2 - fr.left) * k, cy = (rr.top + rr.height / 2 - fr.top) * k;
-        var fly = li.animate([
-          { transform: 'scale(1.06)', opacity: 1, filter: 'brightness(1.5)', offset: 0 },
-          { transform: 'scale(1.18)', opacity: 1, filter: 'brightness(2.2)', offset: 0.12 },
-          { transform: 'translate(' + dx + 'px,' + dy + 'px) rotate(' + rot + 'deg) scale(.4)', opacity: 0, filter: 'brightness(1)', offset: 1 }
-        ], { duration: BLOW, easing: 'cubic-bezier(.3,.6,.4,1)', fill: 'forwards' });
-        fly.onfinish = function () { li.style.display = 'none'; li.getAnimations().forEach(function (a) { a.cancel(); }); };   /* no leftovers */
-        var fl = document.createElement('b'); fl.className = 'cc-fflash'; fl.style.left = cx + 'px'; fl.style.top = cy + 'px'; boom.appendChild(fl);
-        fl.animate([{ transform: 'translate(-50%,-50%) scale(.2)', opacity: 1 }, { transform: 'translate(-50%,-50%) scale(2.4)', opacity: 0 }], { duration: 700, easing: 'ease-out', fill: 'forwards' }).onfinish = function () { fl.remove(); };
-        for (var s2 = 0; s2 < 14; s2++) {
-          var sh = document.createElement('i'), ang = Math.random() * Math.PI * 2, dist = 70 + Math.random() * 110;
-          sh.style.left = cx + 'px'; sh.style.top = cy + 'px'; sh.style.background = cols[s2 % cols.length];
-          boom.appendChild(sh);
-          sh.animate([{ transform: 'translate(-50%,-50%) rotate(0)', opacity: 1 },
-            { transform: 'translate(calc(-50% + ' + Math.round(Math.cos(ang) * dist) + 'px),calc(-50% + ' + Math.round(Math.sin(ang) * dist + 40) + 'px)) rotate(' + Math.round(360 + Math.random() * 360) + 'deg)', opacity: 0 }],
-            { duration: 1100 + Math.random() * 500, easing: 'cubic-bezier(.2,.7,.4,1)', fill: 'forwards' }).onfinish = (function (el) { return function () { el.remove(); }; })(sh);
+        var rr = li.getBoundingClientRect(), x = (rr.right - fr.left) * k, y = (rr.top - fr.top) * k, w = rr.width * k, h = rr.height * k;
+        var bar = document.createElement('b');
+        bar.style.cssText = 'left:' + x + 'px;top:' + y + 'px;width:3px;height:' + h + 'px;border-radius:2px;background:#FCAD0F;box-shadow:0 0 12px 3px rgba(252,173,15,.8)';
+        boom.appendChild(bar);
+        bar.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(' + (-w) + 'px)' }], { duration: WIPE, easing: 'linear', fill: 'forwards' }).onfinish = gone(bar);
+        li.animate([{ clipPath: 'inset(0 0 0 0)' }, { clipPath: 'inset(0 100% 0 0)' }], { duration: WIPE, easing: 'linear', fill: 'forwards' }).onfinish = function () { li.style.visibility = 'hidden'; };
+        for (var d = 0; d < 9; d++) {
+          var s = document.createElement('span');
+          s.textContent = Math.random() < 0.5 ? '0' : '1';
+          s.style.cssText = 'position:absolute;left:' + (x - Math.random() * w) + 'px;top:' + (y + h / 2) + 'px;font:800 ' + Math.round(11 + Math.random() * 6) + 'px ui-monospace,Consolas,monospace;color:' + (d % 3 ? '#8DC63F' : '#FCAD0F') + ';text-shadow:0 0 6px currentColor';
+          boom.appendChild(s);
+          s.animate([{ transform: 'translate(-50%,-50%)', opacity: 0 }, { transform: 'translate(-50%,-50%)', opacity: 1, offset: 0.15 }, { transform: 'translate(-50%,calc(-50% - ' + Math.round(40 + Math.random() * 70) + 'px))', opacity: 0 }],
+            { duration: 700 + Math.random() * 500, delay: Math.random() * 380, easing: 'ease-out', fill: 'both' }).onfinish = gone(s);
         }
-      }, at);
+      }, i * GAP);
     });
-    var end = CHARGE + Math.max(0, olds.length - 1) * GAP + BLOW;
-    setTimeout(function () { boom.remove(); }, end + 1800);
-    /* confetti once the steps have blown up; every piece fades out at the bottom and the box goes when the last one lands */
+    /* 2. the last step decodes: scrambled symbols settle into the real words, inside a gold glow */
     setTimeout(function () {
-      var box = document.createElement('div'); box.className = 'cc-fconf'; box.setAttribute('aria-hidden', 'true');
-      var last = 0;
-      for (var c0 = 0; c0 < 40; c0++) {
-        var c = document.createElement('i'), dl = Math.random() * 1.2, du = 2 + Math.random() * 1.6;
-        c.style.left = (Math.random() * 100) + '%'; c.style.background = cols[c0 % cols.length];
-        c.style.animationDelay = dl + 's'; c.style.animationDuration = du + 's';
-        box.appendChild(c); last = Math.max(last, dl + du);
-      }
-      feed.appendChild(box); setTimeout(function () { box.remove(); }, last * 1000 + 200);
-      if (cur.animate) cur.animate([{ transform: 'scale(.86)' }, { transform: 'scale(1.06)' }, { transform: 'none' }], { duration: 650, easing: 'ease-out' });
-    }, Math.max(0, CHARGE + olds.length * GAP));
+      if (!cur.isConnected) return;
+      curTxt.style.visibility = '';
+      var pool = '01#$%&<>/=أبتثجحخدذرزسشصضطظعغفقكلمنهوي', f = 0;
+      var glow = cur.animate([{ boxShadow: '0 0 0 2px #FCAD0F, 0 0 24px 4px rgba(252,173,15,.45)' }, { boxShadow: '0 0 0 2px #FCAD0F, 0 0 24px 4px rgba(252,173,15,.45)', offset: 0.6 }, { boxShadow: '0 0 0 0 rgba(252,173,15,0), 0 0 0 0 rgba(252,173,15,0)' }],
+        { duration: FRAMES * FRAME + 1400 });
+      (function frame() {
+        var keep = Math.floor(goal.length * f / FRAMES), s = goal.slice(0, keep);
+        for (var j = keep; j < goal.length; j++) s += /\s/.test(goal[j]) ? goal[j] : pool[Math.floor(Math.random() * pool.length)];
+        if (f >= FRAMES) {
+          curTxt.innerHTML = html;                                 /* the real step back, with its bold words */
+          var rr = cur.getBoundingClientRect(), cx = (rr.left + rr.width / 2 - fr.left) * k, cy = (rr.top + rr.height / 2 - fr.top) * k;
+          var cols = ['#FCAD0F', '#FFFFFF', '#5BC8FF', '#8DC63F', '#F39B22'];
+          for (var q = 0; q < 14; q++) {
+            var sp = document.createElement('i'), ang = (q / 14) * Math.PI * 2, dist = 80 + Math.random() * 50;
+            sp.style.cssText = 'left:' + cx + 'px;top:' + cy + 'px;width:6px;height:6px;border-radius:50%;background:' + cols[q % cols.length] + ';box-shadow:0 0 8px ' + cols[q % cols.length];
+            boom.appendChild(sp);
+            sp.animate([{ transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }, { transform: 'translate(calc(-50% + ' + Math.round(Math.cos(ang) * dist) + 'px),calc(-50% + ' + Math.round(Math.sin(ang) * dist + 20) + 'px)) scale(.3)', opacity: 0 }],
+              { duration: 1000, easing: 'cubic-bezier(.15,.7,.35,1)', fill: 'forwards' }).onfinish = gone(sp);
+          }
+          if (cur.animate) cur.animate([{ transform: 'scale(.96)' }, { transform: 'scale(1.04)' }, { transform: 'none' }], { duration: 500, easing: 'ease-out' });
+          setTimeout(function () { boom.remove(); olds.forEach(function (li) { li.style.display = 'none'; li.style.visibility = ''; li.getAnimations().forEach(function (an) { an.cancel(); }); }); }, 1300);
+          return;
+        }
+        curTxt.textContent = s; f++;
+        setTimeout(frame, FRAME);
+      })();
+    }, olds.length * GAP + WIPE + 250);
   }
 
   /* the laptop's parts, bound again for every new laptop (decorate): the command box (locked while a command runs: type),
