@@ -5209,17 +5209,16 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
     ]);
 
     /* the instruction follows the real state: 1 at the start; 2 (the generator) once questions 1 to 6 are right; 3 (Barq) once a list is saved,
-       with question 7. The task (question 8) appears after the referee login and is the last one (Moaz 2026-11-28: no prize-code question). Re-checked every half second too, so it never lags behind. */
+       with question 7. Questions 7 and the task (8) appear together once 1 to 6 are right; the task is the last one (Moaz 2026-11-28: no prize-code question). Re-checked every half second too, so it never lags behind. */
     function more() {
       var six = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].every(function (k) { return CC.Q.done[k]; });
       var want = six ? (st.genCount ? 3 : 2) : 1;
       if (want > st.phase) {
         st.phase = want;
         CC.emit('step', { id: 'phase' + want });
-        if (want === 3) CC.Q.reveal('q7');
-        else { L.task(CC.t('t_goal2')); L.expl(''); }       /* Moaz 2026-11-28: one instruction for the generator, Barq and the control page */
+        if (want === 2) { L.task(CC.t('t_goal2')); L.expl(''); }   /* Moaz 2026-11-28: one instruction for the generator, Barq and the control page */
       }
-      if (st.inPanel) CC.Q.reveal('q8');                                /* the task appears after the referee login (Moaz kept this order) */
+      if (six) { CC.Q.reveal('q7'); CC.Q.reveal('q8'); }               /* Moaz 2026-11-28: two waves: questions 1 to 6, then 7 and 8 together */
       if (C.champ === C.me && !CC.Q.done.q8) CC.Q.complete('q8');      /* the task is the last question: the lab ends with it */
     }
     var iv = setInterval(function () { if (g !== CC.gen) { clearInterval(iv); return; } more(); }, 500);
