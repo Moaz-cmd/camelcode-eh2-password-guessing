@@ -4512,8 +4512,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 })();
 
 /* Lab EH2-04 (IDOR): the fictional online bank «البنك الإلكتروني» at bank.example (reserved .example address, a plain name, its own look: DESIGN.md section 39).
-   Farhan's review (Moaz 2026-11-25): the student signs in first (comment 8); every account page is /account?id=<number> (comment 1); twelve accounts are spread over
-   1000 to 2000 (comment 3); a transfer page moves money by its address (comment 7); expenses are red (comment 6). The site shows
+   Farhan's review (Moaz 2026-11-25): the student signs in first (comment 8); every account page is /account?id=<number> (comment 1); 400 accounts are spread over
+   1000 to 2000 (comment 3; 400 since Moaz 2026-11-27); a transfer page moves money by its address (comment 7); expenses are red (comment 6). The site shows
    whichever account the number names and never checks that it is the signed-in user's (the vulnerability). No protection modes: protection is taught only in
    «شرح مختصر» (Moaz 2026-11-22). The tool addad (lab-logic.js) reads CC.bank.acc to know which numbers have an account.
    CC.bank holds every value the questions depend on (single source). Values marked pending are not confirmed by Moaz or Farhan.
@@ -4530,7 +4530,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     host: 'bank.example',
     me: 1001,                                          /* the signed-in user: the student's own account */
     email: 'support@bank.example', phone: '+974 0000 0000',     /* 0000 0000: no real line can have it (Moaz 2026-11-22) */
-    /* the accounts (all invented, male names, first and father name only; every amount pending).
+    /* the accounts (all invented, first and father name only; every amount pending).
        Twelve accounts spread over 1000 to 2000 (Farhan's comment 3, 2026-11-25), not one after another, like a real bank where accounts get closed (Moaz 2026-11-22) */
     acc: {
       1001: { name: 'خالد سالم', first: 'خالد', bal: 2350, card: '4821', since: '2021', branch: 'فرع الدفنة',
@@ -4539,11 +4539,11 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         tx: [['20 أكتوبر 2026', 'راتب شهري', 'income', 9200], ['17 أكتوبر 2026', 'فاتورة الكهرباء والماء', 'bills', -410], ['12 أكتوبر 2026', 'محطة وقود', 'fuel', -95], ['8 أكتوبر 2026', 'صيدلية', 'health', -63]] },
       1012: { name: 'عمر حسن', first: 'عمر', bal: 4615, card: '5580', since: '2020', branch: 'فرع الريان',
         tx: [['19 أكتوبر 2026', 'تحويل من حساب آخر', 'transfer', 1500], ['14 أكتوبر 2026', 'متجر إلكترونيات', 'shop', -899], ['10 أكتوبر 2026', 'مطعم', 'food', -128], ['5 أكتوبر 2026', 'محطة وقود', 'fuel', -110]] },
-      1023: { name: 'ناصر عبدالله', first: 'ناصر', bal: 96480, card: '6603', since: '2009', branch: 'الفرع الرئيسي',
+      1018: { name: 'ناصر عبدالله', first: 'ناصر', bal: 96480, card: '6603', since: '2009', branch: 'الفرع الرئيسي',
         tx: [['22 أكتوبر 2026', 'أرباح مشروع تجاري', 'income', 24000], ['18 أكتوبر 2026', 'شراء أثاث للمكتب', 'shop', -6300], ['12 أكتوبر 2026', 'رسوم مدرسية', 'edu', -4200], ['7 أكتوبر 2026', 'فاتورة الهاتف', 'phone', -340]] },
       1007: { name: 'يوسف علي', first: 'يوسف', bal: 15200, card: '2094', since: '2015', branch: 'فرع الوكرة',
         tx: [['21 أكتوبر 2026', 'راتب شهري', 'income', 12500], ['16 أكتوبر 2026', 'قسط السيارة', 'car', -1850], ['13 أكتوبر 2026', 'اشتراك الإنترنت', 'bills', -275], ['9 أكتوبر 2026', 'سوبرماركت', 'food', -342]] },
-      1018: { name: 'فهد ماجد', first: 'فهد', bal: 12730, card: '3942', since: '2016', branch: 'فرع الدفنة',
+      1023: { name: 'فهد ماجد', first: 'فهد', bal: 12730, card: '3942', since: '2016', branch: 'فرع الدفنة',
         tx: [['21 أكتوبر 2026', 'راتب شهري', 'income', 11000], ['15 أكتوبر 2026', 'فاتورة الكهرباء والماء', 'bills', -520], ['11 أكتوبر 2026', 'سوبرماركت', 'food', -410], ['4 أكتوبر 2026', 'محطة وقود', 'fuel', -120]] },
       1146: { name: 'سعد مبارك', first: 'سعد', bal: 7820, card: '4410', since: '2018', branch: 'فرع الريان',
         tx: [['21 أكتوبر 2026', 'راتب شهري', 'income', 8600], ['15 أكتوبر 2026', 'سوبرماركت', 'food', -268], ['10 أكتوبر 2026', 'محطة وقود', 'fuel', -90], ['4 أكتوبر 2026', 'فاتورة الهاتف', 'phone', -150]] },
@@ -4559,9 +4559,34 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         tx: [['19 أكتوبر 2026', 'راتب شهري', 'income', 7400], ['13 أكتوبر 2026', 'متجر ملابس', 'shop', -640], ['9 أكتوبر 2026', 'مطعم', 'food', -155], ['3 أكتوبر 2026', 'فاتورة الهاتف', 'phone', -190]] }
     }
   };
+  /* ~400 accounts (Moaz 2026-11-27): the twelve above plus generated ones, the same for every student (a fixed seed), spread over 1000 to 2000.
+     Female names are fine here (Moaz 2026-11-27). No generated name repeats a name above, so the questions keep one answer. Amounts are invented. */
+  (function () {
+    var seed = 20261127; function rnd() { seed = (seed * 1103515245 + 12345) % 2147483648; return seed / 2147483648; }
+    function pick(a) { return a[Math.floor(rnd() * a.length)]; }
+    var MALE = ['محمد', 'عبدالرحمن', 'علي', 'حسن', 'إبراهيم', 'سالم', 'ماجد', 'سلطان', 'منصور', 'بدر', 'تركي', 'نواف', 'عادل', 'وليد', 'زياد', 'هشام', 'مشعل', 'فيصل', 'غانم', 'عيسى', 'صالح', 'حمود', 'جاسم', 'عبدالعزيز', 'ثامر', 'مازن', 'أنس', 'رائد', 'سامي', 'كريم'];
+    var FEMALE = ['مريم', 'فاطمة', 'عائشة', 'نورة', 'سارة', 'هند', 'لطيفة', 'شيخة', 'موزة', 'ريم', 'دانة', 'لولوة', 'أمل', 'هيا', 'العنود', 'منى', 'جواهر', 'حصة', 'روضة', 'شما', 'ليلى', 'ندى', 'آمنة', 'خديجة', 'زينب', 'أسماء', 'غالية', 'مها', 'بشاير', 'وضحى'];
+    var FATHER = ['أحمد', 'خالد', 'يوسف', 'سعيد', 'راشد', 'جابر', 'مبارك', 'محمد', 'عبدالله', 'علي', 'حسن', 'سالم', 'ماجد', 'سلطان', 'إبراهيم', 'عيسى', 'صالح', 'منصور', 'فهد', 'حمد', 'جاسم', 'ناصر', 'عمر', 'بدر'];
+    var BRANCH = ['الفرع الرئيسي', 'فرع الدفنة', 'فرع الريان', 'فرع الوكرة', 'فرع الخور', 'فرع لوسيل'];
+    var INC = [['راتب شهري', 'income'], ['مكافأة', 'income'], ['تحويل من حساب آخر', 'transfer'], ['مصروف شهري من الوالد', 'income']];
+    var OUT = [['سوبرماركت', 'food'], ['مطعم', 'food'], ['محطة وقود', 'fuel'], ['صيدلية', 'health'], ['فاتورة الهاتف', 'phone'], ['فاتورة الكهرباء والماء', 'bills'], ['اشتراك الإنترنت', 'bills'], ['متجر ملابس', 'shop'], ['متجر إلكترونيات', 'shop'], ['رسوم مدرسية', 'edu'], ['قسط السيارة', 'car']];
+    var used = {}; Object.keys(BANK.acc).forEach(function (k) { used[BANK.acc[k].name] = 1; });
+    var free = []; for (var n = 1003; n <= 2000; n++) if (!BANK.acc[n]) free.push(n);
+    var need = 400 - Object.keys(BANK.acc).length;
+    for (var i = free.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)), x = free[i]; free[i] = free[j]; free[j] = x; }
+    free.slice(0, need).sort(function (a, b) { return a - b; }).forEach(function (num) {
+      var first, father, name; do { first = pick(rnd() < 0.5 ? MALE : FEMALE); father = pick(FATHER); name = first + ' ' + father; } while (used[name] || father === first);
+      used[name] = 1;
+      var inc = pick(INC), big = inc[0] === 'راتب شهري', inAmt = big ? 5000 + Math.round(rnd() * 150) * 100 : 200 + Math.round(rnd() * 28) * 50;
+      var days = [19 + Math.floor(rnd() * 4), 13 + Math.floor(rnd() * 5), 8 + Math.floor(rnd() * 4), 2 + Math.floor(rnd() * 5)];
+      var tx = [[days[0] + ' أكتوبر 2026', inc[0], inc[1], inAmt]];
+      var seen = {}; for (var k = 1; k < 4; k++) { var o; do { o = pick(OUT); } while (seen[o[0]]); seen[o[0]] = 1; tx.push([days[k] + ' أكتوبر 2026', o[0], o[1], -(40 + Math.floor(rnd() * 900))]); }
+      BANK.acc[num] = { name: name, first: first, bal: 500 + Math.round(rnd() * 600) * 50, card: String(1000 + Math.floor(rnd() * 9000)), since: String(2008 + Math.floor(rnd() * 17)), branch: pick(BRANCH), tx: tx };
+    });
+  })();
   BANK.nums = Object.keys(BANK.acc).map(Number);
   /* the answers of the questions (single source) */
-  BANK.q = { owner1002: BANK.acc[1002].name, balNum: 1012, bal: BANK.acc[1012].bal, nasser: 1023 };
+  BANK.q = { owner1002: BANK.acc[1002].name, balNum: 1012, bal: BANK.acc[1012].bal, nasser: 1018 };     /* Moaz 2026-11-27 */
   /* the sign-in (pending values) and the saved transfer on the transfer page */
   BANK.login = { user: 'ksalem', pass: 'Khaled2026' };     /* a username, not an email (Moaz 2026-11-27); values pending */
   BANK.saved = { to: 1029, amount: 100 };
