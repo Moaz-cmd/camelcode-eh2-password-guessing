@@ -4800,7 +4800,7 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
 /* EH2 final challenge: the referee's profile on social.example «منصة التواصل الاجتماعي» (reserved .example address, plain name, a light look of its own,
    different from the OSINT lab and the mini challenge), and the search engine «بحث» on search.example (the OSINT lab's tool, opened with the browser's «+»
    button or by typing words in the address bar). Moaz 2026-11-28: the chess site does NOT link to the profile; the student copies the referee's full name
-   from his player page and searches the web for it (OSINT). His name (or part of it) gives 6 results: a look-alike account first, his real account, the tournament home page and pages about other people; anything else finds nothing.
+   from his player page and searches the web for it (OSINT). His name (or part of it) gives 4 results: his real account, the tournament home page and two pages about other people with the same name (each opens a small page of its own); anything else finds nothing.
    What the student needs (EH2 lab 2):
    - pet: his falcon «شاهين» (Shaheen), in a post and in the bio «أبو شاهين»
    - city: الشمال (bio)
@@ -4879,15 +4879,6 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
       post('2 أكتوبر 2025', 'صقري شاهين (Shaheen) في أول طلعة هذا الموسم 🦅 #شاهين #صقور', FALCON, 214, [comment('sultan.m', 'ما شاء الله، شاهين صار أسرع من قبل 👌', '#0f766e'), comment(R.user, 'تدريب كل يوم الصبح 😄', '#3a2416')]),
       post('15 مارس 2024', 'اليوم أكملت 35 سنة 🎂 الحمد لله على نعمة العمر والعافية، وشكراً لكل من هنّأني.', '', 187, [comment('hamad.k', 'كل عام وأنت بخير يا أبو شاهين 🎉', '#b45309'), comment('jassim.y', 'عساك من عواده 🎂', '#1d4ed8')])
     ] });
-  /* the look-alike account (Moaz 2026-11-28: «a clone ... that appears first in the search results»): the same name and the same picture, but a
-     new account with few followers, no word about the tournament, another pet and another age. Its answers are wrong on purpose (OSINT: check the source). */
-  var CL = R.clone = { short: R.short, user: 'majed.alhamdan.qa', pet: 'لولو', born: 1996 };
-  var cloneProfile = profilePage({ short: CL.short, user: CL.user, city: 'الدوحة، قطر', joined: 'انضم في سبتمبر 2026', followers: 23, following: 610,
-    bio: ['♟️ أحب الشطرنج', '📍 الدوحة، قطر'], about: 'حساب شخصي.',
-    posts: [
-      post('12 نوفمبر 2026', 'قطتي لولو نامت على رقعة الشطرنج وأنا ألعب 😂🐱', '', 4, [comment('ali.saad', 'هههه لولو تبي تلعب معك', '#0e7490')], '', CL),
-      post('3 أكتوبر 2026', 'اليوم أكملت 30 سنة 🎂 أول عيد ميلاد بعد ما رجعت الدوحة.', '', 7, [], '', CL)
-    ] });
   var CSS = '*{box-sizing:border-box}body{margin:0;font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#f3f5f7;color:#16202a;line-height:1.7}svg{display:block}bdi{unicode-bidi:isolate}' +
     '.i{width:1.2em;height:1.2em;flex:none}' +
     '.nav{background:#fff;border-bottom:1px solid #e3e8ee}.nin{max-width:980px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:10px 20px}' +
@@ -4921,21 +4912,17 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
   }
   function isHit(q) { var n = norm(q); return n.indexOf('ماجد') >= 0 || n.indexOf('حمدان') >= 0 || n.indexOf('majed') >= 0 || n.indexOf('hamdan') >= 0; }
   function hl(t) { return t.replace(/ماجد|سعيد|الحمدان/g, function (m) { return '<b>' + m + '</b>'; }); }
-  /* Moaz 2026-11-28: the look-alike account comes first; his player page (the ?id= one) is not in the results; a few pages about other people fill
-     the list (their sites are not part of the lab, so they open the browser's «This site can't be reached», as in the mini challenge) */
+  /* Moaz 2026-11-28: his player page (the ?id= one) is not in the results; two pages about other people with the same name fill the list. Plain
+     generic names only (never a business name such as «<family> للمقاولات» or «مدرسة <name>»), and every result opens a real page. */
   var RESULTS = [
-    { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + CL.user, href: '//' + C.social.host + '/' + CL.user,
-      t: CL.short + ' ♞ (@' + CL.user + ')', p: '♟️ أحب الشطرنج | 📍 الدوحة، قطر. 23 متابعاً · منشوران.' },
-    { site: 'مشويات الحمدان', bg: '#b45309', ico: IC.book, cite: 'grill.example › menu', href: '//grill.example/menu',
-      t: 'مشويات الحمدان | قائمة الطعام والأسعار', p: 'مطعم عائلي في الوكرة يقدّم المشويات والمندي منذ 2009. صاحب المطعم ماجد الحمدان يرحّب بكم يومياً من 12 ظهراً.' },
+    { site: 'مطعم المشويات', bg: '#b45309', ico: IC.book, cite: 'grill.example › menu', href: '//grill.example/menu',
+      t: 'قائمة الطعام والأسعار | مطعم المشويات', p: 'مطعم عائلي في الوكرة يقدّم المشويات والمندي. صاحب المطعم ماجد الحمدان يرحّب بكم يومياً من 12 ظهراً.' },
     { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + R.user, href: '//' + C.social.host + C.social.path,
       t: R.short + ' ♞ (@' + R.user + ')', p: '♟️ مشرف بطولة الشطرنج الإلكترونية | 📍 الشمال، قطر | 🎾 لاعب تنس وشطرنج. 1,208 متابعين · 3 منشورات.' },
-    { site: 'مدرسة النور الإعدادية', bg: '#1d4ed8', ico: IC.book, cite: 'school.example › teachers', href: '//school.example/teachers',
-      t: 'المعلمون | مدرسة النور الإعدادية', p: 'الأستاذ ماجد سعيد: معلم الرياضيات للصف الثامن. الأستاذ سعيد ناصر: معلم العلوم...' },
+    { site: 'المدرسة الإعدادية', bg: '#1d4ed8', ico: IC.book, cite: 'school.example › teachers', href: '//school.example/teachers',
+      t: 'المعلمون | المدرسة الإعدادية', p: 'الأستاذ ماجد سعيد: معلم الرياضيات للصف الثامن. الأستاذ سعيد ناصر: معلم العلوم...' },
     { site: C.name, bg: '#5a3720', ico: IC.knight, cite: C.host + ' › home', href: '//' + C.host + '/home',
-      t: 'النهائي يوم الجمعة 4 ديسمبر | ' + C.name, p: 'نهائي الموسم الثالث بإشراف ماجد سعيد الحمدان، والجائزة 5,000 ر.ق لبطل البطولة.' },
-    { site: 'الحمدان للمقاولات', bg: '#475569', ico: IC.book, cite: 'build.example › about', href: '//build.example/about',
-      t: 'من نحن | الحمدان للمقاولات والصيانة', p: 'شركة مقاولات وصيانة مبانٍ في الدوحة. للتواصل مع مدير المشاريع ماجد الحمدان عبر الموقع.' }
+      t: 'النهائي يوم الجمعة 4 ديسمبر | ' + C.name, p: 'نهائي الموسم الثالث بإشراف ماجد سعيد الحمدان، والجائزة 5,000 ر.ق لبطل البطولة.' }
   ];
   var LOGO_S = '<span class="lg"><span class="mk">' + IC.search + '</span>بحث</span>';
   function sForm(q, big) {
@@ -5000,8 +4987,25 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
   };
   var social = { css: CSS, notFound: NF, pages: {} };
   social.pages[C.social.path] = { title: R.short + ' (@' + R.user + ') | منصة التواصل الاجتماعي', html: profile };
-  social.pages['/' + CL.user] = { title: CL.short + ' (@' + CL.user + ') | منصة التواصل الاجتماعي', html: cloneProfile };
-  CC.site.hosts = { 'social.example': social, 'search.example': searchSite };
+  /* the two filler sites of the search results (Moaz 2026-11-28: they must open): generic names, one short page each */
+  var F_CSS = BASE + 'body{font-family:"CC Digits","Montserrat Arabic",Tajawal,system-ui,sans-serif;background:#faf7f2;color:#1f2430}' +
+    '.fh{display:flex;align-items:center;gap:10px;padding:16px 28px;color:#fff}.fh b{font-size:1.25rem}.fm{max-width:760px;margin:0 auto;padding:26px 22px 40px}' +
+    '.fm h1{font-size:1.5rem;margin:0 0 6px}.fm .lead{color:#5b6070;margin:0 0 18px}.fc{background:#fff;border:1px solid #ece6dc;border-radius:14px;padding:6px 18px;margin-bottom:14px}' +
+    '.fr{display:flex;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid #f1ece4}.fr:last-child{border-bottom:0}.fr span{color:#5b6070}.fr b{white-space:nowrap}' +
+    '.fn{color:#5b6070;font-size:.9rem;text-align:center;margin-top:18px}';
+  function fsite(color, name, title, lead, rows, note) {
+    return '<header class="fh" style="background:' + color + '">' + IC.book + '<b>' + name + '</b></header><main class="fm"><h1>' + title + '</h1><p class="lead">' + lead + '</p>' +
+      '<div class="fc">' + rows.map(function (r) { return '<div class="fr"><span>' + r[0] + '</span><b>' + r[1] + '</b></div>'; }).join('') + '</div><p class="fn">' + note + '</p></main>';
+  }
+  var grill = { css: F_CSS, notFound: NF, redirects: { '/': '/menu' }, pages: { '/menu': { title: 'قائمة الطعام والأسعار | مطعم المشويات', html: fsite('#b45309', 'مطعم المشويات', 'قائمة الطعام والأسعار',
+    'مطعم عائلي في الوكرة. صاحب المطعم ماجد الحمدان يرحّب بكم يومياً من 12 ظهراً إلى 11 ليلاً.',
+    [['مندي دجاج', '35 ر.ق'], ['مندي لحم', '65 ر.ق'], ['مشاوي مشكّلة', '55 ر.ق'], ['كباب', '30 ر.ق'], ['سلطة', '12 ر.ق'], ['عصير ليمون بالنعناع', '10 ر.ق']],
+    'للحجز: <bdi dir="ltr">+974 0000 0000</bdi>') } } };
+  var school = { css: F_CSS, notFound: NF, redirects: { '/': '/teachers' }, pages: { '/teachers': { title: 'المعلمون | المدرسة الإعدادية', html: fsite('#1d4ed8', 'المدرسة الإعدادية', 'المعلمون',
+    'معلمو الصفوف من السابع إلى التاسع في العام الدراسي الحالي.',
+    [['الأستاذ ماجد سعيد', 'الرياضيات، الصف الثامن'], ['الأستاذ سعيد ناصر', 'العلوم'], ['الأستاذ خالد يوسف', 'اللغة العربية'], ['الأستاذ عمر علي', 'اللغة الإنجليزية'], ['الأستاذ حمد سالم', 'التربية البدنية']],
+    'للتواصل مع المدرسة: <bdi dir="ltr">+974 0000 0000</bdi>') } } };
+  CC.site.hosts = { 'social.example': social, 'search.example': searchSite, 'grill.example': grill, 'school.example': school };
   CC.site.newTab = { host: 'search.example', path: '/' };   /* the «+» button opens a new tab on the search engine (as in the OSINT lab) */
 })();
 
