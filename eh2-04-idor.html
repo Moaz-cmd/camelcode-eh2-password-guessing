@@ -4851,7 +4851,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
     q1: 'ما اسم صاحب الحساب رقم 1002؟', q1h: 'غيّر رقم الحساب في آخر عنوان الموقع إلى 1002 ثم اضغط Enter، وانظر إلى «صاحب الحساب» في بطاقة الرصيد.',
     q2: 'كم الرصيد المتاح في الحساب رقم 1012؟', q2h: 'اكتب 1012 مكان رقم الحساب في عنوان الموقع ثم اضغط Enter، وانظر إلى «الرصيد المتاح» في أعلى الصفحة.',
-    q3: 'ما رقم حساب ناصر عبدالله؟', q3h: 'انظر إلى أرقام الحسابات التي وجدتها أداة عدّاد، واكتبها في عنوان الموقع، حتى يظهر اسم ناصر في بطاقة الرصيد.',
+    q3: 'ما رقم حساب ناصر عبدالله؟ (ستجده بين أول الأرقام التي عرضتها الأداة)', q3h: 'افتح أول الحسابات التي عرضتها أداة عدّاد واحداً تلو الآخر، بكتابة رقمها في عنوان الموقع، حتى يظهر اسم ناصر في بطاقة الرصيد.',     /* Moaz 2026-11-27 */
     q4: 'كم حساباً وجدت أداة عدّاد بين 1000 و2000؟', q4h: 'انظر إلى السطر الأخير في نتيجة أداة عدّاد في شاشة الأوامر.',
     q5: 'كم أصبح الرصيد المتاح في حسابك الآن؟', q5h: 'اضغط على «حسابي» في قائمة الموقع، وانظر إلى «الرصيد المتاح».',
     /* tokens explained under the command */
@@ -4863,8 +4863,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     t_change: 'ماذا يحدث لو غيّرنا الرقم؟ اضغط على رقم الحساب `1001` في **عنوان الموقع**، ثم احذفه واكتب `1002`، واضغط `Enter`.',
     t_other: 'لاحظ: ظهرت **معلومات حساب شخص آخر**، باسمه ورصيده وعملياته! وهذا **خطأ**: أنت لم تسجّل الدخول بحسابه، ولا يحق لك رؤية حسابه، لكن الموقع عرضه لك لأنه **لم يتأكد أن الحساب يخصّك**. ولاحظ أن **صاحب الحساب** في بطاقة الرصيد تغيّر، بينما الاسم في أعلى الموقع ما زال **خالد**.',     /* Farhan's comments 8 and 9 */
     t_hand: 'جرّب بنفسك: لديك **دقيقة واحدة**. غيّر **رقم الحساب** في عنوان الموقع، وابحث عن أكبر عدد من **الحسابات**. أرقام الحسابات في هذا البنك من `1000` إلى `2000`.',     /* Farhan's comment 3 */
-    t_slow: 'انتهت الدقيقة! وجدت **{n}** فقط. أرقام الحسابات **بالآلاف**، وتجربتها **يدوياً** بطيئة، وكثير من الأرقام **لا يوجد لها حساب**. لذلك يستخدم الهاكر **أداة** تجرّب الأرقام **بسرعة**.',
-    t_slow0: 'انتهت الدقيقة! لم تجد **أي حساب**. أرقام الحسابات **بالآلاف**، وتجربتها **يدوياً** بطيئة، وكثير من الأرقام **لا يوجد لها حساب**. لذلك يستخدم الهاكر **أداة** تجرّب الأرقام **بسرعة**.',
+    t_slow: 'انتهت الدقيقة! وجدت **{n}** فقط. أرقام الحسابات **قد تكون بالآلاف**، وتجربتها **يدوياً** بطيئة، وكثير من الأرقام **لا يوجد لها حساب**. لذلك يستخدم الهاكر **أداة** تجرّب الأرقام **بسرعة**.',
+    t_slow0: 'انتهت الدقيقة! لم تجد **أي حساب**. أرقام الحسابات **قد تكون بالآلاف**، وتجربتها **يدوياً** بطيئة، وكثير من الأرقام **لا يوجد لها حساب**. لذلك يستخدم الهاكر **أداة** تجرّب الأرقام **بسرعة**.',
     t_openterm: 'افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة عدّاد**.',     /* the same text is lab-settings mission.openTerminal */
     t_addad: 'شغّل **أداة عدّاد** في **شاشة الأوامر** [[term]] لتجرّب أرقام الحسابات من `1000` إلى `2000`، اكتب الأمر `' + EX + '`',
     t_q: 'افتح **الحسابات** التي وجدتها **الأداة** في **الموقع**، ثم أجب عن **أسئلة التحدي**.',
@@ -4924,7 +4924,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     addad_h: 'أداة عدّاد',
     addad: 'سنستخدم أداة اسمها `addad` (عدّاد). تجرّب الأداة كل **أرقام الحسابات** بين رقمين، وتخبرنا أي الأرقام **لها حساب**.\n\nيتكوّن الأمر من أربعة أجزاء، لنشرحها واحداً واحداً.\n\n`addad`: هنا نكتب اسم الأداة.\n\n`' + PAGE + '`: ثم عنوان صفحة الحساب بدون الرقم الذي في آخره.\n\n`1000`: ثم رقم البداية.\n\n`2000`: ثم رقم النهاية.',
     found_h: 'الحسابات التي تم العثور عليها',
-    found: 'كل سطر **أخضر** (`[Found]`) رقمٌ له حساب في البنك.\n\nاكتب أحد هذه الأرقام في عنوان الموقع بعد `account?id=`، ثم اضغط `Enter`، وأجب عن الأسئلة.',
+    found: 'كل سطر **أحمر** (`[Not Found]`) رقمٌ ليس له حساب، وكل سطر **أخضر** (`[Found]`) رقمٌ له حساب في البنك. وفي النهاية تعرض الأداة **ملخصاً** بأرقام **الحسابات التي تم العثور عليها**.\n\nاكتب أحد هذه الأرقام في عنوان الموقع بعد `account?id=`، ثم اضغط `Enter`، وأجب عن الأسئلة.',
     tr_h: 'تحويل الأموال',
     tr: 'صفحة التحويل تقرأ **ثلاثة أرقام** من عنوان الموقع: `from` الحساب الذي يخرج منه المال، و`to` الحساب الذي يصل إليه، و`amount` المبلغ.\n\nالموقع **لم يتأكد** أن الحساب في `from` **يخصّك**، فنقل المال من حساب شخص آخر. هذه هي **ثغرة IDOR** نفسها، لكن نتيجتها هنا أخطر: **سرقة أموال**.',
     replay: 'إعادة التدريب',
@@ -5039,21 +5039,22 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var BT = CC.basicTerm({ L: L, P: P, fs: fs, prompt: prompt });
 
     /* addad: tries every account number of the range on the account page; only whether an account exists (no names or balances).
-       A long range stays quick (Farhan's comment 3): about 160 small steps whatever its size, one line per account found. */
+       Every number gets a line (Moaz 2026-11-27); a long range takes about 18 seconds. */
     async function addad(a, b) {
       L.clearChips(); await L.chips([['addad', CC.t('tk_addad')], [PAGE, CC.t('tk_page')], [String(a), CC.t('tk_from')], [String(b), CC.t('tk_to')]], g, self ? 1100 : 0); if (!ok()) return false;
       L.follow();
       L.add(iso(CC.t('k_start', { a: a, b: b, site: PAGE })), 'info ar');
       if (!(await CC.sleep(1400, g))) return false;
       L.expl(CC.t('e_run'));
-      var total = b - a + 1, hits = [], prog = L.addEl(CC.el('div', 'row dim'));
-      prog.style.direction = 'ltr'; prog.style.textAlign = 'left';
-      var step = Math.max(1, Math.ceil(total / 160)), pause = total < 60 ? 160 : 45;
+      /* every number it tries gets a line: red «[Not Found]» or green «[Found]» (Moaz 2026-11-27), at a moderate pace:
+         about 18 seconds for 1000 to 2000, a short range one line at a time */
+      var total = b - a + 1, hits = [];
+      var per = total <= 60 ? 1 : Math.max(1, Math.round(total / 260)), pause = total <= 60 ? 140 : 65;
       for (var n = a; n <= b; n++) {
         if (BANK.acc[n]) { hits.push(n); L.add(PAGE + n + '   [Found]', 'ok'); }
-        if ((n - a) % step === 0 || n === b) { prog.textContent = 'Tried ' + (n - a + 1) + '/' + total + '   ' + PAGE + n; if (!(await CC.sleep(pause, g))) return false; }
+        else L.add(PAGE + n + '   [Not Found]', 'bad');
+        if ((n - a + 1) % per === 0 || n === b) { if (!(await CC.sleep(pause, g))) return false; }
       }
-      L.addEl(prog);
       L.add('Finished', 'dim');
       L.add('', 'dim');
       if (hits.length) {
