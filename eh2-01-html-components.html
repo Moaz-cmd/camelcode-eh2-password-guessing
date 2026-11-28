@@ -2942,7 +2942,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
      `newTab: { host, path }` adds Chrome's «+» button beside the tab: it opens a new tab on that page (EH2 lab 2: the search engine). Tabs can be switched by a click
      and closed with their ✕ (never the last one); each tab keeps its own back and forward. P.newTabBtn() is the «+» button for a guide, P.onNewTab() is called when one opens.
      A page's `html` (and `title`) may be a function (state, entry) for a page that changes with what the student did (a search results page).
-   API: P.go(path), P.host() (the site shown now), P.pageEl(selector) (a guide stand-in for an element of the page), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
+   API: P.go(path), P.openTab(host, path) (a new tab on one of the site's hosts; a tab already on that host is reused), P.host() (the site shown now), P.pageEl(selector) (a guide stand-in for an element of the page), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
    PAGE SOURCE (lab EH2-01): a page may carry its real HTML in `src` (one string, lines split by newline). The page is drawn FROM that same text, so what the student reads in the
    source tab is the code the page really is. `<link rel="stylesheet" href="style.css">` is replaced by S.css / S.files[name], and `<img src="name">` by S.assets[name] (a data address).
    EVERY element of such a page goes with its line of code and the other way round (hover the page: its opening line lights up, its closing line lightly; hover a code line: its element lights up and scrolls into view), found automatically.
@@ -3237,6 +3237,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         go(/^(https?:)?\/\//i.test(d.href) ? parse(d.href) : { host: cur ? cur.host : S.host, path: relPath(d.href) }, 'push');
       } else if (d.cc === 'post') {
         var path = (d.action || (cur ? cur.path : '/')).split(/[?#]/)[0];
+        /* a value pasted from the terminal brings invisible direction marks along: a form never sees them (Moaz 2026-11-28, every lab) */
+        if (d.data) Object.keys(d.data).forEach(function (k) { if (typeof d.data[k] === 'string') d.data[k] = d.data[k].replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); });
         var res = S.post ? S.post(path, d.data, P.state) : null;
         if (res && res.go) go({ host: S.host, path: res.go }, 'push');
         else go({ host: S.host, path: (res && res.page) || path }, 'push', { error: !!(res && res.error) });
@@ -3896,7 +3898,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (!hint.hidden) CC.emit('hint', { id: it.id });
       };
       function submit() {
-        var v = inp.value; if (row.classList.contains('locked')) return;
+        /* invisible direction marks come along when an answer is copied from the terminal (an English value inside an Arabic line): they never count (Moaz 2026-11-28, every lab) */
+        var v = inp.value.replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); if (row.classList.contains('locked')) return;
         if (!norm(v)) {                                   /* nothing typed: say so, do not count it as a wrong answer */
           fb.className = 'qfb no'; fb.textContent = '✗ ' + CC.t('q_empty');
           row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); inp.focus();

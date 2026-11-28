@@ -3531,6 +3531,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         go(/^(https?:)?\/\//i.test(d.href) ? parse(d.href) : { host: cur ? cur.host : S.host, path: relPath(d.href) }, 'push');
       } else if (d.cc === 'post') {
         var path = (d.action || (cur ? cur.path : '/')).split(/[?#]/)[0];
+        /* a value pasted from the terminal brings invisible direction marks along: a form never sees them (Moaz 2026-11-28, every lab) */
+        if (d.data) Object.keys(d.data).forEach(function (k) { if (typeof d.data[k] === 'string') d.data[k] = d.data[k].replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); });
         var res = S.post ? S.post(path, d.data, P.state) : null;
         if (res && res.go) go({ host: S.host, path: res.go }, 'push');
         else go({ host: S.host, path: (res && res.page) || path }, 'push', { error: !!(res && res.error) });
@@ -4190,7 +4192,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (!hint.hidden) CC.emit('hint', { id: it.id });
       };
       function submit() {
-        var v = inp.value; if (row.classList.contains('locked')) return;
+        /* invisible direction marks come along when an answer is copied from the terminal (an English value inside an Arabic line): they never count (Moaz 2026-11-28, every lab) */
+        var v = inp.value.replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); if (row.classList.contains('locked')) return;
         if (!norm(v)) {                                   /* nothing typed: say so, do not count it as a wrong answer */
           fb.className = 'qfb no'; fb.textContent = '✗ ' + CC.t('q_empty');
           row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); inp.focus();
@@ -5159,6 +5162,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* [LAB] ================= THE MAIL APP («البريد», a dock app of the hacker's laptop: engine CC.labApps) ================= */
   var MAILIC = '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#2F6FD6"/><rect x="9" y="13" width="30" height="22" rx="4" fill="#fff"/><path d="M10.5 15.5L24 26l13.5-10.5" fill="none" stroke="#2F6FD6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  /* text pasted from the terminal carries invisible direction marks: they never count */
+  function clean(t) { return String(t || '').replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); }
   var MAIL = { win: null, onSend: null, check: null, link: '' };
   var LKIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/></svg>';
   CC.labApps = [{
@@ -5366,7 +5371,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       /* «إدراج رابط» (Farhan's comment 7, Moaz 2026-11-28): the link sits on its own line under the text, blue like a link, never typed inside the Arabic */
       function showLink() { lk.hidden = !MAIL.link; w.querySelector('.ml-a').textContent = MAIL.link; if (MAIL.link) ins.hidden = true; }
       function insert() {
-        var v = ur.value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
+        var v = clean(ur.value).trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
         if (!v) { ur.focus(); return; }
         if (!st.link) return mailErr(CC.t('ml_e_tool'));
         if (v !== FAKE && v !== BANK.fake) return mailErr(CC.t('ml_e_badlink'));
@@ -5380,7 +5385,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (st.sent) { to.value = SALEH; su.value = MAIL.subj || ''; bo.value = MAIL.body || ''; sentState(w); return; }
       w.querySelector('.ml-send').onclick = function () {
         if (st.sent) return;
-        var a = to.value.trim().toLowerCase(), s = su.value.trim(), b = bo.value.trim();
+        var a = clean(to.value).trim().toLowerCase(), s = su.value.trim(), b = clean(bo.value).trim();
         if (!a) return mailErr(CC.t('ml_e_to'));
         if (a !== SALEH) return mailErr(CC.t('ml_e_who'));
         if (!s) return mailErr(CC.t('ml_e_subj'));
@@ -5563,7 +5568,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         CC.guide.hide();
       }
       if (!(await CC.sleep(60, g))) return;     /* the hint and the ring come with the window, not half a second later */
-      var toOk = function () { var x = fld('.ml-to'); return st.sent || (!!x && x.value.trim().toLowerCase() === SALEH); };
+      var toOk = function () { var x = fld('.ml-to'); return st.sent || (!!x && clean(x.value).trim().toLowerCase() === SALEH); };
       /* a field is done only when the student has finished typing in it: the whole suggested text, or he left the field, or 2 s without a key
          (Moaz 2026-11-24: the subject step used to end after 3 letters, while he was still typing) */
       var settled = function (x, full) { return x.value.trim() === full || document.activeElement !== x || Date.now() - (MAIL.typedAt || 0) > 2000; };

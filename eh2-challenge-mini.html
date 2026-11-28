@@ -3531,6 +3531,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         go(/^(https?:)?\/\//i.test(d.href) ? parse(d.href) : { host: cur ? cur.host : S.host, path: relPath(d.href) }, 'push');
       } else if (d.cc === 'post') {
         var path = (d.action || (cur ? cur.path : '/')).split(/[?#]/)[0];
+        /* a value pasted from the terminal brings invisible direction marks along: a form never sees them (Moaz 2026-11-28, every lab) */
+        if (d.data) Object.keys(d.data).forEach(function (k) { if (typeof d.data[k] === 'string') d.data[k] = d.data[k].replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); });
         var res = S.post ? S.post(path, d.data, P.state) : null;
         if (res && res.go) go({ host: S.host, path: res.go }, 'push');
         else go({ host: S.host, path: (res && res.page) || path }, 'push', { error: !!(res && res.error) });
@@ -4190,7 +4192,8 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (!hint.hidden) CC.emit('hint', { id: it.id });
       };
       function submit() {
-        var v = inp.value; if (row.classList.contains('locked')) return;
+        /* invisible direction marks come along when an answer is copied from the terminal (an English value inside an Arabic line): they never count (Moaz 2026-11-28, every lab) */
+        var v = inp.value.replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); if (row.classList.contains('locked')) return;
         if (!norm(v)) {                                   /* nothing typed: say so, do not count it as a wrong answer */
           fb.className = 'qfb no'; fb.textContent = '✗ ' + CC.t('q_empty');
           row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); inp.focus();

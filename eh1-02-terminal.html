@@ -3498,7 +3498,8 @@ window.CC_GALLERY=["data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAkGB
         if (!hint.hidden) CC.emit('hint', { id: it.id });
       };
       function submit() {
-        var v = inp.value; if (row.classList.contains('locked')) return;
+        /* invisible direction marks come along when an answer is copied from the terminal (an English value inside an Arabic line): they never count (Moaz 2026-11-28, every lab) */
+        var v = inp.value.replace(/[​-‏‪-‮⁦-⁩﻿]/g, ''); if (row.classList.contains('locked')) return;
         if (!norm(v)) {                                   /* nothing typed: say so, do not count it as a wrong answer */
           fb.className = 'qfb no'; fb.textContent = '✗ ' + CC.t('q_empty');
           row.classList.remove('shake'); void row.offsetWidth; row.classList.add('shake'); inp.focus();
