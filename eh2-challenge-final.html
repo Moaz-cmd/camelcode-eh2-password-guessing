@@ -4803,7 +4803,7 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
    from his player page and searches the web for it (OSINT). His name (or part of it) gives 4 results: his real account, the tournament home page and two pages about other people with the same name (each opens a small page of its own); anything else finds nothing.
    What the student needs (EH2 lab 2):
    - pet: his falcon «شاهين» (Shaheen), in a post and in the bio «أبو شاهين»
-   - city: الشمال (bio)
+   - city: Alshamal, Qatar (bio, in English: Moaz 2026-11-28)
    - birth year 1989: worked out, not written: a post dated 15 مارس 2024 says he turned 35 today (fixed dates, nothing changes by day)
    All invented (pending), male names only, drawings only (no photo of a person), no input field. */
 (function () {
@@ -4812,7 +4812,7 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
 
   var R = CC.osint = {
     name: C.refName, short: 'ماجد الحمدان', first: 'ماجد', user: 'majed.alhamdan',
-    pet: 'شاهين', petEn: 'Shaheen', born: 1989, city: 'الشمال', cityEn: 'Shamal'
+    pet: 'شاهين', petEn: 'Shaheen', born: 1989, city: 'الشمال', cityEn: 'Alshamal'
   };
 
   function ic(p) { return '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + '</svg>'; }
@@ -4872,8 +4872,8 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
       '<aside class="side"><div class="box"><h3>عن الحساب</h3><p>' + P.about + '</p></div><p class="foot">منصة التواصل الاجتماعي · الخصوصية · الشروط</p></aside></div>';
   }
   /* the referee's real account (Moaz 2026-11-28: «لاعب تنس وشطرنج» instead of «أبو شاهين» in the bio; his birthday post) */
-  var profile = profilePage({ short: R.short, user: R.user, city: 'الشمال، قطر', joined: 'انضم في يناير 2015', followers: '1,208', following: 342,
-    bio: ['♟️ مشرف بطولة الشطرنج الإلكترونية', '📍 الشمال، قطر', '🎾 لاعب تنس وشطرنج'], about: 'حساب شخصي. منشورات عن الشطرنج والصقور.',
+  var profile = profilePage({ short: R.short, user: R.user, city: '<bdi dir="ltr">Alshamal, Qatar</bdi>', joined: 'انضم في يناير 2015', followers: '1,208', following: 342,
+    bio: ['♟️ مشرف بطولة الشطرنج الإلكترونية', '📍 <bdi dir="ltr">Alshamal, Qatar</bdi>', '🎾 لاعب تنس وشطرنج'], about: 'حساب شخصي. منشورات عن الشطرنج والصقور.',
     posts: [
       post('20 نوفمبر 2026', 'جهّزنا لوحات المباريات لنهائي #بطولة_الشطرنج الإلكترونية ♟️ النتيجة أعلنها بنفسي بعد المباراة.', BOARD, 96, [comment('badr.rashed', 'بالتوفيق للطرفين 👏', '#7c3aed')]),
       post('2 أكتوبر 2025', 'صقري شاهين (Shaheen) في أول طلعة هذا الموسم 🦅 #شاهين #صقور', FALCON, 214, [comment('sultan.m', 'ما شاء الله، شاهين صار أسرع من قبل 👌', '#0f766e'), comment(R.user, 'تدريب كل يوم الصبح 😄', '#3a2416')]),
@@ -4918,7 +4918,7 @@ window.CC.chessPhotos = {"chess":"data:image/jpeg;base64,/9j/4QA6RXhpZgAATU0AKgA
     { site: 'مطعم المشويات', bg: '#b45309', ico: IC.book, cite: 'grill.example › menu', href: '//grill.example/menu',
       t: 'قائمة الطعام والأسعار | مطعم المشويات', p: 'مطعم عائلي في الوكرة يقدّم المشويات والمندي. صاحب المطعم ماجد الحمدان يرحّب بكم يومياً من 12 ظهراً.' },
     { site: 'منصة التواصل الاجتماعي', bg: '#0891b2', ico: IC.chat, cite: 'social.example › ' + R.user, href: '//' + C.social.host + C.social.path,
-      t: R.short + ' ♞ (@' + R.user + ')', p: '♟️ مشرف بطولة الشطرنج الإلكترونية | 📍 الشمال، قطر | 🎾 لاعب تنس وشطرنج. 1,208 متابعين · 3 منشورات.' },
+      t: R.short + ' ♞ (@' + R.user + ')', p: '♟️ مشرف بطولة الشطرنج الإلكترونية | 📍 <bdi dir="ltr">Alshamal, Qatar</bdi> | 🎾 لاعب تنس وشطرنج. 1,208 متابعين · 3 منشورات.' },
     { site: 'المدرسة الإعدادية', bg: '#1d4ed8', ico: IC.book, cite: 'school.example › teachers', href: '//school.example/teachers',
       t: 'المعلمون | المدرسة الإعدادية', p: 'الأستاذ ماجد سعيد: معلم الرياضيات للصف الثامن. الأستاذ سعيد ناصر: معلم العلوم...' },
     { site: C.name, bg: '#5a3720', ico: IC.knight, cite: C.host + ' › home', href: '//' + C.host + '/home',
