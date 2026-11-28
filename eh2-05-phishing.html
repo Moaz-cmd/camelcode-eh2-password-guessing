@@ -3236,7 +3236,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
      `newTab: { host, path }` adds Chrome's «+» button beside the tab: it opens a new tab on that page (EH2 lab 2: the search engine). Tabs can be switched by a click
      and closed with their ✕ (never the last one); each tab keeps its own back and forward. P.newTabBtn() is the «+» button for a guide, P.onNewTab() is called when one opens.
      A page's `html` (and `title`) may be a function (state, entry) for a page that changes with what the student did (a search results page).
-   API: P.go(path), P.host() (the site shown now), P.pageEl(selector) (a guide stand-in for an element of the page), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
+   API: P.go(path), P.openTab(host, path) (a new tab on one of the site's hosts; a tab already on that host is reused), P.host() (the site shown now), P.pageEl(selector) (a guide stand-in for an element of the page), P.state (a plain object the site may keep, such as who is logged in), P.onPage(path) (after each page shows), P.onPost(path, data, result).
    PAGE SOURCE (lab EH2-01): a page may carry its real HTML in `src` (one string, lines split by newline). The page is drawn FROM that same text, so what the student reads in the
    source tab is the code the page really is. `<link rel="stylesheet" href="style.css">` is replaced by S.css / S.files[name], and `<img src="name">` by S.assets[name] (a data address).
    EVERY element of such a page goes with its line of code and the other way round (hover the page: its opening line lights up, its closing line lightly; hover a code line: its element lights up and scrolls into view), found automatically.
@@ -3451,15 +3451,29 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (n === ti) showTab(Math.max(0, n - 1)); else if (n < ti) ti--;
     }
     wireTab(tabs[0]);
-    newBtn.onclick = function (e) {
-      e.stopPropagation(); if (!R || !R.newTab) return;
+    function addTab(host, path) {
       saveTab();
       var t = { el: el('div', 'br-tab'), hist: [], idx: -1 }; t.el.innerHTML = TAB_IN;
       newBtn.parentNode.insertBefore(t.el, newBtn); tabs.push(t); wireTab(t);
       ti = tabs.length - 1; tabs.forEach(function (x, i) { x.el.classList.toggle('idle', i !== ti); });
       bindTab(t); hist = []; idx = -1; hideCtx(); if (tabSel !== 'page') closeSrc();
-      go({ host: R.newTab.host, path: R.newTab.path || '/' }, 'push');
+      go({ host: host, path: path || '/' }, 'push');
+    }
+    newBtn.onclick = function (e) {
+      e.stopPropagation(); if (!R || !R.newTab) return;
+      addTab(R.newTab.host, R.newTab.path);
       if (P.onNewTab) P.onNewTab();
+    };
+    /* a link opened from outside the page (EH2 lab 5: the link in the terminal, «فتح الرابط في المتصفح», Moaz 2026-11-28): a new tab on that
+       site's page; a tab already showing that site is reused, so several clicks never pile up tabs. The host must be the lab's site or one of its hosts. */
+    P.openTab = function (host, path) {
+      if (!R || !siteOf(host)) return;
+      saveTab();
+      for (var n = 0; n < tabs.length; n++) {
+        var h = tabs[n].hist[tabs[n].idx];
+        if (h && h.host === host) { if (n !== ti) showTab(n); go({ host: host, path: path || '/' }, 'push'); return; }
+      }
+      addTab(host, path);
     };
     /* ---- the ⋮ menu (Moaz 2026-11-17, every lab): zoom the page in and out like a real browser (− 100% +); «صفحة جديدة» works when the site has newTab;
        the other lines are greyed out like the right-click menu. It closes on a click anywhere else or Escape. ---- */
@@ -4511,11 +4525,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   };
 })();
 
-/* Lab EH2-05 (الرسائل والروابط المزيفة): the fictional online bank «البنك الإلكتروني» at bank.example, the same site and look as EH2 lab 4
+/* Lab EH2-05 (التصيد الاحتيالي (Phishing)): the fictional online bank «البنك الإلكتروني» at bank.example, the same site and look as EH2 lab 4
    (labs/eh2/04-account-pages/site.js: its icons and CSS are copied unchanged). This lab's own parts: a public login page (/login, username and
    password, no code step: Moaz 2026-11-24), the account of the CamelCode store manager «صالح سعيد التميمي» (/home), a transfer page with his
    beneficiaries (/transfer) and the receipt (/done). The fake copy of /login that the tool sinnara makes is drawn from the same code on the victim's
-   laptop (CC.bank.loginHtml, CC.bank.css) at bank-urgent-password.example/login, a reserved .example address.
+   phone (CC.bank.loginHtml, CC.bank.css) at https://bank-verify.example/login, a reserved .example address. The same copy opens in the hacker's
+   browser when the student opens the link from the terminal (CC.site.hosts, Farhan's comment 2, Moaz 2026-11-28).
    Everything is static (fixed dates, no counters). Every form works (no dead field). No copyright line and no «secure» badge (DESIGN.md section 39). */
 (function () {
   'use strict';
@@ -4524,9 +4539,9 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var BANK = CC.bank = {
     name: 'البنك الإلكتروني',
     host: 'bank.example',
-    fake: 'bank-urgent-password.example',              /* the address of the copy (Moaz 2026-11-24) */
+    fake: 'bank-verify.example',                       /* the address of the copy: short, like the bank's but another site (Farhan's comment 2, Moaz 2026-11-28) */
     email: 'support@bank.example', phone: '+974 0000 0000',
-    user: 'saleh.altamimi', pass: 'desert#falcon2291',     /* lowercase (Moaz 2026-11-24) */  /* strong, not common, unrelated to his OSINT details (Moaz 2026-11-24) */
+    user: 'saltamimi', pass: 'desert#falcon2291',     /* lowercase (Moaz 2026-11-24) */  /* strong, not common, unrelated to his OSINT details (Moaz 2026-11-24) */
     acc: { name: 'صالح سعيد التميمي', first: 'صالح', num: '2047 5513', bal: 48350, card: '6614', since: '2012', branch: 'الفرع الرئيسي',     /* balance pending */
       tx: [['20 أكتوبر 2026', 'راتب شهري', 'income', 16500], ['17 أكتوبر 2026', 'شراء أجهزة للمتجر', 'shop', -3240], ['12 أكتوبر 2026', 'فاتورة الكهرباء والماء', 'bills', -615], ['8 أكتوبر 2026', 'محطة وقود', 'fuel', -140]] },
     /* his beneficiaries (invented, male names) */
@@ -4659,7 +4674,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       '<li><small>رقم العملية</small><b id="ref"><bdi dir="ltr">' + d.ref + '</bdi></b></li><li><small>الرصيد المتبقي</small><b><bdi>' + money(BANK.st.bal) + '</bdi> ر.ق</b></li></ul>' +
       '<a class="btn" href="/home">العودة إلى الحساب</a></div></section>');
   }
-  /* the fake copy's answer after the victim signs in (drawn on the victim's laptop only) */
+  /* the fake copy's answer after the victim signs in (drawn on the victim's phone only) */
   BANK.errorHtml = function () {
     var was = BANK.st; BANK.st = { in: false };
     var h = page('/login', '<section class="sec"><div class="msg"><span class="mi">' + I.warn + '</span><h1>حدث خطأ تقني</h1><p>نعتذر، لا يمكن الوصول إلى هذه الصفحة الآن. يرجى المحاولة مرة أخرى لاحقاً.</p></div></section>');
@@ -4762,6 +4777,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     notFound: PLAIN_NF, notFoundTitle: BANK.name,
     error: '',
     redirects: { '/': '/login' },
+    hosts: {},
     /* the account pages need a signed-in user; signing out goes back to the login page */
     guard: function (path) {
       if (path === '/logout') { BANK.st.in = false; BANK.st.showDone = false; return '/login'; }
@@ -4796,13 +4812,25 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       return null;
     }
   };
+  /* the fake copy at bank-verify.example, opened in the hacker's browser from the link in the terminal (Farhan's comment 2, Moaz 2026-11-28):
+     the bank's own login page; sending it only answers with the «technical error» (the lab is about what the victim types, not the hacker) */
+  CC.site.hosts[BANK.fake] = {
+    css: CSS, notFound: PLAIN_NF, notFoundTitle: BANK.name, redirects: { '/': '/login' },
+    pages: {
+      '/login': { title: 'تسجيل الدخول | ' + BANK.name, html: function () { return BANK.loginHtml(); } },
+      '/error': { title: BANK.name, html: function () { return BANK.errorHtml(); } }
+    },
+    post: function () { return { go: '/error' }; }
+  };
 })();
 
-/* EH2 lab 5: Saleh's laptop (the victim), shown BESIDE the hacker's laptop only while the email is read (Moaz 2026-11-24).
-   His inbox gets the email the student wrote; his mouse opens it, hovers the link (the real address shows at the bottom, like a real
-   browser), clicks it, and types his username and password (dots) into the fake copy of the bank's login page at
-   bank-urgent-password.example/login. The copy is drawn from the bank's own page code (CC.bank.loginHtml + CC.bank.css), so it looks
-   exactly the same. After «تسجيل الدخول» the copy shows «حدث خطأ تقني», then the laptop leaves. Everything is fictional. */
+/* EH2 lab 5: Saleh's PHONE (the victim), shown beside the hacker's laptop only while he reads the email (Farhan's comment 8, Moaz 2026-11-28:
+   a phone, so the hacker's laptop keeps its size; the opening must look real). It replaces the laptop of 2026-11-24.
+   1. His home screen (apps, a dock). 2. A notification of the new email slides down; his finger taps it. 3. The mail app opens on the email the
+   student wrote: the text, then the link on its own line, blue. 4. He taps the link: the browser opens https://bank-verify.example/login, the
+   fake copy drawn from the bank's own page code (CC.bank.loginHtml + CC.bank.css) at a phone's width. 5. He taps «اسم المستخدم»: the keyboard
+   slides up and types his username key by key, then his password (dots; «?123» for digits and «#»). 6. The keyboard goes down, he taps
+   «تسجيل الدخول», and the copy answers «حدث خطأ تقني». Then the phone leaves. Everything is fictional; the time on the phone is fixed. */
 (function () {
   'use strict';
   var CC = window.CC, $ = CC.$;
@@ -4810,159 +4838,200 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
   var BANK = CC.bank;
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  var CURSOR = '<svg viewBox="0 0 24 24"><path d="M4 2l15 11.5-6.6 1 4 7.2-2.8 1.5-4-7.2L4 20z" fill="#111" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/></svg>';
-  var MAIL_IC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg>';
-  var OTHER = [
-    { from: 'فريق متجر كاملكود', addr: 'team@camelcode.shop', subj: 'تقرير المبيعات الأسبوعي', prev: 'مرحباً صالح، هذا تقرير مبيعات الأسبوع الماضي.' },
-    { from: 'أكاديمية كاملكود', addr: 'events@academy.example', subj: 'دعوة إلى معرض الطلاب', prev: 'يسعدنا حضورك معرض مشاريع الطلاب يوم الخميس.' }
-  ];
+  function g(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
+  var GL = {
+    mail: g('<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/>'),
+    web: g('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 2.6 3 14.4 0 17M12 3.5c-3 2.6-3 14.4 0 17"/>'),
+    phone: g('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 005 5L15 13l5 2v4a2 2 0 01-2 2A16 16 0 013 6a2 2 0 012-2z"/>'),
+    msg: g('<path d="M4 5h16v11H9l-5 4z"/>'),
+    photos: g('<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/>'),
+    cam: g('<path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'),
+    cal: g('<rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'),
+    notes: g('<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>'),
+    calc: g('<rect x="5.5" y="3.5" width="13" height="17" rx="2"/><path d="M8.5 7.5h7"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/>'),
+    map: g('<path d="M3.5 6.5l5.5-2 6 2 5.5-2v13l-5.5 2-6-2-5.5 2z"/><path d="M9 4.5v13M15 6.5v13"/>'),
+    clock: g('<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'),
+    music: g('<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>'),
+    set: g('<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M6 6l1.8 1.8M16.2 16.2L18 18M18 6l-1.8 1.8M7.8 16.2L6 18"/>'),
+    shop: g('<path d="M5 8h14l-1.2 11H6.2z"/><path d="M9 8V6.5a3 3 0 016 0V8"/>')
+  };
+  var LOCKI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>';
+  var BACKI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+  var SB = '<span class="ph-sbi"><svg viewBox="0 0 20 12"><rect x="0" y="8" width="3" height="4" rx=".6"/><rect x="5" y="5.5" width="3" height="6.5" rx=".6"/><rect x="10" y="3" width="3" height="9" rx=".6"/><rect x="15" y="0" width="3" height="12" rx=".6"/></svg>' +
+    '<svg viewBox="0 0 16 12"><path d="M8 11.5l2.6-3.1a4 4 0 00-5.2 0zM3.4 6.2a7 7 0 019.2 0l1.4-1.7a9.4 9.4 0 00-12 0z" /></svg>' +
+    '<svg viewBox="0 0 26 12"><rect x=".5" y=".5" width="22" height="11" rx="3" fill="none" stroke="currentColor"/><rect x="2.5" y="2.5" width="15" height="7" rx="1.6"/><rect x="23.5" y="4" width="2" height="4" rx="1"/></svg></span>';
+  var APPS = [['photos', 'الصور', '#F7B733,#E8742A'], ['cam', 'الكاميرا', '#6B7280,#374151'], ['cal', 'التقويم', '#F87171,#DC2626'], ['notes', 'الملاحظات', '#FCD34D,#F59E0B'],
+    ['calc', 'الحاسبة', '#64748B,#334155'], ['map', 'الخرائط', '#34D399,#059669'], ['clock', 'الساعة', '#1F2937,#111827'], ['shop', 'المتجر', '#FCAD0F,#D18A00'],
+    ['music', 'الموسيقى', '#F472B6,#DB2777'], ['set', 'الإعدادات', '#9CA3AF,#6B7280']];
+  var DOCKA = [['phone', '#4ADE80,#16A34A'], ['msg', '#4ADE80,#22C55E'], ['web', '#60A5FA,#2563EB'], ['mail', '#3B82F6,#1D4ED8']];
+  function ic(k, grad, cls) { var c = grad.split(','); return '<span class="ph-ai' + (cls ? ' ' + cls : '') + '" style="background:linear-gradient(160deg,' + c[0] + ',' + c[1] + ')">' + GL[k] + '</span>'; }
+  var HOME = '<div class="ph-home"><div class="ph-grid">' + APPS.map(function (a, i) { return '<span class="ph-app-i" style="--d:' + (i * 45) + 'ms">' + ic(a[0], a[2]) + '<small>' + a[1] + '</small></span>'; }).join('') + '</div>' +
+    '<div class="ph-dock">' + DOCKA.map(function (a) { return ic(a[0], a[1], 'ph-d-' + a[0]); }).join('') + '</div></div>';
 
-  /* the page's own fonts inside the copy's frame (as engine/targets/browser.js does), so nothing loads from outside */
+  /* the keyboard: letters with a number row, and «?123» for the symbols (the password has «#») */
+  var KB_L = ['1234567890', 'qwertyuiop', 'asdfghjkl', 'zxcvbnm'], KB_S = ['1234567890', '@#$_&-+()/', '*"\':;!?'];
+  function keyRow(s, cls) { return '<div class="ph-kr' + (cls ? ' ' + cls : '') + '">' + s.split('').map(function (k) { return '<b data-k="' + esc(k) + '">' + esc(k) + '</b>'; }).join('') + '</div>'; }
+  var KB = '<div class="ph-kb"><div class="ph-kl let">' + keyRow(KB_L[0], 'num') + keyRow(KB_L[1]) + keyRow(KB_L[2], 'mid') + '<div class="ph-kr"><b class="w sh">⇧</b>' + keyRow(KB_L[3]).replace(/^<div class="ph-kr">|<\/div>$/g, '') + '<b class="w del">⌫</b></div>' +
+    '<div class="ph-kr bot"><b class="w sym">?123</b><b data-k=",">,</b><b class="sp" data-k=" "></b><b data-k=".">.</b><b class="w go">↵</b></div></div>' +
+    '<div class="ph-kl sym">' + keyRow(KB_S[0], 'num') + keyRow(KB_S[1]) + '<div class="ph-kr">' + keyRow(KB_S[2]).replace(/^<div class="ph-kr">|<\/div>$/g, '') + '<b class="w del">⌫</b></div>' +
+    '<div class="ph-kr bot"><b class="w abc">ABC</b><b data-k=",">,</b><b class="sp" data-k=" "></b><b data-k=".">.</b><b class="w go">↵</b></div></div></div>';
+
+  var S = null;
+  V.reset = function () { var o = $('#vlap'); if (o) o.remove(); document.body.classList.remove('cc-vic', 'cc-vic-in'); if (S && S.ro) S.ro.disconnect(); S = null; };
+
+  V.show = function (mail) {
+    V.reset();
+    var root = document.createElement('div'); root.id = 'vlap'; root.className = 'vph';
+    root.innerHTML = '<span class="tag victim">' + esc(CC.t('tag_vic')) + '</span><div class="ph-body"><span class="ph-btn a"></span><span class="ph-btn b"></span><span class="ph-btn c"></span><div class="ph-scr">' +
+      '<div class="ph-wall"></div>' + HOME +
+      '<div class="ph-win ph-mail"><div class="ph-hd"><span class="ph-bk">' + BACKI + esc(CC.t('vl_inbox')) + '</span></div><div class="ph-mb"></div></div>' +
+      '<div class="ph-win ph-brw"><div class="ph-url"><span class="ph-lock">' + LOCKI + '</span><span class="ph-host" dir="ltr"></span><i class="ph-load"></i></div><div class="ph-page"><iframe title="page" tabindex="-1"></iframe></div></div>' +
+      KB +
+      '<div class="ph-sb"><b dir="ltr">9:41</b><span class="ph-isl"></span>' + SB + '</div>' +
+      '<div class="ph-note"><span class="ph-ni">' + GL.mail + '</span><div><small><span>' + esc(CC.t('vl_mail')) + '</span><span>' + esc(CC.t('vl_now')) + '</span></small><b class="ph-nf"></b><em class="ph-ns"></em><span class="ph-np"></span></div></div>' +
+      '<span class="ph-hi"></span><i class="ph-tap"></i></div></div>';
+    $('#stage').appendChild(root);
+    document.body.classList.add('cc-vic');
+    S = { root: root, mail: mail, scr: $('.ph-scr', root) };
+    setTimeout(function () { document.body.classList.add('cc-vic-in'); }, 40);     /* a timer, not animation frames: it also runs in a tab that is not in front */
+    return root;
+  };
+  V.hide = async function (gen) {
+    document.body.classList.remove('cc-vic-in');
+    await CC.sleep(650, gen);
+    V.reset();
+  };
+
+  function readView() {
+    var m = S.mail;
+    var link = m.link ? '<p class="ph-lkp"><a class="ph-link" dir="ltr">' + esc(m.link) + '</a></p>' : '';
+    $('.ph-mb', S.root).innerHTML = '<h4>' + esc(m.subj) + '</h4><div class="ph-from"><span class="ph-av">' + esc(m.from.replace(/^ال/, '').charAt(0)) + '</span><div><b>' + esc(m.from) + '</b><span dir="ltr">' + esc(m.addr) + '</span><small>' + esc(CC.t('vl_to')) + ' <span dir="ltr">' + esc(m.to) + '</span></small></div></div>' +
+      '<div class="ph-txt">' + esc(m.body).replace(/\n/g, '<br>') + '</div>' + link;
+  }
+  /* the page frame is drawn at a phone's width (390 px) and scaled to the screen, so the bank page lays itself out as on a real phone */
+  var PW = 390;
+  function fit() {
+    if (!S) return; var pg = $('.ph-page', S.root), f = $('iframe', pg); if (!pg.clientWidth) return;
+    var k = pg.clientWidth / PW; f.style.width = PW + 'px'; f.style.height = Math.ceil(pg.clientHeight / k) + 'px'; f.style.transform = 'scale(' + k + ')';
+  }
   function fontFaces() {
     var out = '';
     try { Array.prototype.forEach.call(document.styleSheets, function (sh) { try { Array.prototype.forEach.call(sh.cssRules, function (r) { if (r.type === 5) out += r.cssText + '\n'; }); } catch (e) { } }); } catch (e) { }
     return out;
   }
-
-  var S = null;
-  V.reset = function () { var o = $('#vlap'); if (o) o.remove(); document.body.classList.remove('cc-vic', 'cc-vic-in'); S = null; };
-
-  /* Saleh's desktop (Moaz 2026-11-24: "more realistic with multiple apps"): folders and files of a store manager on the desktop, a full dock.
-     They pop in one after another when the laptop appears. Nothing here changes by day (no clock). */
-  function g(p) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + p + '</svg>'; }
-  var GL = {
-    web: g('<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c3 2.6 3 14.4 0 17M12 3.5c-3 2.6-3 14.4 0 17"/>'),
-    files: g('<path d="M3.5 7a2 2 0 012-2h4l2 2.5h7a2 2 0 012 2V17a2 2 0 01-2 2h-13a2 2 0 01-2-2z"/>'),
-    photos: g('<rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4.5 4 3.5 3-2.5 4 3.5"/>'),
-    notes: g('<rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>'),
-    calc: g('<rect x="5.5" y="3.5" width="13" height="17" rx="2"/><path d="M8.5 7.5h7"/><path d="M9 12h.01M12 12h.01M15 12h.01M9 15.5h.01M12 15.5h.01M15 15.5h.01"/>'),
-    cal: g('<rect x="4" y="5.5" width="16" height="14.5" rx="2"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'),
-    music: g('<path d="M9 17V6l10-2v11"/><circle cx="6.5" cy="17" r="2.5"/><circle cx="16.5" cy="15" r="2.5"/>'),
-    set: g('<circle cx="12" cy="12" r="3"/><path d="M12 3.5v2.5M12 18v2.5M3.5 12H6M18 12h2.5M6 6l1.8 1.8M16.2 16.2L18 18M18 6l-1.8 1.8M7.8 16.2L6 18"/>')
-  };
-  var DOCK_APPS = [['vl-app-web', 'web'], ['vl-app-mail', null], ['vl-app-files', 'files'], ['vl-app-photos', 'photos'], ['vl-app-notes', 'notes'], ['vl-app-calc', 'calc'], ['vl-app-cal', 'cal'], ['vl-app-music', 'music'], ['vl-app-set', 'set']];
-  var DOCK = '<div class="vl-dock">' + DOCK_APPS.map(function (a, i) { return '<span class="vl-app ' + a[0] + '" style="--d:' + (i * 70) + 'ms">' + (a[1] ? GL[a[1]] : MAIL_IC) + '</span>'; }).join('') + '</div>';
-  var FOLDER = '<svg viewBox="0 0 48 48"><path d="M4 12a3 3 0 013-3h12l4 5h18a3 3 0 013 3v22a3 3 0 01-3 3H7a3 3 0 01-3-3z" fill="#F39B22"/><path d="M4 19a3 3 0 013-3h34a3 3 0 013 3v20a3 3 0 01-3 3H7a3 3 0 01-3-3z" fill="#FCAD0F"/></svg>';
-  var DOC = '<svg viewBox="0 0 48 48"><path d="M12 4h17l9 9v29a2 2 0 01-2 2H12a2 2 0 01-2-2V6a2 2 0 012-2z" fill="#fff"/><path d="M29 4v9h9" fill="#D0DBD3"/><path d="M16 22h16M16 28h16M16 34h10" stroke="#8D99AD" stroke-width="2.4" stroke-linecap="round"/></svg>';
-  var SHEET = '<svg viewBox="0 0 48 48"><path d="M12 4h17l9 9v29a2 2 0 01-2 2H12a2 2 0 01-2-2V6a2 2 0 012-2z" fill="#E6F4EA"/><path d="M29 4v9h9" fill="#B9DEC4"/><path d="M15 20h18v16H15zM15 26h18M15 31h18M21 20v16M27 20v16" fill="none" stroke="#2E8B57" stroke-width="1.8"/></svg>';
-  var PIC = '<svg viewBox="0 0 48 48"><rect x="6" y="9" width="36" height="30" rx="4" fill="#DCE8FB"/><circle cx="17" cy="19" r="4" fill="#F5B13D"/><path d="M8 36l11-11 8 8 6-5 9 8" fill="#5B8DEF"/></svg>';
-  var DESK_ITEMS = [[FOLDER, 'مبيعات المتجر'], [FOLDER, 'فواتير الموردين'], [FOLDER, 'صور المنتجات'], [SHEET, 'جرد المخزون'], [DOC, 'طلبات الأسبوع'], [PIC, 'شعار المتجر']];
-  var DESK = '<div class="vl-desk">' + DESK_ITEMS.map(function (d, i) { return '<span class="vl-di" style="--d:' + (250 + i * 90) + 'ms">' + d[0] + '<small>' + d[1] + '</small></span>'; }).join('') + '</div>';
-
-  /* build the laptop beside the hacker's */
-  V.show = function (mail) {
-    V.reset();
-    var root = document.createElement('div'); root.id = 'vlap'; root.className = 'vlap desk';     /* he starts on his desktop: no window open (Moaz 2026-11-24) */
-    root.innerHTML = '<span class="tag victim">' + esc(CC.t('tag_vic')) + '</span><div class="vl-lid"><span class="vl-cam"></span><div class="vl-scr">' +
-      '<div class="vl-mb"><b>' + esc(CC.t('vl_os')) + '</b></div>' +
-      DESK + DOCK +
-      '<div class="vl-note"><span class="vl-note-ic">' + MAIL_IC + '</span><div><small>' + esc(CC.t('vl_mail')) + '</small><b class="vl-nf"></b><span class="vl-ns"></span></div></div>' +
-      '<div class="vl-win vl-mail"><div class="vl-bar"><i></i><i></i><i></i><b>' + esc(CC.t('vl_mail')) + '</b></div><div class="vl-mbody"></div></div>' +
-      '<div class="vl-win vl-brw"><div class="vl-bar"><i></i><i></i><i></i><div class="vl-url" dir="ltr"></div></div><div class="vl-page"><iframe title="page" tabindex="-1"></iframe></div></div>' +
-      '<div class="vl-status" dir="ltr"></div><i class="vl-cur">' + CURSOR + '</i></div></div><div class="vl-base"></div>';
-    $('#stage').appendChild(root);
-    document.body.classList.add('cc-vic');
-    S = { root: root, mail: mail, scr: $('.vl-scr', root) };
-    inbox();
-    requestAnimationFrame(function () { requestAnimationFrame(function () { document.body.classList.add('cc-vic-in'); }); });
-    return root;
-  };
-  V.hide = async function (g) {
-    document.body.classList.remove('cc-vic-in');
-    await CC.sleep(650, g);
-    V.reset();
-  };
-
-  function inbox() {
-    var m = S.mail, rows = [{ from: m.from, addr: m.addr, subj: m.subj, prev: m.body.split('\n')[0], neu: true }].concat(OTHER);
-    $('.vl-mbody', S.root).innerHTML = '<div class="vl-acc" dir="ltr">' + esc(m.to) + '</div><div class="vl-list">' + rows.map(function (r, i) {
-      return '<div class="vl-row' + (r.neu ? ' new' : '') + '" data-i="' + i + '"><span class="vl-av">' + esc(r.from.charAt(0)) + '</span><div><b>' + esc(r.from) + '</b><em>' + esc(r.subj) + '</em><span>' + esc(r.prev) + '</span></div></div>';
-    }).join('') + '</div>';
-  }
-  function open() {
-    var m = S.mail;
-    /* the student's text, with the fake address turned into a link (that is what makes it clickable in a real mail app) */
-    var body = esc(m.body).replace(/\n/g, '<br>').replace(new RegExp('(?:https?://)?' + BANK.fake.replace(/\./g, '\\.') + '(?:/login)?', 'g'), function (x) { return '<a class="vl-link">' + x + '</a>'; });
-    $('.vl-mbody', S.root).innerHTML = '<div class="vl-read"><h4>' + esc(m.subj) + '</h4><div class="vl-from"><span class="vl-av">' + esc(m.from.charAt(0)) + '</span><div><b>' + esc(m.from) + '</b><span dir="ltr">' + esc(m.addr) + '</span><small>' + esc(CC.t('vl_to')) + ' <span dir="ltr">' + esc(m.to) + '</span></small></div></div><div class="vl-txt">' + body + '</div></div>';
-  }
   function frame(html) {
-    var f = $('.vl-page iframe', S.root);
-    f.srcdoc = '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><style>' + fontFaces() + BANK.css + '\nbody{pointer-events:none}</style></head><body>' + html + '</body></html>';
+    var f = $('.ph-page iframe', S.root); fit();
+    if (!S.ro && window.ResizeObserver) { S.ro = new ResizeObserver(fit); S.ro.observe($('.ph-page', S.root)); }
+    f.srcdoc = '<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=' + PW + '"><style>' + fontFaces() + BANK.css + '\nbody{pointer-events:none}input:focus{outline:2px solid #2F6FD6;outline-offset:1px}</style></head><body>' + html + '</body></html>';
     return new Promise(function (res) { f.onload = function () { res(f.contentDocument); }; });
   }
 
-  /* ---- the mouse ---- */
+  /* ---- the finger: a soft circle that lands on what he taps ---- */
+  function box(el) { return el && el.getBoundingClientRect ? el.getBoundingClientRect() : null; }
   function at(el, dx, dy) {
-    var c = $('.vl-cur', S.root), r = S.scr.getBoundingClientRect(), k = S.scr.offsetWidth / Math.max(1, r.width);
-    var e = el.getBoundingClientRect();
-    c.style.left = Math.round((e.left + e.width * (dx == null ? .5 : dx) - r.left) * k) + 'px';
-    c.style.top = Math.round((e.top + e.height * (dy == null ? .55 : dy) - r.top) * k) + 'px';
+    var t = $('.ph-tap', S.root), r = S.scr.getBoundingClientRect(), k = S.scr.offsetWidth / Math.max(1, r.width), e = box(el); if (!e) return;
+    t.style.left = Math.round((e.left + e.width * (dx == null ? .5 : dx) - r.left) * k) + 'px';
+    t.style.top = Math.round((e.top + e.height * (dy == null ? .5 : dy) - r.top) * k) + 'px';
   }
-  function inFrame(sel) {           /* an element inside the copy's frame, as a box in the laptop's screen */
-    var f = $('.vl-page iframe', S.root), d = f.contentDocument, el = d && d.querySelector(sel); if (!el) return null;
+  async function tap(el, gen, wait, dx, dy) {
+    if (!el) return true;
+    var t = $('.ph-tap', S.root); at(el, dx, dy);
+    t.classList.remove('on'); void t.offsetWidth; t.classList.add('on');
+    var real = el.classList ? el : null; if (real) real.classList.add('ph-press');
+    if (!(await CC.sleep(320, gen))) return false;
+    if (real) real.classList.remove('ph-press');
+    return CC.sleep(wait || 200, gen);
+  }
+  function inFrame(sel) {
+    var f = $('.ph-page iframe', S.root), d = f.contentDocument, el = d && d.querySelector(sel); if (!el) return null;
     var fr = f.getBoundingClientRect(), k = fr.width / Math.max(1, f.offsetWidth), e = el.getBoundingClientRect();
     return { getBoundingClientRect: function () { return { left: fr.left + e.left * k, top: fr.top + e.top * k, width: e.width * k, height: e.height * k }; } };
   }
-  async function move(el, g, ms, dx, dy) { if (!el) return true; at(el, dx, dy); return CC.sleep(ms || 750, g); }
-  async function click(g) { var c = $('.vl-cur', S.root); c.classList.remove('clk'); void c.offsetWidth; c.classList.add('clk'); return CC.sleep(280, g); }
-  async function typeIn(doc, sel, text, g) {
+
+  /* ---- the keyboard ---- */
+  /* the keyboard comes up from the bottom; the page above it gets shorter (as on a real phone), so the field being typed in stays in view */
+  function kb(on) {
+    S.root.classList.toggle('kbd', !!on);
+    var brw = $('.ph-brw', S.root), k = $('.ph-kb', S.root), r = S.scr.getBoundingClientRect(), z = S.scr.offsetHeight / Math.max(1, r.height);
+    brw.style.bottom = on ? Math.round(k.getBoundingClientRect().height * z) + 'px' : '';
+    setTimeout(fit, 30);
+  }
+  function inView(doc, sel) { var el = doc && doc.querySelector(sel); if (el) try { el.scrollIntoView({ block: 'center' }); } catch (e) { } }
+  function layer(sym) { var k = $('.ph-kb', S.root); k.classList.toggle('s', !!sym); }
+  async function press(sel, gen, ms) {
+    var k = $('.ph-kb', S.root), b = k.querySelector((k.classList.contains('s') ? '.ph-kl.sym ' : '.ph-kl.let ') + sel);
+    if (b) { b.classList.remove('hit'); void b.offsetWidth; b.classList.add('hit'); }
+    return CC.sleep(ms || 190, gen);
+  }
+  async function typeIn(doc, sel, text, gen) {
     var inp = doc.querySelector(sel); if (!inp) return true;
     inp.focus();
-    for (var i = 1; i <= text.length; i++) { if (!(await CC.sleep(210, g))) return false; inp.value = text.slice(0, i); }
+    for (var i = 0; i < text.length; i++) {
+      var ch = text.charAt(i), low = ch.toLowerCase();
+      var sym = KB_L.join('').indexOf(low) < 0 && ' ,.'.indexOf(ch) < 0, now = $('.ph-kb', S.root).classList.contains('s');
+      if (sym !== now) { if (!(await press(sym ? '.sym' : '.abc', gen, 230))) return false; layer(sym); }
+      if (!(await press('[data-k="' + (ch === '"' ? '&quot;' : low.replace(/\\/g, '\\\\')) + '"]', gen))) return false;
+      inp.value = text.slice(0, i + 1);
+    }
+    if ($('.ph-kb', S.root).classList.contains('s')) { if (!(await press('.abc', gen, 200))) return false; layer(false); }
     return true;
   }
 
-  /* the whole visit; on.visit(): the copy opened; on.creds(): he pressed «تسجيل الدخول» */
-  V.play = async function (g, on) {
+  /* the whole visit; on.visit(): the copy opened; on.creds(): he tapped «تسجيل الدخول» */
+  V.play = async function (gen, on) {
     if (!S) return false;
-    var c = $('.vl-cur', S.root); c.style.left = '62%'; c.style.top = '58%';
-    if (!(await CC.sleep(1800, g))) return false;                                   /* Saleh on his desktop */
-    var nt = $('.vl-note', S.root);                                                  /* a new email: the notification on his desktop */
-    $('.vl-nf', nt).textContent = S.mail.from; $('.vl-ns', nt).textContent = S.mail.subj;
-    nt.classList.add('on');
-    if (!(await CC.sleep(3000, g))) return false;
-    if (!(await move($('.vl-app-mail', S.root), g, 1300))) return false;            /* he opens the mail app from the dock */
-    if (!(await click(g))) return false;
-    nt.classList.remove('on'); S.root.classList.remove('desk');
-    if (!(await CC.sleep(1600, g))) return false;
-    if (!(await move($('.vl-row.new', S.root), g, 1300))) return false;             /* the new email at the top of the inbox */
-    if (!(await click(g))) return false;
-    open();
-    if (!(await CC.sleep(4200, g))) return false;                                   /* he reads it */
-    var lk = $('.vl-link', S.root) || $('.vl-txt', S.root);
-    if (!(await move(lk, g, 1300))) return false;
-    var stEl = $('.vl-status', S.root); stEl.textContent = BANK.fake + '/login'; stEl.classList.add('on');   /* the real address of the link, at the bottom of the screen */
-    if (!(await CC.sleep(2000, g))) return false;
-    if (!(await click(g))) return false;
-    stEl.classList.remove('on');
-    $('.vl-url', S.root).textContent = BANK.fake + '/login';
-    S.root.classList.add('brw');
-    var doc = await frame(BANK.loginHtml()); if (g !== CC.gen || !doc) return false;
+    var m = S.mail, root = S.root;
+    if (!(await CC.sleep(1700, gen))) return false;                                   /* Saleh's home screen */
+    var nt = $('.ph-note', root);                                                     /* the notification slides down */
+    $('.ph-nf', nt).textContent = m.from; $('.ph-ns', nt).textContent = m.subj; $('.ph-np', nt).textContent = m.body.split('\n')[0];
+    nt.classList.add('on'); root.classList.add('badge');
+    if (!(await CC.sleep(2600, gen))) return false;
+    if (!(await tap(nt, gen, 150))) return false;                                    /* he taps it: the mail app opens on the email */
+    readView(); nt.classList.remove('on'); root.classList.add('mail');
+    if (!(await CC.sleep(4200, gen))) return false;                                   /* he reads it */
+    var lk = $('.ph-link', root) || $('.ph-txt', root);
+    if (!(await tap(lk, gen, 250))) return false;                                    /* he taps the link */
+    $('.ph-host', root).textContent = BANK.fake;
+    root.classList.add('brw', 'loading');
+    var doc = await frame(BANK.loginHtml()); if (gen !== CC.gen || !doc || !S) return false;
     if (on.visit) on.visit();
-    if (!(await CC.sleep(2000, g))) return false;
-    if (!(await move(inFrame('#u'), g, 1200))) return false;
-    if (!(await click(g))) return false;
-    if (!(await typeIn(doc, '#u', BANK.user, g))) return false;
-    if (!(await move(inFrame('#p'), g, 1100))) return false;
-    if (!(await click(g))) return false;
-    if (!(await typeIn(doc, '#p', BANK.pass, g))) return false;
-    if (!(await move(inFrame('.btn'), g, 1100))) return false;
-    if (!(await click(g))) return false;
+    if (!(await CC.sleep(700, gen))) return false;
+    root.classList.remove('loading');
+    if (!(await CC.sleep(1500, gen))) return false;
+    if (!(await tap(inFrame('#u'), gen, 100))) return false;                         /* the username field: the keyboard comes up */
+    kb(true);
+    if (!(await CC.sleep(450, gen))) return false;
+    inView(doc, '#u');
+    if (!(await CC.sleep(250, gen))) return false;
+    if (!(await typeIn(doc, '#u', BANK.user, gen))) return false;
+    if (!(await CC.sleep(350, gen))) return false;
+    inView(doc, '#p');
+    if (!(await CC.sleep(250, gen))) return false;
+    if (!(await tap(inFrame('#p'), gen, 120))) return false;                         /* the password field */
+    if (!(await typeIn(doc, '#p', BANK.pass, gen))) return false;
+    if (!(await CC.sleep(400, gen))) return false;
+    kb(false); try { doc.activeElement && doc.activeElement.blur(); } catch (e) { }
+    if (!(await CC.sleep(550, gen))) return false;
+    if (!(await tap(inFrame('.btn'), gen, 150))) return false;                       /* «تسجيل الدخول» */
     if (on.creds) on.creds();
-    await frame(BANK.errorHtml());                                                   /* the copy answers with a «technical error» */
-    if (!(await CC.sleep(4500, g))) return false;
+    root.classList.add('loading');
+    await frame(BANK.errorHtml());                                                    /* the copy answers with a «technical error» */
+    if (gen !== CC.gen || !S) return false;
+    root.classList.remove('loading');
+    if (!(await CC.sleep(4500, gen))) return false;
     return true;
   };
 })();
 
-/* Lab EH2-05: الرسائل والروابط المزيفة (13-17), rebuilt 2026-11-24 (Moaz). With the CamelCode security team's permission, the student tests
+/* Lab EH2-05: التصيد الاحتيالي (Phishing) (13-17), rebuilt 2026-11-24, Farhan's review 2026-11-28 (Moaz). With the CamelCode security team's permission, the student tests
    whether «صالح سعيد التميمي», the manager of the CamelCode store (the OSINT and password generator labs), notices a fake email.
    1. The browser opens on the bank's login page (bank.example/login, site.js: the EH2 lab 4 bank).
-   2. The tool sinnara (`sinnara bank.example/login`, one argument) copies that page and prints the link bank-urgent-password.example/login.
+   2. The tool sinnara (`sinnara bank.example/login`, one argument) copies that page and prints the link https://bank-verify.example/login
+      (blue and clickable: «فتح الرابط في المتصفح» shows the copy in a new tab). Its output is in Arabic, values in English.
    3. The email app «البريد» on the hacker's laptop: the student types Saleh's address, a subject and the text himself (faint typing hints),
-      pretending to be the bank («حسابك تعرّض للاختراق، غيّر كلمة السر فوراً» + the link), and presses «إرسال».
-   4. Saleh's laptop appears beside the hacker's (victim.js): he opens the email, clicks the link, types his username and password into the copy,
-      and gets «حدث خطأ تقني». sinnara prints the details at once and saves them in account.txt on the Desktop.
+      pretending to be the bank («حسابك تعرّض للاختراق، غيّر كلمة السر فوراً»), puts the link on its own line with «إدراج رابط», and presses «إرسال».
+   4. Saleh's phone appears beside the hacker's laptop (victim.js): a notification, he taps it, reads the email, taps the link, types his username
+      and password on the phone's keyboard, and gets «حدث خطأ تقني». sinnara prints the details at once and saves them in account.txt on the Desktop.
    5. The student signs in to the real bank with them (no code step) and transfers money to one of Saleh's beneficiaries.
    Protection is taught in «شرح مختصر» only (Moaz 2026-11-24). Everything is fictional; every address is a reserved .example one, or
    camelcode.shop (CamelCode's own name, DESIGN.md section 39). Strings first, then the file system, the mail app, the tool, the flow. */
@@ -4975,57 +5044,67 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     return s.replace(/(?:-{1,2}|~|<)?[A-Za-z0-9](?:[A-Za-z0-9 ._\-\/~+<>@#']*[A-Za-z0-9_\/~>])?/g, function (m) { return '⁦' + m.replace(/ /g, ' ') + '⁩'; });
   }
 
-  var LOGIN = BANK.host + '/login', FAKE = BANK.fake + '/login', EX = 'sinnara ' + LOGIN;
-  var SALEH = 'sltmimi@camelcode.shop', FROM_N = BANK.name, FROM_A = 'security@bank-alerts.example';
+  var LOGIN = BANK.host + '/login', FAKE = BANK.fake + '/login', FAKE_URL = 'https://' + FAKE, EX = 'sinnara ' + LOGIN;
+  /* the sender: the display name says «البنك الإلكتروني», the address gives it away: a free mail service, numbers, not bank.example
+     (Farhan's comment 5, Moaz 2026-11-28: it must look suspicious). Saleh's address is saltamimi in every EH2 lab (Moaz 2026-11-28). */
+  var SALEH = 'saltamimi@camelcode.shop', FROM_N = BANK.name, FROM_A = 'bank.security.team77@mail.example';
   var BEN = BANK.bens.filter(function (b) { return b.id === BANK.target; })[0];
   var H_SUBJ = 'تنبيه عاجل تم اختراق حساب البنك';     /* Moaz 2026-11-24 */
-  var H_BODY = 'عزيزي العميل تم اختراق حسابك في البنك الإلكتروني لحماية أموالك غير كلمة السر فوراً من خلال الرابط التالي ' + FAKE;     /* words only: no «،» «.» «:» and no shadda (Moaz 2026-11-24) */
+  var H_BODY = 'عزيزي العميل تم اختراق حسابك في البنك الإلكتروني لحماية أموالك غير كلمة السر فوراً من خلال الرابط التالي';     /* words only: no «،» «.» «:» and no shadda (Moaz 2026-11-24); the link goes on its own line with «إدراج رابط» (Farhan's comment 7) */
 
   /* [LAB] ================= STRING TABLE (ar filled, en empty for later) ================= */
   Object.assign(CC.S.ar, {
     title: 'أساسيات التهكير المستوى الثاني: التصيد الاحتيالي (Phishing)',     /* Moaz 2026-11-24 */
-    tag_hacker: 'الحاسوب (جهاز الهاكر)', tag_site: 'موقع البنك', tag_vic: 'حاسوب صالح (جهاز الضحية)',
+    tag_hacker: 'الحاسوب (جهاز الهاكر)', tag_site: 'موقع البنك', tag_vic: 'هاتف صالح (جهاز الضحية)',
     mode_self: 'تعلم ذاتي', mode_inst: 'تعلم بإشراف مدرب', ref_btn: 'شرح مختصر', ref_title: 'شرح مختصر',
     ethics: 'نتدرّب في بيئة معزولة. لا تجرّب هذه الهجمات على أشخاص أو أجهزة حقيقية، فهذا نشاط غير قانوني.',
     continue: 'متابعة', skip: 'تخطّي', next: 'التالي', done: 'تمّ',
     cs_title: 'شاشة الأوامر',
     br_site: 'اسم الموقع', br_page: 'اسم الصفحة',
-    /* the victim's laptop (victim.js) */
-    vl_os: 'كاملكود', vl_mail: 'البريد', vl_to: 'إلى:',
+    /* the victim's phone (victim.js) */
+    vl_mail: 'البريد', vl_to: 'إلى:', vl_now: 'الآن', vl_inbox: 'البريد الوارد', vl_back: 'رجوع',
     /* the mail app on the hacker's laptop */
     ml_name: 'البريد', ml_from: 'من:', ml_to: 'إلى:', ml_subj: 'الموضوع:', ml_body: 'نص الرسالة', ml_send: 'إرسال', ml_sent: 'تم إرسال الرسالة إلى',
+    ml_lk: 'إدراج رابط', ml_lk_l: 'الرابط:', ml_lk_ok: 'إدراج', ml_lk_x: 'حذف الرابط',
+    ml_e_badlink: 'هذا ليس رابط الصفحة المزيفة. الرابط الصحيح هو ' + FAKE_URL,
+    ln_open: 'فتح الرابط في المتصفح', ln_copy: 'نسخ الرابط', ln_done: 'تم النسخ',
     ml_e_to: 'اكتب البريد الإلكتروني لصالح في خانة «إلى».',
-    ml_e_who: 'هذا ليس بريد صالح. بريد صالح هو ' + SALEH,
+    ml_e_who: 'هذا ليس البريد الإلكتروني لصالح التميمي. بريده هو ' + SALEH,
     ml_e_subj: 'اكتب موضوع الرسالة.',
     ml_e_body: 'اكتب نص الرسالة أولاً.',
-    ml_e_link: 'ضع رابط الصفحة المزيفة ' + FAKE + ' في نص الرسالة، حتى يضغط عليه صالح.',
+    ml_e_link: 'أضف رابط الصفحة المزيفة ' + FAKE_URL + ' بزر «إدراج رابط»، حتى يضغط عليه صالح.',
     ml_e_tool: 'شغّل أداة صنّارة أولاً، لتصنع الصفحة المزيفة ورابطها.',
     /* questions panel */
     q_h: 'أسئلة التحدي', q_prog: '{n} من {t}', q_ph: 'اكتب إجابتك هنا', q_send: 'تحقق', q_hint: 'تلميح',
     q_ok: 'إجابة صحيحة', q_no: 'إجابة غير صحيحة، حاول مرة أخرى', q_empty: 'اكتب إجابتك أولاً، ثم اضغط «تحقق»',
-    q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر Link في نتيجة أداة صنّارة في شاشة الأوامر.',
-    q2: 'ما كلمة السر التي كتبها صالح في الصفحة المزيفة؟', q2h: 'انظر إلى السطر Password في شاشة الأوامر، أو اقرأ الملف account.txt على سطح المكتب.',
+    q1: 'ما رابط الصفحة المزيفة الذي صنعته أداة صنّارة؟', q1h: 'انظر إلى السطر «الرابط» في نتيجة أداة صنّارة في شاشة الأوامر.',
+    q2: 'ما كلمة السر التي كتبها صالح في الصفحة المزيفة؟', q2h: 'انظر إلى السطر «كلمة السر» في شاشة الأوامر، أو اقرأ الملف account.txt على سطح المكتب.',
     q3: 'ما رقم العملية الذي ظهر بعد التحويل؟', q3h: 'انظر إلى «رقم العملية» في الصفحة بعد عملية التحويل، أو في سجل «آخر العمليات» في الصفحة الرئيسية.',     /* Moaz 2026-11-24 */
     q4: 'منذ أي سنة وصالح عميل لدى البنك؟', q4h: 'سجّل الدخول إلى حساب صالح، وانظر إلى «عميل منذ» في «تفاصيل الحساب».',     /* Moaz 2026-11-24: replaces the balance question */
     /* tokens explained under the command */
     tk_fk: 'اسم الأداة', tk_url: 'عنوان صفحة تسجيل الدخول', tk_clear: 'امسح الشاشة',
     /* task lines */
-    t_look: 'هذه صفحة **تسجيل الدخول** في **البنك الإلكتروني**. لاحظ عنوانها في الأعلى: `' + LOGIN + '`. سنصنع **نسخة مزيفة** منها تشبهها تماماً للحصول على **معلومات حساب بنك صالح**',     /* Moaz 2026-11-24 */
-    t_sinnara: 'شغّل **أداة صنّارة** في [[term]] **شاشة الأوامر** لتصنع نسخة مزيفة من صفحة تسجيل الدخول، اكتب الأمر `' + EX + '`',
-    t_link: 'صنعت الأداة **رابط الصفحة المزيفة** `' + FAKE + '`. لاحظ أنه **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**. الأداة الآن **تنتظر** أن يفتح صالح الرابط.',
-    t_mail: 'افتح تطبيق **البريد** في أسفل شاشة الحاسوب، لنكتب **رسالة تصيد احتيالي** إلى **صالح**.',     /* Moaz 2026-11-24 */
+    t_look: 'هذه صفحة **تسجيل الدخول** في **البنك الإلكتروني**. لاحظ عنوانها في الأعلى: `' + LOGIN + '`. سنصنع **نسخة مزيفة** منها تشبهها تماماً للحصول على **معلومات حساب بنك صالح**.',     /* Moaz 2026-11-24 */
+    t_sinnara: 'شغّل **أداة صنّارة** في [[term]] **شاشة الأوامر** لتصنع نسخة مزيفة من صفحة تسجيل الدخول: اكتب الأمر `' + EX + '`.',
+    t_link: 'صنعت الأداة **رابط الصفحة المزيفة** `' + FAKE_URL + '`. لاحظ أنه **يشبه** عنوان البنك، لكن **اسم الموقع مختلف**. تستطيع الضغط على **الرابط** في شاشة الأوامر، ثم اختيار «فتح الرابط في المتصفح» لترى **الصفحة المزيفة**. الأداة الآن **تنتظر** أن يفتح صالح الرابط.',
+    t_mail: 'افتح تطبيق [[mail]] **البريد** في أسفل شاشة الحاسوب، لنكتب **رسالة تصيد احتيالي** إلى **صالح**.',     /* Moaz 2026-11-24 */
     t_to: 'اضغط على خانة **إلى**، واكتب البريد الإلكتروني لصالح: `' + SALEH + '`',
     t_subj: 'اكتب **عنوان الإيميل** في خانة **الموضوع**، مثل: «' + H_SUBJ + '»',     /* Moaz 2026-11-24 */
-    t_body: 'اكتب **نص الرسالة** وتظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**، وضع **الرابط** الذي أنشأته أداة صنّارة: `' + FAKE + '`',     /* Moaz 2026-11-24 */
-    t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **الإرسال**.',     /* Moaz 2026-11-24 */
-    t_watch: 'انظر إلى **حاسوب صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
-    t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح على نتيجة **أداة صنّارة** بعد أن كتبهما على **الرابط المزيف**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
-    t_ans1: 'الآن أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة**',     /* Moaz 2026-11-24 */
-    t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في **البنك الإلكتروني** باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي ظهرت في **شاشة الأوامر** أو في الملف `account.txt`',     /* Moaz 2026-11-24 */
+    t_body: 'اكتب **نص الرسالة** في المساحة الكبيرة تحت **الموضوع**، وتظاهر أنك **البنك**، وأخبر صالح أن **حسابه تعرّض للاختراق** وأن عليه **تغيير كلمة السر فوراً**.',     /* Moaz 2026-11-24 */
+    t_ins: 'أضف **الرابط** الذي صنعته أداة صنّارة في **سطر مستقل** تحت النص: اضغط زر **إدراج رابط** أسفل الرسالة، ثم اضغط «نسخ الرابط» بجانب `' + FAKE_URL + '` والصقه في خانة **الرابط** (Ctrl+V)، ثم اضغط **إدراج**.',     /* Farhan's comment 7 (Moaz 2026-11-28) */
+    t_send: 'اقرأ رسالتك مرة أخرى وتأكد من **صياغتها**، ثم اضغط زر **إرسال**.',     /* Moaz 2026-11-24 */
+    t_watch: 'انظر إلى **هاتف صالح** بجانب حاسوبك: وصلته رسالتك! شاهد ماذا يفعل، وانظر إلى **شاشة الأوامر** في نفس الوقت.',
+    t_caught: 'لاحظ: ظهرت **معلومات حساب البنك** الخاص بصالح في نتيجة **أداة صنّارة** بعد أن كتبها في **الصفحة المزيفة**، وحفظت الأداة معلومات الحساب في الملف `account.txt` على **سطح المكتب**. أما صالح فظهرت له رسالة **خطأ تقني** لخداعه، فلم ينتبه لشيء!',     /* Moaz 2026-11-24 */
+    t_ans1: 'الآن أجب عن **الأسئلة** التي ظهرت على **يسار الشاشة**.',     /* Moaz 2026-11-24 */
+    t_login: 'عد إلى [[web]] **المتصفح**، وسجّل الدخول إلى **حساب صالح** في **البنك الإلكتروني** باسم المستخدم `' + BANK.user + '` و**كلمة السر** التي ظهرت في **شاشة الأوامر** أو في الملف `account.txt` (اقرأه بالأمر `read account.txt`).',     /* Moaz 2026-11-24 */
     t_transfer: 'أنت الآن داخل **حساب صالح**! اضغط على صفحة **التحويل** في أعلى الموقع، واختر حساب **' + BEN.name + '**، واكتب المبلغ `' + BANK.amount + '`، ثم اضغط **تحويل**.',     /* Moaz 2026-11-24 */
     t_q: 'أحسنت! الآن أجب عن **أسئلة التحدي** على يسار الشاشة.',     /* Moaz 2026-11-24 */
     t_done: 'أحسنت! أنهيت التدريب.',
     e_wait: 'أداة صنّارة تنتظر أن يفتح صالح الرابط...',
+    /* sinnara's output, in Arabic; the values stay as they are (Farhan's comments 9 and 10, Moaz 2026-11-28) */
+    o_copy: '[-] نسخ الصفحة:', o_link: '[-] الرابط:', o_wait: '[-] بانتظار أن يفتح الضحية الرابط...',
+    o_open: '[-] فتح الضحية الرابط!', o_wait2: '[-] بانتظار معلومات تسجيل الدخول...', o_found: '[-] وصلت معلومات تسجيل الدخول!',
+    o_user: '[-] اسم المستخدم:', o_pass: '[-] كلمة السر:', o_saved: '[-] حُفظت في: account.txt (سطح المكتب)',
     /* the tool's own Arabic line (no banner, DESIGN.md section 34) */
     fk_start: 'أداة صنّارة: تصنع نسخة مزيفة من صفحة تسجيل الدخول، ورابطاً للوصول إليها',     /* Moaz 2026-11-24 */
     /* help */
@@ -5043,16 +5122,16 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     m_f_nopage: 'اكتب عنوان **صفحة تسجيل الدخول** كاملاً، مع `/login` بعد اسم الموقع. الصيغة الصحيحة: `' + EX + '`',
     m_f_page: 'الصفحة `{w}` ليست صفحة تسجيل الدخول. صفحة تسجيل الدخول هي `' + LOGIN + '`. الصيغة الصحيحة: `' + EX + '`',
     m_f_site: 'لم يتم العثور على الموقع `{w}`. موقع البنك في هذا التدريب هو `' + BANK.host + '`. الصيغة الصحيحة: `' + EX + '`',
-    m_f_done: 'انتهت التجربة: حفظت أداة صنّارة بيانات صالح في الملف `account.txt` على سطح المكتب. اقرأه باستخدام الأمر `read account.txt`',
+    m_f_done: 'انتهت التجربة: حفظت أداة صنّارة معلومات حساب صالح في الملف `account.txt` على سطح المكتب. اقرأه باستخدام الأمر `read account.txt`',
     /* lesson popups (typed letter by letter, self-paced only) */
-    intro_h: 'الرسائل والروابط المزيفة',
+    intro_h: 'التصيد الاحتيالي (Phishing)',
     intro: 'في هذا التدريب ستتعلم كيف يصنع الهاكر **صفحة تسجيل دخول مزيفة** تشبه صفحة موقع حقيقي، ثم يرسل رابطها في **رسالة بريد إلكتروني** يتظاهر فيها أنه **البنك**، ليكتب الضحية فيها **اسم المستخدم** و**كلمة السر**.\n\nطلب **فريق الأمن** في أكاديمية كاملكود أن نختبر هل ينتبه **صالح**، مدير **متجر كاملكود**، للرسائل المزيفة، و**صالح وافق** على التجربة. لا نختبر أي شخص **بدون إذنه**.',
     sinnara_h: 'أداة صنّارة',
     sinnara: 'سنستخدم أداة اسمها `sinnara` (صنّارة). تأخذ الأداة **عنوان صفحة تسجيل الدخول**، فتصنع منها **نسخة مزيفة** تشبهها تماماً، وتعطينا **رابطاً** يفتح هذه النسخة من أي جهاز.\n\nيتكوّن الأمر من جزأين:\n\n`sinnara`: اسم الأداة.\n\n`' + LOGIN + '`: عنوان صفحة تسجيل الدخول التي نريد نسخها.',
     mail_h: 'الرسالة المزيفة',
-    mail: 'الآن نكتب رسالة إلى صالح، ونتظاهر فيها أننا **البنك**.\n\nالرسالة المزيفة تحاول أن تجعل الضحية **يخاف** و**يستعجل**، فيضغط على الرابط **دون أن يفكر**: «حسابك تعرّض للاختراق»، «غيّر كلمة السر **فوراً**».\n\nلاحظ خانة **من**: الاسم «البنك الإلكتروني»، لكن العنوان `' + FROM_A + '` **ليس** من موقع البنك.',
-    caught_h: 'وصلت البيانات',
-    caught: 'كتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فوصلت إليك مباشرة. ثم ظهرت له رسالة **خطأ تقني** لخداعه، فظن أن الموقع معطّل فقط.\n\nالآن تستطيع أن تدخل إلى **حسابه الحقيقي** في البنك بهذه البيانات.',
+    mail: 'الآن نكتب رسالة إلى صالح، ونتظاهر فيها أننا **البنك**.\n\nالرسالة المزيفة تحاول أن تجعل الضحية **يخاف** و**يستعجل**، فيضغط على الرابط **دون أن يفكر**: «حسابك تعرّض للاختراق»، «غيّر كلمة السر **فوراً**».\n\nلاحظ خانة **من**: الاسم «البنك الإلكتروني»، لكن العنوان `' + FROM_A + '` بريد من **موقع آخر** فيه **أرقام**، وليس من موقع البنك `' + BANK.host + '`.',
+    caught_h: 'وصلت المعلومات',
+    caught: 'كتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فوصلت إليك مباشرة. ثم ظهرت له رسالة **خطأ تقني** لخداعه، فظن أن الموقع معطّل فقط.\n\nالآن تستطيع أن تدخل إلى **حسابه الحقيقي** في البنك بهذه المعلومات.',
     replay: 'إعادة التدريب',
     /* congratulations card */
     cele_h: 'أحسنت! أجبت عن كل الأسئلة',
@@ -5066,12 +5145,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     w3: 'هنا الأسئلة. أجب عنها بما تجده في شاشة الأوامر وفي موقع البنك.', w6: 'زر «؟» يساعدك في فهم مكونات الدرس وكيفية التفاعل معها.',
     /* instructor reference panel (condensed from the popups and the steps) */
     /* «شرح مختصر»: Moaz's text (2026-11-24) */
-    rs_h: 'السيناريو', rs: 'تريد الوصول إلى **حساب بنك مدير متجر كاملكود**، فتصنع **نسخة مزيفة** من صفحة تسجيل الدخول في **البنك الإلكتروني** بأداة **صنّارة**، وترسل رابطها إلى **صالح** في **رسالة** تتظاهر فيها أنك البنك. يكتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فتصل إليك، فتدخل إلى حسابه وتجري **عمليات تحويل**.',
-    r0_h: 'التصيد الاحتيالي', r0: '- **التصيد الاحتيالي** خدعة يرسل فيها الهاكر **رسالة مزيفة** يتظاهر فيها أنه **جهة موثوقة**، مثل البنك أو متجر أو صديق، ليجعل الضحية يكتب **معلوماته السرية** بنفسه، مثل اسم المستخدم وكلمة السر.\n- سُمّي **تصيداً** لأن الهاكر يرمي **طُعماً** (الرسالة والرابط) وينتظر أن يقع فيه الضحية، مثل الصيّاد.\n- يعتمد على مشاعر تجعل الضحية يتصرف **بسرعة دون تفكير**: **الخوف** («تم اختراق حسابك»)، أو **المفاجأة** («ربحت جائزة»)، أو **الاستعجال** («خلال ساعة واحدة»).',     /* Moaz 2026-11-24: rephrased */
-    r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** للوصول إلى هذه الصفحة، ثم **تنتظر** وتعرض ما يكتبه الضحية في **شاشة الأوامر**.\n- الاستخدام: `' + EX + '`\n   - `sinnara`: اسم الأداة.\n   - `' + LOGIN + '`: عنوان صفحة تسجيل الدخول.\n- الرابط: `' + FAKE + '` **يشبه** عنوان البنك، لكن **اسم الموقع** مختلف قليلاً عن اسم الموقع الأصلي.',
-    r2_h: 'الرسالة المزيفة', r2: '- النص **يخيف** الضحية ويستخدم **لغة العجلة** بعبارات مثل: «تم اختراق حسابك، غيّر كلمة السر فوراً».',
+    rs_h: 'السيناريو', rs: 'تريد الوصول إلى **حساب بنك مدير متجر كاملكود**، فتصنع **نسخة مزيفة** من صفحة تسجيل الدخول في **البنك الإلكتروني** بأداة **صنّارة**، وترسل رابطها إلى **صالح** في **رسالة** تتظاهر فيها أنك البنك. يكتب صالح **اسم المستخدم** و**كلمة السر** في الصفحة المزيفة، فتصل إليك، فتدخل إلى حسابه وتحوّل **أموالاً** منه.',
+    r0_h: 'التصيد الاحتيالي', r0: '- **التصيد الاحتيالي** خدعة يرسل فيها الهاكر **رسالة مزيفة** يتظاهر فيها أنه **جهة موثوقة**، مثل البنك أو المتجر أو صديق، ليجعل الضحية يكتب **معلوماته السرية** بنفسه، مثل اسم المستخدم وكلمة السر.\n- سُمّي **تصيداً** لأن الهاكر يرمي **طُعماً** (الرسالة والرابط) وينتظر أن يقع فيه الضحية، مثل الصيّاد.\n- يعتمد على مشاعر تجعل الضحية يتصرف **بسرعة دون تفكير**: **الخوف** («تم اختراق حسابك»)، أو **المفاجأة** («ربحت جائزة»)، أو **الاستعجال** («خلال ساعة واحدة»).',     /* Moaz 2026-11-24: rephrased */
+    r1_h: 'أداة صنّارة (`sinnara`)', r1: '- تصنع **نسخة مزيفة** من صفحة تسجيل الدخول، و**رابطاً** للوصول إلى هذه الصفحة، ثم **تنتظر** وتعرض ما يكتبه الضحية في **شاشة الأوامر**.\n- الاستخدام: `' + EX + '`\n   - `sinnara`: اسم الأداة.\n   - `' + LOGIN + '`: عنوان صفحة تسجيل الدخول.\n- الرابط: `' + FAKE_URL + '` **يشبه** عنوان البنك، لكن **اسم الموقع** مختلف قليلاً عن اسم الموقع الأصلي.',
+    r2_h: 'الرسالة المزيفة', r2: '- النص **يخيف** الضحية ويستخدم **الاستعجال** بعبارات مثل: «تم اختراق حسابك، غيّر كلمة السر فوراً».',
     r3_h: 'ماذا حدث عند صالح', r3: '- فتح الرسالة وضغط على **الرابط**، فوصل إلى **الصفحة المزيفة**.\n- كتب **اسم المستخدم** و**كلمة السر**، فظهرت في **شاشة الأوامر** فوراً وحُفظت في `account.txt` على **سطح المكتب**.\n- ظهرت له رسالة **خطأ تقني** للتمويه، فلم ينتبه.',
-    r5_h: 'الحماية', r5: '- انظر إلى **عنوان المرسل**: البنك يرسل من **موقعه الأصلي**، وليس من عنوان آخر.\n- انظر إلى **عنوان الموقع** قبل أن تكتب كلمة السر: `' + BANK.host + '` وليس عنواناً يشبهه.\n- **البنك لا يطلب كلمة السر** عبر البريد الإلكتروني أبداً.\n- لا تضغط على الروابط في الرسائل العاجلة: **افتح موقع البنك بنفسك**.\n- فعّل **التحقق بخطوتين**: حتى لو عرف الهاكر كلمة السر، يحتاج إلى **رمز** يصل إلى هاتفك.\n- رسالة تستخدم **الخوف** و**لغة العجلة** علامة تدل على أن الرسالة قد تكون **رسالة تصيد احتيالي**.'
+    r5_h: 'الحماية', r5: '- انظر إلى **عنوان المرسل**: البنك يرسل من **موقعه الأصلي**، وليس من عنوان آخر.\n- انظر إلى **عنوان الموقع** قبل أن تكتب كلمة السر: `' + BANK.host + '` وليس عنواناً يشبهه.\n- وجود `https://` في أول الرابط **لا يعني** أن الموقع آمن: الصفحات المزيفة تبدأ به أيضاً. المهم هو **اسم الموقع**.\n- **البنك لا يطلب كلمة السر** عبر البريد الإلكتروني أبداً.\n- لا تضغط على الروابط في الرسائل العاجلة: **افتح موقع البنك بنفسك**.\n- فعّل **التحقق بخطوتين**: حتى لو عرف الهاكر كلمة السر، يحتاج إلى **رمز** يصل إلى هاتفك.\n- رسالة تستخدم **الخوف** و**الاستعجال** علامة على أنها قد تكون **رسالة تصيد احتيالي**.'
   });
 
   /* [LAB] ================= THE FILE SYSTEM ================= */
@@ -5080,14 +5159,17 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
   /* [LAB] ================= THE MAIL APP («البريد», a dock app of the hacker's laptop: engine CC.labApps) ================= */
   var MAILIC = '<svg viewBox="0 0 48 48"><rect width="48" height="48" rx="11" fill="#2F6FD6"/><rect x="9" y="13" width="30" height="22" rx="4" fill="#fff"/><path d="M10.5 15.5L24 26l13.5-10.5" fill="none" stroke="#2F6FD6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  var MAIL = { win: null, onSend: null, check: null };
+  var MAIL = { win: null, onSend: null, check: null, link: '' };
+  var LKIC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.5.5l3-3a5 5 0 00-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 00-7.5-.5l-3 3a5 5 0 007 7l1.7-1.7"/></svg>';
   CC.labApps = [{
     id: 'mail', label: 'البريد', icon: MAILIC,
     html: '<div class="ml"><div class="ml-r ml-from"><span>' + CC.S.ar.ml_from + '</span><b>' + FROM_N + '</b><i dir="ltr">' + FROM_A + '</i></div>' +
       '<label class="ml-r"><span>' + CC.S.ar.ml_to + '</span><input class="ml-to" dir="ltr" autocomplete="off" spellcheck="false"></label>' +
       '<label class="ml-r"><span>' + CC.S.ar.ml_subj + '</span><input class="ml-subj" autocomplete="off" spellcheck="false"></label>' +
       '<textarea class="ml-body" spellcheck="false" aria-label="' + CC.S.ar.ml_body + '"></textarea>' +
-      '<div class="ml-foot"><span class="ml-err" role="alert"></span><button type="button" class="ml-send">' + CC.S.ar.ml_send + '</button></div></div>',
+      '<div class="ml-lk" hidden><a class="ml-a" dir="ltr"></a><button type="button" class="ml-lk-x" aria-label="' + CC.S.ar.ml_lk_x + '" title="' + CC.S.ar.ml_lk_x + '">✕</button></div>' +
+      '<div class="ml-ins" hidden><span>' + CC.S.ar.ml_lk_l + '</span><input class="ml-url" dir="ltr" placeholder="https://" autocomplete="off" spellcheck="false"><button type="button" class="ml-ok">' + CC.S.ar.ml_lk_ok + '</button></div>' +
+      '<div class="ml-foot"><button type="button" class="ml-lkb">' + LKIC + '<span>' + CC.S.ar.ml_lk + '</span></button><span class="ml-err" role="alert"></span><button type="button" class="ml-send">' + CC.S.ar.ml_send + '</button></div></div>',
     init: function (w) { MAIL.win = w; if (MAIL.bind) MAIL.bind(w); }
   }];
 
@@ -5167,11 +5249,44 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         e.stopPropagation(); e.preventDefault(); copyText(want.text);
         b.classList.add('ok'); b.innerHTML = LINK_OK + '<span>تم النسخ</span>';
         setTimeout(function () { if (b.isConnected) { b.classList.remove('ok'); b.innerHTML = LINK_IC + '<span>' + want.label + '</span>'; } }, 1500);
-        setTimeout(function () { var box = document.querySelector('.cc-win-mail ' + want.field); if (box && !box.readOnly) box.focus(); }, 150);   /* after the copy (its fallback selects a hidden box for a moment) */
+        setTimeout(function () {
+          var ins = document.querySelector('.cc-win-mail .ml-ins'); if (want.field === '.ml-url' && ins && !MAIL.link) ins.hidden = false;     /* the link box opens, ready to paste */
+          var box = document.querySelector('.cc-win-mail ' + want.field); if (box && !box.readOnly) box.focus();
+        }, 150);   /* after the copy (its fallback selects a hidden box for a moment) */
       });
       c.parentNode.insertBefore(b, c.nextSibling);
     });
   }, 300);
+
+  /* the link in sinnara's output (Farhan's comment 2, Moaz 2026-11-28): blue and underlined like a link; a click opens a small menu
+     «فتح الرابط في المتصفح» (the fake copy in a new tab of the hacker's browser) and «نسخ الرابط». It never skips the wait for Saleh. */
+  function linkify(row) {
+    if (!row) return;
+    var a = document.createElement('a'); a.className = 'sn-url'; a.dir = 'ltr'; a.textContent = FAKE_URL; a.tabIndex = 0; a.setAttribute('role', 'button');
+    row.appendChild(a);
+  }
+  var lnMenu = null;
+  function lnClose() { if (lnMenu) { lnMenu.remove(); lnMenu = null; } }
+  function openFake() {
+    var ic = document.querySelector('#laptop .cc-app[data-app="web"]'); if (ic) ic.click();     /* the dock icon opens the browser, or brings it to the front */
+    setTimeout(function () { if (CC.P && CC.P.openTab) CC.P.openTab(BANK.fake, '/login'); }, 120);
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('.sn-url');
+    if (!a) { if (lnMenu && !lnMenu.contains(e.target)) lnClose(); return; }
+    e.preventDefault(); e.stopPropagation();
+    if (lnMenu) { lnClose(); return; }
+    var m = lnMenu = document.createElement('div'); m.className = 'sn-menu'; m.setAttribute('role', 'menu');
+    m.innerHTML = '<button type="button" class="o">' + CC.t('ln_open') + '</button><button type="button" class="c">' + CC.t('ln_copy') + '</button>';
+    document.body.appendChild(m);
+    /* the page may be zoomed (html { zoom }): the link's box is in screen pixels, the menu's position in the page's own */
+    var z = parseFloat(getComputedStyle(document.documentElement).zoom) || 1, r = a.getBoundingClientRect(), mw = m.offsetWidth;
+    m.style.left = Math.max(8, Math.min(window.innerWidth / z - mw - 8, r.left / z)) + 'px'; m.style.top = (r.bottom / z + 6) + 'px';
+    m.querySelector('.o').onclick = function (ev) { ev.stopPropagation(); lnClose(); openFake(); };
+    m.querySelector('.c').onclick = function (ev) { ev.stopPropagation(); copyText(FAKE_URL); this.textContent = CC.t('ln_done'); setTimeout(lnClose, 700); };
+  }, true);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') lnClose(); });
+  window.addEventListener('scroll', lnClose, true);
 
   /* [LAB] ================= COMMANDS ================= */
   var CMDS = ['display', 'enter', 'back', 'read', 'create', 'sinnara', 'clear', 'help'];   /* every command of the terminal lab still works (engine/terminal-basics.js) */
@@ -5184,19 +5299,19 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     var fs = CC.newFS();
     CC.labFS = fs;                                      /* account.txt shows on the laptop's desktop */
     BANK.reset(); V.reset();
+    MAIL.link = ''; MAIL.subj = ''; MAIL.body = ''; MAIL.typedAt = 0; copyBtn = null; lnClose();     /* a restart or mode switch starts the email from nothing */
     var st = {
       armed: false, busy: false, q: [], finishing: false, finished: false,
       tool: 'off',                /* off | wait (sinnara waits for the victim) | done */
-      link: false, sent: false, captured: false, logged: false, moved: false,
-      ip: '192.0.2.' + (20 + Math.floor(Math.random() * 200))
+      link: false, sent: false, captured: false, logged: false, moved: false
     };
     var ok = function () { return g === CC.gen; };
     CC.free = false;
 
     var norm = function (v) { return digits(v || '').replace(/\s+/g, '').trim().toLowerCase(); };
     CC.Q.init([
-      { id: 'q1', q: iso(CC.t('q1')), answers: [FAKE], check: function (v) { var x = norm(v).replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, ''); return x === FAKE || x === BANK.fake; }, hint: iso(CC.t('q1h')), hidden: true },
-      { id: 'q2', q: iso(CC.t('q2')), answers: [BANK.pass], check: function (v) { return String(v || '').trim() === BANK.pass; }, hint: iso(CC.t('q2h')), hidden: true },
+      { id: 'q1', q: iso(CC.t('q1')), answers: [FAKE_URL], check: function (v) { var x = norm(v).replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, ''); return x === FAKE || x === BANK.fake; }, hint: iso(CC.t('q1h')), hidden: true },
+      { id: 'q2', q: iso(CC.t('q2')), answers: [BANK.pass], check: function (v) { return digits(String(v || '')).trim() === BANK.pass; }, hint: iso(CC.t('q2h')), hidden: true },
       { id: 'q3', q: iso(CC.t('q3')), answers: function () { return [BANK.st.ref]; }, check: function (v) { return !!BANK.st.done && norm(v).replace(/[^0-9]/g, '') === BANK.st.ref; }, hint: iso(CC.t('q3h')), hidden: true },
       { id: 'q4', q: iso(CC.t('q4')), answers: [BANK.acc.since], check: function (v) { return norm(v).replace(/[^0-9]/g, '') === BANK.acc.since; }, hint: iso(CC.t('q4h')), hidden: true }
     ]);
@@ -5210,7 +5325,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         CC.cancelAll(); g = CC.gen; CC.guide.hide(); L.el.classList.remove('off', 'glow'); idleQ(false);
         st.busy = false; st.armed = true;                           /* the terminal stays usable after the end (never locked) */
         L.enable(true); L.ghost(null); L.clearChips(); L.err(''); L.value(''); L.expl(''); L.endLive();
-        CC.emit('complete', { lab: 'fake-links' });
+        CC.emit('complete', { lab: 'phishing' });
         st.finished = true;
       });
     };
@@ -5246,7 +5361,22 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     }
     MAIL.bind = function (w) {
       var to = w.querySelector('.ml-to'), su = w.querySelector('.ml-subj'), bo = w.querySelector('.ml-body');
-      [to, su, bo].forEach(function (x) { x.addEventListener('keydown', function (e) { e.stopPropagation(); }); x.addEventListener('input', function () { MAIL.typedAt = Date.now(); var e = fld('.ml-err'); if (e) e.textContent = ''; }); });
+      var ur = w.querySelector('.ml-url'), ins = w.querySelector('.ml-ins'), lk = w.querySelector('.ml-lk');
+      [to, su, bo, ur].forEach(function (x) { x.addEventListener('keydown', function (e) { e.stopPropagation(); }); x.addEventListener('input', function () { MAIL.typedAt = Date.now(); var e = fld('.ml-err'); if (e) e.textContent = ''; }); });
+      /* «إدراج رابط» (Farhan's comment 7, Moaz 2026-11-28): the link sits on its own line under the text, blue like a link, never typed inside the Arabic */
+      function showLink() { lk.hidden = !MAIL.link; w.querySelector('.ml-a').textContent = MAIL.link; if (MAIL.link) ins.hidden = true; }
+      function insert() {
+        var v = ur.value.trim().toLowerCase().replace(/^https?:\/\//, '').replace(/^www\./, '').replace(/\/+$/, '');
+        if (!v) { ur.focus(); return; }
+        if (!st.link) return mailErr(CC.t('ml_e_tool'));
+        if (v !== FAKE && v !== BANK.fake) return mailErr(CC.t('ml_e_badlink'));
+        MAIL.link = FAKE_URL; ur.value = ''; showLink();
+      }
+      w.querySelector('.ml-lkb').onclick = function () { if (st.sent) return; ins.hidden = false; setTimeout(function () { ur.focus(); }, 30); };
+      w.querySelector('.ml-ok').onclick = insert;
+      ur.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); insert(); } });
+      w.querySelector('.ml-lk-x').onclick = function () { if (st.sent) return; MAIL.link = ''; showLink(); };
+      showLink();
       if (st.sent) { to.value = SALEH; su.value = MAIL.subj || ''; bo.value = MAIL.body || ''; sentState(w); return; }
       w.querySelector('.ml-send').onclick = function () {
         if (st.sent) return;
@@ -5254,10 +5384,13 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
         if (!a) return mailErr(CC.t('ml_e_to'));
         if (a !== SALEH) return mailErr(CC.t('ml_e_who'));
         if (!s) return mailErr(CC.t('ml_e_subj'));
-        if (!b) return mailErr(CC.t('ml_e_body'));
         if (!st.link) return mailErr(CC.t('ml_e_tool'));
-        if (b.toLowerCase().indexOf(BANK.fake) < 0) return mailErr(CC.t('ml_e_link'));
-        MAIL.subj = su.value.trim(); MAIL.body = bo.value.trim();
+        /* a link pasted into the text itself still counts: it moves to its own line (and never shows twice) */
+        var inBody = new RegExp('(?:https?://)?(?:www\\.)?' + BANK.fake.replace(/\./g, '\\.') + '(?:/login)?/?', 'ig');
+        if (inBody.test(b)) { inBody.lastIndex = 0; bo.value = b.replace(inBody, '').replace(/[ \t]+\n/g, '\n').trim(); b = bo.value.trim(); if (!MAIL.link) { MAIL.link = FAKE_URL; showLink(); } }
+        if (!b) return mailErr(CC.t('ml_e_body'));
+        if (!MAIL.link) return mailErr(CC.t('ml_e_link'));
+        MAIL.subj = su.value.trim(); MAIL.body = b;
         send();
       };
     };
@@ -5265,9 +5398,18 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       w.classList.add('ml-done');
       w.querySelectorAll('input,textarea').forEach(function (x) { x.readOnly = true; });
       var b = w.querySelector('.ml-send'); b.disabled = true;
+      w.querySelectorAll('.ml-lkb,.ml-lk-x,.ml-ok').forEach(function (x) { x.disabled = true; });
       w.querySelector('.ml-err').textContent = CC.t('ml_sent') + ' ' + SALEH;
     }
-    if (MAIL.win && MAIL.win.isConnected) MAIL.bind(MAIL.win);
+    /* the mail window outlives a restart or mode switch: a new run empties it (no old link row, every field writable again) */
+    if (MAIL.win && MAIL.win.isConnected) {
+      var w0 = MAIL.win; w0.classList.remove('ml-done');
+      w0.querySelectorAll('input,textarea').forEach(function (x) { x.value = ''; x.readOnly = false; });
+      w0.querySelectorAll('button').forEach(function (x) { x.disabled = false; });
+      var lk0 = w0.querySelector('.ml-lk'), in0 = w0.querySelector('.ml-ins'), er0 = w0.querySelector('.ml-err');
+      if (lk0) lk0.hidden = true; if (in0) in0.hidden = true; if (er0) er0.textContent = '';
+      MAIL.bind(w0);
+    }
 
     async function send() {
       st.sent = true; CC.guide.hide();
@@ -5276,32 +5418,32 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       var mn0 = MAIL.win && MAIL.win.querySelector('.cc-win-min'); if (mn0 && MAIL.win.isConnected) mn0.click();
       var ti = document.querySelector('#laptop .cc-app[data-app="term"]'); if (ti) ti.click();
       st.vicOn = true;
-      V.show({ from: FROM_N, addr: FROM_A, to: SALEH, subj: MAIL.subj, body: MAIL.body });
+      V.show({ from: FROM_N, addr: FROM_A, to: SALEH, subj: MAIL.subj, body: MAIL.body, link: MAIL.link });
       var done = await V.play(g, {
         visit: function () {
           if (!ok()) return;
           L.add('', 'txt');
-          L.add('[-] Victim opened the link !', 'ok');
-          L.add('[-] Waiting for Login Info...', 'dim');
+          L.add(CC.t('o_open'), 'ok ar');
+          L.add(CC.t('o_wait2'), 'dim ar');
         },
         creds: function () {
           if (!ok()) return;
-          fs.write('/account.txt', 'Site: ' + BANK.host + '\nUsername: ' + BANK.user + '\nPassword: ' + BANK.pass);
+          fs.write('/account.txt', 'الموقع: ' + BANK.host + '\nاسم المستخدم: ' + BANK.user + '\nكلمة السر: ' + BANK.pass);     /* Arabic labels, as sinnara's output (Farhan's comment 10) */
           st.captured = true;
           L.add('', 'txt');
-          L.add('[-] Login info Found !!', 'ok');
-          L.add('[-] Username : ' + BANK.user, 'ok');
-          L.add('[-] Password : ' + BANK.pass, 'ok');
-          L.add('[-] Saved in : account.txt (Desktop)', 'dim');
-          L.add('[-] Finished', 'dim');
+          L.add(CC.t('o_found'), 'ok ar');
+          L.add(iso(CC.t('o_user') + ' ' + BANK.user), 'ok ar');
+          L.add(iso(CC.t('o_pass') + ' ' + BANK.pass), 'ok ar');
+          L.add(iso(CC.t('o_saved')), 'dim ar');
           st.tool = 'done'; L.expl(''); st.busy = false; L.enable(true);
         }
       });
       if (!ok() || !done) return;
       await V.hide(g); st.vicOn = false;
+      if (CC.P && CC.P.host && CC.P.host() === BANK.fake) CC.P.openTab(BANK.host, '/login');     /* the student had opened the fake copy: the login step happens on the real bank's tab */
       /* the email is sent: its window goes to the background and the bank site comes to the front for the login */
       var mn = MAIL.win && MAIL.win.querySelector('.cc-win-min'); if (mn && MAIL.win.isConnected) mn.click();
-      var wb = document.querySelector('#laptop .cc-app[data-app="web"]'); if (wb) wb.click();     /* the bank site in front again (the terminal came forward on «إرسال») */
+      /* the terminal stays in front: the next step («لاحظ») talks about sinnara's output; the browser comes back at the login step */     /* the bank site in front again (the terminal came forward on «إرسال») */
     }
 
     /* ---- the terminal ---- */
@@ -5313,13 +5455,12 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       L.follow();
       L.add(CC.t('fk_start'), 'info ar');
       if (!(await CC.sleep(1000, g))) return false;
-      L.add('[-] Copying the page : ' + LOGIN, 'dim');
-      if (!(await CC.sleep(900, g))) return false;
-      L.add('[-] Starting the page...', 'dim');
-      if (!(await CC.sleep(1100, g))) return false;
-      st.linkRow = L.add('[-] Link : ' + FAKE, 'ok sn-link');
+      L.add(iso(CC.t('o_copy') + ' ' + LOGIN), 'dim ar');
+      if (!(await CC.sleep(1400, g))) return false;
+      st.linkRow = L.add(CC.t('o_link') + ' ', 'ok ar sn-link');
+      linkify(st.linkRow);
       L.add('', 'txt');
-      L.add('[-] Waiting for the victim to open the link...', 'dim');
+      L.add(CC.t('o_wait'), 'dim ar');
       L.expl(CC.t('e_wait'));
       st.link = true; st.tool = 'wait';
       return true;
@@ -5366,7 +5507,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       st.busy = true; L.err(''); L.value(''); L.enable(false); L.ghost(null);
       L.echo(raw.trim());
       var r = await run(raw); if (!ok()) return;
-      if (r.err) L.err(r.err);
+      if (r.err) { L.err(r.err); if (!st.link) L.ghost(EX); }     /* the hint and «نسخ الأمر» come back after a wrong try (DESIGN 45) */
       else if (r.chips) { L.clearChips(); await L.chips(r.chips, g, 0); if (!ok()) return; }
       if (st.tool === 'wait') { if (r.info) { st.q.push(r.info); CC.fire('cmd'); } return; }   /* sinnara keeps running until the details arrive: creds() frees the line */
       st.busy = false; L.enable(true);
@@ -5427,13 +5568,22 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
          (Moaz 2026-11-24: the subject step used to end after 3 letters, while he was still typing) */
       var settled = function (x, full) { return x.value.trim() === full || document.activeElement !== x || Date.now() - (MAIL.typedAt || 0) > 2000; };
       var suOk = function () { var x = fld('.ml-subj'); return st.sent || (!!x && x.value.trim().length >= 3 && settled(x, H_SUBJ)); };
-      var boOk = function () { var x = fld('.ml-body'); return st.sent || (!!x && x.value.toLowerCase().indexOf(BANK.fake) >= 0 && settled(x, H_BODY)); };
-      if (!toOk()) { L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
+      var boOk = function () { var x = fld('.ml-body'); return st.sent || (!!x && x.value.trim().length >= 10 && settled(x, H_BODY)); };
+      var lkOk = function () { return st.sent || !!MAIL.link; };
+      var insOpen = function () { var x = fld('.ml-ins'); return !!x && !x.hidden; };
+      if (!toOk()) { copyBtn = { text: SALEH, label: 'نسخ البريد', field: '.ml-to' }; L.task(CC.t('t_to')); hints.push(fieldHint(fld('.ml-to'), SALEH)); guideFld('.ml-to', function () { var x = fld('.ml-to'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(toOk))) return;
         copyBtn = null; CC.guide.hide(); if (!st.sent && !(await CC.stepWait(g))) return; }     /* the address is right: «متابعة» before the subject (Moaz 2026-11-24) */
       CC.guide.hide();
       if (!suOk()) { L.task(CC.t('t_subj')); hints.push(fieldHint(fld('.ml-subj'), H_SUBJ)); guideFld('.ml-subj', function () { var x = fld('.ml-subj'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(suOk))) return; }
       CC.guide.hide();
-      if (!boOk()) { copyBtn = { text: FAKE, label: 'نسخ الرابط', field: '.ml-body' }; L.task(CC.t('t_body')); hints.push(fieldHint(fld('.ml-body'), H_BODY)); guideFld('.ml-body', function () { var x = fld('.ml-body'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(boOk))) return; }
+      if (!boOk() && !MAIL.link) { L.task(CC.t('t_body')); hints.push(fieldHint(fld('.ml-body'), H_BODY)); guideFld('.ml-body', function () { var x = fld('.ml-body'); return !!x && (document.activeElement === x || !!x.value); }); if (!(await until(function () { return boOk() || lkOk(); }))) return; }
+      CC.guide.hide();
+      /* the link on its own line: «إدراج رابط», paste, «إدراج» (Farhan's comment 7, Moaz 2026-11-28) */
+      if (!lkOk()) {
+        copyBtn = { text: FAKE_URL, label: 'نسخ الرابط', field: '.ml-url' }; L.task(CC.t('t_ins'));
+        CC.guide.show(function () { return mailOpen() ? (insOpen() ? fld('.ml-url') : fld('.ml-lkb')) : null; }, { force: true, until: lkOk, center: true });
+        if (!(await until(lkOk))) return;
+      }
       copyBtn = null;
       CC.guide.hide();
       if (!st.sent) {
@@ -5445,7 +5595,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     hints.forEach(function (h) { h(); });
     CC.guide.hide();
 
-    /* 4. Saleh's laptop */
+    /* 4. Saleh's phone */
     L.task(CC.t('t_watch'));
     if (!(await until(function () { return st.captured && !st.vicOn; }))) return;
     L.task(CC.t('t_caught'));
@@ -5458,6 +5608,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
     /* 5. sign in to the real bank, then transfer */
     if (!st.logged) {
+      if (CC.P && CC.P.host && CC.P.host() === BANK.fake) CC.P.openTab(BANK.host, '/login');
       L.task(CC.t('t_login'));
       if (!(await until(function () { return st.logged; }))) return;
     }
@@ -5489,7 +5640,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
 
 </script>
 <script id="cc-addon">
-window.CC_MISSION = {"stages":[{"label":"الصفحة المزيفة","keys":["t_look","t_sinnara","t_link"]},{"label":"الرسالة","keys":["t_mail","t_to","t_subj","t_body","t_send"]},{"label":"الضحية","keys":["t_watch","t_caught","t_ans1"]},{"label":"حساب البنك","keys":["t_login","t_transfer","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"سنصنع **صفحة تسجيل دخول مزيفة** تشبه صفحة **البنك الإلكتروني**، ونرسلها إلى **صالح** مدير **متجر كاملكود**، لنتحكم بحسابه في البنك. افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب لترى صفحة **تسجيل الدخول** في البنك.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**."};
+window.CC_MISSION = {"stages":[{"label":"الصفحة المزيفة","keys":["t_look","t_sinnara","t_link"]},{"label":"الرسالة","keys":["t_mail","t_to","t_subj","t_body","t_ins","t_send"]},{"label":"الضحية","keys":["t_watch","t_caught","t_ans1"]},{"label":"حساب البنك","keys":["t_login","t_transfer","t_q"]}],"doneKey":"t_done","doneLabel":"أكملت جميع المهام","ordinals":[],"coach":[],"openBrowser":"سنصنع **صفحة تسجيل دخول مزيفة** تشبه صفحة **البنك الإلكتروني**، ونرسل رابطها إلى **صالح** مدير **متجر كاملكود**، لنتحكم بحسابه في البنك. افتح **المتصفح** [[web]] في أسفل شاشة الحاسوب لترى صفحة **تسجيل الدخول** في البنك.","openBrowserTip":"افتح المتصفح لتصل إلى موقع البنك","openTerminal":"افتح **شاشة الأوامر** [[term]] في أسفل شاشة الحاسوب، لنشغّل **أداة صنّارة**."};
 /* CamelCode brand add-on (goes with engine/skin-brand.css; inserted by tools/skin.js).
    1. The lab title moves into the top bar, so the page fits a 16:9 window.
    2. Instructions get their own column («خطوات المهمة») on the reading-start side, away from the questions: every
@@ -7121,6 +7272,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 /* Farhan's IDOR comment 4 (every lab): «شرح الأمر» is drawn in the log right under its command, not pinned at the top */
 .cs .cs-log .cs-chips.inl{margin:4px auto 10px;max-width:100%}
 
+/* Farhan's EH2 lab 5 comment 3 (Moaz 2026-11-28, every lab): while a command is running (a tool waiting for the victim, Barq trying passwords)
+   the typing line is not drawn at all, like a real terminal: no «Desktop» prompt that looks ready for typing. It comes back the moment the
+   command ends. The short delay keeps quick commands (display, read) from blinking it. */
+#laptop .cs-in{transition:visibility 0s}
+#laptop .cs-in:has(#cmd:disabled){visibility:hidden;transition-delay:.35s}
+
 /* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
    Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */
 
@@ -7167,7 +7324,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
 @keyframes fx-urltipbob{50%{transform:translateY(3px)}}
 @media (prefers-reduced-motion:reduce){.br-view .fx-urltip{animation:none}}
 
-/* EH2 lab 5 (الرسائل والروابط المزيفة): the mail app on the hacker's laptop and Saleh's laptop beside it. Lab-owned (lab-settings "addons"). */
+/* EH2 lab 5 (التصيد الاحتيالي (Phishing)): the mail app on the hacker's laptop, sinnara's link, and Saleh's phone beside the laptop. Lab-owned (lab-settings "addons"). */
 
 /* ---- «البريد» on the hacker's laptop (a window of the laptop desktop: sizes in cqw like the other windows) ---- */
 .cc-win-mail{width:62cqw}
@@ -7188,70 +7345,9 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
 .ml-send:disabled{background:#B9C3D0;cursor:default}
 .ml-r:focus-within{background:#F7FAFF}
 
-/* ---- Saleh's laptop: beside the hacker's laptop while he reads the email (Moaz 2026-11-24) ---- */
-body.cc-vic #stage{display:flex;align-items:center;justify-content:center;gap:2.5%}
-body.cc-vic #stage>#laptop{flex:0 0 53%;max-width:53%;transition:flex-basis .5s,max-width .5s}
-.vlap{position:relative;flex:0 0 43%;max-width:43%;opacity:0;transform:translateX(-30px) scale(.96);transition:opacity .5s,transform .5s;align-self:center}
-body.cc-vic-in .vlap{opacity:1;transform:none}
-.vlap .tag{position:absolute;top:-34px;left:50%;transform:translateX(-50%);white-space:nowrap}
-.vl-lid{position:relative;background:#1d2433;border-radius:14px 14px 4px 4px;padding:3.2% 3.2% 3.6%;box-shadow:0 18px 40px -22px rgba(0,0,0,.6)}
-.vl-cam{position:absolute;top:1.2%;left:50%;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#3b4558}
-.vl-scr{position:relative;aspect-ratio:16/10;overflow:hidden;border-radius:4px;background:linear-gradient(160deg,#3a6073,#16222a);container-type:inline-size;direction:rtl}
-.vl-base{position:relative;height:18px;margin:0 -6%;border-radius:2px 2px 16px 16px;background:linear-gradient(#dfe3e9,#aeb6c1);box-shadow:0 14px 24px -16px rgba(0,0,0,.5)}.vl-base::before{content:"";position:absolute;top:0;left:50%;width:16%;height:6px;margin-left:-8%;border-radius:0 0 8px 8px;background:#bfc6cf}
-.vl-mb{position:absolute;top:0;left:0;right:0;height:4.4cqw;display:flex;align-items:center;padding:0 2cqw;background:rgba(10,20,30,.55);color:#fff;font-size:2.2cqw}
-.vl-win{position:absolute;top:6cqw;left:3cqw;right:3cqw;bottom:3cqw;background:#fff;border-radius:1.4cqw;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 10px 30px -10px rgba(0,0,0,.5);transition:opacity .35s,transform .35s}
-.vl-bar{display:flex;align-items:center;gap:1cqw;height:5cqw;padding:0 1.6cqw;background:#EEF1F4;border-bottom:1px solid #DDE2E7;font-size:2.2cqw;flex:none}
-.vl-bar i{width:1.4cqw;height:1.4cqw;border-radius:50%;background:#F87171}.vl-bar i+i{background:#FBBF24}.vl-bar i+i+i{background:#34D399}
-.vl-bar b{margin-inline-start:1cqw}
-.vl-url{flex:1;margin-inline-start:1.4cqw;background:#fff;border-radius:2cqw;padding:.6cqw 2cqw;font-size:2.1cqw;color:#111;text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:inset 0 0 0 1px #D6DCE2}
-.vl-brw{opacity:0;transform:scale(.96);pointer-events:none}
-.vlap.brw .vl-brw{opacity:1;transform:none}
-.vlap.brw .vl-mail{opacity:0}
-.vl-page{flex:1;position:relative;overflow:hidden;background:#F2F4F8}
-.vl-page iframe{position:absolute;top:0;right:0;width:250%;height:250%;border:0;transform:scale(.4);transform-origin:top right;pointer-events:none}
-.vl-mbody{flex:1;overflow:hidden;font-size:2.3cqw;color:#1B2433}
-.vl-acc{font-size:1.8cqw;color:#6b7280;padding:1.2cqw 2cqw 0;text-align:right}
-.vl-row{display:flex;gap:1.6cqw;align-items:flex-start;padding:1.6cqw 2cqw;border-bottom:1px solid #EEF1F4}
-.vl-row div{min-width:0;display:flex;flex-direction:column}
-.vl-row b{font-size:2.3cqw}
-.vl-row em{font-style:normal;font-size:2.1cqw;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vl-row span:not(.vl-av){font-size:1.9cqw;color:#6b7280;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.vl-row.new{background:#F2F7FF}.vl-row.new b,.vl-row.new em{font-weight:800}
-.vl-av{flex:none;width:5cqw;height:5cqw;border-radius:50%;display:grid;place-items:center;background:#64748b;color:#fff;font-weight:800;font-size:2.2cqw}
-.vl-row.new .vl-av,.vl-from .vl-av{background:#0F2A4A}
-.vl-read{padding:2cqw 2.4cqw;height:100%;overflow:hidden}
-.vl-read h4{margin:0 0 1.4cqw;font-size:2.8cqw}
-.vl-from{display:flex;gap:1.4cqw;align-items:center;padding-bottom:1.4cqw;border-bottom:1px solid #EEF1F4}
-.vl-from div{display:flex;flex-direction:column}
-.vl-from span{font-size:1.9cqw;color:#2F6FD6;text-align:right}
-.vl-from small{font-size:1.8cqw;color:#6b7280}
-.vl-txt{padding-top:1.6cqw;font-size:2.2cqw;line-height:1.8;word-break:break-word}
-.vl-link{color:#2F6FD6;text-decoration:underline;unicode-bidi:isolate;direction:ltr;display:inline-block}
-.vl-status{position:absolute;left:3cqw;bottom:3.2cqw;z-index:6;padding:.6cqw 1.6cqw;background:#EEF1F4;color:#111;font-size:2cqw;border-radius:0 1cqw 0 1cqw;box-shadow:0 0 0 1px #D6DCE2;opacity:0;transition:opacity .2s}
-.vl-status.on{opacity:1}
-.vl-cur{position:absolute;z-index:8;width:3.8cqw;height:3.8cqw;left:62%;top:58%;transition:left 1.05s cubic-bezier(.4,0,.2,1),top 1.05s cubic-bezier(.4,0,.2,1);pointer-events:none}
-.vl-cur svg{width:100%;height:100%;display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}
-.vl-cur.clk svg{animation:vlclk .28s ease-out}
-@keyframes vlclk{50%{transform:scale(.82)}}
-@media (max-width:1020px){body.cc-vic #stage{flex-direction:column}body.cc-vic #stage>#laptop,.vlap{flex-basis:auto;max-width:100%;width:100%}}
-@media (prefers-reduced-motion:reduce){.vlap,.vl-win,.vl-cur{transition:none}.vl-cur.clk svg{animation:none}}
 /* the faint typing hint over a mail field (like the terminal's command hint, Moaz 2026-11-24) */
 .ml-ghost{position:absolute;z-index:1;pointer-events:none;overflow:hidden;box-sizing:border-box;border-style:solid;border-color:transparent;color:#9AA8AA;margin:0}
 .ml-ghost .hid{visibility:hidden}
-
-/* Saleh's desktop before he opens the mail (Moaz 2026-11-24): a dock and a notification for the new email */
-.vlap.desk .vl-mail{opacity:0;transform:scale(.94);pointer-events:none}
-.vl-dock{position:absolute;bottom:1.6cqw;left:50%;transform:translateX(-50%);z-index:3;display:flex;gap:1.4cqw;padding:1cqw 1.6cqw;border-radius:2.4cqw;background:rgba(255,255,255,.22);box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
-.vlap:not(.desk) .vl-dock{opacity:0}
-.vl-app{width:5.6cqw;height:5.6cqw;border-radius:1.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#5A6880,#2A3953)}
-.vl-app svg{width:62%;height:62%}
-.vl-app-mail{background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-app-web{background:linear-gradient(145deg,#3B6CBC,#295AA6)}.vl-app-files{background:linear-gradient(145deg,#5AA0F2,#2F74D0)}.vl-app-notes{background:linear-gradient(145deg,#FCD46A,#F2A90F);color:#5A3B00}.vl-app-photos{background:linear-gradient(145deg,#F472B6,#C026D3)}.vl-app-calc{background:linear-gradient(145deg,#5A6880,#2A3953)}.vl-app-cal{background:linear-gradient(145deg,#F87171,#DC2626)}.vl-app-music{background:linear-gradient(145deg,#FB7185,#E11D48)}.vl-app-set{background:linear-gradient(145deg,#94A3B8,#64748B)}
-.vl-note{position:absolute;top:6cqw;left:2.4cqw;z-index:6;width:44cqw;display:flex;gap:1.4cqw;align-items:center;padding:1.4cqw 1.8cqw;border-radius:2cqw;background:rgba(250,250,252,.97);color:#111;box-shadow:0 1.6cqw 4cqw -1cqw rgba(0,0,0,.45);transform:translateX(-120%);opacity:0;transition:transform .55s cubic-bezier(.2,.9,.3,1.15),opacity .4s}
-.vl-note.on{transform:none;opacity:1}
-.vl-note-ic{flex:none;width:5.6cqw;height:5.6cqw;border-radius:1.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(145deg,#2F6FD6,#1E4FA8)}.vl-note-ic svg{width:62%;height:62%}
-.vl-note div{min-width:0;display:flex;flex-direction:column}
-.vl-note small{font-size:1.7cqw;color:#6b7280;font-weight:700}.vl-note b{font-size:2.2cqw}
-.vl-note span{font-size:2cqw;color:#374151;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* «نسخ البريد» and «نسخ الرابط» in the steps: the engine's «نسخ الأمر» look, on their own class (the engine removes every .fx-copy that is not the next terminal command) */
 .cc-cur .cc-txt .fx-link{display:inline-flex;align-items:center;gap:4px;vertical-align:middle;margin:0 3px;padding:1px 9px;border:1.5px solid #0E1F39;border-radius:99px;background:#FCAD0F;color:#0E1F39;
@@ -7261,30 +7357,133 @@ body.cc-vic-in .vlap{opacity:1;transform:none}
 .cc-cur .cc-txt .fx-link:active{transform:translateY(1px)}
 .cc-cur .cc-txt .fx-link.ok{background:#2E9E5B;border-color:#2E9E5B;color:#fff}
 .cc-cur.typing .cc-txt .fx-link{display:none}
-/* the spotlight on sinnara's «Link» line while the step talks about it (Moaz 2026-11-24): a gold frame and glow around the line, pulsing */
+/* the spotlight on sinnara's «الرابط» line while the step talks about it (Moaz 2026-11-24): a gold frame and glow around the line, pulsing */
 .cs-log .row.sn-spot{position:relative;border-radius:6px;outline:2px solid #FCAD0F;outline-offset:3px;background:rgba(252,173,15,.12);box-shadow:0 0 0 6px rgba(252,173,15,.18),0 0 22px 6px rgba(252,173,15,.35);animation:snspot 1.6s ease-in-out infinite}
 @keyframes snspot{50%{box-shadow:0 0 0 9px rgba(252,173,15,.08),0 0 30px 10px rgba(252,173,15,.5)}}
 @media (prefers-reduced-motion:reduce){.cs-log .row.sn-spot{animation:none}}
 
-/* Saleh's desktop: the store manager's folders and files, and a full dock; they pop in one after another (Moaz 2026-11-24) */
-.vl-dock{gap:1cqw;padding:.9cqw 1.3cqw}
-.vl-app{width:4.6cqw;height:4.6cqw;border-radius:1.2cqw}
-.vl-app svg{width:60%;height:60%}
-.vl-desk{position:absolute;top:6.5cqw;right:2.2cqw;z-index:1;display:grid;grid-template-columns:repeat(2,9.4cqw);gap:1.6cqw .6cqw;direction:rtl}
-.vlap:not(.desk) .vl-desk{opacity:.0}
-.vl-di{display:flex;flex-direction:column;align-items:center;gap:.5cqw;color:#fff;text-align:center}
-.vl-di svg{width:5.4cqw;height:5.4cqw;filter:drop-shadow(0 .3cqw .5cqw rgba(0,0,0,.35))}
-.vl-di small{font-size:1.45cqw;font-weight:700;line-height:1.3;text-shadow:0 1px 2px rgba(0,0,0,.6)}
-.vlap .vl-di,.vlap .vl-app{opacity:0;transform:scale(.6)}
-body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cubic-bezier(.2,.9,.3,1.3) forwards;animation-delay:calc(var(--d) + 350ms)}
-@keyframes vlpop{to{opacity:1;transform:none}}
-.vl-scr{background:radial-gradient(circle at 75% 20%,rgba(120,170,255,.35),transparent 45%),radial-gradient(circle at 20% 85%,rgba(56,120,160,.45),transparent 50%),linear-gradient(160deg,#2E5470,#142533)}
-@media (prefers-reduced-motion:reduce){.vlap .vl-di,.vlap .vl-app{opacity:1;transform:none;animation:none!important}}
 /* the mail window opens solid (Moaz 2026-11-24: "it glitches when I open the email"): the engine's window fade let the bank page show through
    the large window for a moment; here only a small scale-up, never transparent */
 .cc-win.cc-win-mail,.cc-win.cc-win-mail.cc-back{animation:mlopen 180ms cubic-bezier(.2,.8,.3,1)}
 @keyframes mlopen{0%{transform:scale(.97)}100%{transform:none}}
 @media (prefers-reduced-motion:reduce){.cc-win.cc-win-mail,.cc-win.cc-win-mail.cc-back{animation:none}}
+
+/* ---- «إدراج رابط» in the mail app (Farhan's comment 7, Moaz 2026-11-28): the link on its own line under the text, blue like a link ---- */
+.ml-body{height:13cqw}
+.ml-lk{display:flex;align-items:center;gap:1cqw;padding:.2cqw 1.6cqw 1cqw;background:#fff}
+.ml-lk[hidden],.ml-ins[hidden]{display:none}
+.ml-a{color:#1A5FD0;text-decoration:underline;font-weight:600;unicode-bidi:isolate;direction:ltr;cursor:default;word-break:break-all}
+.ml-lk-x{flex:none;border:0;background:#EEF1F4;color:#4B5563;border-radius:50%;width:2.2cqw;height:2.2cqw;font-size:1.1cqw;line-height:1;cursor:pointer;display:grid;place-items:center}
+.ml-lk-x:disabled{display:none}
+.ml-ins{display:flex;align-items:center;gap:1cqw;padding:.8cqw 1.6cqw;background:#F7FAFF;border-top:1px solid #E6EBEC}
+.ml-ins>span{flex:none;color:#667589;font-weight:700}
+.ml-url{flex:1;min-width:0;border:1px solid #C9D5E6;border-radius:.6cqw;outline:none;font:inherit;font-size:1.4cqw;padding:.4cqw .8cqw;background:#fff;color:#111;text-align:left}
+.ml-url:focus{border-color:#2F6FD6;box-shadow:0 0 0 2px rgba(47,111,214,.18)}
+.ml-ok{flex:none;border:0;border-radius:.6cqw;padding:.45cqw 1.6cqw;background:#0E1F39;color:#fff;font:inherit;font-weight:800;cursor:pointer}
+.ml-lkb{flex:none;display:inline-flex;align-items:center;gap:.6cqw;border:1px solid #C9D5E6;border-radius:.8cqw;padding:.5cqw 1.2cqw;background:#fff;color:#1A5FD0;font:inherit;font-weight:700;cursor:pointer}
+.ml-lkb svg{width:1.6cqw;height:1.6cqw}
+.ml-lkb:hover:not(:disabled){background:#F2F7FF}
+.ml-lkb:disabled{color:#9AA8AA;cursor:default}
+.ml-foot .ml-err{flex:1;text-align:center}
+
+/* ---- sinnara's link in the terminal (Farhan's comment 2): blue, underlined, a click opens a small menu ---- */
+.cs-log .sn-url{color:#7DB8FF;text-decoration:underline;text-underline-offset:2px;cursor:pointer;unicode-bidi:isolate;direction:ltr;font-family:ui-monospace,Consolas,monospace}
+.cs-log .sn-url:hover{color:#A8D0FF}
+.sn-menu{position:fixed;z-index:9999;display:flex;flex-direction:column;min-width:190px;padding:5px;border-radius:10px;background:#fff;box-shadow:0 10px 30px -8px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.08);direction:rtl}
+.sn-menu button{border:0;background:none;text-align:right;font:600 14px "Montserrat Arabic",Tahoma,sans-serif;color:#1B2433;padding:8px 12px;border-radius:7px;cursor:pointer}
+.sn-menu button:hover{background:#EEF3FB}
+
+/* ---- Saleh's phone beside the hacker's laptop while he reads the email (Farhan's comment 8, Moaz 2026-11-28): narrow, so the laptop keeps its size ---- */
+body.cc-vic #stage{display:flex;flex-direction:row;flex-wrap:nowrap;align-items:center;justify-content:center;gap:2%}
+body.cc-vic #stage>#laptop{flex:0 1 76%;max-width:76%;transition:flex-basis .5s,max-width .5s}
+.vph{position:relative;flex:0 0 22%;max-width:22%;min-width:170px;opacity:0;transform:translateX(-30px) scale(.96);transition:opacity .5s,transform .5s;align-self:center}
+body.cc-vic-in .vph{opacity:1;transform:none}
+.vph .tag{position:absolute;top:-34px;left:50%;transform:translateX(-50%);white-space:nowrap}
+.ph-body{position:relative;aspect-ratio:9/19;border-radius:13%/6.2%;background:linear-gradient(145deg,#2b3240,#11151d);padding:3.6%;box-shadow:0 0 0 1px #4a5262 inset,0 22px 40px -20px rgba(0,0,0,.65)}
+.ph-btn{position:absolute;width:3px;border-radius:2px;background:#3a4252}
+.ph-btn.a{left:-3px;top:18%;height:5%}.ph-btn.b{left:-3px;top:25%;height:9%}.ph-btn.c{right:-3px;top:22%;height:12%}
+.ph-scr{position:relative;width:100%;height:100%;overflow:hidden;border-radius:10.5%/5%;background:#000;container-type:inline-size;direction:rtl;font-family:"Montserrat Arabic",Tahoma,sans-serif}
+.ph-wall{position:absolute;inset:0;background:radial-gradient(circle at 80% 15%,rgba(255,200,120,.55),transparent 45%),radial-gradient(circle at 15% 80%,rgba(80,140,255,.55),transparent 55%),linear-gradient(170deg,#3D5A80,#1B2A41 60%,#0E1F39)}
+/* status bar: the time is fixed (nothing changes by day) */
+.ph-sb{position:absolute;top:0;left:0;right:0;z-index:9;height:11cqw;display:flex;align-items:center;justify-content:space-between;padding:0 7cqw;color:#fff;direction:rtl;transition:color .3s}
+.ph-sb b{font-size:4.4cqw;font-weight:700;font-family:system-ui,Segoe UI,sans-serif}
+.ph-isl{position:absolute;left:50%;top:2.6cqw;width:27cqw;height:7.6cqw;margin-left:-13.5cqw;border-radius:5cqw;background:#000}
+.ph-sbi{display:flex;align-items:center;gap:1.4cqw}.ph-sbi svg{height:3.2cqw;width:auto;fill:currentColor}
+.vph.mail .ph-sb,.vph.brw .ph-sb{color:#111}
+/* home screen */
+.ph-home{position:absolute;inset:0;padding:16cqw 5cqw 0;transition:transform .45s,opacity .45s}
+.ph-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5cqw 2cqw}
+.ph-app-i{display:flex;flex-direction:column;align-items:center;gap:1.4cqw;opacity:0;transform:scale(.6)}
+body.cc-vic-in .ph-app-i{animation:phpop .45s cubic-bezier(.2,.9,.3,1.3) forwards;animation-delay:calc(var(--d) + 400ms)}
+@keyframes phpop{to{opacity:1;transform:none}}
+.ph-app-i small{font-size:2.9cqw;color:#fff;font-weight:600;text-shadow:0 1px 2px rgba(0,0,0,.5);white-space:nowrap}
+.ph-ai{position:relative;width:14.5cqw;height:14.5cqw;border-radius:3.6cqw;display:grid;place-items:center;color:#fff;box-shadow:0 1cqw 2cqw -1cqw rgba(0,0,0,.5)}
+.ph-ai svg{width:58%;height:58%}
+.ph-dock{position:absolute;left:4cqw;right:4cqw;bottom:6cqw;display:flex;justify-content:space-around;padding:3cqw 2cqw;border-radius:8cqw;background:rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+.vph.badge .ph-d-mail::after{content:"1";position:absolute;top:-1.6cqw;right:-1.6cqw;min-width:5.4cqw;height:5.4cqw;border-radius:3cqw;background:#EF4444;color:#fff;font:800 3.2cqw/5.4cqw system-ui,sans-serif;text-align:center;box-shadow:0 0 0 .6cqw rgba(0,0,0,.15)}
+.vph.mail .ph-home,.vph.brw .ph-home{transform:scale(.92);opacity:0}
+/* the notification slides down from the top */
+.ph-note{position:absolute;top:12cqw;left:3.5cqw;right:3.5cqw;z-index:8;display:flex;gap:3cqw;align-items:flex-start;padding:3.4cqw;border-radius:6cqw;background:rgba(245,245,248,.96);color:#111;box-shadow:0 2cqw 6cqw -2cqw rgba(0,0,0,.5);transform:translateY(-140%);opacity:0;transition:transform .55s cubic-bezier(.2,.9,.3,1.15),opacity .3s}
+.ph-note.on{transform:none;opacity:1}
+.ph-ni{flex:none;width:9cqw;height:9cqw;border-radius:2.4cqw;display:grid;place-items:center;color:#fff;background:linear-gradient(160deg,#3B82F6,#1D4ED8)}.ph-ni svg{width:62%;height:62%}
+.ph-note div{min-width:0;flex:1;display:flex;flex-direction:column;gap:.3cqw}
+.ph-note small{display:flex;justify-content:space-between;font-size:2.9cqw;color:#6b7280;font-weight:600}
+.ph-note b{font-size:3.6cqw}.ph-note em{font-style:normal;font-size:3.4cqw;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ph-np{font-size:3.2cqw;color:#374151;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ph-note.ph-press{transform:scale(.97)}
+/* app windows (mail, browser): full screen under the status bar */
+.ph-win{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;background:#fff;padding-top:11cqw;opacity:0;transform:scale(.9);transform-origin:50% 18%;pointer-events:none;transition:transform .4s cubic-bezier(.2,.8,.3,1),opacity .3s}
+.vph.mail .ph-mail{opacity:1;transform:none}
+.vph.brw .ph-brw{opacity:1;transform:none;z-index:4}
+.vph.brw .ph-mail{opacity:0}
+.ph-hd{flex:none;padding:1.5cqw 4cqw 2cqw;border-bottom:1px solid #EEF1F4}
+.ph-bk{display:inline-flex;align-items:center;gap:.6cqw;color:#1A5FD0;font-size:3.6cqw;font-weight:600}.ph-bk svg{width:4.4cqw;height:4.4cqw}
+.ph-mb{flex:1;overflow:hidden;padding:3.5cqw 4.5cqw;color:#1B2433}
+.ph-mb h4{margin:0 0 3cqw;font-size:4.8cqw;line-height:1.35}
+.ph-from{display:flex;gap:2.6cqw;align-items:center;padding-bottom:3cqw;border-bottom:1px solid #EEF1F4}
+.ph-from div{min-width:0;display:flex;flex-direction:column}
+.ph-from b{font-size:3.6cqw}
+.ph-from span[dir]{font-size:3cqw;color:#B45309;text-align:right;word-break:break-all}
+.ph-from small{font-size:2.9cqw;color:#6b7280}.ph-from small span{word-break:break-all}
+.ph-av{flex:none;width:9cqw;height:9cqw;border-radius:50%;display:grid;place-items:center;background:#0F2A4A;color:#fff;font-weight:800;font-size:4cqw}
+.ph-txt{padding-top:3cqw;font-size:3.7cqw;line-height:1.75}
+.ph-lkp{margin:2.4cqw 0 0;text-align:left}
+.ph-link{display:inline-block;color:#1A5FD0;text-decoration:underline;font-size:3.5cqw;word-break:break-all;border-radius:1cqw;padding:0 .6cqw;transition:background .15s}
+.ph-link.ph-press{background:rgba(26,95,208,.16)}
+/* the browser: the address bar, a loading line, the page at a phone's width */
+.ph-url{position:relative;flex:none;display:flex;align-items:center;justify-content:center;gap:1.2cqw;margin:1.2cqw 4cqw 2.4cqw;padding:2cqw 3cqw;border-radius:3cqw;background:#EEF1F4;color:#111;font-size:3.4cqw;direction:ltr}
+.ph-lock{display:grid}.ph-lock svg{width:3.2cqw;height:3.2cqw;color:#4B5563}
+.ph-host{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.ph-load{position:absolute;left:3cqw;bottom:0;height:.7cqw;width:0;border-radius:1cqw;background:#2F6FD6;opacity:0}
+.vph.loading .ph-load{opacity:1;animation:phload .9s ease-out forwards}
+@keyframes phload{from{width:0}to{width:calc(100% - 6cqw)}}
+.ph-page{flex:1;position:relative;overflow:hidden;background:#F2F4F8;border-top:1px solid #E5E7EB}
+.ph-page iframe{position:absolute;top:0;right:0;border:0;transform-origin:top right;pointer-events:none;background:#F2F4F8}
+/* the keyboard */
+.ph-kb{position:absolute;left:0;right:0;bottom:0;z-index:7;padding:2cqw 1.2cqw 8cqw;background:#D1D5DB;transform:translateY(102%);transition:transform .35s cubic-bezier(.2,.8,.3,1);direction:ltr}
+.vph.kbd .ph-kb{transform:none}
+.ph-kl.sym{display:none}.ph-kb.s .ph-kl.sym{display:block}.ph-kb.s .ph-kl.let{display:none}
+.ph-kr{display:flex;justify-content:center;gap:1.3cqw;margin-bottom:2.2cqw}
+.ph-kr.mid{padding:0 4.5cqw}
+.ph-kr b{position:relative;flex:1;max-width:8.6cqw;height:9.6cqw;border-radius:1.4cqw;background:#fff;color:#111;display:grid;place-items:center;font:500 4.2cqw system-ui,Segoe UI,sans-serif;box-shadow:0 .5cqw 0 #9CA3AF}
+.ph-kr.num b{height:7.6cqw;font-size:3.6cqw}
+.ph-kr b.w{flex:1.5;max-width:13cqw;background:#ADB5BD;font-size:3.4cqw}
+.ph-kr b.sp{flex:5;max-width:none}
+.ph-kr b.go{background:#2F6FD6;color:#fff}
+.ph-kr b.hit{animation:phkey .19s ease-out}
+.ph-kr b.hit::after{content:attr(data-k);position:absolute;left:50%;bottom:105%;transform:translateX(-50%);min-width:9cqw;height:11cqw;border-radius:1.8cqw;background:#fff;color:#111;display:grid;place-items:center;font:500 6cqw system-ui,sans-serif;box-shadow:0 1cqw 3cqw -1cqw rgba(0,0,0,.45);animation:phbub .25s ease-out forwards}
+.ph-kr b.w.hit::after,.ph-kr b.sp.hit::after{display:none}
+@keyframes phkey{50%{background:#C7CDD4}}
+@keyframes phbub{0%{opacity:1}80%{opacity:1}100%{opacity:0}}
+.vph.kbd .ph-page{margin-bottom:0}
+/* the home indicator and the finger */
+.ph-hi{position:absolute;left:50%;bottom:2cqw;z-index:9;width:34cqw;height:1.3cqw;margin-left:-17cqw;border-radius:1cqw;background:rgba(255,255,255,.85)}
+.vph.mail .ph-hi,.vph.brw .ph-hi{background:#111}
+.ph-tap{position:absolute;z-index:10;width:11cqw;height:11cqw;margin:-5.5cqw 0 0 -5.5cqw;border-radius:50%;background:rgba(80,80,90,.35);box-shadow:0 0 0 .6cqw rgba(255,255,255,.65);opacity:0;pointer-events:none}
+.ph-tap.on{animation:phtap .55s ease-out}
+@keyframes phtap{0%{opacity:0;transform:scale(1.5)}25%{opacity:1;transform:scale(.85)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1.15)}}
+@media (max-width:560px){body.cc-vic #stage{flex-direction:column;gap:46px}body.cc-vic #stage>#laptop{flex-basis:auto;max-width:100%;width:100%}.vph{flex-basis:auto;max-width:260px;width:58%}}
+@media (prefers-reduced-motion:reduce){.vph,.ph-win,.ph-note,.ph-kb,.ph-home{transition:none}.ph-app-i{opacity:1;transform:none;animation:none!important}.ph-tap.on{animation:none;opacity:.8}}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
@@ -7528,7 +7727,7 @@ body.cc-vic-in .vlap .vl-di,body.cc-vic-in .vlap .vl-app{animation:vlpop .45s cu
   }, 300);
 
   /* Farhan's review (EH2 lab 3, Moaz 2026-11-24, every lab that opts in): a copy button next to a VALUE in the step on screen, such as the
-     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'sltmimi@camelcode.shop', label: 'نسخ البريد' }, ...]
+     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'saltamimi@camelcode.shop', label: 'نسخ البريد' }, ...]
      while the step needs them and clears it (null) after; the button sits after the code chip whose text is exactly that value. */
   setInterval(function () {
     var list = (window.CC && CC.copyVals) || [], want = {};

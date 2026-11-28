@@ -6321,6 +6321,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 
 /* Farhan's IDOR comment 4 (every lab): «شرح الأمر» is drawn in the log right under its command, not pinned at the top */
 .cs .cs-log .cs-chips.inl{margin:4px auto 10px;max-width:100%}
+
+/* Farhan's EH2 lab 5 comment 3 (Moaz 2026-11-28, every lab): while a command is running (a tool waiting for the victim, Barq trying passwords)
+   the typing line is not drawn at all, like a real terminal: no «Desktop» prompt that looks ready for typing. It comes back the moment the
+   command ends. The short delay keeps quick commands (display, read) from blinking it. */
+#laptop .cs-in{transition:visibility 0s}
+#laptop .cs-in:has(#cmd:disabled){visibility:hidden;transition-delay:.35s}
 </style>
 <script id="cc-touches-js">
 /* Farhan's shared add-on for every lab (see os.css): hovering an open app's icon in the dock shows that app's
@@ -6564,7 +6570,7 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
   }, 300);
 
   /* Farhan's review (EH2 lab 3, Moaz 2026-11-24, every lab that opts in): a copy button next to a VALUE in the step on screen, such as the
-     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'sltmimi@camelcode.shop', label: 'نسخ البريد' }, ...]
+     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'saltamimi@camelcode.shop', label: 'نسخ البريد' }, ...]
      while the step needs them and clears it (null) after; the button sits after the code chip whose text is exactly that value. */
   setInterval(function () {
     var list = (window.CC && CC.copyVals) || [], want = {};

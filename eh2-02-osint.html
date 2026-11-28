@@ -3157,15 +3157,29 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
       if (n === ti) showTab(Math.max(0, n - 1)); else if (n < ti) ti--;
     }
     wireTab(tabs[0]);
-    newBtn.onclick = function (e) {
-      e.stopPropagation(); if (!R || !R.newTab) return;
+    function addTab(host, path) {
       saveTab();
       var t = { el: el('div', 'br-tab'), hist: [], idx: -1 }; t.el.innerHTML = TAB_IN;
       newBtn.parentNode.insertBefore(t.el, newBtn); tabs.push(t); wireTab(t);
       ti = tabs.length - 1; tabs.forEach(function (x, i) { x.el.classList.toggle('idle', i !== ti); });
       bindTab(t); hist = []; idx = -1; hideCtx(); if (tabSel !== 'page') closeSrc();
-      go({ host: R.newTab.host, path: R.newTab.path || '/' }, 'push');
+      go({ host: host, path: path || '/' }, 'push');
+    }
+    newBtn.onclick = function (e) {
+      e.stopPropagation(); if (!R || !R.newTab) return;
+      addTab(R.newTab.host, R.newTab.path);
       if (P.onNewTab) P.onNewTab();
+    };
+    /* a link opened from outside the page (EH2 lab 5: the link in the terminal, «فتح الرابط في المتصفح», Moaz 2026-11-28): a new tab on that
+       site's page; a tab already showing that site is reused, so several clicks never pile up tabs. The host must be the lab's site or one of its hosts. */
+    P.openTab = function (host, path) {
+      if (!R || !siteOf(host)) return;
+      saveTab();
+      for (var n = 0; n < tabs.length; n++) {
+        var h = tabs[n].hist[tabs[n].idx];
+        if (h && h.host === host) { if (n !== ti) showTab(n); go({ host: host, path: path || '/' }, 'push'); return; }
+      }
+      addTab(host, path);
     };
     /* ---- the ⋮ menu (Moaz 2026-11-17, every lab): zoom the page in and out like a real browser (− 100% +); «صفحة جديدة» works when the site has newTab;
        the other lines are greyed out like the right-click menu. It closes on a click anywhere else or Escape. ---- */
@@ -4230,7 +4244,7 @@ body.cc-q-noanim .wrap,body.cc-q-noanim .cc-qhandle,body.cc-q-noanim .cc-qhandle
     name: 'متجر كاملكود للألعاب',
     host: 'camelcode.shop',
     owner: 'سالم خالد', manager: 'صالح سعيد التميمي', managerFirst: 'صالح', support: 'يوسف محمد', sales: 'ماجد سعيد', newStaff: 'حمد علي',   /* pending */
-    email: 'info@camelcode.shop', managerEmail: 'sltmimi@camelcode.shop', phone: '+974 0000 0000', address: 'شارع الألعاب، الدوحة'   /* pending */
+    email: 'info@camelcode.shop', managerEmail: 'saltamimi@camelcode.shop', phone: '+974 0000 0000', address: 'شارع الألعاب، الدوحة'   /* pending */
   };
   function fmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
 
@@ -4566,7 +4580,7 @@ window.CC.osintPhotos = {"desert":"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQ
   var T = CC.osint = {
     name: 'صالح سعيد التميمي', short: 'صالح التميمي', first: 'صالح',
     user: 'saleh_altamimi87', falcon: 'سهم', born: 1987, age: 38, bday: '14 مارس', bdayPostYear: 2025,
-    email: 'sltmimi@camelcode.shop', firstFalcon: 'سهم', town: 'الوكرة', sons: ['سعيد'],
+    email: 'saltamimi@camelcode.shop', firstFalcon: 'سهم', town: 'الوكرة', sons: ['سعيد'],
     search: 'search.example',
     social: { host: 'social.example', path: '/saleh_altamimi87' },
     work: { host: 'jobs.example', path: '/profile/saleh-altamimi' },
@@ -6876,6 +6890,12 @@ body.fx-ran .cc-cmdtip:not(.fx-retip){display:none!important}
 /* Farhan's IDOR comment 4 (every lab): «شرح الأمر» is drawn in the log right under its command, not pinned at the top */
 .cs .cs-log .cs-chips.inl{margin:4px auto 10px;max-width:100%}
 
+/* Farhan's EH2 lab 5 comment 3 (Moaz 2026-11-28, every lab): while a command is running (a tool waiting for the victim, Barq trying passwords)
+   the typing line is not drawn at all, like a real terminal: no «Desktop» prompt that looks ready for typing. It comes back the moment the
+   command ends. The short delay keeps quick commands (display, read) from blinking it. */
+#laptop .cs-in{transition:visibility 0s}
+#laptop .cs-in:has(#cmd:disabled){visibility:hidden;transition-delay:.35s}
+
 /* Farhan's shared add-on for every lab that has the website (browser) inside the laptop.
    Taken from the Kashif test (eh1-04-kashif-motion). Moaz's lab files are never changed. */
 
@@ -7164,7 +7184,7 @@ body.cc-web .laptop:not(.cc-web-shut):not(.cc-closed) .br.cc-embedded,body.cc-we
   }, 300);
 
   /* Farhan's review (EH2 lab 3, Moaz 2026-11-24, every lab that opts in): a copy button next to a VALUE in the step on screen, such as the
-     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'sltmimi@camelcode.shop', label: 'نسخ البريد' }, ...]
+     email and the password of a login step. The lab sets CC.copyVals = [{ v: 'saltamimi@camelcode.shop', label: 'نسخ البريد' }, ...]
      while the step needs them and clears it (null) after; the button sits after the code chip whose text is exactly that value. */
   setInterval(function () {
     var list = (window.CC && CC.copyVals) || [], want = {};
